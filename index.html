@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nevio — AI помощник на Groq</title>
+    
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ===== СБРОС И ПЕРЕМЕННЫЕ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0;
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app-container {
+            max-width: 480px;
+            width: 100%;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.02);
+            border-radius: 32px 32px 0 0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕНТ (СКРОЛЛ) ===== */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 20px 0;
+            scrollbar-width: thin;
+            scrollbar-color: #e8b13e #f1f5f9;
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #e8b13e;
+            border-radius: 10px;
+        }
+
+        /* ===== ЭКРАНЫ ===== */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== ШАПКА ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(145deg, #e8b13e, #d4a02a);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 26px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(232, 177, 62, 0.25);
+        }
+
+        .logo-text h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .menu-btn {
+            width: 48px;
+            height: 48px;
+            background: #f1f5f9;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            font-size: 22px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* ===== ПРОФИЛЬ ===== */
+        .profile-card {
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border-radius: 28px;
+            padding: 18px 20px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid #eef2f6;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(145deg, #3b8cbf, #2c6e9b);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            box-shadow: 0 8px 18px rgba(59, 140, 191, 0.3);
+        }
+
+        .user-details h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .user-details p {
+            font-size: 14px;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-badge {
+            background: #e8b13e;
+            color: #1e293b;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ===== ФОРМЫ ===== */
+        .form-container {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 28px 24px;
+            border: 1px solid #edf2f7;
+        }
+
+        .form-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .form-subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 22px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            background: #ffffff;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: #e8b13e;
+            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.1);
+        }
+
+        /* ===== КНОПКИ ===== */
+        .btn {
+            width: 100%;
+            padding: 18px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #e8b13e;
+            color: #0f172a;
+            box-shadow: 0 10px 25px rgba(232, 177, 62, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #d9a231;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #3b8cbf;
+            color: white;
+            box-shadow: 0 10px 25px rgba(59, 140, 191, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+        }
+
+        /* ===== РОЛЕВОЙ ПЕРЕКЛЮЧАТЕЛЬ ===== */
+        .role-tabs {
+            display: flex;
+            gap: 12px;
+            margin: 0 0 24px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 60px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab.active {
+            background: #e8b13e;
+            color: #0f172a;
+            box-shadow: 0 4px 12px rgba(232, 177, 62, 0.3);
+        }
+
+        .tab.student.active {
+            background: #3b8cbf;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 140, 191, 0.3);
+        }
+
+        /* ===== КАРТОЧКИ ФУНКЦИЙ ===== */
+        .features-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 22px;
+            border: 2px solid #f0f4f9;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: #e8b13e;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: #f8fafc;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #e8b13e;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* ===== ТЕКСТОВЫЕ ПОЛЯ ===== */
+        .input-section {
+            margin: 24px 0;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        textarea {
+            width: 100%;
+            padding: 20px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 28px;
+            background: #ffffff;
+            resize: vertical;
+            outline: none;
+            transition: all 0.2s;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: #e8b13e;
+            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.1);
+        }
+
+        /* ===== ЗАГРУЗЧИК ===== */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loader-overlay.visible {
+            display: flex;
+        }
+
+        .loader-content {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 48px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 6px solid #f1f5f9;
+            border-top: 6px solid #e8b13e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== РЕЗУЛЬТАТ ===== */
+        .result-card {
+            background: #f0f9ff;
+            border-radius: 32px;
+            padding: 28px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            border-left: 8px solid #e8b13e;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .result-card.visible {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .result-icon {
+            width: 48px;
+            height: 48px;
+            background: #e8b13e;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .result-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #0f172a;
+            white-space: pre-wrap;
+        }
+
+        /* ===== ФОТО ===== */
+        .photo-upload {
+            border: 3px dashed #cbd5e1;
+            border-radius: 32px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .photo-upload:hover {
+            border-color: #e8b13e;
+            background: #f8fafc;
+        }
+
+        .photo-upload i {
+            font-size: 48px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        .photo-preview {
+            width: 100%;
+            border-radius: 28px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .photo-preview.visible {
+            display: block;
+        }
+
+        /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+        .bottom-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 12px 24px;
+            background: #ffffff;
+            border-top: 2px solid #f1f5f9;
+            border-radius: 40px 40px 0 0;
+            margin-top: auto;
+            width: 100%;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 8px 16px;
+            border-radius: 30px;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+        }
+
+        .nav-item.active {
+            color: #e8b13e;
+            background: #fef9e7;
+        }
+
+        /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal-window {
+            background: white;
+            border-radius: 40px;
+            width: 90%;
+            max-width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 28px 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUpModal 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUpModal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            background: #e8b13e;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .modal-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #334155;
+            white-space: pre-wrap;
+            margin-bottom: 28px;
+        }
+
+        .modal-close {
+            width: 100%;
+            padding: 16px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+        <div class="main-content" id="mainContent">
+            
+            <!-- ===== ЭКРАН РЕГИСТРАЦИИ ===== -->
+            <div id="registerScreen" class="screen active">
+                <div class="header">
+                    <div class="logo">
+                        <div class="logo-icon">N</div>
+                        <div class="logo-text">
+                            <h1>Nevio</h1>
+                            <span>Беларусь</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h2 class="form-title">Добро пожаловать! 👋</h2>
+                    <p class="form-subtitle">Создайте аккаунт чтобы начать</p>
+
+                    <div class="input-group">
+                        <label class="input-label">Ваше имя</label>
+                        <input type="text" id="regName" class="input-field" placeholder="Александр" value="Александр">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Выберите роль</label>
+                        <div class="role-tabs">
+                            <button id="regRoleTeacher" class="tab active">
+                                <i class="fas fa-chalkboard-teacher"></i> Учитель
+                            </button>
+                            <button id="regRoleStudent" class="tab">
+                                <i class="fas fa-user-graduate"></i> Ученик
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Школа (необязательно)</label>
+                        <input type="text" id="regSchool" class="input-field" placeholder="Гимназия №1 г. Минска" value="Гимназия №1">
+                    </div>
+
+                    <!-- Поле для класса/предмета (динамически меняется) -->
+                    <div class="input-group" id="classFieldContainer">
+                        <label class="input-label" id="classFieldLabel">Класс</label>
+                        <input type="text" id="regClass" class="input-field" placeholder="8 класс" value="8 класс">
+                    </div>
+
+                    <button class="btn btn-primary" id="registerBtn" style="margin-top: 20px;">
+                        <i class="fas fa-arrow-right"></i> Начать работу
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== ГЛАВНЫЙ ЭКРАН ===== -->
+            <div id="mainScreen" class="screen">
+                <!-- Шапка -->
+                <div class="header">
+                    <div class="logo">
+                        <div class="logo-icon">N</div>
+                        <div class="logo-text">
+                            <h1>Nevio</h1>
+                        </div>
+                    </div>
+                    <button class="menu-btn" id="profileBtn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+
+                <!-- Профиль -->
+                <div class="profile-card" id="profileCard">
+                    <div class="avatar" id="userAvatar">А</div>
+                    <div class="user-details">
+                        <h3 id="userName">Александр</h3>
+                        <p>
+                            <span id="userRole">Учитель</span>
+                            <span class="role-badge" id="userClassInfo">8 класс</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Контент УЧИТЕЛЯ -->
+                <div id="teacherContent">
+                    <div class="features-grid">
+                        <div class="feature-card" id="teacherLessonCard">
+                            <div class="feature-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3>Создать конспект урока</h3>
+                            <p>Groq сгенерирует план с целями, этапами и заданиями</p>
+                        </div>
+                    </div>
+
+                    <div id="teacherInputSection" class="input-section" style="display: none;">
+                        <textarea id="lessonTopic" placeholder="Введите тему урока... Например: Квадратные уравнения" rows="4">Квадратные уравнения</textarea>
+                        <button class="btn btn-primary" id="generateLessonBtn" style="margin-top: 16px;">
+                            <i class="fas fa-magic"></i> Сгенерировать конспект
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Контент УЧЕНИКА -->
+                <div id="studentContent" style="display: none;">
+                    <div class="features-grid">
+                        <div class="feature-card" id="studentExplainCard">
+                            <div class="feature-icon" style="color: #3b8cbf;">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Объяснить тему</h3>
+                            <p>Получи простое объяснение с примерами из жизни</p>
+                        </div>
+
+                        <div class="feature-card" id="studentPhotoCard">
+                            <div class="feature-icon" style="color: #3b8cbf;">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3>Проверить по фото</h3>
+                            <p>Сфотографируй задачу — ИИ распознает и проверит</p>
+                        </div>
+                    </div>
+
+                    <!-- Объяснение -->
+                    <div id="explainSection" class="input-section" style="display: none;">
+                        <textarea id="explainQuestion" placeholder="Что тебе объяснить? Например: Теорема Пифагора" rows="3">Теорема Пифагора</textarea>
+                        <button class="btn btn-secondary" id="explainBtn" style="margin-top: 16px;">
+                            <i class="fas fa-graduation-cap"></i> Объяснить
+                        </button>
+                    </div>
+
+                    <!-- Фото -->
+                    <div id="photoSection" class="input-section" style="display: none;">
+                        <div class="photo-upload" id="photoUploadBtn">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Нажмите, чтобы выбрать фото</p>
+                            <p style="font-size: 13px; color: #94a3b8;">JPG, PNG</p>
+                        </div>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                        <img id="photoPreview" class="photo-preview" src="#" alt="Превью">
+                        <textarea id="recognizedText" placeholder="Распознанный текст появится здесь..." rows="3" readonly style="margin-top: 16px;"></textarea>
+                        <button class="btn btn-secondary" id="checkPhotoBtn" style="margin-top: 16px;" disabled>
+                            <i class="fas fa-check-circle"></i> Проверить решение
+                        </button>
+                    </div>
+                </div>
+
+                <!-- РЕЗУЛЬТАТ -->
+                <div id="resultCard" class="result-card">
+                    <div class="result-header">
+                        <div class="result-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 style="color: #0f172a;">Результат</h3>
+                    </div>
+                    <div id="resultContent" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== НИЖНЯЯ НАВИГАЦИЯ ===== -->
+        <div class="bottom-nav" id="bottomNav">
+            <button class="nav-item active" id="navHome">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </button>
+            <button class="nav-item" id="navStats">
+                <i class="fas fa-chart-line"></i>
+                <span>Статистика</span>
+            </button>
+            <button class="nav-item" id="navSettings">
+                <i class="fas fa-cog"></i>
+                <span>Настройки</span>
+            </button>
+        </div>
+
+        <!-- ЗАГРУЗЧИК -->
+        <div id="loader" class="loader-overlay">
+            <div class="loader-content">
+                <div class="spinner"></div>
+                <p style="color: #1e293b; font-weight: 500; font-size: 18px;">Nevio думает...</p>
+                <p style="color: #64748b; font-size: 14px; margin-top: 8px;">Groq обрабатывает</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ -->
+    <div id="statsModal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="modal-title">Статистика</h2>
+            </div>
+            <div id="statsContent" class="modal-content"></div>
+            <button class="modal-close" id="closeStatsModal">
+                <i class="fas fa-arrow-left"></i> Закрыть
+            </button>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h2 class="modal-title">Настройки</h2>
+            </div>
+            <div id="settingsContent" class="modal-content"></div>
+            <button class="modal-close" id="closeSettingsModal">
+                <i class="fas fa-arrow-left"></i> Закрыть
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // ========== ⚡️ GROQ НАСТРОЙКИ - ВСТАВЬ СВОЙ ТОКЕН ⚡️ ==========
+        const GROQ_API_KEY = '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'; // Получи на https://console.groq.com
+        const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+        
+        // Модели Groq (меняй если хочешь)
+        const MODELS = {
+            teacher: 'llama-3.3-70b-versatile',    // Лучшая для конспектов
+            explain: 'mixtral-8x7b-32768',         // Отличная для объяснений
+            check: 'gemma2-9b-it'                   // Быстрая для проверки
+        };
+
+        // ========== ЭЛЕМЕНТЫ ==========
+        const registerScreen = document.getElementById('registerScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const mainContent = document.getElementById('mainContent');
+        const loader = document.getElementById('loader');
+        const resultCard = document.getElementById('resultCard');
+        const resultContent = document.getElementById('resultContent');
+        
+        // Модальные окна
+        const statsModal = document.getElementById('statsModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const statsContent = document.getElementById('statsContent');
+        const settingsContent = document.getElementById('settingsContent');
+
+        // Элементы регистрации
+        const regRoleTeacher = document.getElementById('regRoleTeacher');
+        const regRoleStudent = document.getElementById('regRoleStudent');
+        const classFieldLabel = document.getElementById('classFieldLabel');
+        const regClass = document.getElementById('regClass');
+
+        // Навигация
+        const navHome = document.getElementById('navHome');
+        const navStats = document.getElementById('navStats');
+        const navSettings = document.getElementById('navSettings');
+
+        // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ==========
+        let userData = {
+            name: '',
+            role: 'teacher',
+            school: '',
+            class: '',
+            stats: {
+                lessons: 0,
+                tasks: 0
+            }
+        };
+
+        // ========== УПРАВЛЕНИЕ ПОЛЕМ КЛАСС/ПРЕДМЕТ ==========
+        function updateClassField() {
+            if (regRoleTeacher.classList.contains('active')) {
+                classFieldLabel.textContent = 'Предмет';
+                regClass.placeholder = 'Математика, Физика...';
+                regClass.value = 'Математика';
+            } else {
+                classFieldLabel.textContent = 'Класс';
+                regClass.placeholder = '8 класс, 9 класс...';
+                regClass.value = '8 класс';
+            }
+        }
+
+        regRoleTeacher.addEventListener('click', () => {
+            regRoleTeacher.classList.add('active');
+            regRoleStudent.classList.remove('active');
+            updateClassField();
+        });
+
+        regRoleStudent.addEventListener('click', () => {
+            regRoleStudent.classList.add('active');
+            regRoleTeacher.classList.remove('active');
+            updateClassField();
+        });
+
+        // ========== ФУНКЦИИ УПРАВЛЕНИЯ ==========
+        function showLoader() {
+            loader.classList.add('visible');
+        }
+
+        function hideLoader() {
+            loader.classList.remove('visible');
+        }
+
+        function showResult(text) {
+            resultContent.textContent = text;
+            resultCard.classList.add('visible');
+            hideLoader();
+            setTimeout(() => {
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // ========== ⚡️ ВЫЗОВ GROQ API ⚡️ ==========
+        async function callGroq(prompt, type) {
+            showLoader();
+            
+            // Системные промпты для каждой задачи
+            const systemPrompts = {
+                teacher: 'Ты опытный учитель в белорусской школе. Составь подробный конспект урока по теме. Напиши: цель урока, оборудование, ход урока (этапы), примеры, задания для учеников, вопросы для проверки. Используй профессиональный язык. Ответ дай в формате Markdown.',
+                
+                explain: 'Ты репетитор. Объясни тему простым языком, как ребенку. Используй аналогии из жизни, примеры. Пиши понятно, с эмодзи. Ответ дай в формате Markdown.',
+                
+                check: 'Ты репетитор. Проверь решение задачи, найди ошибки и объясни как правильно. Пиши по шагам. Ответ дай в формате Markdown.'
+            };
+
+            try {
+                const response = await fetch(GROQ_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: MODELS[type],
+                        messages: [
+                            {
+                                role: 'system',
+                                content: systemPrompts[type]
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 2048,
+                        top_p: 0.95
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const answer = data.choices[0].message.content;
+                    
+                    // Обновляем статистику
+                    if (type === 'teacher') {
+                        userData.stats.lessons++;
+                    } else if (type === 'check') {
+                        userData.stats.tasks++;
+                    }
+                    
+                    return answer;
+                } else {
+                    throw new Error('Неверный формат ответа от Groq');
+                }
+            } catch (error) {
+                console.error('Groq Error:', error);
+                
+                // Понятное сообщение об ошибке
+                if (error.message.includes('429')) {
+                    return '⚠️ **Groq временно перегружен**\n\nВы превысили лимит запросов (30 в минуту). Подождите немного и попробуйте снова. Это бесплатные ограничения, они сбрасываются каждую минуту.';
+                } else if (error.message.includes('401')) {
+                    return '❌ **Ошибка авторизации Groq**\n\nНеверный API ключ. Проверьте токен в настройках приложения.';
+                } else {
+                    return `❌ **Ошибка соединения с Groq**\n\n${error.message}\n\nПопробуйте позже.`;
+                }
+            } finally {
+                hideLoader();
+            }
+        }
+
+        // ========== РЕГИСТРАЦИЯ ==========
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            const name = document.getElementById('regName').value.trim();
+            if (!name) {
+                alert('Введите имя');
+                return;
+            }
+
+            userData = {
+                name: name,
+                role: regRoleTeacher.classList.contains('active') ? 'teacher' : 'student',
+                school: document.getElementById('regSchool').value || 'Не указана',
+                class: regClass.value || (regRoleTeacher.classList.contains('active') ? 'Математика' : '8 класс'),
+                stats: {
+                    lessons: 0,
+                    tasks: 0
+                }
+            };
+
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userRole').textContent = userData.role === 'teacher' ? 'Учитель' : 'Ученик';
+            document.getElementById('userClassInfo').textContent = userData.class;
+            document.getElementById('userAvatar').textContent = userData.name.charAt(0);
+
+            registerScreen.classList.remove('active');
+            mainScreen.classList.add('active');
+
+            if (userData.role === 'teacher') {
+                document.getElementById('teacherContent').style.display = 'block';
+                document.getElementById('studentContent').style.display = 'none';
+            } else {
+                document.getElementById('teacherContent').style.display = 'none';
+                document.getElementById('studentContent').style.display = 'block';
+            }
+            
+            mainContent.scrollTop = 0;
+        });
+
+        // ========== ПОКАЗ СЕКЦИЙ ==========
+        document.getElementById('teacherLessonCard')?.addEventListener('click', () => {
+            document.getElementById('teacherInputSection').style.display = 'block';
+        });
+
+        document.getElementById('studentExplainCard')?.addEventListener('click', () => {
+            document.getElementById('explainSection').style.display = 'block';
+            document.getElementById('photoSection').style.display = 'none';
+        });
+
+        document.getElementById('studentPhotoCard')?.addEventListener('click', () => {
+            document.getElementById('photoSection').style.display = 'block';
+            document.getElementById('explainSection').style.display = 'none';
+        });
+
+        // ========== РАБОТА С ФОТО ==========
+        const photoUploadBtn = document.getElementById('photoUploadBtn');
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const recognizedText = document.getElementById('recognizedText');
+        const checkPhotoBtn = document.getElementById('checkPhotoBtn');
+
+        if (photoUploadBtn) {
+            photoUploadBtn.addEventListener('click', () => {
+                photoInput.click();
+            });
+        }
+
+        if (photoInput) {
+            photoInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        photoPreview.src = e.target.result;
+                        photoPreview.classList.add('visible');
+                        
+                        // Имитация распознавания текста с фото
+                        setTimeout(() => {
+                            recognizedText.value = '2x + 5 = 15\nРешение: 2x = 15 - 5 = 10\nx = 5';
+                            checkPhotoBtn.disabled = false;
+                        }, 1500);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // ========== ОБРАБОТЧИКИ С GROQ ==========
+        
+        // Генерация конспекта
+        document.getElementById('generateLessonBtn')?.addEventListener('click', async () => {
+            const topic = document.getElementById('lessonTopic').value;
+            if (!topic) {
+                alert('Введите тему урока');
+                return;
+            }
+            const response = await callGroq(topic, 'teacher');
+            showResult(response);
+        });
+
+        // Объяснение темы
+        document.getElementById('explainBtn')?.addEventListener('click', async () => {
+            const question = document.getElementById('explainQuestion').value;
+            if (!question) {
+                alert('Введите вопрос');
+                return;
+            }
+            const response = await callGroq(question, 'explain');
+            showResult(response);
+        });
+
+        // Проверка решения
+        document.getElementById('checkPhotoBtn')?.addEventListener('click', async () => {
+            const solution = recognizedText.value;
+            if (!solution) {
+                alert('Нет текста для проверки');
+                return;
+            }
+            const response = await callGroq(`Проверь это решение: ${solution}`, 'check');
+            showResult(response);
+        });
+
+        // ========== НАВИГАЦИЯ ==========
+        
+        function setActiveNav(navId) {
+            [navHome, navStats, navSettings].forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(navId).classList.add('active');
+        }
+
+        navHome.addEventListener('click', () => {
+            setActiveNav('navHome');
+            mainContent.scrollTop = 0;
+        });
+
+        navStats.addEventListener('click', () => {
+            setActiveNav('navStats');
+            
+            const statsText = `👤 **Имя:** ${userData.name}\n` +
+                `🎓 **Роль:** ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\n` +
+                `🏫 **Школа:** ${userData.school}\n` +
+                `📚 **${userData.role === 'teacher' ? 'Предмет' : 'Класс'}:** ${userData.class}\n\n` +
+                `✨ **Моя активность (Groq):**\n` +
+                `• Создано конспектов: **${userData.stats.lessons}**\n` +
+                `• Проверено задач: **${userData.stats.tasks}**\n\n` +
+                `⚡️ *Groq обрабатывает до 500 токенов/сек*`;
+            
+            statsContent.innerHTML = statsText.replace(/\n/g, '<br>');
+            statsModal.classList.add('visible');
+        });
+
+        navSettings.addEventListener('click', () => {
+            setActiveNav('navSettings');
+            
+            const settingsText = `⚙️ **Настройки Groq**\n\n` +
+                `• **Провайдер:** Groq LPU\n` +
+                `• **Скорость:** до 500 токенов/сек\n` +
+                `• **Модели:** Llama 3.3, Mixtral, Gemma 2\n` +
+                `• **Лимиты:** 30 запросов/мин\n\n` +
+                `📱 **Версия:** 1.0.0\n` +
+                `🆓 **Бесплатно · Без карт**\n\n` +
+                `🌐 **Nevio** — создано для Беларуси`;
+            
+            settingsContent.innerHTML = settingsText.replace(/\n/g, '<br>');
+            settingsModal.classList.add('visible');
+        });
+
+        // Закрыть модальные окна
+        document.getElementById('closeStatsModal').addEventListener('click', () => {
+            statsModal.classList.remove('visible');
+        });
+
+        document.getElementById('closeSettingsModal').addEventListener('click', () => {
+            settingsModal.classList.remove('visible');
+        });
+
+        statsModal.addEventListener('click', (e) => {
+            if (e.target === statsModal) {
+                statsModal.classList.remove('visible');
+            }
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('visible');
+            }
+        });
+
+        // Профиль
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            navStats.click();
+        });
+    </script>
+</body>
+</html>
