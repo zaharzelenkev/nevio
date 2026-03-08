@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio</title>
+    <title>Nevio — AI помощник</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -41,7 +41,7 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 20px 0;
+            padding: 20px 20px 100px; /* Увеличил нижний отступ для поля ввода */
             scrollbar-width: thin;
             scrollbar-color: #e8b13e #f1f5f9;
         }
@@ -58,6 +58,82 @@
         .main-content::-webkit-scrollbar-thumb {
             background: #e8b13e;
             border-radius: 10px;
+        }
+
+        /* ===== ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА ===== */
+        .fixed-input-container {
+            position: sticky;
+            bottom: 80px; /* Высота над навигацией */
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, #ffffff, rgba(255,255,255,0.95));
+            padding: 16px 20px;
+            border-top: 1px solid #eef2f6;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+        }
+
+        .fixed-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .fixed-input {
+            flex: 1;
+            padding: 16px 18px;
+            font-size: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            background: #ffffff;
+            outline: none;
+            transition: all 0.2s;
+            resize: none;
+            min-height: 56px;
+            max-height: 120px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .fixed-input:focus {
+            border-color: #e8b13e;
+            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.1);
+        }
+
+        .fixed-send-btn {
+            width: 56px;
+            height: 56px;
+            border: none;
+            border-radius: 20px;
+            background: #e8b13e;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(232, 177, 62, 0.3);
+        }
+
+        .fixed-send-btn:hover {
+            background: #d9a231;
+            transform: scale(0.98);
+        }
+
+        .fixed-photo-btn {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            box-shadow: none;
+        }
+
+        .fixed-photo-btn:hover {
+            border-color: #e8b13e;
+            background: #ffffff;
         }
 
         .screen {
@@ -423,75 +499,6 @@
             margin: 0;
         }
 
-        .input-area {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .input-wrapper {
-            flex: 1;
-            position: relative;
-        }
-
-        .chat-input {
-            width: 100%;
-            padding: 16px 18px;
-            font-size: 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 24px;
-            background: #ffffff;
-            outline: none;
-            transition: all 0.2s;
-            resize: none;
-            min-height: 56px;
-            max-height: 120px;
-        }
-
-        .chat-input:focus {
-            border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.1);
-        }
-
-        .send-btn {
-            width: 56px;
-            height: 56px;
-            border: none;
-            border-radius: 20px;
-            background: #e8b13e;
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .send-btn:hover {
-            background: #d9a231;
-            transform: scale(0.98);
-        }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .photo-attach {
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            color: #64748b;
-        }
-
-        .photo-attach:hover {
-            border-color: #e8b13e;
-            background: #ffffff;
-        }
-
         .photo-preview-container {
             margin-bottom: 16px;
             position: relative;
@@ -535,8 +542,9 @@
             border-radius: 40px 40px 0 0;
             margin-top: auto;
             width: 100%;
-            position: sticky;
+            position: fixed;
             bottom: 0;
+            max-width: 480px;
             z-index: 100;
         }
 
@@ -757,48 +765,6 @@
 
                     <!-- ЧАТ КОНТЕЙНЕР -->
                     <div id="chatContainer" class="chat-container"></div>
-
-                    <!-- ОБЛАСТЬ ВВОДА -->
-                    <div id="inputArea" class="input-area">
-                        <div class="input-wrapper">
-                            <textarea 
-                                id="messageInput" 
-                                class="chat-input" 
-                                placeholder="Напишите сообщение..."
-                                rows="1"
-                            ></textarea>
-                        </div>
-                        <button class="send-btn" id="sendMessageBtn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-
-                    <!-- ОБЛАСТЬ ФОТО -->
-                    <div id="photoArea" style="display: none;">
-                        <div class="photo-preview-container" id="photoPreviewContainer">
-                            <img id="photoPreview" class="preview-image" src="#" alt="Preview">
-                            <button class="remove-photo" id="removePhotoBtn">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="input-area">
-                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
-                            <button class="send-btn photo-attach" id="attachPhotoBtn">
-                                <i class="fas fa-image"></i>
-                            </button>
-                            <div class="input-wrapper">
-                                <textarea 
-                                    id="photoQuestionInput" 
-                                    class="chat-input" 
-                                    placeholder="Твой вопрос..."
-                                    rows="1"
-                                ></textarea>
-                            </div>
-                            <button class="send-btn" id="sendPhotoBtn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Контент УЧИТЕЛЯ -->
@@ -825,47 +791,31 @@
                     </div>
 
                     <div id="teacherChatContainer" class="chat-container"></div>
-
-                    <div id="teacherInputArea" class="input-area">
-                        <div class="input-wrapper">
-                            <textarea 
-                                id="teacherMessageInput" 
-                                class="chat-input" 
-                                placeholder="Введите тему урока..."
-                                rows="1"
-                            ></textarea>
-                        </div>
-                        <button class="send-btn" id="teacherSendBtn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-
-                    <div id="teacherPhotoArea" style="display: none;">
-                        <div class="photo-preview-container" id="teacherPhotoPreviewContainer">
-                            <img id="teacherPhotoPreview" class="preview-image" src="#" alt="Preview">
-                            <button class="remove-photo" id="teacherRemovePhotoBtn">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="input-area">
-                            <input type="file" id="teacherPhotoInput" accept="image/*" style="display: none;">
-                            <button class="send-btn photo-attach" id="teacherAttachPhotoBtn">
-                                <i class="fas fa-image"></i>
-                            </button>
-                            <div class="input-wrapper">
-                                <textarea 
-                                    id="teacherPhotoQuestionInput" 
-                                    class="chat-input" 
-                                    placeholder="Опишите материал на фото..."
-                                    rows="1"
-                                ></textarea>
-                            </div>
-                            <button class="send-btn" id="teacherSendPhotoBtn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА (ВСЕГДА ВНИЗУ) -->
+        <div class="fixed-input-container" id="fixedInputContainer" style="display: none;">
+            <div class="fixed-input-wrapper">
+                <button class="fixed-send-btn fixed-photo-btn" id="fixedAttachPhotoBtn" style="display: none;">
+                    <i class="fas fa-image"></i>
+                </button>
+                <textarea 
+                    id="fixedMessageInput" 
+                    class="fixed-input" 
+                    placeholder="Напишите сообщение..."
+                    rows="1"
+                ></textarea>
+                <button class="fixed-send-btn" id="fixedSendBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div id="fixedPhotoPreviewContainer" class="photo-preview-container">
+                <img id="fixedPhotoPreview" class="preview-image" src="#" alt="Preview">
+                <button class="remove-photo" id="fixedRemovePhotoBtn">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </div>
 
@@ -920,17 +870,21 @@
         tg.expand();
 
         // ========== GROQ НАСТРОЙКИ ==========
-        const GROQ_API_KEY = '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'; // ВСТАВЬ СВОЙ ТОКЕН
+        const GROQ_API_KEY = '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';
         const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
         
+        // Модели Groq
         const MODELS = {
             teacher: 'llama-3.3-70b-versatile',
             explain: 'llama-3.3-70b-versatile',
+            vision: 'llava-v1.5-7b-4096-preview',  // Модель для распознавания изображений
             check: 'llama-3.1-8b-instant'
         };
 
         // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ==========
         let userData = null;
+        let currentMode = 'explain'; // explain, photo, teacher, teacherPhoto
+        let currentPhotoBase64 = null;
 
         function loadUserData() {
             const saved = localStorage.getItem('nevio_user');
@@ -953,6 +907,7 @@
             document.getElementById('regName').value = '';
             document.getElementById('regSchool').value = '';
             document.getElementById('regClass').value = '';
+            hideFixedInput();
         }
 
         // ========== ЭЛЕМЕНТЫ ==========
@@ -960,7 +915,17 @@
         const mainScreen = document.getElementById('mainScreen');
         const mainContent = document.getElementById('mainContent');
         const loader = document.getElementById('loader');
+        
+        // Закрепленное поле ввода
+        const fixedInputContainer = document.getElementById('fixedInputContainer');
+        const fixedMessageInput = document.getElementById('fixedMessageInput');
+        const fixedSendBtn = document.getElementById('fixedSendBtn');
+        const fixedAttachPhotoBtn = document.getElementById('fixedAttachPhotoBtn');
+        const fixedPhotoPreviewContainer = document.getElementById('fixedPhotoPreviewContainer');
+        const fixedPhotoPreview = document.getElementById('fixedPhotoPreview');
+        const fixedRemovePhotoBtn = document.getElementById('fixedRemovePhotoBtn');
 
+        // Элементы регистрации
         const regRoleStudent = document.getElementById('regRoleStudent');
         const regRoleTeacher = document.getElementById('regRoleTeacher');
         const classFieldLabel = document.getElementById('classFieldLabel');
@@ -991,6 +956,39 @@
             updateClassField();
         });
 
+        // ========== УПРАВЛЕНИЕ ПОЛЕМ ВВОДА ==========
+        function showFixedInput() {
+            fixedInputContainer.style.display = 'block';
+        }
+
+        function hideFixedInput() {
+            fixedInputContainer.style.display = 'none';
+        }
+
+        function setInputPlaceholder(text) {
+            fixedMessageInput.placeholder = text;
+        }
+
+        function showPhotoButton() {
+            fixedAttachPhotoBtn.style.display = 'flex';
+        }
+
+        function hidePhotoButton() {
+            fixedAttachPhotoBtn.style.display = 'none';
+        }
+
+        function showPhotoPreview(src) {
+            fixedPhotoPreview.src = src;
+            fixedPhotoPreviewContainer.classList.add('visible');
+        }
+
+        function hidePhotoPreview() {
+            fixedPhotoPreviewContainer.classList.remove('visible');
+            fixedPhotoPreview.src = '#';
+            currentPhotoBase64 = null;
+        }
+
+        // ========== ФУНКЦИИ ==========
         function showLoader() {
             loader.classList.add('visible');
         }
@@ -1042,21 +1040,49 @@
         async function callGroq(prompt, type, imageBase64 = null) {
             showLoader();
             
+            // Улучшенные промпты для точных ответов
             let systemPrompt = '';
             if (type === 'teacher') {
-                systemPrompt = 'Ты опытный учитель. Составь подробный конспект урока. Ответ дай простым текстом без специальных символов.';
+                systemPrompt = 'Ты опытный учитель с многолетним стажем. Составь максимально подробный, структурированный и полезный конспект урока. Обязательно включи: цель урока, оборудование, подробный ход урока с разбивкой по минутам, примеры для объяснения, практические задания для учеников разного уровня сложности, вопросы для проверки понимания, домашнее задание. Объясняй每一步 так, чтобы другой учитель мог сразу провести урок. Используй профессиональный, но понятный язык. Ответ давай простым текстом без спецсимволов.';
             } else if (type === 'explain') {
-                systemPrompt = 'Ты репетитор. Объясни тему простым языком. Ответ дай простым текстом без специальных символов.';
+                systemPrompt = 'Ты лучший репетитор, который умеет объяснять сложные вещи простым языком. Объясни тему максимально понятно, как будто разговариваешь с учеником. Используй аналогии из жизни, примеры, сравнивай с чем-то знакомым. Если есть формулы или правила, объясни их простыми словами. Пошагово разбери, как это работает. Твоя цель — чтобы ученик действительно понял, а не просто запомнил. Ответ давай простым текстом без спецсимволов.';
+            } else if (type === 'vision') {
+                systemPrompt = 'Ты умный помощник, который анализирует изображения с задачами. Внимательно изучи то, что написано на фото. Определи, что это за задача (математика, физика, русский язык и т.д.). Реши её максимально подробно, объясняя каждый шаг. Если в задаче есть ошибка, укажи на неё и объясни, как правильно. Разбери решение так, чтобы пользователь понял логику и смог решать подобные задачи сам. Ответ давай простым текстом без спецсимволов.';
             } else {
-                systemPrompt = 'Ты репетитор. Проверь решение задачи. Ответ дай простым текстом без специальных символов.';
-            }
-
-            let content = prompt;
-            if (imageBase64) {
-                content = `[Фото задачи: ${imageBase64.substring(0, 50)}...] ${prompt || 'Реши эту задачу'}`;
+                systemPrompt = 'Ты репетитор, который проверяет решение задачи. Внимательно прочитай условие и решение. Найди ошибки, если они есть. Объясни, почему это ошибка, и покажи правильное решение. Если всё верно, похвали и объясни, почему решение правильное. Разбирай подробно, по шагам, чтобы пользователь понял свою ошибку и научился. Ответ давай простым текстом без спецсимволов.';
             }
 
             try {
+                let model = MODELS[type];
+                let messages = [
+                    { role: 'system', content: systemPrompt }
+                ];
+
+                if (imageBase64 && type === 'vision') {
+                    // Для модели LLaVA используем специальный формат
+                    messages.push({
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: prompt || 'Реши задачу на этом фото. Если это текст, прочитай его и реши. Если это пример или уравнение, реши подробно.'
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: imageBase64
+                                }
+                            }
+                        ]
+                    });
+                } else {
+                    let content = prompt;
+                    if (imageBase64) {
+                        content = `[Фото задачи] ${prompt || 'Реши эту задачу. Прочитай текст на фото и выполни задание.'}`;
+                    }
+                    messages.push({ role: 'user', content: content });
+                }
+
                 const response = await fetch(GROQ_API_URL, {
                     method: 'POST',
                     headers: {
@@ -1064,13 +1090,10 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        model: MODELS[type],
-                        messages: [
-                            { role: 'system', content: systemPrompt },
-                            { role: 'user', content: content }
-                        ],
+                        model: model,
+                        messages: messages,
                         temperature: 0.7,
-                        max_tokens: 2048
+                        max_tokens: 4096
                     })
                 });
 
@@ -1081,17 +1104,19 @@
                 answer = cleanAIResponse(answer);
                 
                 if (type === 'teacher') userData.stats.lessons++;
-                else if (type === 'check' || type === 'explain') userData.stats.tasks++;
+                else if (type === 'vision' || type === 'check' || type === 'explain') userData.stats.tasks++;
                 saveUserData();
                 
                 return answer;
             } catch (error) {
+                console.error('Groq Error:', error);
                 return 'Извините, произошла ошибка. Попробуйте позже.';
             } finally {
                 hideLoader();
             }
         }
 
+        // ========== РЕГИСТРАЦИЯ ==========
         document.getElementById('registerBtn').addEventListener('click', () => {
             const name = document.getElementById('regName').value.trim();
             if (!name) {
@@ -1130,6 +1155,7 @@
             
             document.getElementById('chatContainer').innerHTML = '';
             document.getElementById('teacherChatContainer').innerHTML = '';
+            showFixedInput();
         }
 
         if (loadUserData()) {
@@ -1138,132 +1164,117 @@
 
         // ========== ОБРАБОТЧИКИ ЧАТА ==========
         
-        let currentExplainMode = false;
-        
         document.getElementById('studentExplainCard').addEventListener('click', () => {
-            currentExplainMode = true;
-            document.getElementById('photoArea').style.display = 'none';
-            document.getElementById('inputArea').style.display = 'flex';
-            document.getElementById('messageInput').placeholder = 'Что тебе объяснить?';
+            currentMode = 'explain';
+            setInputPlaceholder('Что тебе объяснить? Например: теорема Пифагора');
+            hidePhotoButton();
+            hidePhotoPreview();
         });
 
         document.getElementById('studentPhotoCard').addEventListener('click', () => {
-            currentExplainMode = false;
-            document.getElementById('inputArea').style.display = 'none';
-            document.getElementById('photoArea').style.display = 'block';
+            currentMode = 'photo';
+            setInputPlaceholder('Вопрос по фото (можно оставить пустым)...');
+            showPhotoButton();
         });
 
         document.getElementById('teacherLessonCard').addEventListener('click', () => {
-            document.getElementById('teacherPhotoArea').style.display = 'none';
-            document.getElementById('teacherInputArea').style.display = 'flex';
-            document.getElementById('teacherMessageInput').placeholder = 'Тема урока?';
+            currentMode = 'teacher';
+            setInputPlaceholder('Тема урока? Например: Квадратные уравнения');
+            hidePhotoButton();
+            hidePhotoPreview();
         });
 
         document.getElementById('teacherPhotoCard').addEventListener('click', () => {
-            document.getElementById('teacherInputArea').style.display = 'none';
-            document.getElementById('teacherPhotoArea').style.display = 'block';
+            currentMode = 'teacherPhoto';
+            setInputPlaceholder('Опишите материал на фото...');
+            showPhotoButton();
         });
 
-        document.getElementById('sendMessageBtn').addEventListener('click', async () => {
-            const input = document.getElementById('messageInput');
-            const question = input.value.trim();
-            if (!question) return;
+        // Прикрепление фото
+        fixedAttachPhotoBtn.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        currentPhotoBase64 = e.target.result;
+                        showPhotoPreview(currentPhotoBase64);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        });
 
-            addMessage('user', question, 'chatContainer');
-            input.value = '';
+        fixedRemovePhotoBtn.addEventListener('click', () => {
+            hidePhotoPreview();
+        });
+
+        // Отправка сообщения
+        fixedSendBtn.addEventListener('click', async () => {
+            const question = fixedMessageInput.value.trim();
             
-            const response = await callGroq(question, currentExplainMode ? 'explain' : 'check');
-            addMessage('ai', response, 'chatContainer');
-        });
+            // Определяем куда отправлять
+            let containerId = 'chatContainer';
+            let mode = currentMode;
+            if (userData.role === 'teacher' && (mode === 'teacher' || mode === 'teacherPhoto')) {
+                containerId = 'teacherChatContainer';
+            }
 
-        document.getElementById('attachPhotoBtn').addEventListener('click', () => {
-            document.getElementById('photoInput').click();
-        });
+            if (mode === 'photo' || mode === 'teacherPhoto') {
+                if (!currentPhotoBase64) {
+                    alert('Сначала добавьте фото');
+                    return;
+                }
 
-        document.getElementById('photoInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('photoPreview').src = e.target.result;
-                    document.getElementById('photoPreviewContainer').classList.add('visible');
-                };
-                reader.readAsDataURL(file);
+                // Отправляем сообщение пользователя
+                if (question) {
+                    addMessage('user', `📸 ${question}`, containerId);
+                } else {
+                    addMessage('user', '📸 Реши задачу по фото', containerId);
+                }
+                
+                fixedMessageInput.value = '';
+                hidePhotoPreview();
+
+                // Получаем ответ от vision модели
+                const response = await callGroq(question, 'vision', currentPhotoBase64);
+                addMessage('ai', response, containerId);
+            } 
+            else if (mode === 'explain') {
+                if (!question) {
+                    alert('Введите вопрос');
+                    return;
+                }
+                addMessage('user', question, containerId);
+                fixedMessageInput.value = '';
+                const response = await callGroq(question, 'explain');
+                addMessage('ai', response, containerId);
+            }
+            else if (mode === 'teacher') {
+                if (!question) {
+                    alert('Введите тему урока');
+                    return;
+                }
+                addMessage('user', `Конспект по теме: ${question}`, containerId);
+                fixedMessageInput.value = '';
+                const response = await callGroq(question, 'teacher');
+                addMessage('ai', response, containerId);
             }
         });
 
-        document.getElementById('sendPhotoBtn').addEventListener('click', async () => {
-            const question = document.getElementById('photoQuestionInput').value.trim();
-            const preview = document.getElementById('photoPreview');
-            
-            if (!preview.src) {
-                alert('Добавьте фото');
-                return;
-            }
-
-            addMessage('user', question || 'Реши задачу по фото', 'chatContainer');
-            document.getElementById('photoQuestionInput').value = '';
-            document.getElementById('photoPreviewContainer').classList.remove('visible');
-            
-            const response = await callGroq(question || 'Реши задачу по фото', 'check', preview.src);
-            addMessage('ai', response, 'chatContainer');
-        });
-
-        document.getElementById('teacherSendBtn').addEventListener('click', async () => {
-            const input = document.getElementById('teacherMessageInput');
-            const topic = input.value.trim();
-            if (!topic) return;
-
-            addMessage('user', `Конспект по теме: ${topic}`, 'teacherChatContainer');
-            input.value = '';
-            
-            const response = await callGroq(topic, 'teacher');
-            addMessage('ai', response, 'teacherChatContainer');
-        });
-
-        document.getElementById('teacherAttachPhotoBtn').addEventListener('click', () => {
-            document.getElementById('teacherPhotoInput').click();
-        });
-
-        document.getElementById('teacherPhotoInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('teacherPhotoPreview').src = e.target.result;
-                    document.getElementById('teacherPhotoPreviewContainer').classList.add('visible');
-                };
-                reader.readAsDataURL(file);
+        // Enter для отправки
+        fixedMessageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                fixedSendBtn.click();
             }
         });
 
-        document.getElementById('teacherSendPhotoBtn').addEventListener('click', async () => {
-            const question = document.getElementById('teacherPhotoQuestionInput').value.trim();
-            const preview = document.getElementById('teacherPhotoPreview');
-            
-            if (!preview.src) {
-                alert('Добавьте фото');
-                return;
-            }
-
-            addMessage('user', question || 'Проанализируй материал', 'teacherChatContainer');
-            document.getElementById('teacherPhotoQuestionInput').value = '';
-            document.getElementById('teacherPhotoPreviewContainer').classList.remove('visible');
-            
-            const response = await callGroq(question || 'Проанализируй материал', 'teacher', preview.src);
-            addMessage('ai', response, 'teacherChatContainer');
-        });
-
-        document.getElementById('removePhotoBtn').addEventListener('click', () => {
-            document.getElementById('photoPreviewContainer').classList.remove('visible');
-            document.getElementById('photoPreview').src = '#';
-        });
-
-        document.getElementById('teacherRemovePhotoBtn').addEventListener('click', () => {
-            document.getElementById('teacherPhotoPreviewContainer').classList.remove('visible');
-            document.getElementById('teacherPhotoPreview').src = '#';
-        });
-
+        // ========== НАВИГАЦИЯ ==========
         document.getElementById('navHome').addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('navHome').classList.add('active');
@@ -1293,8 +1304,10 @@ ${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.cla
             const settingsText = `Nevio v1.0
 
 Работает на Groq LPU
-Скорость: до 500 токенов/сек
-Лимиты: 30 запросов в минуту
+• LLaVA 1.5 для распознавания фото
+• Llama 3.3 70B для конспектов
+• Скорость: до 500 токенов/сек
+• Лимиты: 30 запросов в минуту
 
 Создано для Беларуси
 Полностью бесплатно`;
@@ -1324,34 +1337,6 @@ ${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.cla
 
         document.getElementById('profileCard').addEventListener('click', () => {
             document.getElementById('navStats').click();
-        });
-
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('sendMessageBtn').click();
-            }
-        });
-
-        document.getElementById('photoQuestionInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('sendPhotoBtn').click();
-            }
-        });
-
-        document.getElementById('teacherMessageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('teacherSendBtn').click();
-            }
-        });
-
-        document.getElementById('teacherPhotoQuestionInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('teacherSendPhotoBtn').click();
-            }
         });
     </script>
 </body>
