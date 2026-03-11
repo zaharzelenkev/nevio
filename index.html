@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio — AI помощник</title>
+    <title>Nevio — AI помощник на Groq</title>
     
+    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* ===== СБРОС И ПЕРЕМЕННЫЕ ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -25,6 +29,7 @@
             padding: 0;
         }
 
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
         .app-container {
             max-width: 480px;
             width: 100%;
@@ -38,10 +43,11 @@
             flex-direction: column;
         }
 
+        /* ===== ОСНОВНОЙ КОНТЕНТ (СКРОЛЛ) ===== */
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 20px 100px; /* Увеличил нижний отступ для поля ввода */
+            padding: 20px 20px 100px; /* Увеличен нижний отступ */
             scrollbar-width: thin;
             scrollbar-color: #e8b13e #f1f5f9;
         }
@@ -63,7 +69,7 @@
         /* ===== ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА ===== */
         .fixed-input-container {
             position: sticky;
-            bottom: 80px; /* Высота над навигацией */
+            bottom: 80px;
             left: 0;
             right: 0;
             background: linear-gradient(to top, #ffffff, rgba(255,255,255,0.95));
@@ -71,7 +77,7 @@
             border-top: 1px solid #eef2f6;
             z-index: 50;
             backdrop-filter: blur(10px);
-            margin-top: 20px;
+            display: none;
         }
 
         .fixed-input-wrapper {
@@ -136,6 +142,7 @@
             background: #ffffff;
         }
 
+        /* ===== ОСТАЛЬНЫЕ СТИЛИ (БЕЗ ИЗМЕНЕНИЙ) ===== */
         .screen {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -185,6 +192,12 @@
             line-height: 1.2;
         }
 
+        .logo-text span {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
         .menu-btn {
             width: 48px;
             height: 48px;
@@ -213,12 +226,6 @@
             align-items: center;
             gap: 16px;
             border: 1px solid #eef2f6;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .profile-card:hover {
-            border-color: #e8b13e;
         }
 
         .avatar {
@@ -339,15 +346,10 @@
             box-shadow: 0 10px 25px rgba(59, 140, 191, 0.3);
         }
 
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
-            margin-top: 16px;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #475569;
         }
 
         .role-tabs {
@@ -385,50 +387,49 @@
         .features-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
+            gap: 16px;
+            margin: 24px 0;
         }
 
         .feature-card {
             background: #ffffff;
-            border-radius: 24px;
-            padding: 20px;
+            border-radius: 28px;
+            padding: 22px;
             border: 2px solid #f0f4f9;
             transition: all 0.2s;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 16px;
         }
 
         .feature-card:hover {
             border-color: #e8b13e;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.02);
         }
 
         .feature-icon {
-            width: 52px;
-            height: 52px;
+            width: 56px;
+            height: 56px;
             background: #f8fafc;
-            border-radius: 18px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
             color: #e8b13e;
+            margin-bottom: 18px;
         }
 
-        .feature-text h3 {
-            font-size: 18px;
-            font-weight: 600;
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
             color: #0f172a;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
-        .feature-text p {
+        .feature-card p {
             color: #64748b;
-            font-size: 14px;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
         .chat-container {
@@ -542,9 +543,8 @@
             border-radius: 40px 40px 0 0;
             margin-top: auto;
             width: 100%;
-            position: fixed;
+            position: sticky;
             bottom: 0;
-            max-width: 480px;
             z-index: 100;
         }
 
@@ -637,14 +637,50 @@
             border-radius: 40px;
             width: 90%;
             max-width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
             padding: 28px 24px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
             animation: slideUpModal 0.3s ease;
+            position: relative;
         }
 
         @keyframes slideUpModal {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            background: #e8b13e;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .modal-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #334155;
+            white-space: pre-wrap;
+            margin-bottom: 28px;
         }
 
         .modal-close {
@@ -657,16 +693,25 @@
             font-weight: 600;
             color: #475569;
             cursor: pointer;
-            margin-top: 20px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
         
+        <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
         <div class="main-content" id="mainContent">
             
-            <!-- ЭКРАН РЕГИСТРАЦИИ -->
+            <!-- ===== ЭКРАН РЕГИСТРАЦИИ ===== -->
             <div id="registerScreen" class="screen active">
                 <div class="header">
                     <div class="logo">
@@ -684,39 +729,41 @@
 
                     <div class="input-group">
                         <label class="input-label">Ваше имя</label>
-                        <input type="text" id="regName" class="input-field" placeholder="Введите имя">
+                        <input type="text" id="regName" class="input-field" placeholder="Александр" value="Александр">
                     </div>
 
                     <div class="input-group">
                         <label class="input-label">Выберите роль</label>
                         <div class="role-tabs">
-                            <button id="regRoleStudent" class="tab active">
-                                <i class="fas fa-user-graduate"></i> Ученик
-                            </button>
-                            <button id="regRoleTeacher" class="tab">
+                            <button id="regRoleTeacher" class="tab active">
                                 <i class="fas fa-chalkboard-teacher"></i> Учитель
+                            </button>
+                            <button id="regRoleStudent" class="tab">
+                                <i class="fas fa-user-graduate"></i> Ученик
                             </button>
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label class="input-label">Школа (необязательно)</label>
-                        <input type="text" id="regSchool" class="input-field" placeholder="Название школы">
+                        <input type="text" id="regSchool" class="input-field" placeholder="Гимназия №1 г. Минска" value="Гимназия №1">
                     </div>
 
+                    <!-- Поле для класса/предмета (динамически меняется) -->
                     <div class="input-group" id="classFieldContainer">
                         <label class="input-label" id="classFieldLabel">Класс</label>
-                        <input type="text" id="regClass" class="input-field" placeholder="Например: 8 класс">
+                        <input type="text" id="regClass" class="input-field" placeholder="8 класс" value="8 класс">
                     </div>
 
-                    <button class="btn btn-primary" id="registerBtn">
+                    <button class="btn btn-primary" id="registerBtn" style="margin-top: 20px;">
                         <i class="fas fa-arrow-right"></i> Начать работу
                     </button>
                 </div>
             </div>
 
-            <!-- ГЛАВНЫЙ ЭКРАН -->
+            <!-- ===== ГЛАВНЫЙ ЭКРАН ===== -->
             <div id="mainScreen" class="screen">
+                <!-- Шапка -->
                 <div class="header">
                     <div class="logo">
                         <div class="logo-icon">N</div>
@@ -729,82 +776,70 @@
                     </button>
                 </div>
 
+                <!-- Профиль -->
                 <div class="profile-card" id="profileCard">
-                    <div class="avatar" id="userAvatar"></div>
+                    <div class="avatar" id="userAvatar">А</div>
                     <div class="user-details">
-                        <h3 id="userName"></h3>
+                        <h3 id="userName">Александр</h3>
                         <p>
-                            <span id="userRole"></span>
-                            <span class="role-badge" id="userClassInfo"></span>
+                            <span id="userRole">Учитель</span>
+                            <span class="role-badge" id="userClassInfo">8 класс</span>
                         </p>
                     </div>
                 </div>
 
-                <!-- Контент УЧЕНИКА -->
-                <div id="studentContent">
-                    <div class="features-grid">
-                        <div class="feature-card" id="studentExplainCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Объяснить тему</h3>
-                                <p>Получи простое объяснение</p>
-                            </div>
-                        </div>
-                        <div class="feature-card" id="studentPhotoCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Решить по фото</h3>
-                                <p>Сфотографируй задание</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ЧАТ КОНТЕЙНЕР -->
-                    <div id="chatContainer" class="chat-container"></div>
-                </div>
-
                 <!-- Контент УЧИТЕЛЯ -->
-                <div id="teacherContent" style="display: none;">
+                <div id="teacherContent">
                     <div class="features-grid">
                         <div class="feature-card" id="teacherLessonCard">
                             <div class="feature-icon">
                                 <i class="fas fa-file-alt"></i>
                             </div>
-                            <div class="feature-text">
-                                <h3>Создать конспект</h3>
-                                <p>Подробный план урока</p>
-                            </div>
-                        </div>
-                        <div class="feature-card" id="teacherPhotoCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Анализ по фото</h3>
-                                <p>Разбор материалов</p>
-                            </div>
+                            <h3>Создать конспект урока</h3>
+                            <p>Groq сгенерирует план с целями, этапами и заданиями</p>
                         </div>
                     </div>
 
-                    <div id="teacherChatContainer" class="chat-container"></div>
+                    <!-- Контент будет добавляться сюда -->
                 </div>
+
+                <!-- Контент УЧЕНИКА -->
+                <div id="studentContent" style="display: none;">
+                    <div class="features-grid">
+                        <div class="feature-card" id="studentExplainCard">
+                            <div class="feature-icon" style="color: #3b8cbf;">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Объяснить тему</h3>
+                            <p>Получи простое объяснение с примерами из жизни</p>
+                        </div>
+
+                        <div class="feature-card" id="studentPhotoCard">
+                            <div class="feature-icon" style="color: #3b8cbf;">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3>Проверить по фото</h3>
+                            <p>Сфотографируй задачу — ИИ распознает и проверит</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ЧАТ КОНТЕЙНЕР (ДЛЯ СООБЩЕНИЙ) -->
+                <div id="chatContainer" class="chat-container"></div>
+                <div id="teacherChatContainer" class="chat-container"></div>
             </div>
         </div>
 
-        <!-- ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА (ВСЕГДА ВНИЗУ) -->
-        <div class="fixed-input-container" id="fixedInputContainer" style="display: none;">
+        <!-- ===== ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА ===== -->
+        <div class="fixed-input-container" id="fixedInputContainer">
             <div class="fixed-input-wrapper">
-                <button class="fixed-send-btn fixed-photo-btn" id="fixedAttachPhotoBtn" style="display: none;">
+                <button class="fixed-send-btn fixed-photo-btn" id="fixedAttachPhotoBtn">
                     <i class="fas fa-image"></i>
                 </button>
                 <textarea 
                     id="fixedMessageInput" 
                     class="fixed-input" 
-                    placeholder="Напишите сообщение..."
+                    placeholder="Напишите сообщение..." 
                     rows="1"
                 ></textarea>
                 <button class="fixed-send-btn" id="fixedSendBtn">
@@ -819,8 +854,8 @@
             </div>
         </div>
 
-        <!-- НИЖНЯЯ НАВИГАЦИЯ -->
-        <div class="bottom-nav">
+        <!-- ===== НИЖНЯЯ НАВИГАЦИЯ ===== -->
+        <div class="bottom-nav" id="bottomNav">
             <button class="nav-item active" id="navHome">
                 <i class="fas fa-home"></i>
                 <span>Главная</span>
@@ -839,7 +874,8 @@
         <div id="loader" class="loader-overlay">
             <div class="loader-content">
                 <div class="spinner"></div>
-                <p style="color: #1e293b;">Nevio думает...</p>
+                <p style="color: #1e293b; font-weight: 500; font-size: 18px;">Nevio думает...</p>
+                <p style="color: #64748b; font-size: 14px; margin-top: 8px;">Groq обрабатывает</p>
             </div>
         </div>
     </div>
@@ -847,45 +883,93 @@
     <!-- МОДАЛЬНЫЕ ОКНА -->
     <div id="statsModal" class="modal-overlay">
         <div class="modal-window">
-            <h2 style="margin-bottom: 20px;">Статистика</h2>
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="modal-title">Статистика</h2>
+            </div>
             <div id="statsContent" class="modal-content"></div>
-            <button class="modal-close" id="closeStatsModal">Закрыть</button>
+            <button class="modal-close" id="closeStatsModal">
+                <i class="fas fa-arrow-left"></i> Закрыть
+            </button>
         </div>
     </div>
 
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
-            <h2 style="margin-bottom: 20px;">Настройки</h2>
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h2 class="modal-title">Настройки</h2>
+            </div>
             <div id="settingsContent" class="modal-content"></div>
-            <button class="btn btn-danger" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+            <button class="modal-close" id="closeSettingsModal">
+                <i class="fas fa-arrow-left"></i> Закрыть
             </button>
-            <button class="modal-close" id="closeSettingsModal" style="margin-top: 12px;">Закрыть</button>
         </div>
     </div>
 
     <script>
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        // ========== GROQ НАСТРОЙКИ ==========
+        // ========== ⚡️ GROQ НАСТРОЙКИ ==========
         const GROQ_API_KEY = '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';
         const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
         
         // Модели Groq
         const MODELS = {
             teacher: 'llama-3.3-70b-versatile',
-            explain: 'llama-3.3-70b-versatile',
-            vision: 'llava-v1.5-7b-4096-preview',  // Модель для распознавания изображений
-            check: 'llama-3.1-8b-instant'
+            explain: 'mixtral-8x7b-32768',
+            check: 'gemma2-9b-it',
+            vision: 'llava-v1.5-7b-4096-preview'  // Модель для фото
         };
 
-        // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ==========
-        let userData = null;
-        let currentMode = 'explain'; // explain, photo, teacher, teacherPhoto
-        let currentPhotoBase64 = null;
+        // ========== ЭЛЕМЕНТЫ ==========
+        const registerScreen = document.getElementById('registerScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const mainContent = document.getElementById('mainContent');
+        const loader = document.getElementById('loader');
+        const chatContainer = document.getElementById('chatContainer');
+        const teacherChatContainer = document.getElementById('teacherChatContainer');
+        
+        // Элементы закрепленного поля
+        const fixedInputContainer = document.getElementById('fixedInputContainer');
+        const fixedMessageInput = document.getElementById('fixedMessageInput');
+        const fixedSendBtn = document.getElementById('fixedSendBtn');
+        const fixedAttachPhotoBtn = document.getElementById('fixedAttachPhotoBtn');
+        const fixedPhotoPreviewContainer = document.getElementById('fixedPhotoPreviewContainer');
+        const fixedPhotoPreview = document.getElementById('fixedPhotoPreview');
+        const fixedRemovePhotoBtn = document.getElementById('fixedRemovePhotoBtn');
+        
+        // Модальные окна
+        const statsModal = document.getElementById('statsModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const statsContent = document.getElementById('statsContent');
+        const settingsContent = document.getElementById('settingsContent');
 
+        // Элементы регистрации
+        const regRoleTeacher = document.getElementById('regRoleTeacher');
+        const regRoleStudent = document.getElementById('regRoleStudent');
+        const classFieldLabel = document.getElementById('classFieldLabel');
+        const regClass = document.getElementById('regClass');
+
+        // Навигация
+        const navHome = document.getElementById('navHome');
+        const navStats = document.getElementById('navStats');
+        const navSettings = document.getElementById('navSettings');
+
+        // ========== ПЕРЕМЕННЫЕ СОСТОЯНИЯ ==========
+        let userData = null;
+        let currentMode = 'explain'; // explain, photo, teacher
+        let currentPhotoBase64 = null;
+        let currentContainerId = 'chatContainer';
+
+        // ========== ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ ==========
         function loadUserData() {
             const saved = localStorage.getItem('nevio_user');
             if (saved) {
@@ -904,51 +988,23 @@
             userData = null;
             registerScreen.classList.add('active');
             mainScreen.classList.remove('active');
-            document.getElementById('regName').value = '';
-            document.getElementById('regSchool').value = '';
-            document.getElementById('regClass').value = '';
-            hideFixedInput();
+            document.getElementById('regName').value = 'Александр';
+            document.getElementById('regSchool').value = 'Гимназия №1';
+            document.getElementById('regClass').value = '8 класс';
         }
-
-        // ========== ЭЛЕМЕНТЫ ==========
-        const registerScreen = document.getElementById('registerScreen');
-        const mainScreen = document.getElementById('mainScreen');
-        const mainContent = document.getElementById('mainContent');
-        const loader = document.getElementById('loader');
-        
-        // Закрепленное поле ввода
-        const fixedInputContainer = document.getElementById('fixedInputContainer');
-        const fixedMessageInput = document.getElementById('fixedMessageInput');
-        const fixedSendBtn = document.getElementById('fixedSendBtn');
-        const fixedAttachPhotoBtn = document.getElementById('fixedAttachPhotoBtn');
-        const fixedPhotoPreviewContainer = document.getElementById('fixedPhotoPreviewContainer');
-        const fixedPhotoPreview = document.getElementById('fixedPhotoPreview');
-        const fixedRemovePhotoBtn = document.getElementById('fixedRemovePhotoBtn');
-
-        // Элементы регистрации
-        const regRoleStudent = document.getElementById('regRoleStudent');
-        const regRoleTeacher = document.getElementById('regRoleTeacher');
-        const classFieldLabel = document.getElementById('classFieldLabel');
-        const regClass = document.getElementById('regClass');
 
         // ========== УПРАВЛЕНИЕ ПОЛЕМ КЛАСС/ПРЕДМЕТ ==========
         function updateClassField() {
-            if (regRoleStudent.classList.contains('active')) {
-                classFieldLabel.textContent = 'Класс';
-                regClass.placeholder = 'Например: 8 класс';
-                regClass.value = '';
-            } else {
+            if (regRoleTeacher.classList.contains('active')) {
                 classFieldLabel.textContent = 'Предмет';
-                regClass.placeholder = 'Например: Математика';
-                regClass.value = '';
+                regClass.placeholder = 'Математика, Физика...';
+                regClass.value = 'Математика';
+            } else {
+                classFieldLabel.textContent = 'Класс';
+                regClass.placeholder = '8 класс, 9 класс...';
+                regClass.value = '8 класс';
             }
         }
-
-        regRoleStudent.addEventListener('click', () => {
-            regRoleStudent.classList.add('active');
-            regRoleTeacher.classList.remove('active');
-            updateClassField();
-        });
 
         regRoleTeacher.addEventListener('click', () => {
             regRoleTeacher.classList.add('active');
@@ -956,39 +1012,13 @@
             updateClassField();
         });
 
-        // ========== УПРАВЛЕНИЕ ПОЛЕМ ВВОДА ==========
-        function showFixedInput() {
-            fixedInputContainer.style.display = 'block';
-        }
+        regRoleStudent.addEventListener('click', () => {
+            regRoleStudent.classList.add('active');
+            regRoleTeacher.classList.remove('active');
+            updateClassField();
+        });
 
-        function hideFixedInput() {
-            fixedInputContainer.style.display = 'none';
-        }
-
-        function setInputPlaceholder(text) {
-            fixedMessageInput.placeholder = text;
-        }
-
-        function showPhotoButton() {
-            fixedAttachPhotoBtn.style.display = 'flex';
-        }
-
-        function hidePhotoButton() {
-            fixedAttachPhotoBtn.style.display = 'none';
-        }
-
-        function showPhotoPreview(src) {
-            fixedPhotoPreview.src = src;
-            fixedPhotoPreviewContainer.classList.add('visible');
-        }
-
-        function hidePhotoPreview() {
-            fixedPhotoPreviewContainer.classList.remove('visible');
-            fixedPhotoPreview.src = '#';
-            currentPhotoBase64 = null;
-        }
-
-        // ========== ФУНКЦИИ ==========
+        // ========== ФУНКЦИИ УПРАВЛЕНИЯ ==========
         function showLoader() {
             loader.classList.add('visible');
         }
@@ -1011,6 +1041,8 @@
 
         function addMessage(role, content, containerId = 'chatContainer') {
             const container = document.getElementById(containerId);
+            if (!container) return;
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
             
@@ -1037,50 +1069,53 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        // ========== ⚡️ ВЫЗОВ GROQ API С ФОТО И ТЕКСТОМ ==========
         async function callGroq(prompt, type, imageBase64 = null) {
             showLoader();
             
-            // Улучшенные промпты для точных ответов
-            let systemPrompt = '';
-            if (type === 'teacher') {
-                systemPrompt = 'Ты опытный учитель с многолетним стажем. Составь максимально подробный, структурированный и полезный конспект урока. Обязательно включи: цель урока, оборудование, подробный ход урока с разбивкой по минутам, примеры для объяснения, практические задания для учеников разного уровня сложности, вопросы для проверки понимания, домашнее задание. Объясняй每一步 так, чтобы другой учитель мог сразу провести урок. Используй профессиональный, но понятный язык. Ответ давай простым текстом без спецсимволов.';
-            } else if (type === 'explain') {
-                systemPrompt = 'Ты лучший репетитор, который умеет объяснять сложные вещи простым языком. Объясни тему максимально понятно, как будто разговариваешь с учеником. Используй аналогии из жизни, примеры, сравнивай с чем-то знакомым. Если есть формулы или правила, объясни их простыми словами. Пошагово разбери, как это работает. Твоя цель — чтобы ученик действительно понял, а не просто запомнил. Ответ давай простым текстом без спецсимволов.';
-            } else if (type === 'vision') {
-                systemPrompt = 'Ты умный помощник, который анализирует изображения с задачами. Внимательно изучи то, что написано на фото. Определи, что это за задача (математика, физика, русский язык и т.д.). Реши её максимально подробно, объясняя каждый шаг. Если в задаче есть ошибка, укажи на неё и объясни, как правильно. Разбери решение так, чтобы пользователь понял логику и смог решать подобные задачи сам. Ответ давай простым текстом без спецсимволов.';
-            } else {
-                systemPrompt = 'Ты репетитор, который проверяет решение задачи. Внимательно прочитай условие и решение. Найди ошибки, если они есть. Объясни, почему это ошибка, и покажи правильное решение. Если всё верно, похвали и объясни, почему решение правильное. Разбирай подробно, по шагам, чтобы пользователь понял свою ошибку и научился. Ответ давай простым текстом без спецсимволов.';
-            }
+            // Системные промпты для каждой задачи
+            const systemPrompts = {
+                teacher: 'Ты опытный учитель в белорусской школе. Составь подробный конспект урока по теме. Напиши: цель урока, оборудование, ход урока (этапы), примеры, задания для учеников, вопросы для проверки. Используй профессиональный язык. Ответ дай в формате Markdown.',
+                explain: 'Ты репетитор. Объясни тему простым языком, как ребенку. Используй аналогии из жизни, примеры. Пиши понятно, с эмодзи. Ответ дай в формате Markdown.',
+                check: 'Ты репетитор. Проверь решение задачи, найди ошибки и объясни как правильно. Пиши по шагам. Ответ дай в формате Markdown.'
+            };
 
             try {
                 let model = MODELS[type];
-                let messages = [
-                    { role: 'system', content: systemPrompt }
-                ];
+                let messages = [];
 
-                if (imageBase64 && type === 'vision') {
-                    // Для модели LLaVA используем специальный формат
-                    messages.push({
-                        role: 'user',
-                        content: [
-                            {
-                                type: 'text',
-                                text: prompt || 'Реши задачу на этом фото. Если это текст, прочитай его и реши. Если это пример или уравнение, реши подробно.'
-                            },
-                            {
-                                type: 'image_url',
-                                image_url: {
-                                    url: imageBase64
+                if (imageBase64) {
+                    // Если есть фото, используем vision модель
+                    model = MODELS.vision;
+                    messages = [
+                        {
+                            role: 'user',
+                            content: [
+                                {
+                                    type: 'text',
+                                    text: prompt || 'Реши эту задачу. Прочитай текст на изображении и выполни задание.'
+                                },
+                                {
+                                    type: 'image_url',
+                                    image_url: {
+                                        url: imageBase64
+                                    }
                                 }
-                            }
-                        ]
-                    });
+                            ]
+                        }
+                    ];
                 } else {
-                    let content = prompt;
-                    if (imageBase64) {
-                        content = `[Фото задачи] ${prompt || 'Реши эту задачу. Прочитай текст на фото и выполни задание.'}`;
-                    }
-                    messages.push({ role: 'user', content: content });
+                    // Текстовый запрос
+                    messages = [
+                        {
+                            role: 'system',
+                            content: systemPrompts[type] || systemPrompts.explain
+                        },
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ];
                 }
 
                 const response = await fetch(GROQ_API_URL, {
@@ -1093,24 +1128,38 @@
                         model: model,
                         messages: messages,
                         temperature: 0.7,
-                        max_tokens: 4096
+                        max_tokens: 2048
                     })
                 });
 
-                if (!response.ok) throw new Error('API Error');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+                }
 
                 const data = await response.json();
-                let answer = data.choices[0].message.content;
-                answer = cleanAIResponse(answer);
                 
-                if (type === 'teacher') userData.stats.lessons++;
-                else if (type === 'vision' || type === 'check' || type === 'explain') userData.stats.tasks++;
-                saveUserData();
-                
-                return answer;
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    let answer = data.choices[0].message.content;
+                    answer = cleanAIResponse(answer);
+                    
+                    // Обновляем статистику
+                    if (userData) {
+                        if (type === 'teacher') {
+                            userData.stats.lessons++;
+                        } else {
+                            userData.stats.tasks++;
+                        }
+                        saveUserData();
+                    }
+                    
+                    return answer;
+                } else {
+                    throw new Error('Неверный формат ответа от Groq');
+                }
             } catch (error) {
                 console.error('Groq Error:', error);
-                return 'Извините, произошла ошибка. Попробуйте позже.';
+                return `❌ Ошибка: ${error.message}`;
             } finally {
                 hideLoader();
             }
@@ -1126,71 +1175,84 @@
 
             userData = {
                 name: name,
-                role: regRoleStudent.classList.contains('active') ? 'student' : 'teacher',
-                school: document.getElementById('regSchool').value.trim() || 'Не указана',
-                class: regClass.value.trim() || (regRoleStudent.classList.contains('active') ? 'Класс не указан' : 'Предмет не указан'),
-                stats: { lessons: 0, tasks: 0 }
+                role: regRoleTeacher.classList.contains('active') ? 'teacher' : 'student',
+                school: document.getElementById('regSchool').value || 'Не указана',
+                class: regClass.value || (regRoleTeacher.classList.contains('active') ? 'Математика' : '8 класс'),
+                stats: {
+                    lessons: 0,
+                    tasks: 0
+                }
             };
 
-            saveUserData();
-            updateMainScreen();
-        });
-
-        function updateMainScreen() {
             document.getElementById('userName').textContent = userData.name;
             document.getElementById('userRole').textContent = userData.role === 'teacher' ? 'Учитель' : 'Ученик';
             document.getElementById('userClassInfo').textContent = userData.class;
             document.getElementById('userAvatar').textContent = userData.name.charAt(0);
 
+            registerScreen.classList.remove('active');
+            mainScreen.classList.add('active');
+
             if (userData.role === 'teacher') {
                 document.getElementById('teacherContent').style.display = 'block';
                 document.getElementById('studentContent').style.display = 'none';
+                currentContainerId = 'teacherChatContainer';
+                currentMode = 'teacher';
             } else {
                 document.getElementById('teacherContent').style.display = 'none';
                 document.getElementById('studentContent').style.display = 'block';
+                currentContainerId = 'chatContainer';
+                currentMode = 'explain';
             }
+            
+            mainContent.scrollTop = 0;
+            fixedInputContainer.style.display = 'block';
+        });
+
+        // ========== ЗАГРУЗКА СОХРАНЕННЫХ ДАННЫХ ==========
+        if (loadUserData()) {
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userRole').textContent = userData.role === 'teacher' ? 'Учитель' : 'Ученик';
+            document.getElementById('userClassInfo').textContent = userData.class;
+            document.getElementById('userAvatar').textContent = userData.name.charAt(0);
 
             registerScreen.classList.remove('active');
             mainScreen.classList.add('active');
+
+            if (userData.role === 'teacher') {
+                document.getElementById('teacherContent').style.display = 'block';
+                document.getElementById('studentContent').style.display = 'none';
+                currentContainerId = 'teacherChatContainer';
+                currentMode = 'teacher';
+            } else {
+                document.getElementById('teacherContent').style.display = 'none';
+                document.getElementById('studentContent').style.display = 'block';
+                currentContainerId = 'chatContainer';
+                currentMode = 'explain';
+            }
             
-            document.getElementById('chatContainer').innerHTML = '';
-            document.getElementById('teacherChatContainer').innerHTML = '';
-            showFixedInput();
+            fixedInputContainer.style.display = 'block';
         }
 
-        if (loadUserData()) {
-            updateMainScreen();
-        }
-
-        // ========== ОБРАБОТЧИКИ ЧАТА ==========
-        
-        document.getElementById('studentExplainCard').addEventListener('click', () => {
-            currentMode = 'explain';
-            setInputPlaceholder('Что тебе объяснить? Например: теорема Пифагора');
-            hidePhotoButton();
-            hidePhotoPreview();
-        });
-
-        document.getElementById('studentPhotoCard').addEventListener('click', () => {
-            currentMode = 'photo';
-            setInputPlaceholder('Вопрос по фото (можно оставить пустым)...');
-            showPhotoButton();
-        });
-
-        document.getElementById('teacherLessonCard').addEventListener('click', () => {
+        // ========== ВЫБОР РЕЖИМА ==========
+        document.getElementById('teacherLessonCard')?.addEventListener('click', () => {
             currentMode = 'teacher';
-            setInputPlaceholder('Тема урока? Например: Квадратные уравнения');
-            hidePhotoButton();
-            hidePhotoPreview();
+            currentContainerId = 'teacherChatContainer';
+            fixedMessageInput.placeholder = 'Введите тему урока...';
         });
 
-        document.getElementById('teacherPhotoCard').addEventListener('click', () => {
-            currentMode = 'teacherPhoto';
-            setInputPlaceholder('Опишите материал на фото...');
-            showPhotoButton();
+        document.getElementById('studentExplainCard')?.addEventListener('click', () => {
+            currentMode = 'explain';
+            currentContainerId = 'chatContainer';
+            fixedMessageInput.placeholder = 'Что тебе объяснить?';
         });
 
-        // Прикрепление фото
+        document.getElementById('studentPhotoCard')?.addEventListener('click', () => {
+            currentMode = 'photo';
+            currentContainerId = 'chatContainer';
+            fixedMessageInput.placeholder = 'Вопрос по фото (можно оставить пустым)...';
+        });
+
+        // ========== РАБОТА С ФОТО ==========
         fixedAttachPhotoBtn.addEventListener('click', () => {
             const input = document.createElement('input');
             input.type = 'file';
@@ -1201,7 +1263,8 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         currentPhotoBase64 = e.target.result;
-                        showPhotoPreview(currentPhotoBase64);
+                        fixedPhotoPreview.src = e.target.result;
+                        fixedPhotoPreviewContainer.classList.add('visible');
                     };
                     reader.readAsDataURL(file);
                 }
@@ -1210,59 +1273,38 @@
         });
 
         fixedRemovePhotoBtn.addEventListener('click', () => {
-            hidePhotoPreview();
+            fixedPhotoPreviewContainer.classList.remove('visible');
+            fixedPhotoPreview.src = '#';
+            currentPhotoBase64 = null;
         });
 
-        // Отправка сообщения
+        // ========== ОТПРАВКА СООБЩЕНИЯ ==========
         fixedSendBtn.addEventListener('click', async () => {
-            const question = fixedMessageInput.value.trim();
+            const message = fixedMessageInput.value.trim();
             
-            // Определяем куда отправлять
-            let containerId = 'chatContainer';
-            let mode = currentMode;
-            if (userData.role === 'teacher' && (mode === 'teacher' || mode === 'teacherPhoto')) {
-                containerId = 'teacherChatContainer';
-            }
-
-            if (mode === 'photo' || mode === 'teacherPhoto') {
-                if (!currentPhotoBase64) {
-                    alert('Сначала добавьте фото');
+            // Определяем тип запроса
+            if (currentPhotoBase64) {
+                // Отправка с фото
+                addMessage('user', message || '📸 Реши задачу по фото', currentContainerId);
+                fixedMessageInput.value = '';
+                const response = await callGroq(message, 'check', currentPhotoBase64);
+                addMessage('ai', response, currentContainerId);
+                fixedPhotoPreviewContainer.classList.remove('visible');
+                currentPhotoBase64 = null;
+            } else {
+                // Текстовый запрос
+                if (!message) {
+                    alert('Введите сообщение');
                     return;
-                }
-
-                // Отправляем сообщение пользователя
-                if (question) {
-                    addMessage('user', `📸 ${question}`, containerId);
-                } else {
-                    addMessage('user', '📸 Реши задачу по фото', containerId);
                 }
                 
+                let type = currentMode;
+                if (currentMode === 'photo') type = 'check';
+                
+                addMessage('user', message, currentContainerId);
                 fixedMessageInput.value = '';
-                hidePhotoPreview();
-
-                // Получаем ответ от vision модели
-                const response = await callGroq(question, 'vision', currentPhotoBase64);
-                addMessage('ai', response, containerId);
-            } 
-            else if (mode === 'explain') {
-                if (!question) {
-                    alert('Введите вопрос');
-                    return;
-                }
-                addMessage('user', question, containerId);
-                fixedMessageInput.value = '';
-                const response = await callGroq(question, 'explain');
-                addMessage('ai', response, containerId);
-            }
-            else if (mode === 'teacher') {
-                if (!question) {
-                    alert('Введите тему урока');
-                    return;
-                }
-                addMessage('user', `Конспект по теме: ${question}`, containerId);
-                fixedMessageInput.value = '';
-                const response = await callGroq(question, 'teacher');
-                addMessage('ai', response, containerId);
+                const response = await callGroq(message, type);
+                addMessage('ai', response, currentContainerId);
             }
         });
 
@@ -1275,68 +1317,76 @@
         });
 
         // ========== НАВИГАЦИЯ ==========
-        document.getElementById('navHome').addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('navHome').classList.add('active');
+        function setActiveNav(navId) {
+            [navHome, navStats, navSettings].forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(navId).classList.add('active');
+        }
+
+        navHome.addEventListener('click', () => {
+            setActiveNav('navHome');
+            mainContent.scrollTop = 0;
         });
 
-        document.getElementById('navStats').addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('navStats').classList.add('active');
+        navStats.addEventListener('click', () => {
+            setActiveNav('navStats');
             
-            const statsText = `Имя: ${userData.name}
-Роль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}
-Школа: ${userData.school}
-${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}
-
-Моя активность:
-• Создано конспектов: ${userData.stats.lessons}
-• Проверено задач: ${userData.stats.tasks}`;
+            if (!userData) return;
             
-            document.getElementById('statsContent').innerHTML = statsText.replace(/\n/g, '<br>');
-            document.getElementById('statsModal').classList.add('visible');
+            const statsText = `👤 **Имя:** ${userData.name}\n` +
+                `🎓 **Роль:** ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\n` +
+                `🏫 **Школа:** ${userData.school}\n` +
+                `📚 **${userData.role === 'teacher' ? 'Предмет' : 'Класс'}:** ${userData.class}\n\n` +
+                `✨ **Моя активность:**\n` +
+                `• Создано конспектов: **${userData.stats.lessons}**\n` +
+                `• Проверено задач: **${userData.stats.tasks}**\n\n` +
+                `⚡️ *Groq обрабатывает до 500 токенов/сек*`;
+            
+            statsContent.innerHTML = statsText.replace(/\n/g, '<br>');
+            statsModal.classList.add('visible');
         });
 
-        document.getElementById('navSettings').addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('navSettings').classList.add('active');
+        navSettings.addEventListener('click', () => {
+            setActiveNav('navSettings');
             
-            const settingsText = `Nevio v1.0
-
-Работает на Groq LPU
-• LLaVA 1.5 для распознавания фото
-• Llama 3.3 70B для конспектов
-• Скорость: до 500 токенов/сек
-• Лимиты: 30 запросов в минуту
-
-Создано для Беларуси
-Полностью бесплатно`;
+            const settingsText = `⚙️ **Настройки Groq**\n\n` +
+                `• **Провайдер:** Groq LPU\n` +
+                `• **Скорость:** до 500 токенов/сек\n` +
+                `• **Модели:** Llama 3.3, LLaVA 1.5, Mixtral\n` +
+                `• **Лимиты:** 30 запросов/мин\n\n` +
+                `📱 **Версия:** 2.0.0\n` +
+                `🆓 **Бесплатно · Без карт**\n\n` +
+                `🌐 **Nevio** — создано для Беларуси`;
             
-            document.getElementById('settingsContent').innerHTML = settingsText.replace(/\n/g, '<br>');
-            document.getElementById('settingsModal').classList.add('visible');
+            settingsContent.innerHTML = settingsText.replace(/\n/g, '<br>');
+            settingsModal.classList.add('visible');
         });
 
+        // Закрыть модальные окна
         document.getElementById('closeStatsModal').addEventListener('click', () => {
-            document.getElementById('statsModal').classList.remove('visible');
+            statsModal.classList.remove('visible');
         });
 
         document.getElementById('closeSettingsModal').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.remove('visible');
+            settingsModal.classList.remove('visible');
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Вы уверены, что хотите выйти?')) {
-                logout();
-                document.getElementById('settingsModal').classList.remove('visible');
+        statsModal.addEventListener('click', (e) => {
+            if (e.target === statsModal) {
+                statsModal.classList.remove('visible');
             }
         });
 
-        document.getElementById('profileBtn').addEventListener('click', () => {
-            document.getElementById('navStats').click();
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('visible');
+            }
         });
 
-        document.getElementById('profileCard').addEventListener('click', () => {
-            document.getElementById('navStats').click();
+        // Профиль
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            navStats.click();
         });
     </script>
 </body>
