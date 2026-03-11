@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio</title>
+    <title>Nevio — решение задач</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -61,7 +61,6 @@
             border-radius: 10px;
         }
 
-        /* ===== ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА ===== */
         .fixed-input-container {
             position: fixed;
             bottom: 80px;
@@ -123,17 +122,6 @@
             transform: scale(0.98);
         }
 
-        .fixed-photo-btn {
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            color: #64748b;
-        }
-
-        .fixed-photo-btn:hover {
-            border-color: #e8b13e;
-            background: #ffffff;
-        }
-
         .screen {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -182,7 +170,6 @@
             line-height: 1.2;
         }
 
-        /* ПРОФИЛЬ (ТЕПЕРЬ КЛИКАБЕЛЬНЫЙ) */
         .profile-card {
             background: linear-gradient(145deg, #f8fafc, #f1f5f9);
             border-radius: 28px;
@@ -361,7 +348,6 @@
             color: #0f172a;
         }
 
-        /* КНОПКА ДЛЯ ВОЗВРАТА К ФУНКЦИЯМ */
         .back-to-functions {
             background: #f1f5f9;
             border-radius: 60px;
@@ -391,7 +377,6 @@
             color: #334155;
         }
 
-        /* КАРТОЧКИ ФУНКЦИЙ */
         .features-grid {
             display: flex;
             flex-direction: column;
@@ -445,7 +430,6 @@
             font-size: 14px;
         }
 
-        /* ЧАТ КОНТЕЙНЕР */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -470,7 +454,7 @@
             font-size: 15px;
             line-height: 1.6;
             word-wrap: break-word;
-            max-width: 85%;
+            max-width: 90%;
         }
 
         .user-message {
@@ -495,40 +479,6 @@
             border-bottom-left-radius: 6px;
         }
 
-        .photo-preview-container {
-            margin-bottom: 16px;
-            position: relative;
-            display: none;
-        }
-
-        .photo-preview-container.visible {
-            display: block;
-        }
-
-        .preview-image {
-            width: 100%;
-            border-radius: 20px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .remove-photo {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        /* НИЖНЯЯ НАВИГАЦИЯ */
         .bottom-nav {
             display: flex;
             align-items: center;
@@ -656,6 +606,17 @@
             line-height: 1.8;
             margin-bottom: 24px;
         }
+
+        /* Стили для формул */
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 8px 0;
+            display: inline-block;
+            border-left: 3px solid #e8b13e;
+        }
     </style>
 </head>
 <body>
@@ -722,7 +683,7 @@
                     </div>
                 </div>
 
-                <!-- ПРОФИЛЬ (ТЕПЕРЬ ЗДЕСЬ СТАТИСТИКА) -->
+                <!-- ПРОФИЛЬ -->
                 <div class="profile-card" id="profileCard">
                     <div class="avatar" id="userAvatar"></div>
                     <div class="user-details">
@@ -734,7 +695,7 @@
                     </div>
                 </div>
 
-                <!-- КНОПКА ВОЗВРАТА К ФУНКЦИЯМ (ИЗНАЧАЛЬНО СКРЫТА) -->
+                <!-- КНОПКА ВОЗВРАТА К ФУНКЦИЯМ -->
                 <div class="back-to-functions" id="backToFunctions" style="display: none;">
                     <i class="fas fa-arrow-left"></i>
                     <span>Вернуться к функциям</span>
@@ -752,13 +713,13 @@
                                 <p>Получи простое объяснение</p>
                             </div>
                         </div>
-                        <div class="feature-card" id="studentPhotoCard">
+                        <div class="feature-card" id="studentSolveCard">
                             <div class="feature-icon">
-                                <i class="fas fa-camera"></i>
+                                <i class="fas fa-calculator"></i>
                             </div>
                             <div class="feature-text">
-                                <h3>Решить по фото</h3>
-                                <p>Сфотографируй задание</p>
+                                <h3>Решить задачу</h3>
+                                <p>Математика, физика, химия</p>
                             </div>
                         </div>
                     </div>
@@ -776,13 +737,13 @@
                                 <p>Подробный план урока</p>
                             </div>
                         </div>
-                        <div class="feature-card" id="teacherPhotoCard">
+                        <div class="feature-card" id="teacherSolveCard">
                             <div class="feature-icon">
-                                <i class="fas fa-camera"></i>
+                                <i class="fas fa-calculator"></i>
                             </div>
                             <div class="feature-text">
-                                <h3>Анализ по фото</h3>
-                                <p>Разбор материалов</p>
+                                <h3>Решить задачу</h3>
+                                <p>Для демонстрации ученикам</p>
                             </div>
                         </div>
                     </div>
@@ -797,23 +758,14 @@
         <!-- ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА -->
         <div class="fixed-input-container" id="fixedInputContainer">
             <div class="fixed-input-wrapper">
-                <button class="fixed-send-btn fixed-photo-btn" id="fixedAttachPhotoBtn">
-                    <i class="fas fa-image"></i>
-                </button>
                 <textarea 
                     id="fixedMessageInput" 
                     class="fixed-input" 
-                    placeholder="Напишите сообщение..." 
+                    placeholder="Введите задачу или вопрос..." 
                     rows="1"
                 ></textarea>
                 <button class="fixed-send-btn" id="fixedSendBtn">
                     <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-            <div id="fixedPhotoPreviewContainer" class="photo-preview-container">
-                <img id="fixedPhotoPreview" class="preview-image" src="#" alt="Preview">
-                <button class="remove-photo" id="fixedRemovePhotoBtn">
-                    <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -834,12 +786,12 @@
         <div id="loader" class="loader-overlay">
             <div class="loader-content">
                 <div class="spinner"></div>
-                <p style="color: #1e293b;">Nevio думает...</p>
+                <p style="color: #1e293b;">Nevio решает задачу...</p>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ -->
+    <!-- МОДАЛЬНЫЕ ОКНА -->
     <div id="statsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px;">Статистика</h2>
@@ -848,7 +800,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
@@ -883,16 +834,49 @@
         const API_KEY = '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';
         const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
         
-        // Рабочие модели
-        const MODELS = {
-            text: 'llama-3.3-70b-versatile',
-            vision: 'llava-v1.5-7b-4096-preview'
-        };
+        // Модель
+        const MODEL = 'llama-3.3-70b-versatile';
+
+        // ========== СУПЕР-ПРОМПТ ДЛЯ РЕШЕНИЯ ЗАДАЧ ==========
+        const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Твоя задача — решать любые задачи максимально подробно и понятно.
+
+        Правила оформления решения:
+
+        1. Записывай решение как в школьной тетради:
+           - Сначала "Дано:" (если есть условия)
+           - Потом "Найти:" (что нужно найти)
+           - Затем "Решение:" с пошаговыми действиями
+           - В конце "Ответ:"
+
+        2. Формулы записывай красиво и понятно:
+           - Квадрат: x²
+           - Дробь: a/b
+           - Корень: √(x)
+           - Степень: a^n
+           - Индексы: x₁, x₂
+           - Сумма: ∑
+           - Интеграл: ∫
+
+        3. Каждый шаг решения объясняй:
+           - Почему применяем эту формулу
+           - Как преобразуем выражение
+           - Что откуда берётся
+
+        4. Если задача сложная:
+           - Разбей на несколько этапов
+           - Объясни каждый этап отдельно
+           - Проверь правильность ответа
+
+        5. Всегда проверяй:
+           - Правильность подстановки чисел
+           - Единицы измерения
+           - Логичность ответа
+
+        Помни: ты должен не просто дать ответ, а научить решать такие задачи!`;
 
         // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ==========
         let userData = null;
         let currentMode = 'explain';
-        let currentPhotoBase64 = null;
         let currentContainerId = 'chatContainer';
         let isChatMode = false;
 
@@ -904,10 +888,6 @@
         const fixedInputContainer = document.getElementById('fixedInputContainer');
         const fixedMessageInput = document.getElementById('fixedMessageInput');
         const fixedSendBtn = document.getElementById('fixedSendBtn');
-        const fixedAttachPhotoBtn = document.getElementById('fixedAttachPhotoBtn');
-        const fixedPhotoPreviewContainer = document.getElementById('fixedPhotoPreviewContainer');
-        const fixedPhotoPreview = document.getElementById('fixedPhotoPreview');
-        const fixedRemovePhotoBtn = document.getElementById('fixedRemovePhotoBtn');
         const regRoleTeacher = document.getElementById('regRoleTeacher');
         const regRoleStudent = document.getElementById('regRoleStudent');
         const classFieldLabel = document.getElementById('classFieldLabel');
@@ -947,20 +927,6 @@
         function hideFixedInput() { fixedInputContainer.style.display = 'none'; }
         
         function setInputPlaceholder(text) { fixedMessageInput.placeholder = text; }
-        
-        function showPhotoButton() { fixedAttachPhotoBtn.style.display = 'flex'; }
-        function hidePhotoButton() { fixedAttachPhotoBtn.style.display = 'none'; }
-        
-        function showPhotoPreview(src) {
-            fixedPhotoPreview.src = src;
-            fixedPhotoPreviewContainer.classList.add('visible');
-        }
-        
-        function hidePhotoPreview() {
-            fixedPhotoPreviewContainer.classList.remove('visible');
-            fixedPhotoPreview.src = '#';
-            currentPhotoBase64 = null;
-        }
 
         function cleanResponse(text) {
             return text
@@ -968,9 +934,20 @@
                 .replace(/\*/g, '')
                 .replace(/_/g, '')
                 .replace(/`/g, '')
-                .replace(/\[.*?\]/g, '')
-                .replace(/\(.*?\)/g, '')
                 .trim();
+        }
+
+        function formatFormulas(text) {
+            // Преобразуем текстовые формулы в красивое отображение
+            return text
+                .replace(/\^2/g, '²')
+                .replace(/\^3/g, '³')
+                .replace(/sqrt\(/g, '√(')
+                .replace(/pi/g, 'π')
+                .replace(/alpha/g, 'α')
+                .replace(/beta/g, 'β')
+                .replace(/gamma/g, 'γ')
+                .replace(/delta/g, 'δ');
         }
 
         function addMessage(content, isUser = true, containerId = 'chatContainer') {
@@ -982,7 +959,14 @@
             
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
-            bubble.textContent = content;
+            
+            // Форматируем текст
+            let formattedContent = content;
+            if (!isUser) {
+                formattedContent = formatFormulas(content);
+            }
+            
+            bubble.textContent = formattedContent;
             
             messageDiv.appendChild(bubble);
             container.appendChild(messageDiv);
@@ -990,33 +974,24 @@
         }
 
         // ========== ВЫЗОВ AI ==========
-        async function callAI(prompt, hasImage = false) {
+        async function callAI(prompt, mode) {
             showLoader();
             
             try {
-                let messages = [];
+                let systemPrompt = '';
                 
-                if (hasImage && currentPhotoBase64) {
-                    messages = [{
-                        role: 'user',
-                        content: [
-                            { type: 'text', text: prompt || 'Реши эту задачу по фото.' },
-                            { type: 'image_url', image_url: { url: currentPhotoBase64 } }
-                        ]
-                    }];
+                if (mode === 'teacher') {
+                    systemPrompt = 'Ты опытный учитель. Составь подробный конспект урока по теме. Напиши: цель урока, оборудование, ход урока, примеры, задания, вопросы.';
+                } else if (mode === 'explain') {
+                    systemPrompt = 'Ты репетитор. Объясни тему простым языком. Используй понятные объяснения, аналогии из жизни.';
                 } else {
-                    let systemPrompt = '';
-                    if (currentMode === 'teacher') {
-                        systemPrompt = 'Ты опытный учитель. Составь подробный конспект урока по теме. Напиши: цель урока, оборудование, ход урока, примеры, задания, вопросы.';
-                    } else {
-                        systemPrompt = 'Ты репетитор. Объясни тему простым языком или проверь решение. Используй понятные объяснения.';
-                    }
-                    
-                    messages = [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: prompt }
-                    ];
+                    systemPrompt = SOLVE_PROMPT; // Супер-промпт для решения задач
                 }
+
+                const messages = [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: prompt }
+                ];
 
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -1025,10 +1000,10 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        model: hasImage ? MODELS.vision : MODELS.text,
+                        model: MODEL,
                         messages: messages,
                         temperature: 0.7,
-                        max_tokens: 2048
+                        max_tokens: 4096
                     })
                 });
 
@@ -1038,7 +1013,7 @@
                 let answer = cleanResponse(data.choices[0].message.content);
                 
                 if (userData) {
-                    if (currentMode === 'teacher') userData.stats.lessons++;
+                    if (mode === 'teacher') userData.stats.lessons++;
                     else userData.stats.tasks++;
                     localStorage.setItem('nevio_user', JSON.stringify(userData));
                 }
@@ -1082,16 +1057,10 @@
                 document.getElementById('teacherContent').style.display = 'block';
                 document.getElementById('studentContent').style.display = 'none';
                 currentContainerId = 'teacherChatContainer';
-                currentMode = 'teacher';
-                setInputPlaceholder('Тема урока?');
-                hidePhotoButton();
             } else {
                 document.getElementById('teacherContent').style.display = 'none';
                 document.getElementById('studentContent').style.display = 'block';
                 currentContainerId = 'chatContainer';
-                currentMode = 'explain';
-                setInputPlaceholder('Что тебе объяснить?');
-                hidePhotoButton();
             }
 
             registerScreen.classList.remove('active');
@@ -1128,13 +1097,10 @@
             // Меняем плейсхолдер
             if (mode === 'teacher') {
                 setInputPlaceholder('Тема урока?');
-                hidePhotoButton();
             } else if (mode === 'explain') {
                 setInputPlaceholder('Что тебе объяснить?');
-                hidePhotoButton();
             } else {
-                setInputPlaceholder('Вопрос по фото...');
-                showPhotoButton();
+                setInputPlaceholder('Введите задачу (например: решить уравнение 2x + 5 = 15)');
             }
         }
 
@@ -1160,42 +1126,21 @@
             enterChatMode('explain');
         });
 
-        document.getElementById('studentPhotoCard').addEventListener('click', () => {
-            enterChatMode('photo');
+        document.getElementById('studentSolveCard').addEventListener('click', () => {
+            enterChatMode('solve');
         });
 
         document.getElementById('teacherLessonCard').addEventListener('click', () => {
             enterChatMode('teacher');
         });
 
-        document.getElementById('teacherPhotoCard').addEventListener('click', () => {
-            enterChatMode('teacherPhoto');
+        document.getElementById('teacherSolveCard').addEventListener('click', () => {
+            enterChatMode('solve');
         });
 
         document.getElementById('backToFunctions').addEventListener('click', () => {
             exitChatMode();
         });
-
-        // ========== РАБОТА С ФОТО ==========
-        fixedAttachPhotoBtn.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        currentPhotoBase64 = e.target.result;
-                        showPhotoPreview(currentPhotoBase64);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        });
-
-        fixedRemovePhotoBtn.addEventListener('click', hidePhotoPreview);
 
         // ========== ОТПРАВКА ==========
         fixedSendBtn.addEventListener('click', async () => {
@@ -1205,23 +1150,16 @@
             }
             
             const message = fixedMessageInput.value.trim();
-            
-            if (currentPhotoBase64) {
-                addMessage(message || 'Реши задачу по фото', true, currentContainerId);
-                fixedMessageInput.value = '';
-                const response = await callAI(message, true);
-                addMessage(response, false, currentContainerId);
-                hidePhotoPreview();
-            } else {
-                if (!message) {
-                    alert('Введите сообщение');
-                    return;
-                }
-                addMessage(message, true, currentContainerId);
-                fixedMessageInput.value = '';
-                const response = await callAI(message, false);
-                addMessage(response, false, currentContainerId);
+            if (!message) {
+                alert('Введите сообщение');
+                return;
             }
+            
+            addMessage(message, true, currentContainerId);
+            fixedMessageInput.value = '';
+            
+            const response = await callAI(message, currentMode);
+            addMessage(response, false, currentContainerId);
         });
 
         fixedMessageInput.addEventListener('keypress', (e) => {
@@ -1242,7 +1180,7 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('navSettings').classList.add('active');
             
-            const settingsText = `Версия 2.0\n\nБесплатное приложение\nСоздано для Беларуси\n\nКонфиденциальность:\n• Все данные хранятся локально\n• Никакой передачи личной информации\n• Безопасность гарантирована`;
+            const settingsText = `Версия 2.0\n\nБесплатное приложение\nСоздано для Беларуси`;
             
             document.getElementById('settingsContent').innerHTML = settingsText.replace(/\n/g, '<br>');
             document.getElementById('settingsModal').classList.add('visible');
@@ -1252,7 +1190,7 @@
         document.getElementById('profileCard').addEventListener('click', () => {
             if (!userData) return;
             
-            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nМоя активность:\n• Создано конспектов: ${userData.stats.lessons}\n• Проверено задач: ${userData.stats.tasks}`;
+            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nМоя активность:\n• Создано конспектов: ${userData.stats.lessons}\n• Решено задач: ${userData.stats.tasks}`;
             
             document.getElementById('statsContent').innerHTML = statsText.replace(/\n/g, '<br>');
             document.getElementById('statsModal').classList.add('visible');
