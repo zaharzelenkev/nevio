@@ -36,6 +36,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            height: 100vh;
         }
 
         .main-content {
@@ -60,11 +61,14 @@
             border-radius: 10px;
         }
 
+        /* ===== ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА ===== */
         .fixed-input-container {
-            position: sticky;
+            position: fixed;
             bottom: 80px;
             left: 0;
             right: 0;
+            max-width: 480px;
+            margin: 0 auto;
             background: linear-gradient(to top, #ffffff, rgba(255,255,255,0.95));
             padding: 16px 20px;
             border-top: 1px solid #eef2f6;
@@ -77,8 +81,6 @@
             display: flex;
             gap: 12px;
             align-items: flex-end;
-            max-width: 480px;
-            margin: 0 auto;
         }
 
         .fixed-input {
@@ -180,25 +182,7 @@
             line-height: 1.2;
         }
 
-        .menu-btn {
-            width: 48px;
-            height: 48px;
-            background: #f1f5f9;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #475569;
-            font-size: 22px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .menu-btn:hover {
-            background: #e2e8f0;
-        }
-
+        /* ПРОФИЛЬ (ТЕПЕРЬ КЛИКАБЕЛЬНЫЙ) */
         .profile-card {
             background: linear-gradient(145deg, #f8fafc, #f1f5f9);
             border-radius: 28px;
@@ -209,10 +193,12 @@
             gap: 16px;
             border: 1px solid #eef2f6;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .profile-card:hover {
             border-color: #e8b13e;
+            transform: translateY(-2px);
         }
 
         .avatar {
@@ -375,11 +361,47 @@
             color: #0f172a;
         }
 
+        /* КНОПКА ДЛЯ ВОЗВРАТА К ФУНКЦИЯМ */
+        .back-to-functions {
+            background: #f1f5f9;
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .back-to-functions:hover {
+            border-color: #e8b13e;
+            background: #ffffff;
+        }
+
+        .back-to-functions i {
+            color: #e8b13e;
+            font-size: 18px;
+        }
+
+        .back-to-functions span {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        /* КАРТОЧКИ ФУНКЦИЙ */
         .features-grid {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .features-grid.hidden {
+            display: none;
         }
 
         .feature-card {
@@ -423,6 +445,7 @@
             font-size: 14px;
         }
 
+        /* ЧАТ КОНТЕЙНЕР */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -431,8 +454,8 @@
         }
 
         .message {
-            display: flex;
-            gap: 12px;
+            display: block;
+            margin-bottom: 12px;
             animation: messageAppear 0.3s ease;
         }
 
@@ -441,38 +464,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .user-message {
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .user-message .message-avatar {
-            background: #e8b13e;
-            color: white;
-        }
-
-        .ai-message .message-avatar {
-            background: #3b8cbf;
-            color: white;
-        }
-
         .message-bubble {
-            max-width: 80%;
             padding: 14px 18px;
             border-radius: 22px;
             font-size: 15px;
             line-height: 1.6;
             word-wrap: break-word;
+            max-width: 85%;
+        }
+
+        .user-message {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .ai-message {
+            display: flex;
+            justify-content: flex-start;
         }
 
         .user-message .message-bubble {
@@ -520,6 +528,7 @@
             backdrop-filter: blur(5px);
         }
 
+        /* НИЖНЯЯ НАВИГАЦИЯ */
         .bottom-nav {
             display: flex;
             align-items: center;
@@ -711,11 +720,9 @@
                             <h1>Nevio</h1>
                         </div>
                     </div>
-                    <button class="menu-btn" id="profileBtn">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
                 </div>
 
+                <!-- ПРОФИЛЬ (ТЕПЕРЬ ЗДЕСЬ СТАТИСТИКА) -->
                 <div class="profile-card" id="profileCard">
                     <div class="avatar" id="userAvatar"></div>
                     <div class="user-details">
@@ -727,9 +734,15 @@
                     </div>
                 </div>
 
+                <!-- КНОПКА ВОЗВРАТА К ФУНКЦИЯМ (ИЗНАЧАЛЬНО СКРЫТА) -->
+                <div class="back-to-functions" id="backToFunctions" style="display: none;">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Вернуться к функциям</span>
+                </div>
+
                 <!-- Контент УЧЕНИКА -->
                 <div id="studentContent">
-                    <div class="features-grid">
+                    <div class="features-grid" id="studentFeatures">
                         <div class="feature-card" id="studentExplainCard">
                             <div class="feature-icon">
                                 <i class="fas fa-lightbulb"></i>
@@ -753,7 +766,7 @@
 
                 <!-- Контент УЧИТЕЛЯ -->
                 <div id="teacherContent" style="display: none;">
-                    <div class="features-grid">
+                    <div class="features-grid" id="teacherFeatures">
                         <div class="feature-card" id="teacherLessonCard">
                             <div class="feature-icon">
                                 <i class="fas fa-file-alt"></i>
@@ -811,10 +824,6 @@
                 <i class="fas fa-home"></i>
                 <span>Главная</span>
             </button>
-            <button class="nav-item" id="navStats">
-                <i class="fas fa-chart-line"></i>
-                <span>Статистика</span>
-            </button>
             <button class="nav-item" id="navSettings">
                 <i class="fas fa-cog"></i>
                 <span>Настройки</span>
@@ -830,7 +839,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ -->
     <div id="statsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px;">Статистика</h2>
@@ -839,6 +848,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
@@ -884,6 +894,7 @@
         let currentMode = 'explain';
         let currentPhotoBase64 = null;
         let currentContainerId = 'chatContainer';
+        let isChatMode = false;
 
         // ========== ЭЛЕМЕНТЫ ==========
         const registerScreen = document.getElementById('registerScreen');
@@ -901,6 +912,9 @@
         const regRoleStudent = document.getElementById('regRoleStudent');
         const classFieldLabel = document.getElementById('classFieldLabel');
         const regClass = document.getElementById('regClass');
+        const backToFunctions = document.getElementById('backToFunctions');
+        const studentFeatures = document.getElementById('studentFeatures');
+        const teacherFeatures = document.getElementById('teacherFeatures');
 
         // ========== УПРАВЛЕНИЕ ПОЛЕМ КЛАСС/ПРЕДМЕТ ==========
         function updateClassField() {
@@ -930,7 +944,10 @@
         function hideLoader() { loader.classList.remove('visible'); }
         
         function showFixedInput() { fixedInputContainer.style.display = 'block'; }
+        function hideFixedInput() { fixedInputContainer.style.display = 'none'; }
+        
         function setInputPlaceholder(text) { fixedMessageInput.placeholder = text; }
+        
         function showPhotoButton() { fixedAttachPhotoBtn.style.display = 'flex'; }
         function hidePhotoButton() { fixedAttachPhotoBtn.style.display = 'none'; }
         
@@ -956,22 +973,17 @@
                 .trim();
         }
 
-        function addMessage(role, content, containerId = 'chatContainer') {
+        function addMessage(content, isUser = true, containerId = 'chatContainer') {
             const container = document.getElementById(containerId);
             if (!container) return;
             
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.innerHTML = role === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+            messageDiv.className = isUser ? 'user-message' : 'ai-message';
             
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
             bubble.textContent = content;
             
-            messageDiv.appendChild(avatar);
             messageDiv.appendChild(bubble);
             container.appendChild(messageDiv);
             container.scrollTop = container.scrollHeight;
@@ -1095,34 +1107,73 @@
         }
 
         // ========== ВЫБОР РЕЖИМА ==========
+        function enterChatMode(mode) {
+            isChatMode = true;
+            currentMode = mode;
+            
+            // Скрываем функции
+            if (userData.role === 'teacher') {
+                teacherFeatures.classList.add('hidden');
+            } else {
+                studentFeatures.classList.add('hidden');
+            }
+            
+            // Показываем кнопку возврата
+            backToFunctions.style.display = 'flex';
+            
+            // Очищаем предыдущие сообщения
+            document.getElementById('chatContainer').innerHTML = '';
+            document.getElementById('teacherChatContainer').innerHTML = '';
+            
+            // Меняем плейсхолдер
+            if (mode === 'teacher') {
+                setInputPlaceholder('Тема урока?');
+                hidePhotoButton();
+            } else if (mode === 'explain') {
+                setInputPlaceholder('Что тебе объяснить?');
+                hidePhotoButton();
+            } else {
+                setInputPlaceholder('Вопрос по фото...');
+                showPhotoButton();
+            }
+        }
+
+        function exitChatMode() {
+            isChatMode = false;
+            
+            // Показываем функции
+            if (userData.role === 'teacher') {
+                teacherFeatures.classList.remove('hidden');
+            } else {
+                studentFeatures.classList.remove('hidden');
+            }
+            
+            // Скрываем кнопку возврата
+            backToFunctions.style.display = 'none';
+            
+            // Очищаем чат
+            document.getElementById('chatContainer').innerHTML = '';
+            document.getElementById('teacherChatContainer').innerHTML = '';
+        }
+
         document.getElementById('studentExplainCard').addEventListener('click', () => {
-            currentMode = 'explain';
-            currentContainerId = 'chatContainer';
-            setInputPlaceholder('Что тебе объяснить?');
-            hidePhotoButton();
-            hidePhotoPreview();
+            enterChatMode('explain');
         });
 
         document.getElementById('studentPhotoCard').addEventListener('click', () => {
-            currentMode = 'photo';
-            currentContainerId = 'chatContainer';
-            setInputPlaceholder('Вопрос по фото...');
-            showPhotoButton();
+            enterChatMode('photo');
         });
 
         document.getElementById('teacherLessonCard').addEventListener('click', () => {
-            currentMode = 'teacher';
-            currentContainerId = 'teacherChatContainer';
-            setInputPlaceholder('Тема урока?');
-            hidePhotoButton();
-            hidePhotoPreview();
+            enterChatMode('teacher');
         });
 
         document.getElementById('teacherPhotoCard').addEventListener('click', () => {
-            currentMode = 'teacherPhoto';
-            currentContainerId = 'teacherChatContainer';
-            setInputPlaceholder('Вопрос по фото...');
-            showPhotoButton();
+            enterChatMode('teacherPhoto');
+        });
+
+        document.getElementById('backToFunctions').addEventListener('click', () => {
+            exitChatMode();
         });
 
         // ========== РАБОТА С ФОТО ==========
@@ -1148,23 +1199,28 @@
 
         // ========== ОТПРАВКА ==========
         fixedSendBtn.addEventListener('click', async () => {
+            if (!isChatMode) {
+                alert('Сначала выберите функцию');
+                return;
+            }
+            
             const message = fixedMessageInput.value.trim();
             
             if (currentPhotoBase64) {
-                addMessage('user', message || 'Реши задачу по фото', currentContainerId);
+                addMessage(message || 'Реши задачу по фото', true, currentContainerId);
                 fixedMessageInput.value = '';
                 const response = await callAI(message, true);
-                addMessage('ai', response, currentContainerId);
+                addMessage(response, false, currentContainerId);
                 hidePhotoPreview();
             } else {
                 if (!message) {
                     alert('Введите сообщение');
                     return;
                 }
-                addMessage('user', message, currentContainerId);
+                addMessage(message, true, currentContainerId);
                 fixedMessageInput.value = '';
                 const response = await callAI(message, false);
-                addMessage('ai', response, currentContainerId);
+                addMessage(response, false, currentContainerId);
             }
         });
 
@@ -1179,18 +1235,7 @@
         document.getElementById('navHome').addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('navHome').classList.add('active');
-        });
-
-        document.getElementById('navStats').addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('navStats').classList.add('active');
-            
-            if (!userData) return;
-            
-            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nМоя активность:\n• Создано конспектов: ${userData.stats.lessons}\n• Проверено задач: ${userData.stats.tasks}`;
-            
-            document.getElementById('statsContent').innerHTML = statsText.replace(/\n/g, '<br>');
-            document.getElementById('statsModal').classList.add('visible');
+            exitChatMode();
         });
 
         document.getElementById('navSettings').addEventListener('click', () => {
@@ -1201,6 +1246,16 @@
             
             document.getElementById('settingsContent').innerHTML = settingsText.replace(/\n/g, '<br>');
             document.getElementById('settingsModal').classList.add('visible');
+        });
+
+        // ========== ПРОФИЛЬ (СТАТИСТИКА) ==========
+        document.getElementById('profileCard').addEventListener('click', () => {
+            if (!userData) return;
+            
+            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nМоя активность:\n• Создано конспектов: ${userData.stats.lessons}\n• Проверено задач: ${userData.stats.tasks}`;
+            
+            document.getElementById('statsContent').innerHTML = statsText.replace(/\n/g, '<br>');
+            document.getElementById('statsModal').classList.add('visible');
         });
 
         // ========== ЗАКРЫТИЕ МОДАЛЬНЫХ ОКОН ==========
@@ -1218,19 +1273,11 @@
                 userData = null;
                 registerScreen.classList.add('active');
                 mainScreen.classList.remove('active');
-                fixedInputContainer.style.display = 'none';
+                hideFixedInput();
             }
         });
 
-        document.getElementById('profileBtn').addEventListener('click', () => {
-            document.getElementById('navStats').click();
-        });
-
-        document.getElementById('profileCard').addEventListener('click', () => {
-            document.getElementById('navStats').click();
-        });
-
-        // Политика конфиденциальности (добавляем отдельную кнопку в настройки)
+        // Политика конфиденциальности
         const privacyButton = document.createElement('button');
         privacyButton.className = 'btn btn-secondary';
         privacyButton.style.marginTop = '12px';
@@ -1247,6 +1294,18 @@
         document.getElementById('privacyModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('privacyModal')) {
                 document.getElementById('privacyModal').classList.remove('visible');
+            }
+        });
+
+        statsModal.addEventListener('click', (e) => {
+            if (e.target === statsModal) {
+                statsModal.classList.remove('visible');
+            }
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('visible');
             }
         });
     </script>
