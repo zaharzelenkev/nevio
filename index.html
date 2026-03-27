@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio — решение задач</title>
+    <title>Nevio — темная тема</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,7 @@
         }
 
         body {
-            background-color: #f8fafc;
+            background-color: #0a0a0a;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -28,9 +28,9 @@
         .app-container {
             max-width: 480px;
             width: 100%;
-            background: #ffffff;
+            background: #0f0f0f;
             min-height: 100vh;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
             border-radius: 32px 32px 0 0;
             overflow: hidden;
             position: relative;
@@ -42,9 +42,9 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 20px 140px; /* Увеличил отступ снизу, чтобы контент не перекрывался */
+            padding: 20px 20px 140px;
             scrollbar-width: thin;
-            scrollbar-color: #e8b13e #f1f5f9;
+            scrollbar-color: #e8b13e #1e1e1e;
         }
 
         .main-content::-webkit-scrollbar {
@@ -52,7 +52,7 @@
         }
 
         .main-content::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #1e1e1e;
             border-radius: 10px;
         }
 
@@ -68,14 +68,13 @@
             right: 0;
             max-width: 480px;
             margin: 0 auto;
-            background: linear-gradient(to top, #ffffff, rgba(255,255,255,0.95));
+            background: linear-gradient(to top, #0f0f0f, rgba(15,15,15,0.95));
             padding: 16px 20px;
-            border-top: 1px solid #eef2f6;
-            border-bottom: 1px solid #eef2f6;
+            border-top: 1px solid #2a2a2a;
+            border-bottom: 1px solid #2a2a2a;
             z-index: 50;
             backdrop-filter: blur(10px);
             display: none;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.02);
         }
 
         .fixed-input-wrapper {
@@ -88,19 +87,24 @@
             flex: 1;
             padding: 16px 18px;
             font-size: 15px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #2a2a2a;
             border-radius: 24px;
-            background: #ffffff;
+            background: #1a1a1a;
             outline: none;
             transition: all 0.2s;
             resize: none;
             min-height: 56px;
             max-height: 120px;
+            color: #ffffff;
         }
 
         .fixed-input:focus {
             border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.1);
+            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
+        }
+
+        .fixed-input::placeholder {
+            color: #6b6b6b;
         }
 
         .fixed-send-btn {
@@ -109,7 +113,7 @@
             border: none;
             border-radius: 20px;
             background: #e8b13e;
-            color: white;
+            color: #0a0a0a;
             font-size: 22px;
             cursor: pointer;
             transition: all 0.2s;
@@ -155,12 +159,12 @@
         .logo-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(145deg, #e8b13e, #d4a02a);
+            background: linear-gradient(145deg, #e8b13e, #c4911a);
             border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #0a0a0a;
             font-size: 26px;
             font-weight: 700;
         }
@@ -168,19 +172,19 @@
         .logo-text h1 {
             font-size: 26px;
             font-weight: 700;
-            color: #0f172a;
+            color: #ffffff;
             line-height: 1.2;
         }
 
         .profile-card {
-            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            background: linear-gradient(145deg, #1a1a1a, #121212);
             border-radius: 28px;
             padding: 18px 20px;
             margin-bottom: 28px;
             display: flex;
             align-items: center;
             gap: 16px;
-            border: 1px solid #eef2f6;
+            border: 1px solid #2a2a2a;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -193,12 +197,12 @@
         .avatar {
             width: 64px;
             height: 64px;
-            background: linear-gradient(145deg, #3b8cbf, #2c6e9b);
+            background: linear-gradient(145deg, #e8b13e, #c4911a);
             border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #0a0a0a;
             font-size: 28px;
             font-weight: 600;
         }
@@ -206,13 +210,13 @@
         .user-details h3 {
             font-size: 20px;
             font-weight: 700;
-            color: #0f172a;
+            color: #ffffff;
             margin-bottom: 6px;
         }
 
         .user-details p {
             font-size: 14px;
-            color: #475569;
+            color: #a0a0a0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -220,7 +224,7 @@
 
         .role-badge {
             background: #e8b13e;
-            color: #1e293b;
+            color: #0a0a0a;
             padding: 4px 12px;
             border-radius: 40px;
             font-size: 13px;
@@ -228,21 +232,21 @@
         }
 
         .form-container {
-            background: #ffffff;
+            background: #121212;
             border-radius: 32px;
             padding: 28px 24px;
-            border: 1px solid #edf2f7;
+            border: 1px solid #2a2a2a;
         }
 
         .form-title {
             font-size: 30px;
             font-weight: 700;
-            color: #0f172a;
+            color: #ffffff;
             margin-bottom: 12px;
         }
 
         .form-subtitle {
-            color: #64748b;
+            color: #a0a0a0;
             margin-bottom: 28px;
             font-size: 16px;
         }
@@ -255,7 +259,7 @@
             display: block;
             font-size: 15px;
             font-weight: 500;
-            color: #334155;
+            color: #c0c0c0;
             margin-bottom: 8px;
         }
 
@@ -263,16 +267,17 @@
             width: 100%;
             padding: 18px 20px;
             font-size: 16px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #2a2a2a;
             border-radius: 24px;
-            background: #ffffff;
+            background: #1a1a1a;
             transition: all 0.2s;
             outline: none;
+            color: #ffffff;
         }
 
         .input-field:focus {
             border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.1);
+            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
         }
 
         .btn {
@@ -292,7 +297,7 @@
 
         .btn-primary {
             background: #e8b13e;
-            color: #0f172a;
+            color: #0a0a0a;
         }
 
         .btn-primary:hover {
@@ -301,29 +306,29 @@
         }
 
         .btn-secondary {
-            background: #3b8cbf;
-            color: white;
+            background: #2a2a2a;
+            color: #ffffff;
         }
 
         .btn-secondary:hover {
-            background: #2c6e9b;
+            background: #3a3a3a;
         }
 
         .btn-danger {
-            background: #ef4444;
-            color: white;
+            background: #5a1a1a;
+            color: #ffffff;
             margin-top: 16px;
         }
 
         .btn-danger:hover {
-            background: #dc2626;
+            background: #6a1a1a;
         }
 
         .role-tabs {
             display: flex;
             gap: 12px;
             margin: 0 0 24px;
-            background: #f1f5f9;
+            background: #1a1a1a;
             padding: 6px;
             border-radius: 60px;
         }
@@ -334,7 +339,7 @@
             border-radius: 40px;
             font-size: 16px;
             font-weight: 600;
-            color: #64748b;
+            color: #a0a0a0;
             background: transparent;
             border: none;
             cursor: pointer;
@@ -347,11 +352,11 @@
 
         .tab.active {
             background: #e8b13e;
-            color: #0f172a;
+            color: #0a0a0a;
         }
 
         .back-to-functions {
-            background: #f1f5f9;
+            background: #1a1a1a;
             border-radius: 60px;
             padding: 12px 20px;
             margin: 0 0 16px 0;
@@ -360,12 +365,12 @@
             gap: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #2a2a2a;
         }
 
         .back-to-functions:hover {
             border-color: #e8b13e;
-            background: #ffffff;
+            background: #222;
         }
 
         .back-to-functions i {
@@ -376,7 +381,7 @@
         .back-to-functions span {
             font-size: 15px;
             font-weight: 500;
-            color: #334155;
+            color: #c0c0c0;
         }
 
         .features-grid {
@@ -392,10 +397,10 @@
         }
 
         .feature-card {
-            background: #ffffff;
+            background: #121212;
             border-radius: 24px;
             padding: 20px;
-            border: 2px solid #f0f4f9;
+            border: 2px solid #2a2a2a;
             transition: all 0.2s;
             cursor: pointer;
             display: flex;
@@ -411,7 +416,7 @@
         .feature-icon {
             width: 52px;
             height: 52px;
-            background: #f8fafc;
+            background: #1a1a1a;
             border-radius: 18px;
             display: flex;
             align-items: center;
@@ -423,12 +428,12 @@
         .feature-text h3 {
             font-size: 18px;
             font-weight: 600;
-            color: #0f172a;
+            color: #ffffff;
             margin-bottom: 4px;
         }
 
         .feature-text p {
-            color: #64748b;
+            color: #a0a0a0;
             font-size: 14px;
         }
 
@@ -436,7 +441,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            margin: 20px 0 40px 0; /* Добавил отступ снизу */
+            margin: 20px 0 40px 0;
         }
 
         .message {
@@ -471,14 +476,15 @@
 
         .user-message .message-bubble {
             background: #e8b13e;
-            color: #0f172a;
+            color: #0a0a0a;
             border-bottom-right-radius: 6px;
         }
 
         .ai-message .message-bubble {
-            background: #f1f5f9;
-            color: #0f172a;
+            background: #1a1a1a;
+            color: #ffffff;
             border-bottom-left-radius: 6px;
+            border: 1px solid #2a2a2a;
         }
 
         .bottom-nav {
@@ -486,8 +492,8 @@
             align-items: center;
             justify-content: space-around;
             padding: 12px 24px;
-            background: #ffffff;
-            border-top: 2px solid #f1f5f9;
+            background: #0f0f0f;
+            border-top: 2px solid #2a2a2a;
             border-radius: 40px 40px 0 0;
             margin-top: auto;
             width: 100%;
@@ -502,7 +508,7 @@
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            color: #94a3b8;
+            color: #6b6b6b;
             font-size: 12px;
             background: none;
             border: none;
@@ -518,7 +524,7 @@
 
         .nav-item.active {
             color: #e8b13e;
-            background: #fef9e7;
+            background: #1a1a1a;
         }
 
         .loader-overlay {
@@ -527,7 +533,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(8px);
             display: none;
             align-items: center;
@@ -541,15 +547,16 @@
 
         .loader-content {
             text-align: center;
-            background: white;
+            background: #121212;
             padding: 40px;
             border-radius: 48px;
+            border: 1px solid #2a2a2a;
         }
 
         .spinner {
             width: 70px;
             height: 70px;
-            border: 6px solid #f1f5f9;
+            border: 6px solid #2a2a2a;
             border-top: 6px solid #e8b13e;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -567,7 +574,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             display: none;
             align-items: center;
@@ -580,43 +587,70 @@
         }
 
         .modal-window {
-            background: white;
+            background: #121212;
             border-radius: 40px;
             width: 90%;
             max-width: 420px;
             max-height: 80vh;
             overflow-y: auto;
             padding: 28px 24px;
+            border: 1px solid #2a2a2a;
         }
 
         .modal-close {
             width: 100%;
             padding: 16px;
-            background: #f1f5f9;
+            background: #1a1a1a;
             border: none;
             border-radius: 30px;
             font-size: 16px;
             font-weight: 600;
-            color: #475569;
+            color: #ffffff;
             cursor: pointer;
             margin-top: 20px;
         }
         
         .privacy-text {
-            color: #334155;
+            color: #c0c0c0;
             font-size: 14px;
             line-height: 1.8;
             margin-bottom: 24px;
         }
 
-        .formula {
-            font-family: 'Courier New', monospace;
-            background: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 12px;
+        .test-question {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .test-question p {
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .test-option {
+            background: #0f0f0f;
+            padding: 12px 16px;
             margin: 8px 0;
-            display: inline-block;
-            border-left: 3px solid #e8b13e;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #2a2a2a;
+            color: #c0c0c0;
+        }
+
+        .test-option:hover {
+            border-color: #e8b13e;
+            background: #1a1a1a;
+        }
+
+        .test-option.selected {
+            border-color: #e8b13e;
+            background: #e8b13e20;
+            color: #e8b13e;
         }
     </style>
 </head>
@@ -706,22 +740,16 @@
                 <div id="studentContent">
                     <div class="features-grid" id="studentFeatures">
                         <div class="feature-card" id="studentExplainCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Объяснить тему</h3>
-                                <p>Получи простое объяснение</p>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="feature-text"><h3>Объяснить тему</h3><p>Получи простое объяснение</p></div>
                         </div>
                         <div class="feature-card" id="studentSolveCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-calculator"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Решить задачу</h3>
-                                <p>Математика, физика, химия</p>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="feature-text"><h3>Решить задачу</h3><p>Математика, физика, химия</p></div>
+                        </div>
+                        <div class="feature-card" id="studentTestCard">
+                            <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+                            <div class="feature-text"><h3>Пройти тест</h3><p>Проверь свои знания</p></div>
                         </div>
                     </div>
                 </div>
@@ -730,22 +758,16 @@
                 <div id="teacherContent" style="display: none;">
                     <div class="features-grid" id="teacherFeatures">
                         <div class="feature-card" id="teacherLessonCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Создать конспект</h3>
-                                <p>Подробный план урока</p>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="feature-text"><h3>Создать конспект</h3><p>Подробный план урока</p></div>
                         </div>
                         <div class="feature-card" id="teacherSolveCard">
-                            <div class="feature-icon">
-                                <i class="fas fa-calculator"></i>
-                            </div>
-                            <div class="feature-text">
-                                <h3>Решить задачу</h3>
-                                <p>Для демонстрации ученикам</p>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="feature-text"><h3>Решить задачу</h3><p>Для демонстрации ученикам</p></div>
+                        </div>
+                        <div class="feature-card" id="teacherGenerateTestCard">
+                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="feature-text"><h3>Создать тест</h3><p>Сгенерируй тест по теме</p></div>
                         </div>
                     </div>
                 </div>
@@ -753,41 +775,29 @@
                 <!-- ЧАТ КОНТЕЙНЕРЫ -->
                 <div id="chatContainer" class="chat-container"></div>
                 <div id="teacherChatContainer" class="chat-container"></div>
+                <div id="testContainer" class="chat-container" style="display: none;"></div>
             </div>
         </div>
 
         <!-- ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА -->
         <div class="fixed-input-container" id="fixedInputContainer">
             <div class="fixed-input-wrapper">
-                <textarea 
-                    id="fixedMessageInput" 
-                    class="fixed-input" 
-                    placeholder="Введите задачу или вопрос..." 
-                    rows="1"
-                ></textarea>
-                <button class="fixed-send-btn" id="fixedSendBtn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+                <textarea id="fixedMessageInput" class="fixed-input" placeholder="Введите задачу или вопрос..." rows="1"></textarea>
+                <button class="fixed-send-btn" id="fixedSendBtn"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
         <!-- НИЖНЯЯ НАВИГАЦИЯ -->
         <div class="bottom-nav">
-            <button class="nav-item active" id="navHome">
-                <i class="fas fa-home"></i>
-                <span>Главная</span>
-            </button>
-            <button class="nav-item" id="navSettings">
-                <i class="fas fa-cog"></i>
-                <span>Настройки</span>
-            </button>
+            <button class="nav-item active" id="navHome"><i class="fas fa-home"></i><span>Главная</span></button>
+            <button class="nav-item" id="navSettings"><i class="fas fa-cog"></i><span>Настройки</span></button>
         </div>
 
         <!-- ЗАГРУЗЧИК -->
         <div id="loader" class="loader-overlay">
             <div class="loader-content">
                 <div class="spinner"></div>
-                <p style="color: #1e293b;">Nevio решает задачу...</p>
+                <p style="color: #ffffff;">Nevio думает...</p>
             </div>
         </div>
     </div>
@@ -795,7 +805,7 @@
     <!-- МОДАЛЬНЫЕ ОКНА -->
     <div id="statsModal" class="modal-overlay">
         <div class="modal-window">
-            <h2 style="margin-bottom: 20px;">Статистика</h2>
+            <h2 style="margin-bottom: 20px; color: #ffffff;">Статистика</h2>
             <div id="statsContent" class="modal-content"></div>
             <button class="modal-close" id="closeStatsModal">Закрыть</button>
         </div>
@@ -803,26 +813,38 @@
 
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
-            <h2 style="margin-bottom: 20px;">Настройки</h2>
+            <h2 style="margin-bottom: 20px; color: #ffffff;">Настройки</h2>
             <div id="settingsContent" class="modal-content"></div>
-            <button class="btn btn-danger" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
-            </button>
-            <button class="modal-close" id="closeSettingsModal" style="margin-top: 12px;">Закрыть</button>
+            <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти из аккаунта</button>
+            <button class="modal-close" id="closeSettingsModal">Закрыть</button>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПОЛИТИКИ КОНФИДЕНЦИАЛЬНОСТИ -->
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-window">
-            <h2 style="margin-bottom: 20px;">Политика конфиденциальности</h2>
-            <div class="privacy-text">
-                <p>Nevio уважает вашу конфиденциальность.</p>
-                <p style="margin-top: 12px;">Мы не собираем и не храним ваши личные данные. Все сообщения обрабатываются анонимно и не сохраняются на серверах.</p>
-                <p style="margin-top: 12px;">Приложение использует искусственный интеллект для обработки запросов, но никакая информация не передается третьим лицам.</p>
-                <p style="margin-top: 12px;">Если у вас есть вопросы, вы можете связаться с нами через Telegram.</p>
-            </div>
+            <h2 style="margin-bottom: 20px; color: #ffffff;">Политика конфиденциальности</h2>
+            <div class="privacy-text">Nevio уважает вашу конфиденциальность. Мы не собираем и не храним ваши личные данные. Все сообщения обрабатываются анонимно.</div>
             <button class="modal-close" id="closePrivacyModal">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="testModal" class="modal-overlay">
+        <div class="modal-window" style="max-width: 480px; width: 90%;">
+            <h2 style="margin-bottom: 20px; color: #ffffff;">📝 Генератор тестов</h2>
+            <div class="input-group">
+                <label class="input-label">Тема теста</label>
+                <input type="text" id="testTopic" class="input-field" placeholder="Например: Квадратные уравнения, 8 класс">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Количество вопросов</label>
+                <select id="testCount" class="input-field" style="background: #1a1a1a;">
+                    <option value="5">5 вопросов</option>
+                    <option value="10" selected>10 вопросов</option>
+                    <option value="15">15 вопросов</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="generateTestBtn">Создать тест</button>
+            <button class="modal-close" id="closeTestModal">Отмена</button>
         </div>
     </div>
 
@@ -831,57 +853,23 @@
         tg.ready();
         tg.expand();
 
-        // ========== API НАСТРОЙКИ ==========
-        const API_KEY = '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';
+        // API НАСТРОЙКИ
+        const API_KEY = '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';
         const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-        
-        // Модель
         const MODEL = 'llama-3.3-70b-versatile';
 
-        // ========== СУПЕР-ПРОМПТ ДЛЯ РЕШЕНИЯ ЗАДАЧ ==========
-        const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Твоя задача — решать любые задачи максимально подробно и понятно.
+        // Промпты
+        const SOLVE_PROMPT = `Ты — лучший репетитор. Решай задачи максимально подробно. Формулируй как в тетради: Дано → Найти → Решение → Ответ. Объясняй каждый шаг.`;
+        const TEST_PROMPT = `Создай тест по указанной теме. Верни ТОЛЬКО JSON в формате: [{"question":"вопрос","options":["вариант1","вариант2","вариант3","вариант4"],"correct":0}]. Номер correct от 0 до 3. Никакого лишнего текста.`;
 
-        Правила оформления решения:
-
-        1. Записывай решение как в школьной тетради:
-           - Сначала "Дано:" (если есть условия)
-           - Потом "Найти:" (что нужно найти)
-           - Затем "Решение:" с пошаговыми действиями
-           - В конце "Ответ:"
-
-        2. Формулы записывай красиво и понятно:
-           - Квадрат: x²
-           - Дробь: a/b
-           - Корень: √(x)
-           - Степень: a^n
-           - Индексы: x₁, x₂
-           - Сумма: ∑
-           - Интеграл: ∫
-
-        3. Каждый шаг решения объясняй:
-           - Почему применяем эту формулу
-           - Как преобразуем выражение
-           - Что откуда берётся
-
-        4. Если задача сложная:
-           - Разбей на несколько этапов
-           - Объясни каждый этап отдельно
-           - Проверь правильность ответа
-
-        5. Всегда проверяй:
-           - Правильность подстановки чисел
-           - Единицы измерения
-           - Логичность ответа
-
-        Помни: ты должен не просто дать ответ, а научить решать такие задачи!`;
-
-        // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ==========
         let userData = null;
         let currentMode = 'explain';
         let currentContainerId = 'chatContainer';
         let isChatMode = false;
+        let currentTest = null;
+        let userAnswers = [];
 
-        // ========== ЭЛЕМЕНТЫ ==========
+        // ЭЛЕМЕНТЫ
         const registerScreen = document.getElementById('registerScreen');
         const mainScreen = document.getElementById('mainScreen');
         const mainContent = document.getElementById('mainContent');
@@ -896,8 +884,10 @@
         const backToFunctions = document.getElementById('backToFunctions');
         const studentFeatures = document.getElementById('studentFeatures');
         const teacherFeatures = document.getElementById('teacherFeatures');
+        const chatContainer = document.getElementById('chatContainer');
+        const teacherChatContainer = document.getElementById('teacherChatContainer');
+        const testContainer = document.getElementById('testContainer');
 
-        // ========== УПРАВЛЕНИЕ ПОЛЕМ КЛАСС/ПРЕДМЕТ ==========
         function updateClassField() {
             if (regRoleTeacher.classList.contains('active')) {
                 classFieldLabel.textContent = 'Предмет';
@@ -920,134 +910,158 @@
             updateClassField();
         });
 
-        // ========== ФУНКЦИИ ==========
         function showLoader() { loader.classList.add('visible'); }
         function hideLoader() { loader.classList.remove('visible'); }
-        
         function showFixedInput() { fixedInputContainer.style.display = 'block'; }
         function hideFixedInput() { fixedInputContainer.style.display = 'none'; }
-        
         function setInputPlaceholder(text) { fixedMessageInput.placeholder = text; }
 
         function cleanResponse(text) {
-            return text
-                .replace(/#/g, '')
-                .replace(/\*/g, '')
-                .replace(/_/g, '')
-                .replace(/`/g, '')
-                .trim();
+            return text.replace(/#/g, '').replace(/\*/g, '').replace(/_/g, '').replace(/`/g, '').trim();
         }
 
         function formatFormulas(text) {
-            // Преобразуем текстовые формулы в красивое отображение
-            return text
-                .replace(/\^2/g, '²')
-                .replace(/\^3/g, '³')
-                .replace(/sqrt\(/g, '√(')
-                .replace(/pi/g, 'π')
-                .replace(/alpha/g, 'α')
-                .replace(/beta/g, 'β')
-                .replace(/gamma/g, 'γ')
-                .replace(/delta/g, 'δ');
+            return text.replace(/\^2/g, '²').replace(/\^3/g, '³').replace(/sqrt\(/g, '√(').replace(/pi/g, 'π');
         }
 
         function addMessage(content, isUser = true, containerId = 'chatContainer') {
             const container = document.getElementById(containerId);
             if (!container) return;
-            
             const messageDiv = document.createElement('div');
             messageDiv.className = isUser ? 'user-message' : 'ai-message';
-            
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
-            
-            // Форматируем текст
-            let formattedContent = content;
-            if (!isUser) {
-                formattedContent = formatFormulas(content);
-            }
-            
-            bubble.textContent = formattedContent;
-            
+            bubble.textContent = !isUser ? formatFormulas(content) : content;
             messageDiv.appendChild(bubble);
             container.appendChild(messageDiv);
-            
-            // Прокрутка вниз с небольшой задержкой
-            setTimeout(() => {
-                container.scrollTop = container.scrollHeight;
-            }, 50);
+            setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
         }
 
-        // ========== ВЫЗОВ AI ==========
         async function callAI(prompt, mode) {
             showLoader();
-            
             try {
                 let systemPrompt = '';
-                
-                if (mode === 'teacher') {
-                    systemPrompt = 'Ты опытный учитель. Составь подробный конспект урока по теме. Напиши: цель урока, оборудование, ход урока, примеры, задания, вопросы.';
-                } else if (mode === 'explain') {
-                    systemPrompt = 'Ты репетитор. Объясни тему простым языком. Используй понятные объяснения, аналогии из жизни.';
-                } else {
-                    systemPrompt = SOLVE_PROMPT; // Супер-промпт для решения задач
-                }
+                if (mode === 'teacher') systemPrompt = 'Ты опытный учитель. Составь подробный конспект урока.';
+                else if (mode === 'explain') systemPrompt = 'Ты репетитор. Объясни тему простым языком.';
+                else if (mode === 'test') systemPrompt = TEST_PROMPT;
+                else systemPrompt = SOLVE_PROMPT;
 
-                const messages = [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: prompt }
-                ];
-
+                const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: prompt }];
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        model: MODEL,
-                        messages: messages,
-                        temperature: 0.7,
-                        max_tokens: 4096
-                    })
+                    headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: MODEL, messages, temperature: 0.7, max_tokens: 4096 })
                 });
-
                 if (!response.ok) throw new Error('API Error');
-
                 const data = await response.json();
                 let answer = cleanResponse(data.choices[0].message.content);
-                
                 if (userData) {
                     if (mode === 'teacher') userData.stats.lessons++;
                     else userData.stats.tasks++;
                     localStorage.setItem('nevio_user', JSON.stringify(userData));
                 }
-                
                 return answer;
             } catch (error) {
-                console.error('AI Error:', error);
                 return 'Извините, произошла ошибка. Попробуйте позже.';
-            } finally {
-                hideLoader();
-            }
+            } finally { hideLoader(); }
         }
 
-        // ========== РЕГИСТРАЦИЯ ==========
+        async function generateTest(topic, count) {
+            showLoader();
+            try {
+                const response = await callAI(`${TEST_PROMPT} Тема: ${topic}. Сделай ${count} вопросов.`, 'test');
+                let jsonStr = response.match(/\[[\s\S]*\]/)?.[0] || response;
+                const test = JSON.parse(jsonStr);
+                if (!Array.isArray(test)) throw new Error('Неверный формат');
+                return test.slice(0, count);
+            } catch (error) {
+                return [{ question: `Тест по теме "${topic}" (демо)`, options: ["Правильный ответ 1", "Вариант 2", "Вариант 3", "Вариант 4"], correct: 0 }];
+            } finally { hideLoader(); }
+        }
+
+        function renderTest(test) {
+            testContainer.style.display = 'block';
+            chatContainer.style.display = 'none';
+            teacherChatContainer.style.display = 'none';
+            testContainer.innerHTML = '<div style="margin-bottom: 20px;"><div class="back-to-functions" id="exitTestBtn" style="margin-bottom: 16px;"><i class="fas fa-arrow-left"></i><span>Выйти из теста</span></div></div>';
+            
+            test.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'test-question';
+                qDiv.innerHTML = `<p><strong>${idx + 1}. ${q.question}</strong></p>`;
+                q.options.forEach((opt, optIdx) => {
+                    const optDiv = document.createElement('div');
+                    optDiv.className = 'test-option';
+                    optDiv.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+                    optDiv.onclick = () => {
+                        document.querySelectorAll(`#testContainer .test-question`).forEach(qd => {
+                            qd.querySelectorAll('.test-option').forEach(o => o.classList.remove('selected'));
+                        });
+                        optDiv.classList.add('selected');
+                        userAnswers[idx] = optIdx;
+                    };
+                    qDiv.appendChild(optDiv);
+                });
+                testContainer.appendChild(qDiv);
+            });
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'btn btn-primary';
+            submitBtn.style.marginTop = '20px';
+            submitBtn.innerHTML = '📊 Завершить тест';
+            submitBtn.onclick = () => {
+                let correct = 0;
+                test.forEach((q, idx) => {
+                    if (userAnswers[idx] === q.correct) correct++;
+                });
+                const result = `Результат: ${correct} из ${test.length} (${Math.round(correct/test.length*100)}%)\n\n`;
+                addMessage(result + test.map((q, i) => `${i+1}. ${q.question}\n${userAnswers[i] === q.correct ? '✅ Правильно' : '❌ Ошибка. Правильный ответ: ' + q.options[q.correct]}`).join('\n\n'), false, 'chatContainer');
+                exitTestMode();
+            };
+            testContainer.appendChild(submitBtn);
+            document.getElementById('exitTestBtn').onclick = exitTestMode;
+        }
+
+        function exitTestMode() {
+            testContainer.style.display = 'none';
+            chatContainer.style.display = 'flex';
+            teacherChatContainer.style.display = 'flex';
+            currentTest = null;
+            userAnswers = [];
+            exitChatMode();
+        }
+
+        function enterChatMode(mode) {
+            isChatMode = true;
+            currentMode = mode;
+            if (userData.role === 'teacher') teacherFeatures.classList.add('hidden');
+            else studentFeatures.classList.add('hidden');
+            backToFunctions.style.display = 'flex';
+            chatContainer.innerHTML = '';
+            teacherChatContainer.innerHTML = '';
+            if (mode === 'teacher') setInputPlaceholder('Тема урока?');
+            else if (mode === 'explain') setInputPlaceholder('Что тебе объяснить?');
+            else setInputPlaceholder('Введите задачу...');
+        }
+
+        function exitChatMode() {
+            isChatMode = false;
+            if (userData.role === 'teacher') teacherFeatures.classList.remove('hidden');
+            else studentFeatures.classList.remove('hidden');
+            backToFunctions.style.display = 'none';
+            chatContainer.innerHTML = '';
+            teacherChatContainer.innerHTML = '';
+        }
+
         document.getElementById('registerBtn').addEventListener('click', () => {
             const name = document.getElementById('regName').value.trim();
-            if (!name) {
-                alert('Введите имя');
-                return;
-            }
-
+            if (!name) { alert('Введите имя'); return; }
             userData = {
-                name: name,
-                role: regRoleTeacher.classList.contains('active') ? 'teacher' : 'student',
+                name, role: regRoleTeacher.classList.contains('active') ? 'teacher' : 'student',
                 school: document.getElementById('regSchool').value.trim() || 'Не указана',
                 class: regClass.value.trim() || (regRoleTeacher.classList.contains('active') ? 'Математика' : '8 класс'),
                 stats: { lessons: 0, tasks: 0 }
             };
-
             localStorage.setItem('nevio_user', JSON.stringify(userData));
             updateMainScreen();
         });
@@ -1057,7 +1071,6 @@
             document.getElementById('userRole').textContent = userData.role === 'teacher' ? 'Учитель' : 'Ученик';
             document.getElementById('userClassInfo').textContent = userData.class;
             document.getElementById('userAvatar').textContent = userData.name.charAt(0);
-
             if (userData.role === 'teacher') {
                 document.getElementById('teacherContent').style.display = 'block';
                 document.getElementById('studentContent').style.display = 'none';
@@ -1067,190 +1080,82 @@
                 document.getElementById('studentContent').style.display = 'block';
                 currentContainerId = 'chatContainer';
             }
-
             registerScreen.classList.remove('active');
             mainScreen.classList.add('active');
             showFixedInput();
         }
 
-        // ========== ЗАГРУЗКА СОХРАНЕННЫХ ДАННЫХ ==========
         const saved = localStorage.getItem('nevio_user');
-        if (saved) {
-            userData = JSON.parse(saved);
-            updateMainScreen();
-        }
+        if (saved) { userData = JSON.parse(saved); updateMainScreen(); }
 
-        // ========== ВЫБОР РЕЖИМА ==========
-        function enterChatMode(mode) {
-            isChatMode = true;
-            currentMode = mode;
-            
-            // Скрываем функции
-            if (userData.role === 'teacher') {
-                teacherFeatures.classList.add('hidden');
-            } else {
-                studentFeatures.classList.add('hidden');
-            }
-            
-            // Показываем кнопку возврата
-            backToFunctions.style.display = 'flex';
-            
-            // Очищаем предыдущие сообщения
-            document.getElementById('chatContainer').innerHTML = '';
-            document.getElementById('teacherChatContainer').innerHTML = '';
-            
-            // Меняем плейсхолдер
-            if (mode === 'teacher') {
-                setInputPlaceholder('Тема урока?');
-            } else if (mode === 'explain') {
-                setInputPlaceholder('Что тебе объяснить?');
-            } else {
-                setInputPlaceholder('Введите задачу (например: решить уравнение 2x + 5 = 15)');
-            }
-        }
+        document.getElementById('studentExplainCard').addEventListener('click', () => enterChatMode('explain'));
+        document.getElementById('studentSolveCard').addEventListener('click', () => enterChatMode('solve'));
+        document.getElementById('teacherLessonCard').addEventListener('click', () => enterChatMode('teacher'));
+        document.getElementById('teacherSolveCard').addEventListener('click', () => enterChatMode('solve'));
+        document.getElementById('backToFunctions').addEventListener('click', exitChatMode);
 
-        function exitChatMode() {
-            isChatMode = false;
-            
-            // Показываем функции
-            if (userData.role === 'teacher') {
-                teacherFeatures.classList.remove('hidden');
-            } else {
-                studentFeatures.classList.remove('hidden');
-            }
-            
-            // Скрываем кнопку возврата
-            backToFunctions.style.display = 'none';
-            
-            // Очищаем чат
-            document.getElementById('chatContainer').innerHTML = '';
-            document.getElementById('teacherChatContainer').innerHTML = '';
-        }
-
-        document.getElementById('studentExplainCard').addEventListener('click', () => {
-            enterChatMode('explain');
+        document.getElementById('studentTestCard').addEventListener('click', () => {
+            document.getElementById('testModal').classList.add('visible');
+        });
+        document.getElementById('teacherGenerateTestCard').addEventListener('click', () => {
+            document.getElementById('testModal').classList.add('visible');
+        });
+        document.getElementById('generateTestBtn').addEventListener('click', async () => {
+            const topic = document.getElementById('testTopic').value.trim();
+            const count = parseInt(document.getElementById('testCount').value);
+            if (!topic) { alert('Введите тему теста'); return; }
+            document.getElementById('testModal').classList.remove('visible');
+            showLoader();
+            currentTest = await generateTest(topic, count);
+            renderTest(currentTest);
+            hideLoader();
+        });
+        document.getElementById('closeTestModal').addEventListener('click', () => {
+            document.getElementById('testModal').classList.remove('visible');
         });
 
-        document.getElementById('studentSolveCard').addEventListener('click', () => {
-            enterChatMode('solve');
-        });
-
-        document.getElementById('teacherLessonCard').addEventListener('click', () => {
-            enterChatMode('teacher');
-        });
-
-        document.getElementById('teacherSolveCard').addEventListener('click', () => {
-            enterChatMode('solve');
-        });
-
-        document.getElementById('backToFunctions').addEventListener('click', () => {
-            exitChatMode();
-        });
-
-        // ========== ОТПРАВКА ==========
         fixedSendBtn.addEventListener('click', async () => {
-            if (!isChatMode) {
-                alert('Сначала выберите функцию');
-                return;
-            }
-            
+            if (!isChatMode) { alert('Сначала выберите функцию'); return; }
             const message = fixedMessageInput.value.trim();
-            if (!message) {
-                alert('Введите сообщение');
-                return;
-            }
-            
+            if (!message) { alert('Введите сообщение'); return; }
             addMessage(message, true, currentContainerId);
             fixedMessageInput.value = '';
-            
             const response = await callAI(message, currentMode);
             addMessage(response, false, currentContainerId);
         });
-
         fixedMessageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                fixedSendBtn.click();
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fixedSendBtn.click(); }
         });
 
-        // ========== НАВИГАЦИЯ ==========
         document.getElementById('navHome').addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('navHome').classList.add('active');
             exitChatMode();
         });
-
         document.getElementById('navSettings').addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('navSettings').classList.add('active');
-            
-            const settingsText = `Версия 2.0\n\nБесплатное приложение\nСоздано для Беларуси`;
-            
-            document.getElementById('settingsContent').innerHTML = settingsText.replace(/\n/g, '<br>');
             document.getElementById('settingsModal').classList.add('visible');
         });
-
-        // ========== ПРОФИЛЬ (СТАТИСТИКА) ==========
         document.getElementById('profileCard').addEventListener('click', () => {
             if (!userData) return;
-            
-            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nМоя активность:\n• Создано конспектов: ${userData.stats.lessons}\n• Решено задач: ${userData.stats.tasks}`;
-            
+            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nАктивность:\n• Конспектов: ${userData.stats.lessons}\n• Задач: ${userData.stats.tasks}`;
             document.getElementById('statsContent').innerHTML = statsText.replace(/\n/g, '<br>');
             document.getElementById('statsModal').classList.add('visible');
         });
-
-        // ========== ЗАКРЫТИЕ МОДАЛЬНЫХ ОКОН ==========
-        document.getElementById('closeStatsModal').addEventListener('click', () => {
-            document.getElementById('statsModal').classList.remove('visible');
-        });
-
-        document.getElementById('closeSettingsModal').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.remove('visible');
-        });
-
+        document.getElementById('closeStatsModal').addEventListener('click', () => { document.getElementById('statsModal').classList.remove('visible'); });
+        document.getElementById('closeSettingsModal').addEventListener('click', () => { document.getElementById('settingsModal').classList.remove('visible'); });
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Вы уверены, что хотите выйти?')) {
-                localStorage.removeItem('nevio_user');
-                userData = null;
-                registerScreen.classList.add('active');
-                mainScreen.classList.remove('active');
-                hideFixedInput();
-            }
+            if (confirm('Вы уверены?')) { localStorage.removeItem('nevio_user'); userData = null; registerScreen.classList.add('active'); mainScreen.classList.remove('active'); hideFixedInput(); }
         });
 
-        // Политика конфиденциальности
         const privacyButton = document.createElement('button');
         privacyButton.className = 'btn btn-secondary';
         privacyButton.style.marginTop = '12px';
         privacyButton.innerHTML = '<i class="fas fa-shield-alt"></i> Политика конфиденциальности';
-        privacyButton.onclick = () => {
-            document.getElementById('privacyModal').classList.add('visible');
-        };
+        privacyButton.onclick = () => document.getElementById('privacyModal').classList.add('visible');
         document.getElementById('settingsModal').querySelector('.modal-window').appendChild(privacyButton);
-
-        document.getElementById('closePrivacyModal').addEventListener('click', () => {
-            document.getElementById('privacyModal').classList.remove('visible');
-        });
-
-        document.getElementById('privacyModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('privacyModal')) {
-                document.getElementById('privacyModal').classList.remove('visible');
-            }
-        });
-
-        statsModal.addEventListener('click', (e) => {
-            if (e.target === statsModal) {
-                statsModal.classList.remove('visible');
-            }
-        });
-
-        settingsModal.addEventListener('click', (e) => {
-            if (e.target === settingsModal) {
-                settingsModal.classList.remove('visible');
-            }
-        });
+        document.getElementById('closePrivacyModal').addEventListener('click', () => document.getElementById('privacyModal').classList.remove('visible'));
     </script>
 </body>
 </html>
