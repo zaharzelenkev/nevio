@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio — темная тема</title>
+    <title>Nevio — умный помощник</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -59,6 +59,64 @@
         .main-content::-webkit-scrollbar-thumb {
             background: #e8b13e;
             border-radius: 10px;
+        }
+
+        /* Прогресс-бар секция */
+        .progress-section {
+            background: linear-gradient(145deg, #1a1a1a, #121212);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            color: #e8b13e;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-percent {
+            color: #c0c0c0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            background: #2a2a2a;
+            border-radius: 20px;
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #e8b13e, #f5c542);
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #a0a0a0;
+            font-size: 13px;
+        }
+
+        .progress-goal {
+            color: #e8b13e;
+            font-weight: 500;
         }
 
         .fixed-input-container {
@@ -140,61 +198,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .profile-card {
-            background: linear-gradient(145deg, #1a1a1a, #121212);
-            border-radius: 28px;
-            padding: 18px 20px;
-            margin-bottom: 28px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border: 1px solid #2a2a2a;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .profile-card:hover {
-            border-color: #e8b13e;
-            transform: translateY(-2px);
-        }
-
-        .avatar {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(145deg, #e8b13e, #c4911a);
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a0a0a;
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .user-details h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-        }
-
-        .user-details p {
-            font-size: 14px;
-            color: #a0a0a0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .role-badge {
-            background: #e8b13e;
-            color: #0a0a0a;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
         }
 
         .form-container {
@@ -288,10 +291,6 @@
             background: #5a1a1a;
             color: #ffffff;
             margin-top: 16px;
-        }
-
-        .btn-danger:hover {
-            background: #6a1a1a;
         }
 
         .role-tabs {
@@ -457,15 +456,15 @@
             border: 1px solid #2a2a2a;
         }
 
+        /* НИЖНЯЯ НАВИГАЦИЯ С ПРОФИЛЕМ */
         .bottom-nav {
             display: flex;
             align-items: center;
             justify-content: space-around;
-            padding: 12px 24px;
+            padding: 8px 16px;
             background: #0f0f0f;
             border-top: 2px solid #2a2a2a;
             border-radius: 40px 40px 0 0;
-            margin-top: auto;
             width: 100%;
             position: fixed;
             bottom: 0;
@@ -477,24 +476,45 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             color: #6b6b6b;
-            font-size: 12px;
+            font-size: 11px;
             background: none;
             border: none;
             cursor: pointer;
             transition: all 0.2s;
-            padding: 8px 16px;
+            padding: 8px 12px;
             border-radius: 30px;
         }
 
         .nav-item i {
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .nav-item.active {
             color: #e8b13e;
             background: #1a1a1a;
+        }
+
+        /* ПРОФИЛЬ В НАВИГАЦИИ */
+        .profile-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .profile-avatar-small {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(145deg, #e8b13e, #c4911a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0a0a;
+            font-size: 16px;
+            font-weight: 600;
         }
 
         .loader-overlay {
@@ -579,7 +599,7 @@
             cursor: pointer;
             margin-top: 20px;
         }
-        
+
         .privacy-text {
             color: #c0c0c0;
             font-size: 14px;
@@ -669,15 +689,18 @@
 
             <!-- ГЛАВНЫЙ ЭКРАН -->
             <div id="mainScreen" class="screen">
-                <!-- ПРОФИЛЬ -->
-                <div class="profile-card" id="profileCard">
-                    <div class="avatar" id="userAvatar"></div>
-                    <div class="user-details">
-                        <h3 id="userName"></h3>
-                        <p>
-                            <span id="userRole"></span>
-                            <span class="role-badge" id="userClassInfo"></span>
-                        </p>
+                <!-- ПРОГРЕСС-БАР -->
+                <div class="progress-section" id="progressSection">
+                    <div class="progress-header">
+                        <span class="progress-title">🎯 НЕДЕЛЬНАЯ ЦЕЛЬ</span>
+                        <span class="progress-percent" id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>📊 <span id="currentTasks">0</span> из <span id="goalTasks">10</span> задач</span>
+                        <span class="progress-goal">Осталось <span id="remainingTasks">10</span></span>
                     </div>
                 </div>
 
@@ -738,10 +761,20 @@
             </div>
         </div>
 
-        <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+        <!-- НИЖНЯЯ НАВИГАЦИЯ С ПРОФИЛЕМ -->
         <div class="bottom-nav">
-            <button class="nav-item active" id="navHome"><i class="fas fa-home"></i><span>Главная</span></button>
-            <button class="nav-item" id="navSettings"><i class="fas fa-cog"></i><span>Настройки</span></button>
+            <button class="nav-item active" id="navHome">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </button>
+            <button class="nav-item" id="navProfile">
+                <div class="profile-avatar-small" id="navAvatar">👤</div>
+                <span id="navName">Профиль</span>
+            </button>
+            <button class="nav-item" id="navSettings">
+                <i class="fas fa-cog"></i>
+                <span>Настройки</span>
+            </button>
         </div>
 
         <!-- ЗАГРУЗЧИК -->
@@ -753,7 +786,29 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-window">
+            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 24px;">
+                <div class="avatar" style="width: 80px; height: 80px; font-size: 36px; margin-bottom: 16px;" id="modalAvatar"></div>
+                <h2 style="color: #ffffff;" id="modalName"></h2>
+                <p style="color: #e8b13e; margin-top: 8px;" id="modalRole"></p>
+            </div>
+            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 16px;">
+                <p style="color: #c0c0c0; margin-bottom: 8px;"><i class="fas fa-school"></i> <span id="modalSchool"></span></p>
+                <p style="color: #c0c0c0;"><i class="fas fa-graduation-cap"></i> <span id="modalClass"></span></p>
+            </div>
+            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 24px;">
+                <p style="color: #ffffff; margin-bottom: 12px;"><i class="fas fa-chart-line"></i> Статистика</p>
+                <p style="color: #c0c0c0;">📝 Конспектов: <span id="statLessons">0</span></p>
+                <p style="color: #c0c0c0;">✅ Решено задач: <span id="statTasks">0</span></p>
+                <p style="color: #c0c0c0;">🏆 Недельная цель: <span id="weeklyProgress">0</span>%</p>
+            </div>
+            <button class="modal-close" id="closeProfileModal">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ (оставлено для совместимости) -->
     <div id="statsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px; color: #ffffff;">Статистика</h2>
@@ -762,6 +817,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px; color: #ffffff;">Настройки</h2>
@@ -771,10 +827,27 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ПОЛИТИКИ КОНФИДЕНЦИАЛЬНОСТИ -->
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px; color: #ffffff;">Политика конфиденциальности</h2>
-            <div class="privacy-text">Nevio уважает вашу конфиденциальность. Мы не собираем и не храним ваши личные данные. Все сообщения обрабатываются анонимно.</div>
+            <div class="privacy-text">
+                <p><strong>1. Общие положения</strong></p>
+                <p>Настоящая Политика конфиденциальности определяет порядок обработки и защиты информации о пользователях приложения Nevio (далее — «Приложение»).</p>
+                <p style="margin-top: 12px;"><strong>2. Какие данные мы собираем</strong></p>
+                <p>Приложение не собирает, не хранит и не передает третьим лицам персональные данные пользователей. Вся информация (имя, роль, школа, класс) сохраняется исключительно на устройстве пользователя в локальном хранилище браузера и может быть удалена пользователем в любой момент.</p>
+                <p style="margin-top: 12px;"><strong>3. Обработка сообщений</strong></p>
+                <p>Все запросы, отправляемые в Приложение, передаются анонимно в API для обработки и не сохраняются на серверах Приложения. Мы не имеем доступа к истории ваших диалогов.</p>
+                <p style="margin-top: 12px;"><strong>4. Сторонние сервисы</strong></p>
+                <p>Приложение использует API Groq для обработки запросов. Обработка данных осуществляется в соответствии с политикой конфиденциальности Groq.</p>
+                <p style="margin-top: 12px;"><strong>5. Ваши права</strong></p>
+                <p>Вы можете в любой момент удалить все свои данные, выйдя из аккаунта или очистив данные приложения в настройках Telegram.</p>
+                <p style="margin-top: 12px;"><strong>6. Контакты</strong></p>
+                <p>По вопросам, связанным с конфиденциальностью, вы можете связаться с нами через Telegram-бота.</p>
+                <p style="margin-top: 12px;"><strong>7. Изменения</strong></p>
+                <p>Мы оставляем за собой право обновлять данную политику. Актуальная версия всегда доступна в настройках Приложения.</p>
+                <p style="margin-top: 16px; color: #e8b13e;">Последнее обновление: 27 марта 2026 г.</p>
+            </div>
             <button class="modal-close" id="closePrivacyModal">Закрыть</button>
         </div>
     </div>
@@ -811,7 +884,7 @@
 
         // ПРОМПТЫ
         const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Решай задачи максимально подробно. Форматируй как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми действиями, "Ответ:". Объясняй каждый шаг, используй понятный язык.`;
-        const EXPLAIN_PROMPT = `Ты — лучший репетитор. Объясни тему простым языком, используй аналогии из жизни, примеры. Пиши понятно, структурированно, с эмодзи.`;
+        const EXPLAIN_PROMPT = `Ты — лучший репетитор. Объясни тему простым языком, используй аналогии из жизни, примеры. Пиши понятно, структурированно.`;
         const TEACHER_PROMPT = `Ты — опытный учитель. Составь подробный конспект урока. Напиши: цель урока, оборудование, ход урока с этапами, примеры, задания для учеников, вопросы для проверки.`;
         const TEST_PROMPT = `Ты — учитель. Создай тест по указанной теме. Верни ТОЛЬКО JSON массив в формате: [{"question":"вопрос","options":["вариант1","вариант2","вариант3","вариант4"],"correct":0}]. correct от 0 до 3. Никакого лишнего текста.`;
 
@@ -821,6 +894,9 @@
         let isChatMode = false;
         let currentTest = null;
         let userAnswers = [];
+
+        // Цель на неделю
+        const WEEKLY_GOAL = 10;
 
         // ЭЛЕМЕНТЫ
         const registerScreen = document.getElementById('registerScreen');
@@ -840,6 +916,9 @@
         const chatContainer = document.getElementById('chatContainer');
         const teacherChatContainer = document.getElementById('teacherChatContainer');
         const testContainer = document.getElementById('testContainer');
+        const navHome = document.getElementById('navHome');
+        const navProfile = document.getElementById('navProfile');
+        const navSettings = document.getElementById('navSettings');
 
         function updateClassField() {
             if (regRoleTeacher.classList.contains('active')) {
@@ -862,6 +941,17 @@
             regRoleTeacher.classList.remove('active');
             updateClassField();
         });
+
+        function updateProgressBar() {
+            if (!userData) return;
+            const tasks = userData.stats.tasks || 0;
+            const percent = Math.min(100, Math.round((tasks / WEEKLY_GOAL) * 100));
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('currentTasks').textContent = tasks;
+            document.getElementById('goalTasks').textContent = WEEKLY_GOAL;
+            document.getElementById('remainingTasks').textContent = Math.max(0, WEEKLY_GOAL - tasks);
+        }
 
         function showLoader() { loader.classList.add('visible'); }
         function hideLoader() { loader.classList.remove('visible'); }
@@ -912,6 +1002,7 @@
                     if (mode === 'teacher') userData.stats.lessons++;
                     else userData.stats.tasks++;
                     localStorage.setItem('nevio_user', JSON.stringify(userData));
+                    updateProgressBar();
                 }
                 return answer;
             } catch (error) {
@@ -1032,10 +1123,9 @@
         });
 
         function updateMainScreen() {
-            document.getElementById('userName').textContent = userData.name;
-            document.getElementById('userRole').textContent = userData.role === 'teacher' ? 'Учитель' : 'Ученик';
-            document.getElementById('userClassInfo').textContent = userData.class;
-            document.getElementById('userAvatar').textContent = userData.name.charAt(0);
+            document.getElementById('navName').textContent = userData.name.length > 10 ? userData.name.slice(0, 8) + '...' : userData.name;
+            document.getElementById('navAvatar').textContent = userData.name.charAt(0);
+            updateProgressBar();
             if (userData.role === 'teacher') {
                 document.getElementById('teacherContent').style.display = 'block';
                 document.getElementById('studentContent').style.display = 'none';
@@ -1090,24 +1180,45 @@
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fixedSendBtn.click(); }
         });
 
-        document.getElementById('navHome').addEventListener('click', () => {
+        navHome.addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('navHome').classList.add('active');
+            navHome.classList.add('active');
             exitChatMode();
         });
-        document.getElementById('navSettings').addEventListener('click', () => {
+
+        navProfile.addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('navSettings').classList.add('active');
+            navProfile.classList.add('active');
+            if (!userData) return;
+            document.getElementById('modalName').textContent = userData.name;
+            document.getElementById('modalAvatar').textContent = userData.name.charAt(0);
+            document.getElementById('modalRole').textContent = userData.role === 'teacher' ? '👨‍🏫 Учитель' : '🧑‍🎓 Ученик';
+            document.getElementById('modalSchool').textContent = userData.school;
+            document.getElementById('modalClass').textContent = userData.class;
+            document.getElementById('statLessons').textContent = userData.stats.lessons;
+            document.getElementById('statTasks').textContent = userData.stats.tasks;
+            const percent = Math.min(100, Math.round(((userData.stats.tasks || 0) / WEEKLY_GOAL) * 100));
+            document.getElementById('weeklyProgress').textContent = percent;
+            document.getElementById('profileModal').classList.add('visible');
+        });
+
+        navSettings.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            navSettings.classList.add('active');
             document.getElementById('settingsModal').classList.add('visible');
         });
-        document.getElementById('profileCard').addEventListener('click', () => {
-            if (!userData) return;
-            const statsText = `Имя: ${userData.name}\nРоль: ${userData.role === 'teacher' ? 'Учитель' : 'Ученик'}\nШкола: ${userData.school}\n${userData.role === 'teacher' ? 'Предмет' : 'Класс'}: ${userData.class}\n\nАктивность:\n• Конспектов: ${userData.stats.lessons}\n• Задач: ${userData.stats.tasks}`;
-            document.getElementById('statsContent').innerHTML = statsText.replace(/\n/g, '<br>');
-            document.getElementById('statsModal').classList.add('visible');
+
+        document.getElementById('closeProfileModal').addEventListener('click', () => {
+            document.getElementById('profileModal').classList.remove('visible');
+            navHome.click();
         });
-        document.getElementById('closeStatsModal').addEventListener('click', () => { document.getElementById('statsModal').classList.remove('visible'); });
-        document.getElementById('closeSettingsModal').addEventListener('click', () => { document.getElementById('settingsModal').classList.remove('visible'); });
+
+        document.getElementById('closeStatsModal').addEventListener('click', () => {
+            document.getElementById('statsModal').classList.remove('visible');
+        });
+        document.getElementById('closeSettingsModal').addEventListener('click', () => {
+            document.getElementById('settingsModal').classList.remove('visible');
+        });
         document.getElementById('logoutBtn').addEventListener('click', () => {
             if (confirm('Вы уверены, что хотите выйти?')) { localStorage.removeItem('nevio_user'); userData = null; registerScreen.classList.add('active'); mainScreen.classList.remove('active'); hideFixedInput(); }
         });
