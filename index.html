@@ -142,40 +142,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            padding-top: 8px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(145deg, #e8b13e, #c4911a);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a0a0a;
-            font-size: 26px;
-            font-weight: 700;
-        }
-
-        .logo-text h1 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #ffffff;
-            line-height: 1.2;
-        }
-
         .profile-card {
             background: linear-gradient(145deg, #1a1a1a, #121212);
             border-radius: 28px;
@@ -278,6 +244,10 @@
         .input-field:focus {
             border-color: #e8b13e;
             box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
+        }
+
+        .input-field::placeholder {
+            color: #6b6b6b;
         }
 
         .btn {
@@ -660,16 +630,6 @@
             
             <!-- ЭКРАН РЕГИСТРАЦИИ -->
             <div id="registerScreen" class="screen active">
-                <div class="header">
-                    <div class="logo">
-                        <div class="logo-icon">N</div>
-                        <div class="logo-text">
-                            <h1>Nevio</h1>
-                            <span>Беларусь</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="form-container">
                     <h2 class="form-title">Добро пожаловать!</h2>
                     <p class="form-subtitle">Создайте аккаунт чтобы начать</p>
@@ -709,15 +669,6 @@
 
             <!-- ГЛАВНЫЙ ЭКРАН -->
             <div id="mainScreen" class="screen">
-                <div class="header">
-                    <div class="logo">
-                        <div class="logo-icon">N</div>
-                        <div class="logo-text">
-                            <h1>Nevio</h1>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- ПРОФИЛЬ -->
                 <div class="profile-card" id="profileCard">
                     <div class="avatar" id="userAvatar"></div>
@@ -858,9 +809,11 @@
         const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
         const MODEL = 'llama-3.3-70b-versatile';
 
-        // Промпты
-        const SOLVE_PROMPT = `Ты — лучший репетитор. Решай задачи максимально подробно. Формулируй как в тетради: Дано → Найти → Решение → Ответ. Объясняй каждый шаг.`;
-        const TEST_PROMPT = `Создай тест по указанной теме. Верни ТОЛЬКО JSON в формате: [{"question":"вопрос","options":["вариант1","вариант2","вариант3","вариант4"],"correct":0}]. Номер correct от 0 до 3. Никакого лишнего текста.`;
+        // ПРОМПТЫ
+        const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Решай задачи максимально подробно. Форматируй как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми действиями, "Ответ:". Объясняй каждый шаг, используй понятный язык.`;
+        const EXPLAIN_PROMPT = `Ты — лучший репетитор. Объясни тему простым языком, используй аналогии из жизни, примеры. Пиши понятно, структурированно, с эмодзи.`;
+        const TEACHER_PROMPT = `Ты — опытный учитель. Составь подробный конспект урока. Напиши: цель урока, оборудование, ход урока с этапами, примеры, задания для учеников, вопросы для проверки.`;
+        const TEST_PROMPT = `Ты — учитель. Создай тест по указанной теме. Верни ТОЛЬКО JSON массив в формате: [{"question":"вопрос","options":["вариант1","вариант2","вариант3","вариант4"],"correct":0}]. correct от 0 до 3. Никакого лишнего текста.`;
 
         let userData = null;
         let currentMode = 'explain';
@@ -941,8 +894,8 @@
             showLoader();
             try {
                 let systemPrompt = '';
-                if (mode === 'teacher') systemPrompt = 'Ты опытный учитель. Составь подробный конспект урока.';
-                else if (mode === 'explain') systemPrompt = 'Ты репетитор. Объясни тему простым языком.';
+                if (mode === 'teacher') systemPrompt = TEACHER_PROMPT;
+                else if (mode === 'explain') systemPrompt = EXPLAIN_PROMPT;
                 else if (mode === 'test') systemPrompt = TEST_PROMPT;
                 else systemPrompt = SOLVE_PROMPT;
 
@@ -962,6 +915,7 @@
                 }
                 return answer;
             } catch (error) {
+                console.error('AI Error:', error);
                 return 'Извините, произошла ошибка. Попробуйте позже.';
             } finally { hideLoader(); }
         }
@@ -975,7 +929,8 @@
                 if (!Array.isArray(test)) throw new Error('Неверный формат');
                 return test.slice(0, count);
             } catch (error) {
-                return [{ question: `Тест по теме "${topic}" (демо)`, options: ["Правильный ответ 1", "Вариант 2", "Вариант 3", "Вариант 4"], correct: 0 }];
+                console.error('Test generation error:', error);
+                return [{ question: `Тест по теме "${topic}"`, options: ["Правильный ответ 1", "Вариант 2", "Вариант 3", "Вариант 4"], correct: 0 }];
             } finally { hideLoader(); }
         }
 
@@ -1014,8 +969,18 @@
                 test.forEach((q, idx) => {
                     if (userAnswers[idx] === q.correct) correct++;
                 });
-                const result = `Результат: ${correct} из ${test.length} (${Math.round(correct/test.length*100)}%)\n\n`;
-                addMessage(result + test.map((q, i) => `${i+1}. ${q.question}\n${userAnswers[i] === q.correct ? '✅ Правильно' : '❌ Ошибка. Правильный ответ: ' + q.options[q.correct]}`).join('\n\n'), false, 'chatContainer');
+                const percent = Math.round(correct / test.length * 100);
+                let resultText = `📊 Результат: ${correct} из ${test.length} (${percent}%)\n\n`;
+                if (percent >= 80) resultText += '🎉 Отлично! Вы хорошо знаете тему!\n\n';
+                else if (percent >= 60) resultText += '👍 Хорошо, но есть над чем поработать.\n\n';
+                else resultText += '📚 Стоит повторить тему. Попробуйте ещё раз!\n\n';
+                
+                resultText += test.map((q, i) => {
+                    const isCorrect = userAnswers[i] === q.correct;
+                    return `${i+1}. ${q.question}\n${isCorrect ? '✅ Правильно' : '❌ Ошибка. Правильный ответ: ' + q.options[q.correct]}`;
+                }).join('\n\n');
+                
+                addMessage(resultText, false, 'chatContainer');
                 exitTestMode();
             };
             testContainer.appendChild(submitBtn);
@@ -1105,10 +1070,8 @@
             const count = parseInt(document.getElementById('testCount').value);
             if (!topic) { alert('Введите тему теста'); return; }
             document.getElementById('testModal').classList.remove('visible');
-            showLoader();
             currentTest = await generateTest(topic, count);
             renderTest(currentTest);
-            hideLoader();
         });
         document.getElementById('closeTestModal').addEventListener('click', () => {
             document.getElementById('testModal').classList.remove('visible');
@@ -1146,7 +1109,7 @@
         document.getElementById('closeStatsModal').addEventListener('click', () => { document.getElementById('statsModal').classList.remove('visible'); });
         document.getElementById('closeSettingsModal').addEventListener('click', () => { document.getElementById('settingsModal').classList.remove('visible'); });
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Вы уверены?')) { localStorage.removeItem('nevio_user'); userData = null; registerScreen.classList.add('active'); mainScreen.classList.remove('active'); hideFixedInput(); }
+            if (confirm('Вы уверены, что хотите выйти?')) { localStorage.removeItem('nevio_user'); userData = null; registerScreen.classList.add('active'); mainScreen.classList.remove('active'); hideFixedInput(); }
         });
 
         const privacyButton = document.createElement('button');
