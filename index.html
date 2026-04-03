@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* ВСЕ СТИЛИ ОСТАЮТСЯ ТАКИМИ ЖЕ, КАК БЫЛИ */
         * {
             margin: 0;
             padding: 0;
@@ -62,6 +61,7 @@
             border-radius: 10px;
         }
 
+        /* Прогресс-бар секция */
         .progress-section {
             background: linear-gradient(145deg, #1a1a1a, #121212);
             border-radius: 28px;
@@ -456,6 +456,7 @@
             border: 1px solid #2a2a2a;
         }
 
+        /* НИЖНЯЯ НАВИГАЦИЯ С ПРОФИЛЕМ */
         .bottom-nav {
             display: flex;
             align-items: center;
@@ -495,6 +496,7 @@
             background: #1a1a1a;
         }
 
+        /* ПРОФИЛЬ В НАВИГАЦИИ */
         .profile-nav {
             display: flex;
             flex-direction: column;
@@ -784,7 +786,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
     <div id="profileModal" class="modal-overlay">
         <div class="modal-window">
             <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 24px;">
@@ -806,6 +808,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ (оставлено для совместимости) -->
     <div id="statsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px; color: #ffffff;">Статистика</h2>
@@ -814,6 +817,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px; color: #ffffff;">Настройки</h2>
@@ -823,6 +827,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ПОЛИТИКИ КОНФИДЕНЦИАЛЬНОСТИ -->
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-window">
             <h2 style="margin-bottom: 20px; color: #ffffff;">Политика конфиденциальности</h2>
@@ -834,12 +839,14 @@
                 <p style="margin-top: 12px;"><strong>3. Обработка сообщений</strong></p>
                 <p>Все запросы, отправляемые в Приложение, передаются анонимно в API для обработки и не сохраняются на серверах Приложения. Мы не имеем доступа к истории ваших диалогов.</p>
                 <p style="margin-top: 12px;"><strong>4. Сторонние сервисы</strong></p>
-                <p>Приложение использует Hugging Face API для обработки запросов. Обработка данных осуществляется в соответствии с политикой конфиденциальности Hugging Face.</p>
+                <p>Приложение использует API Groq для обработки запросов. Обработка данных осуществляется в соответствии с политикой конфиденциальности Groq.</p>
                 <p style="margin-top: 12px;"><strong>5. Ваши права</strong></p>
                 <p>Вы можете в любой момент удалить все свои данные, выйдя из аккаунта или очистив данные приложения в настройках Telegram.</p>
                 <p style="margin-top: 12px;"><strong>6. Контакты</strong></p>
                 <p>По вопросам, связанным с конфиденциальностью, вы можете связаться с нами через Telegram-бота.</p>
-                <p style="margin-top: 16px; color: #e8b13e;">Последнее обновление: 1 апреля 2026 г.</p>
+                <p style="margin-top: 12px;"><strong>7. Изменения</strong></p>
+                <p>Мы оставляем за собой право обновлять данную политику. Актуальная версия всегда доступна в настройках Приложения.</p>
+                <p style="margin-top: 16px; color: #e8b13e;">Последнее обновление: 27 марта 2026 г.</p>
             </div>
             <button class="modal-close" id="closePrivacyModal">Закрыть</button>
         </div>
@@ -870,12 +877,12 @@
         tg.ready();
         tg.expand();
 
-        // ========== HUGGING FACE API ==========
-        // 🔑 ПОЛУЧИ ТОКЕН ЗДЕСЬ: https://huggingface.co/settings/tokens
-        const HF_TOKEN = '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'; // ВСТАВЬ СВОЙ ТОКЕН!
-        const HF_API_URL = 'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3';
-        
-        // ========== ПРОМПТЫ ==========
+        // API НАСТРОЙКИ
+        const API_KEY = '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';
+        const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+        const MODEL = 'llama-3.3-70b-versatile';
+
+        // ПРОМПТЫ
         const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Решай задачи максимально подробно. Форматируй как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми действиями, "Ответ:". Объясняй каждый шаг, используй понятный язык.`;
         const EXPLAIN_PROMPT = `Ты — лучший репетитор. Объясни тему простым языком, используй аналогии из жизни, примеры. Пиши понятно, структурированно.`;
         const TEACHER_PROMPT = `Ты — опытный учитель. Составь подробный конспект урока. Напиши: цель урока, оборудование, ход урока с этапами, примеры, задания для учеников, вопросы для проверки.`;
@@ -887,6 +894,8 @@
         let isChatMode = false;
         let currentTest = null;
         let userAnswers = [];
+
+        // Цель на неделю
         const WEEKLY_GOAL = 10;
 
         // ЭЛЕМЕНТЫ
@@ -971,7 +980,6 @@
             setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
         }
 
-        // ========== ВЫЗОВ HUGGING FACE API ==========
         async function callAI(prompt, mode) {
             showLoader();
             try {
@@ -981,35 +989,15 @@
                 else if (mode === 'test') systemPrompt = TEST_PROMPT;
                 else systemPrompt = SOLVE_PROMPT;
 
-                const fullPrompt = `<s>[INST] ${systemPrompt}\n\nВопрос: ${prompt} [/INST]`;
-                
-                const response = await fetch(HF_API_URL, {
+                const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: prompt }];
+                const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${HF_TOKEN}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        inputs: fullPrompt,
-                        parameters: {
-                            max_new_tokens: 4096,
-                            temperature: 0.7,
-                            do_sample: true,
-                            return_full_text: false
-                        }
-                    })
+                    headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: MODEL, messages, temperature: 0.7, max_tokens: 4096 })
                 });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('API Error:', errorText);
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error('API Error');
                 const data = await response.json();
-                let answer = data[0]?.generated_text || data?.generated_text || 'Нет ответа';
-                answer = cleanResponse(answer);
-                
+                let answer = cleanResponse(data.choices[0].message.content);
                 if (userData) {
                     if (mode === 'teacher') userData.stats.lessons++;
                     else userData.stats.tasks++;
@@ -1020,9 +1008,7 @@
             } catch (error) {
                 console.error('AI Error:', error);
                 return 'Извините, произошла ошибка. Попробуйте позже.';
-            } finally {
-                hideLoader();
-            }
+            } finally { hideLoader(); }
         }
 
         async function generateTest(topic, count) {
