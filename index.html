@@ -61,7 +61,7 @@
             border-radius: 10px;
         }
 
-        /* ПРОФИЛЬ (красивый) */
+        /* ПРОФИЛЬ */
         .profile-card {
             background: linear-gradient(145deg, #1a1a1a, #121212);
             border-radius: 32px;
@@ -778,15 +778,20 @@
             color: #e8b13e;
         }
 
-        .score-display {
-            background: #e8b13e20;
-            padding: 8px 16px;
+        .token-display {
+            background: linear-gradient(145deg, #e8b13e, #d4a02a);
+            padding: 6px 14px;
             border-radius: 40px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: #e8b13e;
-            font-weight: 600;
+            color: #0a0a0a;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        
+        .token-display i {
+            font-size: 14px;
         }
     </style>
 </head>
@@ -843,7 +848,7 @@
                         <p>
                             <span class="role-badge" id="userRole"></span>
                             <span class="level-badge" id="userLevel">Уровень 1</span>
-                            <span class="score-display" id="userScore">🏆 0 очков</span>
+                            <span class="token-display" id="userTokens">🧠 0 нейро-токенов</span>
                         </p>
                     </div>
                 </div>
@@ -957,7 +962,7 @@
                 <p style="color: #ffffff; margin-bottom: 12px;"><i class="fas fa-chart-line"></i> Статистика</p>
                 <p style="color: #c0c0c0;">📝 Конспектов: <span id="statLessons">0</span></p>
                 <p style="color: #c0c0c0;">✅ Решено задач: <span id="statTasks">0</span></p>
-                <p style="color: #c0c0c0;">🏆 Очков: <span id="statScore">0</span></p>
+                <p style="color: #c0c0c0;">🧠 Нейро-токенов: <span id="statTokens">0</span></p>
                 <p style="color: #c0c0c0;">🎖️ Уровень: <span id="statLevel">1</span></p>
             </div>
             <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 24px;">
@@ -1054,21 +1059,21 @@
         let currentTest = null;
         let userAnswers = [];
 
-        function updateScoreAndLevel() {
+        function updateTokensAndLevel() {
             if (!userData) return;
             let level = 1;
-            if (userData.score >= 1000) level = 10;
-            else if (userData.score >= 800) level = 9;
-            else if (userData.score >= 600) level = 8;
-            else if (userData.score >= 500) level = 7;
-            else if (userData.score >= 400) level = 6;
-            else if (userData.score >= 300) level = 5;
-            else if (userData.score >= 200) level = 4;
-            else if (userData.score >= 100) level = 3;
-            else if (userData.score >= 50) level = 2;
+            if (userData.tokens >= 1000) level = 10;
+            else if (userData.tokens >= 800) level = 9;
+            else if (userData.tokens >= 600) level = 8;
+            else if (userData.tokens >= 500) level = 7;
+            else if (userData.tokens >= 400) level = 6;
+            else if (userData.tokens >= 300) level = 5;
+            else if (userData.tokens >= 200) level = 4;
+            else if (userData.tokens >= 100) level = 3;
+            else if (userData.tokens >= 50) level = 2;
             userData.level = level;
             document.getElementById('userLevel').textContent = `Уровень ${level}`;
-            document.getElementById('userScore').innerHTML = `🏆 ${userData.score} очков`;
+            document.getElementById('userTokens').innerHTML = `🧠 ${userData.tokens} нейро-токенов`;
         }
 
         function checkAchievements() {
@@ -1082,13 +1087,13 @@
                     else if (ach.type === 'tests') condition = (userData.stats.tests || 0) >= ach.required;
                     if (condition) {
                         userData.achievements.push(ach.id);
-                        userData.score += 50;
+                        userData.tokens += 50;
                         unlocked = true;
                     }
                 }
             });
             if (unlocked) {
-                updateScoreAndLevel();
+                updateTokensAndLevel();
                 renderAchievements();
                 renderDailyTasks();
                 saveUserData();
@@ -1103,13 +1108,13 @@
                     task.current += count;
                     if (task.current >= task.target) {
                         task.completed = true;
-                        userData.score += task.reward;
+                        userData.tokens += task.reward;
                         updated = true;
                     }
                 }
             });
             if (updated) {
-                updateScoreAndLevel();
+                updateTokensAndLevel();
                 renderDailyTasks();
                 saveUserData();
             }
@@ -1127,7 +1132,7 @@
                         <div class="task-icon">${task.icon}</div>
                         <div class="task-text">
                             <h4>${task.name}</h4>
-                            <p>${task.current}/${task.target} • +${task.reward} очков</p>
+                            <p>${task.current}/${task.target} • +${task.reward} нейро-токенов</p>
                         </div>
                     </div>
                     <div class="task-status ${task.completed ? 'completed' : ''}">
@@ -1314,7 +1319,27 @@
             localStorage.setItem('nevio_user', JSON.stringify(userData));
         }
 
-        // ========== РЕГИСТРАЦИЯ ==========
+        // ========== ЭЛЕМЕНТЫ ==========
+        const registerScreen = document.getElementById('registerScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const mainContent = document.getElementById('mainContent');
+        const loader = document.getElementById('loader');
+        const fixedInputContainer = document.getElementById('fixedInputContainer');
+        const fixedMessageInput = document.getElementById('fixedMessageInput');
+        const fixedSendBtn = document.getElementById('fixedSendBtn');
+        const regRoleTeacher = document.getElementById('regRoleTeacher');
+        const regRoleStudent = document.getElementById('regRoleStudent');
+        const classFieldLabel = document.getElementById('classFieldLabel');
+        const regClass = document.getElementById('regClass');
+        const backToFunctions = document.getElementById('backToFunctions');
+        const studentFeatures = document.getElementById('studentFeatures');
+        const teacherFeatures = document.getElementById('teacherFeatures');
+        const chatContainer = document.getElementById('chatContainer');
+        const teacherChatContainer = document.getElementById('teacherChatContainer');
+        const testContainer = document.getElementById('testContainer');
+        const navHome = document.getElementById('navHome');
+        const navSettings = document.getElementById('navSettings');
+
         function updateClassField() {
             if (regRoleTeacher.classList.contains('active')) {
                 classFieldLabel.textContent = 'Предмет';
@@ -1324,11 +1349,6 @@
                 regClass.placeholder = '8 класс, 9 класс...';
             }
         }
-
-        const regRoleTeacher = document.getElementById('regRoleTeacher');
-        const regRoleStudent = document.getElementById('regRoleStudent');
-        const classFieldLabel = document.getElementById('classFieldLabel');
-        const regClass = document.getElementById('regClass');
 
         regRoleTeacher.addEventListener('click', () => {
             regRoleTeacher.classList.add('active');
@@ -1354,7 +1374,7 @@
                 school: document.getElementById('regSchool').value.trim() || 'Не указана',
                 class: regClass.value.trim() || (regRoleTeacher.classList.contains('active') ? 'Математика' : '8 класс'),
                 stats: { lessons: 0, tasks: 0, tests: 0 },
-                score: 0,
+                tokens: 0,
                 level: 1,
                 achievements: [],
                 dailyTasks: dailyTasksCopy
@@ -1366,9 +1386,8 @@
         function updateMainScreen() {
             document.getElementById('userName').textContent = userData.name;
             document.getElementById('userRole').textContent = userData.role === 'teacher' ? '👨‍🏫 Учитель' : '🧑‍🎓 Ученик';
-            document.getElementById('userClassInfo').textContent = userData.class;
             document.getElementById('userAvatar').textContent = userData.name.charAt(0);
-            updateScoreAndLevel();
+            updateTokensAndLevel();
             renderDailyTasks();
             renderAchievements();
             
@@ -1390,17 +1409,6 @@
         if (saved) { userData = JSON.parse(saved); updateMainScreen(); }
 
         // ========== ОБРАБОТЧИКИ ==========
-        const studentFeatures = document.getElementById('studentFeatures');
-        const teacherFeatures = document.getElementById('teacherFeatures');
-        const backToFunctions = document.getElementById('backToFunctions');
-        const chatContainer = document.getElementById('chatContainer');
-        const teacherChatContainer = document.getElementById('teacherChatContainer');
-        const testContainer = document.getElementById('testContainer');
-        const fixedMessageInput = document.getElementById('fixedMessageInput');
-        const fixedSendBtn = document.getElementById('fixedSendBtn');
-        const navHome = document.getElementById('navHome');
-        const navSettings = document.getElementById('navSettings');
-
         document.getElementById('studentExplainCard')?.addEventListener('click', () => enterChatMode('explain'));
         document.getElementById('studentSolveCard')?.addEventListener('click', () => enterChatMode('solve'));
         document.getElementById('teacherLessonCard')?.addEventListener('click', () => enterChatMode('teacher'));
@@ -1445,7 +1453,7 @@
                 }
                 checkAchievements();
                 saveUserData();
-                updateScoreAndLevel();
+                updateTokensAndLevel();
                 renderDailyTasks();
                 renderAchievements();
             }
@@ -1476,7 +1484,7 @@
             document.getElementById('modalClass').textContent = userData.class;
             document.getElementById('statLessons').textContent = userData.stats.lessons;
             document.getElementById('statTasks').textContent = userData.stats.tasks;
-            document.getElementById('statScore').textContent = userData.score;
+            document.getElementById('statTokens').textContent = userData.tokens;
             document.getElementById('statLevel').textContent = userData.level;
             
             const unlockedList = document.getElementById('unlockedAchievementsList');
