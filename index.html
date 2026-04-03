@@ -1,1235 +1,450 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio — умный помощник</title>
-    
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: #0a0a0a;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 0;
-        }
-
-        .app-container {
-            max-width: 480px;
-            width: 100%;
-            background: #0f0f0f;
-            min-height: 100vh;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            border-radius: 32px 32px 0 0;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 20px 140px;
-            scrollbar-width: thin;
-            scrollbar-color: #e8b13e #1e1e1e;
-        }
-
-        .main-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .main-content::-webkit-scrollbar-track {
-            background: #1e1e1e;
-            border-radius: 10px;
-        }
-
-        .main-content::-webkit-scrollbar-thumb {
-            background: #e8b13e;
-            border-radius: 10px;
-        }
-
-        /* Прогресс-бар секция */
-        .progress-section {
-            background: linear-gradient(145deg, #1a1a1a, #121212);
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 12px;
-        }
-
-        .progress-title {
-            color: #e8b13e;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .progress-percent {
-            color: #c0c0c0;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .progress-bar-container {
-            background: #2a2a2a;
-            border-radius: 20px;
-            height: 12px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .progress-bar-fill {
-            background: linear-gradient(90deg, #e8b13e, #f5c542);
-            width: 0%;
-            height: 100%;
-            border-radius: 20px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-stats {
-            display: flex;
-            justify-content: space-between;
-            color: #a0a0a0;
-            font-size: 13px;
-        }
-
-        .progress-goal {
-            color: #e8b13e;
-            font-weight: 500;
-        }
-
-        .fixed-input-container {
-            position: fixed;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            max-width: 480px;
-            margin: 0 auto;
-            background: linear-gradient(to top, #0f0f0f, rgba(15,15,15,0.95));
-            padding: 16px 20px;
-            border-top: 1px solid #2a2a2a;
-            border-bottom: 1px solid #2a2a2a;
-            z-index: 50;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-
-        .fixed-input-wrapper {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .fixed-input {
-            flex: 1;
-            padding: 16px 18px;
-            font-size: 15px;
-            border: 2px solid #2a2a2a;
-            border-radius: 24px;
-            background: #1a1a1a;
-            outline: none;
-            transition: all 0.2s;
-            resize: none;
-            min-height: 56px;
-            max-height: 120px;
-            color: #ffffff;
-        }
-
-        .fixed-input:focus {
-            border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
-        }
-
-        .fixed-input::placeholder {
-            color: #6b6b6b;
-        }
-
-        .fixed-send-btn {
-            width: 56px;
-            height: 56px;
-            border: none;
-            border-radius: 20px;
-            background: #e8b13e;
-            color: #0a0a0a;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .fixed-send-btn:hover {
-            background: #d9a231;
-            transform: scale(0.98);
-        }
-
-        .screen {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-container {
-            background: #121212;
-            border-radius: 32px;
-            padding: 28px 24px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .form-title {
-            font-size: 30px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 12px;
-        }
-
-        .form-subtitle {
-            color: #a0a0a0;
-            margin-bottom: 28px;
-            font-size: 16px;
-        }
-
-        .input-group {
-            margin-bottom: 22px;
-        }
-
-        .input-label {
-            display: block;
-            font-size: 15px;
-            font-weight: 500;
-            color: #c0c0c0;
-            margin-bottom: 8px;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 18px 20px;
-            font-size: 16px;
-            border: 2px solid #2a2a2a;
-            border-radius: 24px;
-            background: #1a1a1a;
-            transition: all 0.2s;
-            outline: none;
-            color: #ffffff;
-        }
-
-        .input-field:focus {
-            border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
-        }
-
-        .input-field::placeholder {
-            color: #6b6b6b;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 18px 24px;
-            border: none;
-            border-radius: 30px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .btn-primary {
-            background: #e8b13e;
-            color: #0a0a0a;
-        }
-
-        .btn-primary:hover {
-            background: #d9a231;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #2a2a2a;
-            color: #ffffff;
-        }
-
-        .btn-secondary:hover {
-            background: #3a3a3a;
-        }
-
-        .btn-danger {
-            background: #5a1a1a;
-            color: #ffffff;
-            margin-top: 16px;
-        }
-
-        .role-tabs {
-            display: flex;
-            gap: 12px;
-            margin: 0 0 24px;
-            background: #1a1a1a;
-            padding: 6px;
-            border-radius: 60px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 14px 0;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #a0a0a0;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .tab.active {
-            background: #e8b13e;
-            color: #0a0a0a;
-        }
-
-        .back-to-functions {
-            background: #1a1a1a;
-            border-radius: 60px;
-            padding: 12px 20px;
-            margin: 0 0 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #2a2a2a;
-        }
-
-        .back-to-functions:hover {
-            border-color: #e8b13e;
-            background: #222;
-        }
-
-        .back-to-functions i {
-            color: #e8b13e;
-            font-size: 18px;
-        }
-
-        .back-to-functions span {
-            font-size: 15px;
-            font-weight: 500;
-            color: #c0c0c0;
-        }
-
-        .features-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-            transition: all 0.3s ease;
-        }
-
-        .features-grid.hidden {
-            display: none;
-        }
-
-        .feature-card {
-            background: #121212;
-            border-radius: 24px;
-            padding: 20px;
-            border: 2px solid #2a2a2a;
-            transition: all 0.2s;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .feature-card:hover {
-            border-color: #e8b13e;
-            transform: translateY(-2px);
-        }
-
-        .feature-icon {
-            width: 52px;
-            height: 52px;
-            background: #1a1a1a;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #e8b13e;
-        }
-
-        .feature-text h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .feature-text p {
-            color: #a0a0a0;
-            font-size: 14px;
-        }
-
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin: 20px 0 40px 0;
-        }
-
-        .message {
-            display: block;
-            margin-bottom: 12px;
-            animation: messageAppear 0.3s ease;
-        }
-
-        @keyframes messageAppear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message-bubble {
-            padding: 14px 18px;
-            border-radius: 22px;
-            font-size: 15px;
-            line-height: 1.6;
-            word-wrap: break-word;
-            max-width: 90%;
-        }
-
-        .user-message {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .ai-message {
-            display: flex;
-            justify-content: flex-start;
-        }
-
-        .user-message .message-bubble {
-            background: #e8b13e;
-            color: #0a0a0a;
-            border-bottom-right-radius: 6px;
-        }
-
-        .ai-message .message-bubble {
-            background: #1a1a1a;
-            color: #ffffff;
-            border-bottom-left-radius: 6px;
-            border: 1px solid #2a2a2a;
-        }
-
-        /* НИЖНЯЯ НАВИГАЦИЯ С ПРОФИЛЕМ */
-        .bottom-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 8px 16px;
-            background: #0f0f0f;
-            border-top: 2px solid #2a2a2a;
-            border-radius: 40px 40px 0 0;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            max-width: 480px;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #6b6b6b;
-            font-size: 11px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            padding: 8px 12px;
-            border-radius: 30px;
-        }
-
-        .nav-item i {
-            font-size: 22px;
-        }
-
-        .nav-item.active {
-            color: #e8b13e;
-            background: #1a1a1a;
-        }
-
-        /* ПРОФИЛЬ В НАВИГАЦИИ */
-        .profile-nav {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .profile-avatar-small {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(145deg, #e8b13e, #c4911a);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a0a0a;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .loader-overlay.visible {
-            display: flex;
-        }
-
-        .loader-content {
-            text-align: center;
-            background: #121212;
-            padding: 40px;
-            border-radius: 48px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 6px solid #2a2a2a;
-            border-top: 6px solid #e8b13e;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 24px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal-overlay.visible {
-            display: flex;
-        }
-
-        .modal-window {
-            background: #121212;
-            border-radius: 40px;
-            width: 90%;
-            max-width: 420px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 28px 24px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .modal-close {
-            width: 100%;
-            padding: 16px;
-            background: #1a1a1a;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #ffffff;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .privacy-text {
-            color: #c0c0c0;
-            font-size: 14px;
-            line-height: 1.8;
-            margin-bottom: 24px;
-        }
-
-        .test-question {
-            background: #1a1a1a;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .test-question p {
-            color: #ffffff;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .test-option {
-            background: #0f0f0f;
-            padding: 12px 16px;
-            margin: 8px 0;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #2a2a2a;
-            color: #c0c0c0;
-        }
-
-        .test-option:hover {
-            border-color: #e8b13e;
-            background: #1a1a1a;
-        }
-
-        .test-option.selected {
-            border-color: #e8b13e;
-            background: #e8b13e20;
-            color: #e8b13e;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Невио</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <div class="main-content" id="mainContent">
-            
-            <!-- ЭКРАН РЕГИСТРАЦИИ -->
-            <div id="registerScreen" class="screen active">
-                <div class="form-container">
-                    <h2 class="form-title">Добро пожаловать!</h2>
-                    <p class="form-subtitle">Создайте аккаунт чтобы начать</p>
+  <div id="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 48 48">
+            <rect x="6" y="6" width="36" height="36" rx="10" fill="var(--accent-soft)"></rect>
+            <path d="M15 24l6 6 12-13" stroke="var(--accent)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>Невио</h1>
+          <p>smart study workspace</p>
+        </div>
+      </div>
 
-                    <div class="input-group">
-                        <label class="input-label">Ваше имя</label>
-                        <input type="text" id="regName" class="input-field" placeholder="Введите имя">
-                    </div>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-page="home" onclick="app.navigate('home')">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Главная</span>
+        </button>
+        <button class="nav-btn" data-page="profile" onclick="app.navigate('profile')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 20c1.8-3.5 5-5 8-5s6.2 1.5 8 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Профиль</span>
+        </button>
+        <button class="nav-btn" data-page="settings" onclick="app.navigate('settings')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M2 12h3M19 12h3M4.9 19.1l2.2-2.2M16.9 7.1l2.2-2.2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Настройки</span>
+        </button>
+      </nav>
 
-                    <div class="input-group">
-                        <label class="input-label">Выберите роль</label>
-                        <div class="role-tabs">
-                            <button id="regRoleTeacher" class="tab active">
-                                <i class="fas fa-chalkboard-teacher"></i> Учитель
-                            </button>
-                            <button id="regRoleStudent" class="tab">
-                                <i class="fas fa-user-graduate"></i> Ученик
-                            </button>
-                        </div>
-                    </div>
+      <div class="side-footer">
+        <div class="small-card">
+          <div class="small-card-title">Роль</div>
+          <div class="small-card-value" id="sidebar-role">Не выбрана</div>
+        </div>
+      </div>
+    </aside>
 
-                    <div class="input-group">
-                        <label class="input-label">Школа</label>
-                        <input type="text" id="regSchool" class="input-field" placeholder="Название школы">
-                    </div>
+    <main class="content">
+      <section id="page-home" class="page active">
+        <div class="topbar">
+          <div>
+            <h2>Добро пожаловать в Невио</h2>
+            <p class="muted">Telegram WebApp для учителей и учеников</p>
+          </div>
+        </div>
 
-                    <div class="input-group" id="classFieldContainer">
-                        <label class="input-label" id="classFieldLabel">Предмет</label>
-                        <input type="text" id="regClass" class="input-field" placeholder="Математика, Физика...">
-                    </div>
+        <div class="hero-grid">
+          <div class="panel hero-panel">
+            <div class="hero-title-row">
+              <div>
+                <h3>Выберите роль</h3>
+                <p>Просто зайдите и начните пользоваться. Всё уже настроено.</p>
+              </div>
+              <div class="hero-badge">Ready</div>
+            </div>
 
-                    <button class="btn btn-primary" id="registerBtn">
-                        <i class="fas fa-arrow-right"></i> Начать работу
-                    </button>
+            <div class="role-grid">
+              <button class="role-tile" onclick="app.setRole('teacher')">
+                <div class="role-tile-icon">
+                  <svg viewBox="0 0 24 24"><path d="M12 3L2 8l10 5 10-5-10-5zm-6 8v4l6 3 6-3v-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
                 </div>
-            </div>
-
-            <!-- ГЛАВНЫЙ ЭКРАН -->
-            <div id="mainScreen" class="screen">
-                <!-- ПРОГРЕСС-БАР -->
-                <div class="progress-section" id="progressSection">
-                    <div class="progress-header">
-                        <span class="progress-title">🎯 НЕДЕЛЬНАЯ ЦЕЛЬ</span>
-                        <span class="progress-percent" id="progressPercent">0%</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="progressFill"></div>
-                    </div>
-                    <div class="progress-stats">
-                        <span>📊 <span id="currentTasks">0</span> из <span id="goalTasks">10</span> задач</span>
-                        <span class="progress-goal">Осталось <span id="remainingTasks">10</span></span>
-                    </div>
+                <div class="role-tile-text">
+                  <h4>Учитель</h4>
+                  <p>Конспекты, тесты, практика, упрощённые объяснения, банк материалов</p>
                 </div>
+              </button>
 
-                <!-- КНОПКА ВОЗВРАТА К ФУНКЦИЯМ -->
-                <div class="back-to-functions" id="backToFunctions" style="display: none;">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Вернуться к функциям</span>
+              <button class="role-tile" onclick="app.setRole('student')">
+                <div class="role-tile-icon">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 20c2-3.5 5.2-5 8-5 2.8 0 6 1.5 8 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
                 </div>
-
-                <!-- Контент УЧЕНИКА -->
-                <div id="studentContent">
-                    <div class="features-grid" id="studentFeatures">
-                        <div class="feature-card" id="studentExplainCard">
-                            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
-                            <div class="feature-text"><h3>Объяснить тему</h3><p>Получи простое объяснение</p></div>
-                        </div>
-                        <div class="feature-card" id="studentSolveCard">
-                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                            <div class="feature-text"><h3>Решить задачу</h3><p>Математика, физика, химия</p></div>
-                        </div>
-                        <div class="feature-card" id="studentTestCard">
-                            <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
-                            <div class="feature-text"><h3>Пройти тест</h3><p>Проверь свои знания</p></div>
-                        </div>
-                    </div>
+                <div class="role-tile-text">
+                  <h4>Ученик</h4>
+                  <p>Решение задач, журнал тем, итог дня, недельные квесты, достижения</p>
                 </div>
-
-                <!-- Контент УЧИТЕЛЯ -->
-                <div id="teacherContent" style="display: none;">
-                    <div class="features-grid" id="teacherFeatures">
-                        <div class="feature-card" id="teacherLessonCard">
-                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="feature-text"><h3>Создать конспект</h3><p>Подробный план урока</p></div>
-                        </div>
-                        <div class="feature-card" id="teacherSolveCard">
-                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                            <div class="feature-text"><h3>Решить задачу</h3><p>Для демонстрации ученикам</p></div>
-                        </div>
-                        <div class="feature-card" id="teacherGenerateTestCard">
-                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="feature-text"><h3>Создать тест</h3><p>Сгенерируй тест по теме</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ЧАТ КОНТЕЙНЕРЫ -->
-                <div id="chatContainer" class="chat-container"></div>
-                <div id="teacherChatContainer" class="chat-container"></div>
-                <div id="testContainer" class="chat-container" style="display: none;"></div>
+              </button>
             </div>
-        </div>
+          </div>
 
-        <!-- ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА -->
-        <div class="fixed-input-container" id="fixedInputContainer">
-            <div class="fixed-input-wrapper">
-                <textarea id="fixedMessageInput" class="fixed-input" placeholder="Введите задачу или вопрос..." rows="1"></textarea>
-                <button class="fixed-send-btn" id="fixedSendBtn"><i class="fas fa-paper-plane"></i></button>
+          <div class="panel">
+            <h3>Возможности</h3>
+            <div class="feature-list">
+              <div class="feature-item"><span class="dot"></span><span>Все работает без ввода API ключей пользователем</span></div>
+              <div class="feature-item"><span class="dot"></span><span>Запоминает темы и вопросы ученика</span></div>
+              <div class="feature-item"><span class="dot"></span><span>Генерирует итоговый тест по темам дня</span></div>
+              <div class="feature-item"><span class="dot"></span><span>Помогает учителю готовить уроки быстрее</span></div>
             </div>
+          </div>
         </div>
 
-        <!-- НИЖНЯЯ НАВИГАЦИЯ С ПРОФИЛЕМ -->
-        <div class="bottom-nav">
-            <button class="nav-item active" id="navHome">
-                <i class="fas fa-home"></i>
-                <span>Главная</span>
-            </button>
-            <button class="nav-item" id="navProfile">
-                <div class="profile-avatar-small" id="navAvatar">👤</div>
-                <span id="navName">Профиль</span>
-            </button>
-            <button class="nav-item" id="navSettings">
-                <i class="fas fa-cog"></i>
-                <span>Настройки</span>
-            </button>
+        <div id="role-entry-panels"></div>
+      </section>
+
+      <section id="page-teacher" class="page">
+        <div class="topbar">
+          <div>
+            <h2>Панель учителя</h2>
+            <p class="muted">Подготовка материалов и аналитика</p>
+          </div>
         </div>
 
-        <!-- ЗАГРУЗЧИК -->
-        <div id="loader" class="loader-overlay">
-            <div class="loader-content">
-                <div class="spinner"></div>
-                <p style="color: #ffffff;">Nevio думает...</p>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="stat-label">Материалов</div><div class="stat-value" id="teacher-materials-count">0</div></div>
+          <div class="stat-box"><div class="stat-label">Конспектов</div><div class="stat-value" id="teacher-conspects-count">0</div></div>
+          <div class="stat-box"><div class="stat-label">Тестов</div><div class="stat-value" id="teacher-tests-count">0</div></div>
+          <div class="stat-box"><div class="stat-label">Практик</div><div class="stat-value" id="teacher-practice-count">0</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Создание материалов</h3>
+            <div class="action-list">
+              <button class="action-card" onclick="app.showPage('create-conspect')">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 3v5h5" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>Конспект</h4><p>Полный урок по теме</p></div>
+              </button>
+
+              <button class="action-card" onclick="app.showPage('create-practice')">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>Практика</h4><p>Задачи с решениями</p></div>
+              </button>
+
+              <button class="action-card" onclick="app.showPage('create-test')">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>Тест</h4><p>Проверка по теме</p></div>
+              </button>
+
+              <button class="action-card" onclick="app.showPage('create-simple')">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14M5 7h14M5 17h8" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>Простое объяснение</h4><p>Для слабой группы и повторения</p></div>
+              </button>
             </div>
+          </div>
+
+          <div class="panel">
+            <h3>Аналитика</h3>
+            <div class="analytics-box">
+              <div class="analytics-row"><span>Самая частая тема</span><strong id="teacher-top-topic">—</strong></div>
+              <div class="analytics-row"><span>Самый частый тип</span><strong id="teacher-top-type">—</strong></div>
+              <div class="analytics-row"><span>Последняя активность</span><strong id="teacher-last-created">—</strong></div>
+            </div>
+
+            <div class="section-gap"></div>
+            <button class="btn-primary" onclick="app.showTeacherBank()">Банк материалов</button>
+          </div>
         </div>
+      </section>
+
+      <section id="page-student" class="page">
+        <div class="topbar">
+          <div>
+            <h2>Панель ученика</h2>
+            <p class="muted">Учебный трекер, объяснения и итоговые тесты</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box"><div class="stat-label">Решено задач</div><div class="stat-value" id="student-solved-count">0</div></div>
+          <div class="stat-box"><div class="stat-label">Тем за неделю</div><div class="stat-value" id="student-week-topics-count">0</div></div>
+          <div class="stat-box"><div class="stat-label">Серия дней</div><div class="stat-value" id="student-streak-count">0</div></div>
+          <div class="stat-box"><div class="stat-label">Тестов пройдено</div><div class="stat-value" id="student-tests-count">0</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Фокус дня</h3>
+              <button class="ghost-btn" onclick="app.showPage('student-topics')">Журнал тем</button>
+            </div>
+
+            <div class="focus-card">
+              <div class="focus-main" id="student-focus-topic">Пока нет активной темы</div>
+              <div class="focus-sub" id="student-focus-sub">Начните решать задачи, чтобы Невио собрал карту вашего дня</div>
+            </div>
+
+            <div class="section-gap"></div>
+
+            <div class="action-list">
+              <button class="action-card" onclick="app.showPage('solve')">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>Решить задачу</h4><p>Пошаговое объяснение и сохранение темы</p></div>
+              </button>
+
+              <button class="action-card" onclick="app.generateDailyReviewQuiz()">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>Итог дня</h4><p>Тест по сегодняшним темам и вопросам</p></div>
+              </button>
+
+              <button class="action-card" onclick="app.showStudentHistory()">
+                <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                <div><h4>История решений</h4><p>Все прошлые задачи и объяснения</p></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Недельные квесты</h3>
+              <button class="ghost-btn" onclick="app.showPage('quests')">Открыть</button>
+            </div>
+            <div id="quest-list" class="quest-list"></div>
+
+            <div class="section-gap"></div>
+            <h3>Достижения</h3>
+            <div id="achievement-grid" class="achievement-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-create-conspect" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('teacher')">Назад</button>
+          <h2>Конспект урока</h2>
+        </div>
+        <div class="panel form-panel">
+          <div class="form-grid">
+            <div class="form-group"><label>Тема</label><input id="conspect-topic" type="text" placeholder="Например: Квадратные уравнения" /></div>
+            <div class="form-group"><label>Класс</label>
+              <select id="conspect-grade">
+                <option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Предмет</label>
+              <select id="conspect-subject">
+                <option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Литература</option><option>Русский язык</option><option>Английский язык</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="app.generateConspect()">Сгенерировать</button>
+        </div>
+        <div class="panel hidden" id="conspect-result-panel">
+          <div class="result-head"><h3>Результат</h3><button class="ghost-btn" onclick="app.copyTextById('conspect-result')">Копировать</button></div>
+          <div id="conspect-result" class="result-text"></div>
+        </div>
+      </section>
+
+      <section id="page-create-practice" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('teacher')">Назад</button>
+          <h2>Практика</h2>
+        </div>
+        <div class="panel form-panel">
+          <div class="form-grid">
+            <div class="form-group"><label>Тема</label><input id="practice-topic" type="text" placeholder="Например: Системы уравнений" /></div>
+            <div class="form-group"><label>Количество задач</label><input id="practice-count" type="number" min="3" max="12" value="5" /></div>
+            <div class="form-group"><label>Сложность</label>
+              <select id="practice-difficulty"><option>Лёгкая</option><option selected>Средняя</option><option>Сложная</option></select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="app.generatePractice()">Сгенерировать</button>
+        </div>
+        <div class="panel hidden" id="practice-result-panel">
+          <div class="result-head"><h3>Результат</h3><button class="ghost-btn" onclick="app.copyTextById('practice-result')">Копировать</button></div>
+          <div id="practice-result" class="result-text"></div>
+        </div>
+      </section>
+
+      <section id="page-create-test" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('teacher')">Назад</button>
+          <h2>Проверочный тест</h2>
+        </div>
+        <div class="panel form-panel">
+          <div class="form-grid">
+            <div class="form-group"><label>Тема</label><input id="teacher-test-topic" type="text" placeholder="Например: Дроби" /></div>
+            <div class="form-group"><label>Количество вопросов</label><input id="teacher-test-count" type="number" min="5" max="15" value="8" /></div>
+            <div class="form-group"><label>Формат</label>
+              <select id="teacher-test-format"><option>Смешанный</option><option>Только с выбором ответа</option><option>Короткий письменный</option></select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="app.generateTeacherTest()">Сгенерировать</button>
+        </div>
+        <div class="panel hidden" id="teacher-test-result-panel">
+          <div class="result-head"><h3>Результат</h3><button class="ghost-btn" onclick="app.copyTextById('teacher-test-result')">Копировать</button></div>
+          <div id="teacher-test-result" class="result-text"></div>
+        </div>
+      </section>
+
+      <section id="page-create-simple" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('teacher')">Назад</button>
+          <h2>Объяснить простым языком</h2>
+        </div>
+        <div class="panel form-panel">
+          <div class="form-grid">
+            <div class="form-group wide"><label>Тема</label><input id="simple-topic" type="text" placeholder="Например: Что такое фотосинтез" /></div>
+          </div>
+          <button class="btn-primary" onclick="app.generateSimpleExplanation()">Сгенерировать</button>
+        </div>
+        <div class="panel hidden" id="simple-result-panel">
+          <div class="result-head"><h3>Результат</h3><button class="ghost-btn" onclick="app.copyTextById('simple-result')">Копировать</button></div>
+          <div id="simple-result" class="result-text"></div>
+        </div>
+      </section>
+
+      <section id="page-solve" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('student')">Назад</button>
+          <h2>Решение задачи</h2>
+        </div>
+        <div class="panel form-panel">
+          <div class="form-grid">
+            <div class="form-group wide"><label>Задача или вопрос</label><textarea id="student-problem" rows="5" placeholder="Например: Реши уравнение 3x - 7 = 11 и объясни каждый шаг"></textarea></div>
+          </div>
+          <button class="btn-primary" onclick="app.solveProblem()">Получить объяснение</button>
+        </div>
+        <div class="panel hidden" id="solve-result-panel">
+          <div class="result-head"><h3>Решение и объяснение</h3><button class="ghost-btn" onclick="app.copyTextById('solve-result')">Копировать</button></div>
+          <div id="solve-result" class="result-text"></div>
+          <div class="result-actions"><button class="btn-secondary" onclick="app.markSolved()">Отметить как решённое</button></div>
+        </div>
+      </section>
+
+      <section id="page-student-topics" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('student')">Назад</button>
+          <h2>Журнал тем</h2>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Темы за неделю</h3>
+            <div id="topic-week-list" class="list-block"></div>
+          </div>
+          <div class="panel">
+            <h3>Сегодняшние вопросы</h3>
+            <div id="today-questions-list" class="list-block"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-quests" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('student')">Назад</button>
+          <h2>Недельные квесты</h2>
+        </div>
+        <div class="panel"><div id="quest-page-list" class="quest-list"></div></div>
+      </section>
+
+      <section id="page-daily-quiz" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('student')">Назад</button>
+          <h2>Итог дня</h2>
+        </div>
+        <div class="panel">
+          <div class="result-head"><h3>Тест по темам дня</h3><button class="ghost-btn" onclick="app.copyTextById('daily-quiz-result')">Копировать</button></div>
+          <div id="daily-quiz-result" class="result-text"></div>
+          <div class="result-actions"><button class="btn-secondary" onclick="app.markDailyQuizCompleted()">Отметить как пройденный</button></div>
+        </div>
+      </section>
+
+      <section id="page-teacher-bank" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('teacher')">Назад</button>
+          <h2>Банк материалов</h2>
+        </div>
+        <div id="teacher-bank-list" class="stack-list"></div>
+      </section>
+
+      <section id="page-student-history" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.showPage('student')">Назад</button>
+          <h2>История решений</h2>
+        </div>
+        <div id="student-history-list" class="stack-list"></div>
+      </section>
+
+      <section id="page-profile" class="page">
+        <div class="topbar">
+          <div>
+            <h2>Профиль</h2>
+            <p class="muted">Данные подтягиваются из Telegram автоматически</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel profile-panel">
+            <div class="profile-avatar" id="profile-avatar">N</div>
+            <h3 id="profile-name">Пользователь</h3>
+            <p class="muted" id="profile-role">Роль не выбрана</p>
+            <button class="btn-secondary" onclick="app.changeRole()">Сменить роль</button>
+          </div>
+
+          <div class="panel">
+            <h3>Активность</h3>
+            <div class="analytics-box">
+              <div class="analytics-row"><span>Материалов создано</span><strong id="profile-materials">0</strong></div>
+              <div class="analytics-row"><span>Задач решено</span><strong id="profile-solved">0</strong></div>
+              <div class="analytics-row"><span>Тестов пройдено</span><strong id="profile-quizzes">0</strong></div>
+              <div class="analytics-row"><span>Текущая серия</span><strong id="profile-streak">0</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-settings" class="page">
+        <div class="topbar">
+          <div>
+            <h2>Настройки</h2>
+            <p class="muted">Оформление и поведение приложения</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="settings-row">
+            <div>
+              <div class="settings-title">Светлая тема</div>
+              <div class="settings-desc">Переключить внешний вид интерфейса</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="theme-toggle" onchange="app.toggleTheme()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="settings-row">
+            <div>
+              <div class="settings-title">Уведомления</div>
+              <div class="settings-desc">Показывать всплывающие сообщения</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="notify-toggle" onchange="app.toggleNotifications()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="loader" class="loader hidden">
+    <div class="loader-box">
+      <div class="spinner"></div>
+      <div class="loader-text">Невио обрабатывает запрос...</div>
     </div>
+  </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
-    <div id="profileModal" class="modal-overlay">
-        <div class="modal-window">
-            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 24px;">
-                <div class="avatar" style="width: 80px; height: 80px; font-size: 36px; margin-bottom: 16px;" id="modalAvatar"></div>
-                <h2 style="color: #ffffff;" id="modalName"></h2>
-                <p style="color: #e8b13e; margin-top: 8px;" id="modalRole"></p>
-            </div>
-            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 16px;">
-                <p style="color: #c0c0c0; margin-bottom: 8px;"><i class="fas fa-school"></i> <span id="modalSchool"></span></p>
-                <p style="color: #c0c0c0;"><i class="fas fa-graduation-cap"></i> <span id="modalClass"></span></p>
-            </div>
-            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 24px;">
-                <p style="color: #ffffff; margin-bottom: 12px;"><i class="fas fa-chart-line"></i> Статистика</p>
-                <p style="color: #c0c0c0;">📝 Конспектов: <span id="statLessons">0</span></p>
-                <p style="color: #c0c0c0;">✅ Решено задач: <span id="statTasks">0</span></p>
-                <p style="color: #c0c0c0;">🏆 Недельная цель: <span id="weeklyProgress">0</span>%</p>
-            </div>
-            <button class="modal-close" id="closeProfileModal">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО СТАТИСТИКИ (оставлено для совместимости) -->
-    <div id="statsModal" class="modal-overlay">
-        <div class="modal-window">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">Статистика</h2>
-            <div id="statsContent" class="modal-content"></div>
-            <button class="modal-close" id="closeStatsModal">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
-    <div id="settingsModal" class="modal-overlay">
-        <div class="modal-window">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">Настройки</h2>
-            <div id="settingsContent" class="modal-content"></div>
-            <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти из аккаунта</button>
-            <button class="modal-close" id="closeSettingsModal">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ПОЛИТИКИ КОНФИДЕНЦИАЛЬНОСТИ -->
-    <div id="privacyModal" class="modal-overlay">
-        <div class="modal-window">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">Политика конфиденциальности</h2>
-            <div class="privacy-text">
-                <p><strong>1. Общие положения</strong></p>
-                <p>Настоящая Политика конфиденциальности определяет порядок обработки и защиты информации о пользователях приложения Nevio (далее — «Приложение»).</p>
-                <p style="margin-top: 12px;"><strong>2. Какие данные мы собираем</strong></p>
-                <p>Приложение не собирает, не хранит и не передает третьим лицам персональные данные пользователей. Вся информация (имя, роль, школа, класс) сохраняется исключительно на устройстве пользователя в локальном хранилище браузера и может быть удалена пользователем в любой момент.</p>
-                <p style="margin-top: 12px;"><strong>3. Обработка сообщений</strong></p>
-                <p>Все запросы, отправляемые в Приложение, передаются анонимно в API для обработки и не сохраняются на серверах Приложения. Мы не имеем доступа к истории ваших диалогов.</p>
-                <p style="margin-top: 12px;"><strong>4. Сторонние сервисы</strong></p>
-                <p>Приложение использует API Groq для обработки запросов. Обработка данных осуществляется в соответствии с политикой конфиденциальности Groq.</p>
-                <p style="margin-top: 12px;"><strong>5. Ваши права</strong></p>
-                <p>Вы можете в любой момент удалить все свои данные, выйдя из аккаунта или очистив данные приложения в настройках Telegram.</p>
-                <p style="margin-top: 12px;"><strong>6. Контакты</strong></p>
-                <p>По вопросам, связанным с конфиденциальностью, вы можете связаться с нами через Telegram-бота.</p>
-                <p style="margin-top: 12px;"><strong>7. Изменения</strong></p>
-                <p>Мы оставляем за собой право обновлять данную политику. Актуальная версия всегда доступна в настройках Приложения.</p>
-                <p style="margin-top: 16px; color: #e8b13e;">Последнее обновление: 27 марта 2026 г.</p>
-            </div>
-            <button class="modal-close" id="closePrivacyModal">Закрыть</button>
-        </div>
-    </div>
-
-    <div id="testModal" class="modal-overlay">
-        <div class="modal-window" style="max-width: 480px; width: 90%;">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">📝 Генератор тестов</h2>
-            <div class="input-group">
-                <label class="input-label">Тема теста</label>
-                <input type="text" id="testTopic" class="input-field" placeholder="Например: Квадратные уравнения, 8 класс">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Количество вопросов</label>
-                <select id="testCount" class="input-field" style="background: #1a1a1a;">
-                    <option value="5">5 вопросов</option>
-                    <option value="10" selected>10 вопросов</option>
-                    <option value="15">15 вопросов</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" id="generateTestBtn">Создать тест</button>
-            <button class="modal-close" id="closeTestModal">Отмена</button>
-        </div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-
-        // API НАСТРОЙКИ
-        const API_KEY = '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';
-        const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-        const MODEL = 'llama-3.3-70b-versatile';
-
-        // ПРОМПТЫ
-        const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Решай задачи максимально подробно. Форматируй как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми действиями, "Ответ:". Объясняй каждый шаг, используй понятный язык.`;
-        const EXPLAIN_PROMPT = `Ты — лучший репетитор. Объясни тему простым языком, используй аналогии из жизни, примеры. Пиши понятно, структурированно.`;
-        const TEACHER_PROMPT = `Ты — опытный учитель. Составь подробный конспект урока. Напиши: цель урока, оборудование, ход урока с этапами, примеры, задания для учеников, вопросы для проверки.`;
-        const TEST_PROMPT = `Ты — учитель. Создай тест по указанной теме. Верни ТОЛЬКО JSON массив в формате: [{"question":"вопрос","options":["вариант1","вариант2","вариант3","вариант4"],"correct":0}]. correct от 0 до 3. Никакого лишнего текста.`;
-
-        let userData = null;
-        let currentMode = 'explain';
-        let currentContainerId = 'chatContainer';
-        let isChatMode = false;
-        let currentTest = null;
-        let userAnswers = [];
-
-        // Цель на неделю
-        const WEEKLY_GOAL = 10;
-
-        // ЭЛЕМЕНТЫ
-        const registerScreen = document.getElementById('registerScreen');
-        const mainScreen = document.getElementById('mainScreen');
-        const mainContent = document.getElementById('mainContent');
-        const loader = document.getElementById('loader');
-        const fixedInputContainer = document.getElementById('fixedInputContainer');
-        const fixedMessageInput = document.getElementById('fixedMessageInput');
-        const fixedSendBtn = document.getElementById('fixedSendBtn');
-        const regRoleTeacher = document.getElementById('regRoleTeacher');
-        const regRoleStudent = document.getElementById('regRoleStudent');
-        const classFieldLabel = document.getElementById('classFieldLabel');
-        const regClass = document.getElementById('regClass');
-        const backToFunctions = document.getElementById('backToFunctions');
-        const studentFeatures = document.getElementById('studentFeatures');
-        const teacherFeatures = document.getElementById('teacherFeatures');
-        const chatContainer = document.getElementById('chatContainer');
-        const teacherChatContainer = document.getElementById('teacherChatContainer');
-        const testContainer = document.getElementById('testContainer');
-        const navHome = document.getElementById('navHome');
-        const navProfile = document.getElementById('navProfile');
-        const navSettings = document.getElementById('navSettings');
-
-        function updateClassField() {
-            if (regRoleTeacher.classList.contains('active')) {
-                classFieldLabel.textContent = 'Предмет';
-                regClass.placeholder = 'Математика, Физика...';
-            } else {
-                classFieldLabel.textContent = 'Класс';
-                regClass.placeholder = '8 класс, 9 класс...';
-            }
-        }
-
-        regRoleTeacher.addEventListener('click', () => {
-            regRoleTeacher.classList.add('active');
-            regRoleStudent.classList.remove('active');
-            updateClassField();
-        });
-
-        regRoleStudent.addEventListener('click', () => {
-            regRoleStudent.classList.add('active');
-            regRoleTeacher.classList.remove('active');
-            updateClassField();
-        });
-
-        function updateProgressBar() {
-            if (!userData) return;
-            const tasks = userData.stats.tasks || 0;
-            const percent = Math.min(100, Math.round((tasks / WEEKLY_GOAL) * 100));
-            document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('progressPercent').textContent = percent + '%';
-            document.getElementById('currentTasks').textContent = tasks;
-            document.getElementById('goalTasks').textContent = WEEKLY_GOAL;
-            document.getElementById('remainingTasks').textContent = Math.max(0, WEEKLY_GOAL - tasks);
-        }
-
-        function showLoader() { loader.classList.add('visible'); }
-        function hideLoader() { loader.classList.remove('visible'); }
-        function showFixedInput() { fixedInputContainer.style.display = 'block'; }
-        function hideFixedInput() { fixedInputContainer.style.display = 'none'; }
-        function setInputPlaceholder(text) { fixedMessageInput.placeholder = text; }
-
-        function cleanResponse(text) {
-            return text.replace(/#/g, '').replace(/\*/g, '').replace(/_/g, '').replace(/`/g, '').trim();
-        }
-
-        function formatFormulas(text) {
-            return text.replace(/\^2/g, '²').replace(/\^3/g, '³').replace(/sqrt\(/g, '√(').replace(/pi/g, 'π');
-        }
-
-        function addMessage(content, isUser = true, containerId = 'chatContainer') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const messageDiv = document.createElement('div');
-            messageDiv.className = isUser ? 'user-message' : 'ai-message';
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.textContent = !isUser ? formatFormulas(content) : content;
-            messageDiv.appendChild(bubble);
-            container.appendChild(messageDiv);
-            setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
-        }
-
-        async function callAI(prompt, mode) {
-            showLoader();
-            try {
-                let systemPrompt = '';
-                if (mode === 'teacher') systemPrompt = TEACHER_PROMPT;
-                else if (mode === 'explain') systemPrompt = EXPLAIN_PROMPT;
-                else if (mode === 'test') systemPrompt = TEST_PROMPT;
-                else systemPrompt = SOLVE_PROMPT;
-
-                const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: prompt }];
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: MODEL, messages, temperature: 0.7, max_tokens: 4096 })
-                });
-                if (!response.ok) throw new Error('API Error');
-                const data = await response.json();
-                let answer = cleanResponse(data.choices[0].message.content);
-                if (userData) {
-                    if (mode === 'teacher') userData.stats.lessons++;
-                    else userData.stats.tasks++;
-                    localStorage.setItem('nevio_user', JSON.stringify(userData));
-                    updateProgressBar();
-                }
-                return answer;
-            } catch (error) {
-                console.error('AI Error:', error);
-                return 'Извините, произошла ошибка. Попробуйте позже.';
-            } finally { hideLoader(); }
-        }
-
-        async function generateTest(topic, count) {
-            showLoader();
-            try {
-                const response = await callAI(`${TEST_PROMPT} Тема: ${topic}. Сделай ${count} вопросов.`, 'test');
-                let jsonStr = response.match(/\[[\s\S]*\]/)?.[0] || response;
-                const test = JSON.parse(jsonStr);
-                if (!Array.isArray(test)) throw new Error('Неверный формат');
-                return test.slice(0, count);
-            } catch (error) {
-                console.error('Test generation error:', error);
-                return [{ question: `Тест по теме "${topic}"`, options: ["Правильный ответ 1", "Вариант 2", "Вариант 3", "Вариант 4"], correct: 0 }];
-            } finally { hideLoader(); }
-        }
-
-        function renderTest(test) {
-            testContainer.style.display = 'block';
-            chatContainer.style.display = 'none';
-            teacherChatContainer.style.display = 'none';
-            testContainer.innerHTML = '<div style="margin-bottom: 20px;"><div class="back-to-functions" id="exitTestBtn" style="margin-bottom: 16px;"><i class="fas fa-arrow-left"></i><span>Выйти из теста</span></div></div>';
-            
-            test.forEach((q, idx) => {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'test-question';
-                qDiv.innerHTML = `<p><strong>${idx + 1}. ${q.question}</strong></p>`;
-                q.options.forEach((opt, optIdx) => {
-                    const optDiv = document.createElement('div');
-                    optDiv.className = 'test-option';
-                    optDiv.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
-                    optDiv.onclick = () => {
-                        document.querySelectorAll(`#testContainer .test-question`).forEach(qd => {
-                            qd.querySelectorAll('.test-option').forEach(o => o.classList.remove('selected'));
-                        });
-                        optDiv.classList.add('selected');
-                        userAnswers[idx] = optIdx;
-                    };
-                    qDiv.appendChild(optDiv);
-                });
-                testContainer.appendChild(qDiv);
-            });
-            
-            const submitBtn = document.createElement('button');
-            submitBtn.className = 'btn btn-primary';
-            submitBtn.style.marginTop = '20px';
-            submitBtn.innerHTML = '📊 Завершить тест';
-            submitBtn.onclick = () => {
-                let correct = 0;
-                test.forEach((q, idx) => {
-                    if (userAnswers[idx] === q.correct) correct++;
-                });
-                const percent = Math.round(correct / test.length * 100);
-                let resultText = `📊 Результат: ${correct} из ${test.length} (${percent}%)\n\n`;
-                if (percent >= 80) resultText += '🎉 Отлично! Вы хорошо знаете тему!\n\n';
-                else if (percent >= 60) resultText += '👍 Хорошо, но есть над чем поработать.\n\n';
-                else resultText += '📚 Стоит повторить тему. Попробуйте ещё раз!\n\n';
-                
-                resultText += test.map((q, i) => {
-                    const isCorrect = userAnswers[i] === q.correct;
-                    return `${i+1}. ${q.question}\n${isCorrect ? '✅ Правильно' : '❌ Ошибка. Правильный ответ: ' + q.options[q.correct]}`;
-                }).join('\n\n');
-                
-                addMessage(resultText, false, 'chatContainer');
-                exitTestMode();
-            };
-            testContainer.appendChild(submitBtn);
-            document.getElementById('exitTestBtn').onclick = exitTestMode;
-        }
-
-        function exitTestMode() {
-            testContainer.style.display = 'none';
-            chatContainer.style.display = 'flex';
-            teacherChatContainer.style.display = 'flex';
-            currentTest = null;
-            userAnswers = [];
-            exitChatMode();
-        }
-
-        function enterChatMode(mode) {
-            isChatMode = true;
-            currentMode = mode;
-            if (userData.role === 'teacher') teacherFeatures.classList.add('hidden');
-            else studentFeatures.classList.add('hidden');
-            backToFunctions.style.display = 'flex';
-            chatContainer.innerHTML = '';
-            teacherChatContainer.innerHTML = '';
-            if (mode === 'teacher') setInputPlaceholder('Тема урока?');
-            else if (mode === 'explain') setInputPlaceholder('Что тебе объяснить?');
-            else setInputPlaceholder('Введите задачу...');
-        }
-
-        function exitChatMode() {
-            isChatMode = false;
-            if (userData.role === 'teacher') teacherFeatures.classList.remove('hidden');
-            else studentFeatures.classList.remove('hidden');
-            backToFunctions.style.display = 'none';
-            chatContainer.innerHTML = '';
-            teacherChatContainer.innerHTML = '';
-        }
-
-        document.getElementById('registerBtn').addEventListener('click', () => {
-            const name = document.getElementById('regName').value.trim();
-            if (!name) { alert('Введите имя'); return; }
-            userData = {
-                name, role: regRoleTeacher.classList.contains('active') ? 'teacher' : 'student',
-                school: document.getElementById('regSchool').value.trim() || 'Не указана',
-                class: regClass.value.trim() || (regRoleTeacher.classList.contains('active') ? 'Математика' : '8 класс'),
-                stats: { lessons: 0, tasks: 0 }
-            };
-            localStorage.setItem('nevio_user', JSON.stringify(userData));
-            updateMainScreen();
-        });
-
-        function updateMainScreen() {
-            document.getElementById('navName').textContent = userData.name.length > 10 ? userData.name.slice(0, 8) + '...' : userData.name;
-            document.getElementById('navAvatar').textContent = userData.name.charAt(0);
-            updateProgressBar();
-            if (userData.role === 'teacher') {
-                document.getElementById('teacherContent').style.display = 'block';
-                document.getElementById('studentContent').style.display = 'none';
-                currentContainerId = 'teacherChatContainer';
-            } else {
-                document.getElementById('teacherContent').style.display = 'none';
-                document.getElementById('studentContent').style.display = 'block';
-                currentContainerId = 'chatContainer';
-            }
-            registerScreen.classList.remove('active');
-            mainScreen.classList.add('active');
-            showFixedInput();
-        }
-
-        const saved = localStorage.getItem('nevio_user');
-        if (saved) { userData = JSON.parse(saved); updateMainScreen(); }
-
-        document.getElementById('studentExplainCard').addEventListener('click', () => enterChatMode('explain'));
-        document.getElementById('studentSolveCard').addEventListener('click', () => enterChatMode('solve'));
-        document.getElementById('teacherLessonCard').addEventListener('click', () => enterChatMode('teacher'));
-        document.getElementById('teacherSolveCard').addEventListener('click', () => enterChatMode('solve'));
-        document.getElementById('backToFunctions').addEventListener('click', exitChatMode);
-
-        document.getElementById('studentTestCard').addEventListener('click', () => {
-            document.getElementById('testModal').classList.add('visible');
-        });
-        document.getElementById('teacherGenerateTestCard').addEventListener('click', () => {
-            document.getElementById('testModal').classList.add('visible');
-        });
-        document.getElementById('generateTestBtn').addEventListener('click', async () => {
-            const topic = document.getElementById('testTopic').value.trim();
-            const count = parseInt(document.getElementById('testCount').value);
-            if (!topic) { alert('Введите тему теста'); return; }
-            document.getElementById('testModal').classList.remove('visible');
-            currentTest = await generateTest(topic, count);
-            renderTest(currentTest);
-        });
-        document.getElementById('closeTestModal').addEventListener('click', () => {
-            document.getElementById('testModal').classList.remove('visible');
-        });
-
-        fixedSendBtn.addEventListener('click', async () => {
-            if (!isChatMode) { alert('Сначала выберите функцию'); return; }
-            const message = fixedMessageInput.value.trim();
-            if (!message) { alert('Введите сообщение'); return; }
-            addMessage(message, true, currentContainerId);
-            fixedMessageInput.value = '';
-            const response = await callAI(message, currentMode);
-            addMessage(response, false, currentContainerId);
-        });
-        fixedMessageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fixedSendBtn.click(); }
-        });
-
-        navHome.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            navHome.classList.add('active');
-            exitChatMode();
-        });
-
-        navProfile.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            navProfile.classList.add('active');
-            if (!userData) return;
-            document.getElementById('modalName').textContent = userData.name;
-            document.getElementById('modalAvatar').textContent = userData.name.charAt(0);
-            document.getElementById('modalRole').textContent = userData.role === 'teacher' ? '👨‍🏫 Учитель' : '🧑‍🎓 Ученик';
-            document.getElementById('modalSchool').textContent = userData.school;
-            document.getElementById('modalClass').textContent = userData.class;
-            document.getElementById('statLessons').textContent = userData.stats.lessons;
-            document.getElementById('statTasks').textContent = userData.stats.tasks;
-            const percent = Math.min(100, Math.round(((userData.stats.tasks || 0) / WEEKLY_GOAL) * 100));
-            document.getElementById('weeklyProgress').textContent = percent;
-            document.getElementById('profileModal').classList.add('visible');
-        });
-
-        navSettings.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            navSettings.classList.add('active');
-            document.getElementById('settingsModal').classList.add('visible');
-        });
-
-        document.getElementById('closeProfileModal').addEventListener('click', () => {
-            document.getElementById('profileModal').classList.remove('visible');
-            navHome.click();
-        });
-
-        document.getElementById('closeStatsModal').addEventListener('click', () => {
-            document.getElementById('statsModal').classList.remove('visible');
-        });
-        document.getElementById('closeSettingsModal').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.remove('visible');
-        });
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Вы уверены, что хотите выйти?')) { localStorage.removeItem('nevio_user'); userData = null; registerScreen.classList.add('active'); mainScreen.classList.remove('active'); hideFixedInput(); }
-        });
-
-        const privacyButton = document.createElement('button');
-        privacyButton.className = 'btn btn-secondary';
-        privacyButton.style.marginTop = '12px';
-        privacyButton.innerHTML = '<i class="fas fa-shield-alt"></i> Политика конфиденциальности';
-        privacyButton.onclick = () => document.getElementById('privacyModal').classList.add('visible');
-        document.getElementById('settingsModal').querySelector('.modal-window').appendChild(privacyButton);
-        document.getElementById('closePrivacyModal').addEventListener('click', () => document.getElementById('privacyModal').classList.remove('visible'));
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
