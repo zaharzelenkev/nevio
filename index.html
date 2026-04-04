@@ -3,1521 +3,1639 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nevio — умный помощник</title>
-    
+    <title>NEVIO AI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        :root {
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-text-color: #000000;
+            --tg-theme-hint-color: #999999;
+            --tg-theme-link-color: #2481cc;
+            --tg-theme-button-color: #2481cc;
+            --tg-theme-button-text-color: #ffffff;
+            --primary-color: #6C5CE7;
+            --secondary-color: #A29BFE;
+            --success-color: #00B894;
+            --danger-color: #FF7675;
+            --warning-color: #FDCB6E;
+            --dark-color: #2D3436;
+            --light-color: #DFE6E9;
+            --card-shadow: 0 2px 12px rgba(108, 92, 231, 0.1);
         }
 
         body {
-            background-color: #0a0a0a;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            padding: 16px;
+            padding-bottom: 80px;
+            overflow-x: hidden;
         }
 
-        .app-container {
-            max-width: 480px;
-            width: 100%;
-            background: #0f0f0f;
-            min-height: 100vh;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            border-radius: 32px 32px 0 0;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
 
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 20px 140px;
-            scrollbar-width: thin;
-            scrollbar-color: #e8b13e #1e1e1e;
+        .page.active {
+            display: block;
         }
 
-        .main-content::-webkit-scrollbar {
-            width: 6px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .main-content::-webkit-scrollbar-track {
-            background: #1e1e1e;
-            border-radius: 10px;
-        }
-
-        .main-content::-webkit-scrollbar-thumb {
-            background: #e8b13e;
-            border-radius: 10px;
-        }
-
-        /* ПРОФИЛЬ */
-        .profile-card {
-            background: linear-gradient(145deg, #1a1a1a, #121212);
-            border-radius: 32px;
-            padding: 24px 20px;
+        .header {
+            text-align: center;
             margin-bottom: 24px;
-            border: 1px solid #2a2a2a;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--tg-theme-hint-color);
+            font-size: 14px;
+        }
+
+        .role-selection {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .role-selection h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .role-selection p {
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+
+        .role-buttons {
+            display: grid;
+            gap: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .role-btn {
+            background: white;
+            border: 2px solid var(--light-color);
+            border-radius: 16px;
+            padding: 24px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .role-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .role-btn .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .role-btn h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+
+        .role-btn p {
+            color: var(--tg-theme-hint-color);
+            font-size: 14px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+            border: 2px solid transparent;
+        }
+
+        .menu-card:active {
+            transform: scale(0.95);
+        }
+
+        .menu-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+        }
+
+        .menu-card .icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .menu-card h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .menu-card p {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color);
+            margin-top: 4px;
+        }
+
+        .action-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
             transition: all 0.2s;
         }
 
-        .profile-card:hover {
-            border-color: #e8b13e;
-            transform: translateY(-2px);
+        .back-btn:hover {
+            background: rgba(108, 92, 231, 0.1);
         }
 
-        .avatar {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(145deg, #e8b13e, #c4911a);
-            border-radius: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a0a0a;
-            font-size: 32px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(232, 177, 62, 0.3);
-        }
-
-        .user-info h3 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-        }
-
-        .user-info p {
-            font-size: 14px;
-            color: #a0a0a0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .role-badge {
-            background: #e8b13e20;
-            color: #e8b13e;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .level-badge {
-            background: #2a2a2a;
-            color: #e8b13e;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* БЛОК ДОСТИЖЕНИЙ И ЗАДАНИЙ */
-        .achievements-section {
-            background: linear-gradient(145deg, #1a1a1a, #121212);
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .section-title {
-            color: #e8b13e;
-            font-size: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
             margin-bottom: 16px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--dark-color);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .section-title i {
-            font-size: 18px;
-        }
-
-        /* Ежедневные задания */
-        .daily-tasks {
-            margin-bottom: 24px;
-        }
-
-        .task-item {
-            background: #0f0f0f;
-            border-radius: 20px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid #2a2a2a;
-            transition: all 0.2s;
-        }
-
-        .task-item.completed {
-            border-color: #e8b13e;
-            background: #e8b13e10;
-        }
-
-        .task-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-        }
-
-        .task-icon {
-            width: 40px;
-            height: 40px;
-            background: #1a1a1a;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #e8b13e;
-        }
-
-        .task-text h4 {
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .task-text p {
-            color: #a0a0a0;
-            font-size: 12px;
-        }
-
-        .task-reward {
-            background: #e8b13e20;
-            padding: 6px 12px;
-            border-radius: 20px;
-            color: #e8b13e;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .task-status {
-            width: 28px;
-            height: 28px;
-            border-radius: 14px;
-            background: #2a2a2a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b6b6b;
+        .card p {
+            color: var(--tg-theme-hint-color);
             font-size: 14px;
+            margin-bottom: 20px;
         }
 
-        .task-status.completed {
-            background: #e8b13e;
-            color: #0a0a0a;
+        .form-group {
+            margin-bottom: 16px;
         }
 
-        /* Достижения */
-        .achievements-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .achievement-card {
-            background: #0f0f0f;
-            border-radius: 20px;
-            padding: 14px;
-            flex: 1;
-            min-width: calc(50% - 6px);
-            text-align: center;
-            border: 1px solid #2a2a2a;
-            transition: all 0.2s;
-        }
-
-        .achievement-card.locked {
-            opacity: 0.5;
-        }
-
-        .achievement-card.unlocked {
-            border-color: #e8b13e;
-            background: #e8b13e10;
-        }
-
-        .achievement-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .achievement-name {
-            color: #ffffff;
-            font-size: 13px;
+        .form-group label {
+            display: block;
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .achievement-desc {
-            color: #a0a0a0;
-            font-size: 10px;
-        }
-
-        .fixed-input-container {
-            position: fixed;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            max-width: 480px;
-            margin: 0 auto;
-            background: linear-gradient(to top, #0f0f0f, rgba(15,15,15,0.95));
-            padding: 16px 20px;
-            border-top: 1px solid #2a2a2a;
-            border-bottom: 1px solid #2a2a2a;
-            z-index: 50;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-
-        .fixed-input-wrapper {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .fixed-input {
-            flex: 1;
-            padding: 16px 18px;
-            font-size: 15px;
-            border: 2px solid #2a2a2a;
-            border-radius: 24px;
-            background: #1a1a1a;
-            outline: none;
-            transition: all 0.2s;
-            resize: none;
-            min-height: 56px;
-            max-height: 120px;
-            color: #ffffff;
-        }
-
-        .fixed-input:focus {
-            border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
-        }
-
-        .fixed-input::placeholder {
-            color: #6b6b6b;
-        }
-
-        .fixed-send-btn {
-            width: 56px;
-            height: 56px;
-            border: none;
-            border-radius: 20px;
-            background: #e8b13e;
-            color: #0a0a0a;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .fixed-send-btn:hover {
-            background: #d9a231;
-            transform: scale(0.98);
-        }
-
-        .screen {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-container {
-            background: #121212;
-            border-radius: 32px;
-            padding: 28px 24px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .form-title {
-            font-size: 30px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 12px;
-        }
-
-        .form-subtitle {
-            color: #a0a0a0;
-            margin-bottom: 28px;
-            font-size: 16px;
-        }
-
-        .input-group {
-            margin-bottom: 22px;
-        }
-
-        .input-label {
-            display: block;
-            font-size: 15px;
-            font-weight: 500;
-            color: #c0c0c0;
             margin-bottom: 8px;
+            color: var(--dark-color);
         }
 
-        .input-field {
+        textarea, input[type="text"], select {
             width: 100%;
-            padding: 18px 20px;
-            font-size: 16px;
-            border: 2px solid #2a2a2a;
-            border-radius: 24px;
-            background: #1a1a1a;
-            transition: all 0.2s;
+            padding: 12px 16px;
+            border: 2px solid var(--light-color);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--tg-theme-text-color);
+        }
+
+        textarea:focus, input:focus, select:focus {
             outline: none;
-            color: #ffffff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
         }
 
-        .input-field:focus {
-            border-color: #e8b13e;
-            box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.15);
+        textarea {
+            min-height: 120px;
         }
 
-        .input-field::placeholder {
-            color: #6b6b6b;
+        .file-upload {
+            border: 2px dashed var(--light-color);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        .file-upload.has-file {
+            border-color: var(--success-color);
+            background: rgba(0, 184, 148, 0.05);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
         }
 
         .btn {
             width: 100%;
-            padding: 18px 24px;
+            padding: 14px 24px;
             border: none;
-            border-radius: 30px;
-            font-size: 17px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: #e8b13e;
-            color: #0a0a0a;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
         }
 
         .btn-primary:hover {
-            background: #d9a231;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
         .btn-secondary {
-            background: #2a2a2a;
-            color: #ffffff;
+            background: var(--light-color);
+            color: var(--dark-color);
         }
 
-        .btn-secondary:hover {
-            background: #3a3a3a;
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .btn-danger {
-            background: #5a1a1a;
-            color: #ffffff;
-            margin-top: 16px;
-        }
-
-        .role-tabs {
-            display: flex;
-            gap: 12px;
-            margin: 0 0 24px;
-            background: #1a1a1a;
-            padding: 6px;
-            border-radius: 60px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 14px 0;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #a0a0a0;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .tab.active {
-            background: #e8b13e;
-            color: #0a0a0a;
-        }
-
-        .back-to-functions {
-            background: #1a1a1a;
-            border-radius: 60px;
-            padding: 12px 20px;
-            margin: 0 0 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #2a2a2a;
-        }
-
-        .back-to-functions:hover {
-            border-color: #e8b13e;
-            background: #222;
-        }
-
-        .back-to-functions i {
-            color: #e8b13e;
-            font-size: 18px;
-        }
-
-        .back-to-functions span {
-            font-size: 15px;
-            font-weight: 500;
-            color: #c0c0c0;
-        }
-
-        .features-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-            transition: all 0.3s ease;
-        }
-
-        .features-grid.hidden {
-            display: none;
-        }
-
-        .feature-card {
-            background: #121212;
-            border-radius: 24px;
-            padding: 20px;
-            border: 2px solid #2a2a2a;
-            transition: all 0.2s;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .feature-card:hover {
-            border-color: #e8b13e;
-            transform: translateY(-2px);
-        }
-
-        .feature-icon {
-            width: 52px;
-            height: 52px;
-            background: #1a1a1a;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #e8b13e;
-        }
-
-        .feature-text h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .feature-text p {
-            color: #a0a0a0;
-            font-size: 14px;
-        }
-
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin: 20px 0 40px 0;
-        }
-
-        .message {
-            display: block;
-            margin-bottom: 12px;
-            animation: messageAppear 0.3s ease;
-        }
-
-        @keyframes messageAppear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message-bubble {
-            padding: 14px 18px;
-            border-radius: 22px;
-            font-size: 15px;
-            line-height: 1.6;
-            word-wrap: break-word;
-            max-width: 90%;
-        }
-
-        .user-message {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .ai-message {
-            display: flex;
-            justify-content: flex-start;
-        }
-
-        .user-message .message-bubble {
-            background: #e8b13e;
-            color: #0a0a0a;
-            border-bottom-right-radius: 6px;
-        }
-
-        .ai-message .message-bubble {
-            background: #1a1a1a;
-            color: #ffffff;
-            border-bottom-left-radius: 6px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .bottom-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 8px 16px;
-            background: #0f0f0f;
-            border-top: 2px solid #2a2a2a;
-            border-radius: 40px 40px 0 0;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            max-width: 480px;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #6b6b6b;
-            font-size: 11px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            padding: 8px 12px;
-            border-radius: 30px;
-        }
-
-        .nav-item i {
-            font-size: 22px;
-        }
-
-        .nav-item.active {
-            color: #e8b13e;
-            background: #1a1a1a;
-        }
-
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .loader-overlay.visible {
-            display: flex;
-        }
-
-        .loader-content {
-            text-align: center;
-            background: #121212;
-            padding: 40px;
-            border-radius: 48px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 6px solid #2a2a2a;
-            border-top: 6px solid #e8b13e;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 24px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal-overlay.visible {
-            display: flex;
-        }
-
-        .modal-window {
-            background: #121212;
-            border-radius: 40px;
-            width: 90%;
-            max-width: 420px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 28px 24px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .modal-close {
-            width: 100%;
-            padding: 16px;
-            background: #1a1a1a;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #ffffff;
-            cursor: pointer;
+        .result-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
             margin-top: 20px;
         }
 
-        .privacy-text {
-            color: #c0c0c0;
-            font-size: 14px;
-            line-height: 1.8;
-            margin-bottom: 24px;
-        }
-
-        .test-question {
-            background: #1a1a1a;
-            border-radius: 20px;
-            padding: 20px;
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 16px;
-            border: 1px solid #2a2a2a;
         }
 
-        .test-question p {
-            color: #ffffff;
+        .result-header h3 {
+            font-size: 18px;
+            color: var(--dark-color);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: var(--light-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .result-content {
+            line-height: 1.6;
+            color: var(--tg-theme-text-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .result-content h1, .result-content h2, .result-content h3 {
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .result-content code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .result-content pre {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--light-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: var(--tg-theme-hint-color);
+            font-size: 14px;
+        }
+
+        .profile-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-username {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .profile-role {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .settings-list {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .settings-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item:hover {
+            background: #f8f9fa;
+        }
+
+        .settings-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: var(--light-color);
+        }
+
+        .settings-item-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 2px;
+        }
+
+        .settings-item-text p {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .settings-item-right {
+            color: var(--tg-theme-hint-color);
+            font-size: 14px;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
             margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            box-shadow: var(--card-shadow);
+            transform: translateX(4px);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .history-type {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .history-date {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .history-preview {
+            font-size: 14px;
+            color: var(--tg-theme-text-color);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--light-color);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 8px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 12px;
             font-weight: 500;
         }
 
-        .test-option {
-            background: #0f0f0f;
-            padding: 12px 16px;
-            margin: 8px 0;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #2a2a2a;
-            color: #c0c0c0;
+        .image-preview {
+            margin-top: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 300px;
         }
 
-        .test-option:hover {
-            border-color: #e8b13e;
-            background: #1a1a1a;
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
-        .test-option.selected {
-            border-color: #e8b13e;
-            background: #e8b13e20;
-            color: #e8b13e;
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
         }
 
-        .token-display {
-            background: linear-gradient(145deg, #e8b13e, #d4a02a);
-            padding: 6px 14px;
-            border-radius: 40px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #0a0a0a;
-            font-weight: 700;
-            font-size: 13px;
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
         }
-        
-        .token-display i {
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--tg-theme-hint-color);
             font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .api-setup-banner {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .api-setup-banner h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .api-setup-banner p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .api-setup-banner button {
+            background: white;
+            color: #FF6B6B;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <div class="main-content" id="mainContent">
-            
-            <!-- ЭКРАН РЕГИСТРАЦИИ -->
-            <div id="registerScreen" class="screen active">
-                <div class="form-container">
-                    <h2 class="form-title">Добро пожаловать!</h2>
-                    <p class="form-subtitle">Создайте аккаунт чтобы начать</p>
 
-                    <div class="input-group">
-                        <label class="input-label">Ваше имя</label>
-                        <input type="text" id="regName" class="input-field" placeholder="Введите имя">
-                    </div>
-
-                    <div class="input-group">
-                        <label class="input-label">Выберите роль</label>
-                        <div class="role-tabs">
-                            <button id="regRoleTeacher" class="tab active">
-                                <i class="fas fa-chalkboard-teacher"></i> Учитель
-                            </button>
-                            <button id="regRoleStudent" class="tab">
-                                <i class="fas fa-user-graduate"></i> Ученик
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label class="input-label">Школа</label>
-                        <input type="text" id="regSchool" class="input-field" placeholder="Название школы">
-                    </div>
-
-                    <div class="input-group" id="classFieldContainer">
-                        <label class="input-label" id="classFieldLabel">Предмет</label>
-                        <input type="text" id="regClass" class="input-field" placeholder="Математика, Физика...">
-                    </div>
-
-                    <button class="btn btn-primary" id="registerBtn">
-                        <i class="fas fa-arrow-right"></i> Начать работу
-                    </button>
+    <div class="page active" id="roleSelectionPage">
+        <div class="role-selection">
+            <h2>👋 Добро пожаловать в NEVIO!</h2>
+            <p>Выберите свою роль для персонализированного опыта</p>
+            <div class="role-buttons">
+                <div class="role-btn" onclick="selectRole('student')">
+                    <div class="icon">👨‍🎓</div>
+                    <h3>Ученик</h3>
+                    <p>Решение задач, конспекты, подготовка к контрольным</p>
                 </div>
-            </div>
-
-            <!-- ГЛАВНЫЙ ЭКРАН -->
-            <div id="mainScreen" class="screen">
-                <!-- КРАСИВЫЙ ПРОФИЛЬ -->
-                <div class="profile-card" id="profileCard">
-                    <div class="avatar" id="userAvatar">👤</div>
-                    <div class="user-info">
-                        <h3 id="userName"></h3>
-                        <p>
-                            <span class="role-badge" id="userRole"></span>
-                            <span class="level-badge" id="userLevel">Уровень 1</span>
-                            <span class="token-display" id="userTokens">🧠 0 нейро-токенов</span>
-                        </p>
-                    </div>
+                <div class="role-btn" onclick="selectRole('teacher')">
+                    <div class="icon">👨‍🏫</div>
+                    <h3>Учитель</h3>
+                    <p>Генерация заданий, планы уроков, материалы для класса</p>
                 </div>
-
-                <!-- ДОСТИЖЕНИЯ И ЗАДАНИЯ -->
-                <div class="achievements-section">
-                    <div class="section-title">
-                        <i class="fas fa-tasks"></i>
-                        <span>Ежедневные задания</span>
-                    </div>
-                    <div class="daily-tasks" id="dailyTasks"></div>
-
-                    <div class="section-title" style="margin-top: 8px;">
-                        <i class="fas fa-medal"></i>
-                        <span>Достижения</span>
-                    </div>
-                    <div class="achievements-grid" id="achievementsGrid"></div>
-                </div>
-
-                <!-- КНОПКА ВОЗВРАТА К ФУНКЦИЯМ -->
-                <div class="back-to-functions" id="backToFunctions" style="display: none;">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Вернуться к функциям</span>
-                </div>
-
-                <!-- Контент УЧЕНИКА -->
-                <div id="studentContent">
-                    <div class="features-grid" id="studentFeatures">
-                        <div class="feature-card" id="studentExplainCard">
-                            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
-                            <div class="feature-text"><h3>Объяснить тему</h3><p>Получи простое объяснение</p></div>
-                        </div>
-                        <div class="feature-card" id="studentSolveCard">
-                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                            <div class="feature-text"><h3>Решить задачу</h3><p>Математика, физика, химия</p></div>
-                        </div>
-                        <div class="feature-card" id="studentTestCard">
-                            <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
-                            <div class="feature-text"><h3>Пройти тест</h3><p>Проверь свои знания</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Контент УЧИТЕЛЯ -->
-                <div id="teacherContent" style="display: none;">
-                    <div class="features-grid" id="teacherFeatures">
-                        <div class="feature-card" id="teacherLessonCard">
-                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="feature-text"><h3>Создать конспект</h3><p>Подробный план урока</p></div>
-                        </div>
-                        <div class="feature-card" id="teacherSolveCard">
-                            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                            <div class="feature-text"><h3>Решить задачу</h3><p>Для демонстрации ученикам</p></div>
-                        </div>
-                        <div class="feature-card" id="teacherGenerateTestCard">
-                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="feature-text"><h3>Создать тест</h3><p>Сгенерируй тест по теме</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ЧАТ КОНТЕЙНЕРЫ -->
-                <div id="chatContainer" class="chat-container"></div>
-                <div id="teacherChatContainer" class="chat-container"></div>
-                <div id="testContainer" class="chat-container" style="display: none;"></div>
-            </div>
-        </div>
-
-        <!-- ЗАКРЕПЛЕННОЕ ПОЛЕ ВВОДА -->
-        <div class="fixed-input-container" id="fixedInputContainer">
-            <div class="fixed-input-wrapper">
-                <textarea id="fixedMessageInput" class="fixed-input" placeholder="Введите задачу или вопрос..." rows="1"></textarea>
-                <button class="fixed-send-btn" id="fixedSendBtn"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-
-        <!-- НИЖНЯЯ НАВИГАЦИЯ -->
-        <div class="bottom-nav">
-            <button class="nav-item active" id="navHome">
-                <i class="fas fa-home"></i>
-                <span>Главная</span>
-            </button>
-            <button class="nav-item" id="navSettings">
-                <i class="fas fa-cog"></i>
-                <span>Настройки</span>
-            </button>
-        </div>
-
-        <!-- ЗАГРУЗЧИК -->
-        <div id="loader" class="loader-overlay">
-            <div class="loader-content">
-                <div class="spinner"></div>
-                <p style="color: #ffffff;">Nevio думает...</p>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА -->
-    <div id="profileModal" class="modal-overlay">
-        <div class="modal-window">
-            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 24px;">
-                <div class="avatar" style="width: 100px; height: 100px; font-size: 48px; margin-bottom: 16px;" id="modalAvatar">👤</div>
-                <h2 style="color: #ffffff;" id="modalName"></h2>
-                <p style="color: #e8b13e; margin-top: 8px;" id="modalRole"></p>
+    <div class="page" id="mainPage">
+        <div class="header">
+            <h1>🎓 NEVIO</h1>
+            <p>Твой умный помощник в учёбе</p>
+        </div>
+
+        <div id="apiSetupBanner" style="display: none;">
+            <div class="api-setup-banner">
+                <h3>⚠️ Требуется настройка API</h3>
+                <p>Для работы бота нужен бесплатный API ключ</p>
+                <button onclick="showPage('settingsPage')">Настроить</button>
             </div>
-            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 16px;">
-                <p style="color: #c0c0c0; margin-bottom: 8px;"><i class="fas fa-school"></i> <span id="modalSchool"></span></p>
-                <p style="color: #c0c0c0;"><i class="fas fa-graduation-cap"></i> <span id="modalClass"></span></p>
+        </div>
+
+        <div class="menu-grid" id="menuGrid"></div>
+    </div>
+
+    <div class="page" id="actionPage">
+        <div class="action-container">
+            <div class="back-btn" onclick="showPage('mainPage')">
+                <span>←</span>
+                <span>Назад</span>
             </div>
-            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 16px;">
-                <p style="color: #ffffff; margin-bottom: 12px;"><i class="fas fa-chart-line"></i> Статистика</p>
-                <p style="color: #c0c0c0;">📝 Конспектов: <span id="statLessons">0</span></p>
-                <p style="color: #c0c0c0;">✅ Решено задач: <span id="statTasks">0</span></p>
-                <p style="color: #c0c0c0;">🧠 Нейро-токенов: <span id="statTokens">0</span></p>
-                <p style="color: #c0c0c0;">🎖️ Уровень: <span id="statLevel">1</span></p>
+
+            <div class="card">
+                <h2 id="actionTitle"></h2>
+                <p id="actionDescription"></p>
+
+                <div id="actionForm"></div>
+
+                <div id="loadingContainer" style="display: none;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p id="loadingText">Обрабатываю запрос...</p>
+                    </div>
+                </div>
+
+                <div id="resultContainer" style="display: none;"></div>
             </div>
-            <div style="background: #1a1a1a; border-radius: 20px; padding: 16px; margin-bottom: 24px;">
-                <p style="color: #ffffff; margin-bottom: 12px;"><i class="fas fa-medal"></i> Полученные достижения</p>
-                <div id="unlockedAchievementsList" style="color: #c0c0c0; font-size: 13px;"></div>
-            </div>
-            <button class="modal-close" id="closeProfileModal">Закрыть</button>
         </div>
     </div>
 
-    <div id="settingsModal" class="modal-overlay">
-        <div class="modal-window">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">Настройки</h2>
-            <div id="settingsContent" class="modal-content"></div>
-            <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти из аккаунта</button>
-            <button class="modal-close" id="closeSettingsModal">Закрыть</button>
+    <div class="page" id="settingsPage">
+        <div class="action-container">
+            <div class="back-btn" onclick="showPage('mainPage')">
+                <span>←</span>
+                <span>Назад</span>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <div class="profile-name" id="profileName">Загрузка...</div>
+                <div class="profile-username" id="profileUsername">@username</div>
+                <div class="profile-role" id="profileRole">Ученик</div>
+            </div>
+
+            <div class="card">
+                <h2>🔑 Настройка API</h2>
+                <p>Выберите бесплатный AI сервис и вставьте API ключ</p>
+
+                <div class="form-group">
+                    <label>AI Сервис</label>
+                    <select id="aiProvider" onchange="updateAPIInstructions()">
+                        <option value="gemini">Google Gemini (Рекомендуется - самый щедрый)</option>
+                        <option value="groq">Groq (Очень быстрый)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>API Ключ</label>
+                    <input type="text" id="apiKeyInput" placeholder="Вставьте ваш бесплатный API ключ">
+                </div>
+
+                <div id="apiInstructions" style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                    <!-- Instructions will be inserted here -->
+                </div>
+
+                <button class="btn btn-primary" onclick="saveAPIKey()">
+                    <span>💾</span>
+                    <span>Сохранить ключ</span>
+                </button>
+            </div>
+
+            <div class="settings-list" style="margin-top: 20px;">
+                <div class="settings-item" onclick="changeRole()">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon">🔄</div>
+                        <div class="settings-item-text">
+                            <h4>Изменить роль</h4>
+                            <p>Переключиться между учеником и учителем</p>
+                        </div>
+                    </div>
+                    <div class="settings-item-right">→</div>
+                </div>
+
+                <div class="settings-item" onclick="showHistory()">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon">📚</div>
+                        <div class="settings-item-text">
+                            <h4>История запросов</h4>
+                            <p>Посмотреть все предыдущие запросы</p>
+                        </div>
+                    </div>
+                    <div class="settings-item-right">→</div>
+                </div>
+
+                <div class="settings-item" onclick="clearHistory()">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon">🗑️</div>
+                        <div class="settings-item-text">
+                            <h4>Очистить историю</h4>
+                            <p>Удалить все сохранённые запросы</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-item">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon">ℹ️</div>
+                        <div class="settings-item-text">
+                            <h4>О приложении</h4>
+                            <p>NEVIO v2.0 - Полностью бесплатно навсегда</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="privacyModal" class="modal-overlay">
-        <div class="modal-window">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">Политика конфиденциальности</h2>
-            <div class="privacy-text">
-                <p><strong>1. Общие положения</strong></p>
-                <p>Настоящая Политика конфиденциальности определяет порядок обработки и защиты информации о пользователях приложения Nevio (далее — «Приложение»).</p>
-                <p style="margin-top: 12px;"><strong>2. Какие данные мы собираем</strong></p>
-                <p>Приложение не собирает, не хранит и не передает третьим лицам персональные данные пользователей. Вся информация (имя, роль, школа, класс) сохраняется исключительно на устройстве пользователя в локальном хранилище браузера и может быть удалена пользователем в любой момент.</p>
-                <p style="margin-top: 12px;"><strong>3. Обработка сообщений</strong></p>
-                <p>Все запросы, отправляемые в Приложение, передаются анонимно в API для обработки и не сохраняются на серверах Приложения.</p>
-                <p style="margin-top: 12px;"><strong>4. Ваши права</strong></p>
-                <p>Вы можете в любой момент удалить все свои данные, выйдя из аккаунта.</p>
-                <p style="margin-top: 16px; color: #e8b13e;">Последнее обновление: 1 апреля 2026 г.</p>
+    <div class="page" id="historyPage">
+        <div class="action-container">
+            <div class="back-btn" onclick="showPage('settingsPage')">
+                <span>←</span>
+                <span>Назад</span>
             </div>
-            <button class="modal-close" id="closePrivacyModal">Закрыть</button>
+
+            <div class="card">
+                <h2>📚 История запросов</h2>
+                <p>Все ваши предыдущие запросы сохранены здесь</p>
+                <div id="historyList"></div>
+            </div>
         </div>
     </div>
 
-    <div id="testModal" class="modal-overlay">
-        <div class="modal-window" style="max-width: 480px; width: 90%;">
-            <h2 style="margin-bottom: 20px; color: #ffffff;">📝 Генератор тестов</h2>
-            <div class="input-group">
-                <label class="input-label">Тема теста</label>
-                <input type="text" id="testTopic" class="input-field" placeholder="Например: Квадратные уравнения, 8 класс">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Количество вопросов</label>
-                <select id="testCount" class="input-field" style="background: #1a1a1a;">
-                    <option value="5">5 вопросов</option>
-                    <option value="10" selected>10 вопросов</option>
-                    <option value="15">15 вопросов</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" id="generateTestBtn">Создать тест</button>
-            <button class="modal-close" id="closeTestModal">Отмена</button>
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('mainPage')">
+            <div class="icon">🏠</div>
+            <span>Главная</span>
+        </div>
+        <div class="nav-item" onclick="showHistory()">
+            <div class="icon">📚</div>
+            <span>История</span>
+        </div>
+        <div class="nav-item" onclick="showPage('settingsPage')">
+            <div class="icon">⚙️</div>
+            <span>Настройки</span>
         </div>
     </div>
+
+    <div class="toast" id="toast"></div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
+        let tg = window.Telegram.WebApp;
         tg.expand();
+        tg.enableClosingConfirmation();
 
-        // ========== GROQ API ==========
-        const API_KEY = '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';
-        const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-        const MODEL = 'llama-3.3-70b-versatile';
+        let userData = {
+            role: null,
+            telegramUser: null,
+            history: [],
+            apiKey: null,
+            apiProvider: 'gemini'
+        };
 
-        // ========== ПРОМПТЫ ==========
-        const SOLVE_PROMPT = `Ты — лучший репетитор по математике, физике и химии. Решай задачи максимально подробно. Форматируй как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми действиями, "Ответ:". Объясняй каждый шаг.`;
-        const EXPLAIN_PROMPT = `Ты — репетитор. Объясни тему простым языком, с примерами и аналогиями.`;
-        const TEACHER_PROMPT = `Ты — опытный учитель. Составь подробный конспект урока: цель, оборудование, ход урока, примеры, задания, вопросы.`;
-        const TEST_PROMPT = `Ты — учитель. Создай тест. Верни ТОЛЬКО JSON: [{"question":"вопрос","options":["вариант1","вариант2","вариант3","вариант4"],"correct":0}].`;
+        const menuConfigs = {
+            student: [
+                { id: 'solve', icon: '📝', title: 'Решить задачу', description: 'Решу любую задачу с объяснением' },
+                { id: 'summary', icon: '📚', title: 'Написать конспект', description: 'Структурированный конспект' },
+                { id: 'schema', icon: '📊', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
+                { id: 'check', icon: '📷', title: 'Проверить домашку', description: 'По фото с разбором ошибок' },
+                { id: 'test', icon: '🎯', title: 'Контрольная завтра', description: 'Подготовка за 10 минут' },
+                { id: 'explain', icon: '💡', title: 'Объяснить тему', description: 'Простыми словами' }
+            ],
+            teacher: [
+                { id: 'lesson', icon: '🎓', title: 'Урок за 30 сек', description: 'Полный план урока' },
+                { id: 'tasks', icon: '📊', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
+                { id: 'variants', icon: '📝', title: 'Варианты контрольной', description: 'A/B варианты' },
+                { id: 'schema', icon: '📊', title: 'Схема для класса', description: 'Визуальный материал' },
+                { id: 'explain', icon: '💡', title: 'Объяснить тему', description: 'Методика объяснения' },
+                { id: 'summary', icon: '📚', title: 'Конспект урока', description: 'Структура материала' }
+            ]
+        };
 
-        // ========== ЗАДАНИЯ И ДОСТИЖЕНИЯ ==========
-        const DAILY_TASKS = [
-            { id: 'solve3', name: 'Решить 3 задачи', icon: '📝', reward: 10, target: 3, current: 0, type: 'solve' },
-            { id: 'lesson2', name: 'Создать 2 конспекта', icon: '📚', reward: 15, target: 2, current: 0, type: 'lesson' },
-            { id: 'test1', name: 'Пройти 1 тест', icon: '📊', reward: 10, target: 1, current: 0, type: 'test' }
-        ];
+        function init() {
+            userData.telegramUser = tg.initDataUnsafe?.user;
+            
+            const saved = localStorage.getItem('nevioData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                userData.role = parsed.role;
+                userData.history = parsed.history || [];
+                userData.apiKey = parsed.apiKey;
+                userData.apiProvider = parsed.apiProvider || 'gemini';
+            }
 
-        const ACHIEVEMENTS = [
-            { id: 'novice', name: '🌟 Новичок', desc: 'Первый решённый вопрос', icon: '🌱', required: 1, type: 'tasks' },
-            { id: 'scholar', name: '📚 Учёный', desc: '20 решённых задач', icon: '📖', required: 20, type: 'tasks' },
-            { id: 'professor', name: '👨‍🏫 Профессор', desc: '50 решённых задач', icon: '🎓', required: 50, type: 'tasks' },
-            { id: 'genius', name: '🧠 Гений', desc: '100 решённых задач', icon: '⭐', required: 100, type: 'tasks' },
-            { id: 'author', name: '📝 Автор', desc: '10 конспектов', icon: '✍️', required: 10, type: 'lessons' },
-            { id: 'expert', name: '🎓 Эксперт', desc: '5 тестов', icon: '🏅', required: 5, type: 'tests' }
-        ];
+            if (userData.role) {
+                loadMainMenu();
+                showPage('mainPage');
+                checkAPIKey();
+            } else {
+                showPage('roleSelectionPage');
+            }
 
-        let userData = null;
-        let currentMode = 'explain';
-        let currentContainerId = 'chatContainer';
-        let isChatMode = false;
-        let currentTest = null;
-        let userAnswers = [];
-
-        function updateTokensAndLevel() {
-            if (!userData) return;
-            let level = 1;
-            if (userData.tokens >= 1000) level = 10;
-            else if (userData.tokens >= 800) level = 9;
-            else if (userData.tokens >= 600) level = 8;
-            else if (userData.tokens >= 500) level = 7;
-            else if (userData.tokens >= 400) level = 6;
-            else if (userData.tokens >= 300) level = 5;
-            else if (userData.tokens >= 200) level = 4;
-            else if (userData.tokens >= 100) level = 3;
-            else if (userData.tokens >= 50) level = 2;
-            userData.level = level;
-            document.getElementById('userLevel').textContent = `Уровень ${level}`;
-            document.getElementById('userTokens').innerHTML = `🧠 ${userData.tokens} нейро-токенов`;
+            updateProfile();
+            updateAPIInstructions();
         }
 
-        function checkAchievements() {
-            if (!userData) return;
-            let unlocked = false;
-            ACHIEVEMENTS.forEach(ach => {
-                if (!userData.achievements.includes(ach.id)) {
-                    let condition = false;
-                    if (ach.type === 'tasks') condition = userData.stats.tasks >= ach.required;
-                    else if (ach.type === 'lessons') condition = userData.stats.lessons >= ach.required;
-                    else if (ach.type === 'tests') condition = (userData.stats.tests || 0) >= ach.required;
-                    if (condition) {
-                        userData.achievements.push(ach.id);
-                        userData.tokens += 50;
-                        unlocked = true;
-                    }
-                }
-            });
-            if (unlocked) {
-                updateTokensAndLevel();
-                renderAchievements();
-                renderDailyTasks();
-                saveUserData();
+        function checkAPIKey() {
+            if (!userData.apiKey) {
+                document.getElementById('apiSetupBanner').style.display = 'block';
+            } else {
+                document.getElementById('apiSetupBanner').style.display = 'none';
             }
         }
 
-        function checkDailyTasks(action, count = 1) {
-            if (!userData) return;
-            let updated = false;
-            userData.dailyTasks.forEach(task => {
-                if (task.type === action && !task.completed) {
-                    task.current += count;
-                    if (task.current >= task.target) {
-                        task.completed = true;
-                        userData.tokens += task.reward;
-                        updated = true;
-                    }
-                }
-            });
-            if (updated) {
-                updateTokensAndLevel();
-                renderDailyTasks();
-                saveUserData();
+        function saveAPIKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            const provider = document.getElementById('aiProvider').value;
+            
+            if (!key) {
+                showToast('❌ Введите API ключ');
+                return;
+            }
+
+            userData.apiKey = key;
+            userData.apiProvider = provider;
+            saveData();
+            
+            showToast('✅ API ключ сохранён!');
+            checkAPIKey();
+            showPage('mainPage');
+        }
+
+        function updateAPIInstructions() {
+            const provider = document.getElementById('aiProvider').value;
+            const instructions = document.getElementById('apiInstructions');
+            
+            if (provider === 'gemini') {
+                instructions.innerHTML = `
+                    <strong>📝 Как получить бесплатный ключ Google Gemini:</strong><br><br>
+                    1. Перейди на <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--primary-color);">aistudio.google.com/app/apikey</a><br>
+                    2. Войди через Google аккаунт<br>
+                    3. Нажми "Create API key"<br>
+                    4. Скопируй ключ и вставь выше<br><br>
+                    <strong>✨ Бесплатно навсегда:</strong> 1,500 запросов в день!
+                `;
+            } else if (provider === 'groq') {
+                instructions.innerHTML = `
+                    <strong>📝 Как получить бесплатный ключ Groq:</strong><br><br>
+                    1. Перейди на <a href="https://console.groq.com" target="_blank" style="color: var(--primary-color);">console.groq.com</a><br>
+                    2. Зарегистрируйся (можно через Google)<br>
+                    3. Перейди в "API Keys"<br>
+                    4. Создай новый ключ и скопируй<br><br>
+                    <strong>✨ Бесплатно:</strong> 14,400 запросов в день, очень быстро!
+                `;
             }
         }
 
-        function renderDailyTasks() {
-            if (!userData) return;
-            const container = document.getElementById('dailyTasks');
-            container.innerHTML = '';
-            userData.dailyTasks.forEach(task => {
-                const taskDiv = document.createElement('div');
-                taskDiv.className = `task-item ${task.completed ? 'completed' : ''}`;
-                taskDiv.innerHTML = `
-                    <div class="task-info">
-                        <div class="task-icon">${task.icon}</div>
-                        <div class="task-text">
-                            <h4>${task.name}</h4>
-                            <p>${task.current}/${task.target} • +${task.reward} нейро-токенов</p>
+        function selectRole(role) {
+            userData.role = role;
+            saveData();
+            loadMainMenu();
+            showPage('mainPage');
+            checkAPIKey();
+            showToast(role === 'student' ? '👨‍🎓 Режим ученика активирован' : '👨‍🏫 Режим учителя активирован');
+        }
+
+        function changeRole() {
+            userData.role = userData.role === 'student' ? 'teacher' : 'student';
+            saveData();
+            loadMainMenu();
+            showPage('mainPage');
+            showToast('Роль изменена!');
+        }
+
+        function loadMainMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            const items = menuConfigs[userData.role];
+            
+            menuGrid.innerHTML = items.map(item => `
+                <div class="menu-card" onclick="openAction('${item.id}')">
+                    <span class="icon">${item.icon}</span>
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function openAction(actionId) {
+            if (!userData.apiKey) {
+                showToast('⚠️ Сначала настройте API ключ в настройках');
+                showPage('settingsPage');
+                return;
+            }
+
+            const config = menuConfigs[userData.role].find(m => m.id === actionId);
+            if (!config) return;
+
+            document.getElementById('actionTitle').innerHTML = `${config.icon} ${config.title}`;
+            document.getElementById('actionDescription').textContent = config.description;
+            
+            document.getElementById('actionForm').innerHTML = '';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('loadingContainer').style.display = 'none';
+
+            generateForm(actionId);
+            showPage('actionPage');
+        }
+
+        function generateForm(actionId) {
+            const formContainer = document.getElementById('actionForm');
+            let html = '';
+
+            switch(actionId) {
+                case 'solve':
+                    html = `
+                        <div class="form-group">
+                            <label>Условие задачи</label>
+                            <textarea id="inputText" placeholder="Напишите условие задачи..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('solve')">
+                            <span>🚀</span><span>Решить задачу</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'summary':
+                    html = `
+                        <div class="form-group">
+                            <label>Тема конспекта</label>
+                            <input type="text" id="inputText" placeholder="Например: Квадратные уравнения">
+                        </div>
+                        <div class="form-group">
+                            <label>Предмет</label>
+                            <select id="subjectSelect">
+                                <option>Математика</option>
+                                <option>Физика</option>
+                                <option>Химия</option>
+                                <option>Биология</option>
+                                <option>История</option>
+                                <option>Русский язык</option>
+                                <option>Литература</option>
+                                <option>Английский язык</option>
+                                <option>Обществознание</option>
+                                <option>География</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('summary')">
+                            <span>📝</span><span>Создать конспект</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'schema':
+                    html = `
+                        <div class="form-group">
+                            <label>Тема для схемы</label>
+                            <input type="text" id="inputText" placeholder="Например: Строение клетки">
+                        </div>
+                        <div class="form-group">
+                            <label>Предмет</label>
+                            <select id="subjectSelect">
+                                <option>Математика</option>
+                                <option>Физика</option>
+                                <option>Химия</option>
+                                <option>Биология</option>
+                                <option>История</option>
+                                <option>Русский язык</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('schema')">
+                            <span>🎨</span><span>Создать схему</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'check':
+                    html = `
+                        <div class="form-group">
+                            <label>Загрузите фото домашки</label>
+                            <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
+                                <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
+                                <div class="icon">📷</div>
+                                <p>Нажмите чтобы выбрать фото</p>
+                            </div>
+                            <div id="imagePreviewContainer"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Дополнительная информация (необязательно)</label>
+                            <textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('check')" id="checkBtn" disabled>
+                            <span>✅</span><span>Проверить решение</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'test':
+                    html = `
+                        <div class="form-group">
+                            <label>Предмет</label>
+                            <select id="subjectSelect">
+                                <option>Математика</option>
+                                <option>Физика</option>
+                                <option>Химия</option>
+                                <option>Биология</option>
+                                <option>История</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тема контрольной</label>
+                            <input type="text" id="inputText" placeholder="Например: Тригонометрия">
+                        </div>
+                        <div class="form-group">
+                            <label>Уровень сложности</label>
+                            <select id="levelSelect">
+                                <option>Базовый</option>
+                                <option>Средний</option>
+                                <option>Продвинутый</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('test')">
+                            <span>🎯</span><span>Начать подготовку</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'explain':
+                    html = `
+                        <div class="form-group">
+                            <label>Что нужно объяснить?</label>
+                            <textarea id="inputText" placeholder="Например: Почему вода замерзает при 0°C?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Уровень объяснения</label>
+                            <select id="levelSelect">
+                                <option>Простыми словами</option>
+                                <option>Обычное объяснение</option>
+                                <option>Подробное с примерами</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('explain')">
+                            <span>💡</span><span>Объяснить</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'lesson':
+                    html = `
+                        <div class="form-group">
+                            <label>Предмет</label>
+                            <select id="subjectSelect">
+                                <option>Математика</option>
+                                <option>Физика</option>
+                                <option>Химия</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тема урока</label>
+                            <input type="text" id="inputText" placeholder="Например: Закон Ома">
+                        </div>
+                        <div class="form-group">
+                            <label>Класс</label>
+                            <select id="gradeSelect">
+                                <option>5 класс</option>
+                                <option>6 класс</option>
+                                <option>7 класс</option>
+                                <option>8 класс</option>
+                                <option>9 класс</option>
+                                <option>10 класс</option>
+                                <option>11 класс</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('lesson')">
+                            <span>🎓</span><span>Создать план урока</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'tasks':
+                    html = `
+                        <div class="form-group">
+                            <label>Предмет</label>
+                            <select id="subjectSelect">
+                                <option>Математика</option>
+                                <option>Физика</option>
+                                <option>Химия</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тема заданий</label>
+                            <input type="text" id="inputText" placeholder="Например: Производная">
+                        </div>
+                        <div class="form-group">
+                            <label>Количество заданий</label>
+                            <select id="countSelect">
+                                <option>5</option>
+                                <option>10</option>
+                                <option>15</option>
+                                <option>20</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('tasks')">
+                            <span>📊</span><span>Сгенерировать</span>
+                        </button>
+                    `;
+                    break;
+
+                case 'variants':
+                    html = `
+                        <div class="form-group">
+                            <label>Предмет</label>
+                            <select id="subjectSelect">
+                                <option>Математика</option>
+                                <option>Физика</option>
+                                <option>Химия</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тема контрольной</label>
+                            <input type="text" id="inputText" placeholder="Например: Векторы">
+                        </div>
+                        <div class="form-group">
+                            <label>Количест��о вариантов</label>
+                            <select id="countSelect">
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="processAction('variants')">
+                            <span>📝</span><span>Создать варианты</span>
+                        </button>
+                    `;
+                    break;
+            }
+
+            formContainer.innerHTML = html;
+        }
+
+        let uploadedImage = null;
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImage = e.target.result;
+                
+                document.getElementById('fileUpload').classList.add('has-file');
+                document.getElementById('imagePreviewContainer').innerHTML = `
+                    <div class="image-preview">
+                        <img src="${e.target.result}" alt="Uploaded">
+                    </div>
+                `;
+                document.getElementById('checkBtn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function processAction(actionId) {
+            const inputText = document.getElementById('inputText')?.value || '';
+            const subject = document.getElementById('subjectSelect')?.value || '';
+            const level = document.getElementById('levelSelect')?.value || '';
+            const grade = document.getElementById('gradeSelect')?.value || '';
+            const count = document.getElementById('countSelect')?.value || '';
+
+            if (!inputText && actionId !== 'check') {
+                showToast('⚠️ Заполните все поля');
+                return;
+            }
+
+            if (actionId === 'check' && !uploadedImage) {
+                showToast('⚠️ Загрузите фото');
+                return;
+            }
+
+            document.getElementById('actionForm').style.display = 'none';
+            document.getElementById('loadingContainer').style.display = 'block';
+
+            let prompt = generatePrompt(actionId, {
+                inputText, subject, level, grade, count, image: uploadedImage
+            });
+
+            try {
+                const result = await callAI(prompt, uploadedImage);
+                displayResult(result, actionId);
+                saveToHistory({
+                    type: actionId,
+                    input: inputText,
+                    subject: subject,
+                    result: result,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                showToast('❌ Ошибка: ' + error.message);
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('actionForm').style.display = 'block';
+            }
+        }
+
+        function generatePrompt(actionId, data) {
+            const prompts = {
+                solve: `Реши подробно задачу:\n\n${data.inputText}`,
+                summary: `Создай конспект по теме "${data.inputText}" (${data.subject}). Структурированно с примерами.`,
+                schema: `Создай визуальную схему/шпаргалку по теме "${data.inputText}" (${data.subject}).\n\nФормат:\n📌 ЗАГОЛОВОК\n🔹 РАЗДЕЛ 1:\n• пункт\n🔹 РАЗДЕЛ 2:\n• пункт\n📐 ФОРМУЛЫ:\n• формула\n💡 ПРИМЕРЫ:\n• пример\n⚠️ ВАЖНО:\n• момент`,
+                check: `Проверь решение на фото. Найди ошибки, укажи строку, дай подсказку.${data.inputText ? '\n\n' + data.inputText : ''}`,
+                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, ${data.level}).\n\nВОПРОС 1:\n[текст]\nОтвет: [ответ]\n\n... В конце "3 ГЛАВНЫХ МОМЕНТА"`,
+                explain: `Объясни: ${data.inputText}\nУровень: ${data.level}\nИспользуй аналогии и примеры.`,
+                lesson: `План урока 45 мин:\nПредмет: ${data.subject}\nТема: ${data.inputText}\nКласс: ${data.grade}\n\n1. Цель\n2. Актуализация (3 вопроса)\n3. Объяснение (20 мин)\n4. Практика (15 мин)\n5. Exit ticket\n6. Домашка`,
+                tasks: `Создай ${data.count} заданий: "${data.inputText}" (${data.subject}).\nДля каждого: номер, условие, ответ, решение.`,
+                variants: `Создай ${data.count} варианта контрольной: "${data.inputText}" (${data.subject}).\nКаждый 5-7 заданий, равные по сложности.`
+            };
+            return prompts[actionId] || data.inputText;
+        }
+
+        async function callAI(prompt, image = null) {
+            const provider = userData.apiProvider;
+            const apiKey = userData.apiKey;
+
+            if (provider === 'gemini') {
+                // Google Gemini API
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+                
+                const body = {
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }]
+                };
+
+                // Если есть изображение, используем gemini-pro-vision
+                if (image) {
+                    const visionUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`;
+                    const base64Data = image.split(',')[1];
+                    
+                    const visionBody = {
+                        contents: [{
+                            parts: [
+                                { text: prompt },
+                                {
+                                    inline_data: {
+                                        mime_type: "image/jpeg",
+                                        data: base64Data
+                                    }
+                                }
+                            ]
+                        }]
+                    };
+
+                    const response = await fetch(visionUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(visionBody)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('API ошибка. Проверьте ключ в настройках.');
+                    }
+
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    throw new Error('API ошибка. Проверьте ключ в настройках.');
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+
+            } else if (provider === 'groq') {
+                // Groq API
+                const url = 'https://api.groq.com/openai/v1/chat/completions';
+                
+                const body = {
+                    model: "llama3-8b-8192",
+                    messages: [{
+                        role: "user",
+                        content: prompt
+                    }],
+                    temperature: 0.7,
+                    max_tokens: 2000
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    throw new Error('API ошибка. Проверьте ключ в настройках.');
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            }
+        }
+
+        function displayResult(result, actionId) {
+            document.getElementById('loadingContainer').style.display = 'none';
+            
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.style.display = 'block';
+            
+            resultContainer.innerHTML = `
+                <div class="result-container">
+                    <div class="result-header">
+                        <h3>✅ Готово!</h3>
+                        <div class="result-actions">
+                            <button class="icon-btn" onclick="copyResult()" title="Копировать">📋</button>
+                            <button class="icon-btn" onclick="shareResult()" title="Поделиться">📤</button>
                         </div>
                     </div>
-                    <div class="task-status ${task.completed ? 'completed' : ''}">
-                        ${task.completed ? '<i class="fas fa-check"></i>' : '○'}
+                    <div class="result-content" id="resultContent">${formatResult(result)}</div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()">
+                    <span>🔄</span><span>Новый запрос</span>
+                </button>
+            `;
+
+            window.currentResult = result;
+        }
+
+        function formatResult(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function resetForm() {
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('actionForm').style.display = 'block';
+            uploadedImage = null;
+        }
+
+        function copyResult() {
+            const text = document.getElementById('resultContent').innerText;
+            navigator.clipboard.writeText(text);
+            showToast('📋 Скопировано');
+        }
+
+        function shareResult() {
+            const text = window.currentResult || document.getElementById('resultContent').innerText;
+            if (tg.initDataUnsafe?.user) {
+                tg.sendData(text);
+            }
+        }
+
+        function updateProfile() {
+            const user = userData.telegramUser;
+            
+            if (user) {
+                const avatarContainer = document.getElementById('profileAvatar');
+                if (user.photo_url) {
+                    avatarContainer.innerHTML = `<img src="${user.photo_url}" alt="Avatar">`;
+                } else {
+                    const initial = user.first_name ? user.first_name[0].toUpperCase() : '👤';
+                    avatarContainer.innerHTML = initial;
+                }
+
+                const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
+                document.getElementById('profileName').textContent = fullName;
+
+                const username = user.username ? `@${user.username}` : '';
+                document.getElementById('profileUsername').textContent = username;
+            }
+
+            if (userData.apiKey) {
+                document.getElementById('apiKeyInput').value = userData.apiKey;
+            }
+            document.getElementById('aiProvider').value = userData.apiProvider;
+
+            const roleText = userData.role === 'student' ? '👨‍🎓 Ученик' : '👨‍🏫 Учитель';
+            document.getElementById('profileRole').textContent = roleText;
+        }
+
+        function showHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            if (userData.history.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📚</div>
+                        <h3>История пуста</h3>
+                        <p>Запросы будут сохраняться здесь</p>
                     </div>
                 `;
-                container.appendChild(taskDiv);
-            });
-        }
-
-        function renderAchievements() {
-            if (!userData) return;
-            const container = document.getElementById('achievementsGrid');
-            container.innerHTML = '';
-            ACHIEVEMENTS.forEach(ach => {
-                const isUnlocked = userData.achievements.includes(ach.id);
-                const achDiv = document.createElement('div');
-                achDiv.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
-                achDiv.innerHTML = `
-                    <div class="achievement-icon">${ach.icon}</div>
-                    <div class="achievement-name">${ach.name}</div>
-                    <div class="achievement-desc">${ach.desc}</div>
-                `;
-                container.appendChild(achDiv);
-            });
-        }
-
-        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
-        function showLoader() { loader.classList.add('visible'); }
-        function hideLoader() { loader.classList.remove('visible'); }
-        function showFixedInput() { fixedInputContainer.style.display = 'block'; }
-        function hideFixedInput() { fixedInputContainer.style.display = 'none'; }
-        function setInputPlaceholder(text) { fixedMessageInput.placeholder = text; }
-
-        function cleanResponse(text) {
-            return text.replace(/#/g, '').replace(/\*/g, '').replace(/_/g, '').replace(/`/g, '').trim();
-        }
-
-        function formatFormulas(text) {
-            return text.replace(/\^2/g, '²').replace(/\^3/g, '³').replace(/sqrt\(/g, '√(').replace(/pi/g, 'π');
-        }
-
-        function addMessage(content, isUser = true, containerId = 'chatContainer') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const messageDiv = document.createElement('div');
-            messageDiv.className = isUser ? 'user-message' : 'ai-message';
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.textContent = !isUser ? formatFormulas(content) : content;
-            messageDiv.appendChild(bubble);
-            container.appendChild(messageDiv);
-            setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
-        }
-
-        async function callAI(prompt, mode) {
-            showLoader();
-            try {
-                let systemPrompt = '';
-                if (mode === 'teacher') systemPrompt = TEACHER_PROMPT;
-                else if (mode === 'explain') systemPrompt = EXPLAIN_PROMPT;
-                else if (mode === 'test') systemPrompt = TEST_PROMPT;
-                else systemPrompt = SOLVE_PROMPT;
-
-                const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: prompt }];
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: MODEL, messages, temperature: 0.7, max_tokens: 4096 })
-                });
-                if (!response.ok) throw new Error('API Error');
-                const data = await response.json();
-                let answer = cleanResponse(data.choices[0].message.content);
-                return answer;
-            } catch (error) {
-                console.error('AI Error:', error);
-                return 'Извините, произошла ошибка. Попробуйте позже.';
-            } finally { hideLoader(); }
-        }
-
-        async function generateTest(topic, count) {
-            showLoader();
-            try {
-                const response = await callAI(`${TEST_PROMPT} Тема: ${topic}. ${count} вопросов.`, 'test');
-                let jsonStr = response.match(/\[[\s\S]*\]/)?.[0] || response;
-                const test = JSON.parse(jsonStr);
-                return test.slice(0, count);
-            } catch (error) {
-                return [{ question: `Тест по теме "${topic}"`, options: ["Правильный ответ", "Вариант 2", "Вариант 3", "Вариант 4"], correct: 0 }];
-            } finally { hideLoader(); }
-        }
-
-        function renderTest(test) {
-            testContainer.style.display = 'block';
-            chatContainer.style.display = 'none';
-            teacherChatContainer.style.display = 'none';
-            testContainer.innerHTML = '<div style="margin-bottom: 20px;"><div class="back-to-functions" id="exitTestBtn" style="margin-bottom: 16px;"><i class="fas fa-arrow-left"></i><span>Выйти из теста</span></div></div>';
-            
-            test.forEach((q, idx) => {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'test-question';
-                qDiv.innerHTML = `<p><strong>${idx + 1}. ${q.question}</strong></p>`;
-                q.options.forEach((opt, optIdx) => {
-                    const optDiv = document.createElement('div');
-                    optDiv.className = 'test-option';
-                    optDiv.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
-                    optDiv.onclick = () => {
-                        document.querySelectorAll(`#testContainer .test-question`).forEach(qd => {
-                            qd.querySelectorAll('.test-option').forEach(o => o.classList.remove('selected'));
-                        });
-                        optDiv.classList.add('selected');
-                        userAnswers[idx] = optIdx;
-                    };
-                    qDiv.appendChild(optDiv);
-                });
-                testContainer.appendChild(qDiv);
-            });
-            
-            const submitBtn = document.createElement('button');
-            submitBtn.className = 'btn btn-primary';
-            submitBtn.style.marginTop = '20px';
-            submitBtn.innerHTML = '📊 Завершить тест';
-            submitBtn.onclick = () => {
-                let correct = 0;
-                test.forEach((q, idx) => {
-                    if (userAnswers[idx] === q.correct) correct++;
-                });
-                const percent = Math.round(correct / test.length * 100);
-                let resultText = `📊 Результат: ${correct} из ${test.length} (${percent}%)\n\n`;
-                if (percent >= 80) resultText += '🎉 Отлично!\n\n';
-                else if (percent >= 60) resultText += '👍 Хорошо!\n\n';
-                else resultText += '📚 Стоит повторить тему.\n\n';
-                
-                resultText += test.map((q, i) => {
-                    const isCorrect = userAnswers[i] === q.correct;
-                    return `${i+1}. ${q.question}\n${isCorrect ? '✅ Правильно' : '❌ Ошибка. Правильный ответ: ' + q.options[q.correct]}`;
-                }).join('\n\n');
-                
-                addMessage(resultText, false, 'chatContainer');
-                if (userData) {
-                    userData.stats.tests = (userData.stats.tests || 0) + 1;
-                    checkDailyTasks('test', 1);
-                    checkAchievements();
-                    saveUserData();
-                }
-                exitTestMode();
-            };
-            testContainer.appendChild(submitBtn);
-            document.getElementById('exitTestBtn').onclick = exitTestMode;
-        }
-
-        function exitTestMode() {
-            testContainer.style.display = 'none';
-            chatContainer.style.display = 'flex';
-            teacherChatContainer.style.display = 'flex';
-            currentTest = null;
-            userAnswers = [];
-            exitChatMode();
-        }
-
-        function enterChatMode(mode) {
-            isChatMode = true;
-            currentMode = mode;
-            if (userData.role === 'teacher') teacherFeatures.classList.add('hidden');
-            else studentFeatures.classList.add('hidden');
-            backToFunctions.style.display = 'flex';
-            chatContainer.innerHTML = '';
-            teacherChatContainer.innerHTML = '';
-            if (mode === 'teacher') setInputPlaceholder('Тема урока?');
-            else if (mode === 'explain') setInputPlaceholder('Что тебе объяснить?');
-            else setInputPlaceholder('Введите задачу...');
-        }
-
-        function exitChatMode() {
-            isChatMode = false;
-            if (userData.role === 'teacher') teacherFeatures.classList.remove('hidden');
-            else studentFeatures.classList.remove('hidden');
-            backToFunctions.style.display = 'none';
-            chatContainer.innerHTML = '';
-            teacherChatContainer.innerHTML = '';
-        }
-
-        function saveUserData() {
-            localStorage.setItem('nevio_user', JSON.stringify(userData));
-        }
-
-        // ========== ЭЛЕМЕНТЫ ==========
-        const registerScreen = document.getElementById('registerScreen');
-        const mainScreen = document.getElementById('mainScreen');
-        const mainContent = document.getElementById('mainContent');
-        const loader = document.getElementById('loader');
-        const fixedInputContainer = document.getElementById('fixedInputContainer');
-        const fixedMessageInput = document.getElementById('fixedMessageInput');
-        const fixedSendBtn = document.getElementById('fixedSendBtn');
-        const regRoleTeacher = document.getElementById('regRoleTeacher');
-        const regRoleStudent = document.getElementById('regRoleStudent');
-        const classFieldLabel = document.getElementById('classFieldLabel');
-        const regClass = document.getElementById('regClass');
-        const backToFunctions = document.getElementById('backToFunctions');
-        const studentFeatures = document.getElementById('studentFeatures');
-        const teacherFeatures = document.getElementById('teacherFeatures');
-        const chatContainer = document.getElementById('chatContainer');
-        const teacherChatContainer = document.getElementById('teacherChatContainer');
-        const testContainer = document.getElementById('testContainer');
-        const navHome = document.getElementById('navHome');
-        const navSettings = document.getElementById('navSettings');
-
-        function updateClassField() {
-            if (regRoleTeacher.classList.contains('active')) {
-                classFieldLabel.textContent = 'Предмет';
-                regClass.placeholder = 'Математика, Физика...';
             } else {
-                classFieldLabel.textContent = 'Класс';
-                regClass.placeholder = '8 класс, 9 класс...';
+                historyList.innerHTML = userData.history.slice().reverse().map((item, index) => `
+                    <div class="history-item" onclick="viewHistoryItem(${userData.history.length - 1 - index})">
+                        <div class="history-header">
+                            <span class="history-type">${getActionName(item.type)}</span>
+                            <span class="history-date">${formatDate(item.timestamp)}</span>
+                        </div>
+                        <div class="history-preview">${item.input || item.subject || 'Запрос'}</div>
+                    </div>
+                `).join('');
+            }
+
+            showPage('historyPage');
+        }
+
+        function viewHistoryItem(index) {
+            const item = userData.history[index];
+            if (item && item.result) {
+                document.getElementById('actionTitle').innerHTML = `${getActionIcon(item.type)} ${getActionName(item.type)}`;
+                document.getElementById('actionDescription').textContent = formatDate(item.timestamp);
+                document.getElementById('actionForm').style.display = 'none';
+                displayResult(item.result, item.type);
+                showPage('actionPage');
             }
         }
 
-        regRoleTeacher.addEventListener('click', () => {
-            regRoleTeacher.classList.add('active');
-            regRoleStudent.classList.remove('active');
-            updateClassField();
-        });
+        function clearHistory() {
+            if (confirm('Удалить всю историю?')) {
+                userData.history = [];
+                saveData();
+                showToast('🗑️ История очищена');
+                showHistory();
+            }
+        }
 
-        regRoleStudent.addEventListener('click', () => {
-            regRoleStudent.classList.add('active');
-            regRoleTeacher.classList.remove('active');
-            updateClassField();
-        });
-
-        document.getElementById('registerBtn').addEventListener('click', () => {
-            const name = document.getElementById('regName').value.trim();
-            if (!name) { alert('Введите имя'); return; }
-            
-            const dailyTasksCopy = DAILY_TASKS.map(t => ({ ...t, current: 0, completed: false }));
-            
-            userData = {
-                name: name,
-                role: regRoleTeacher.classList.contains('active') ? 'teacher' : 'student',
-                school: document.getElementById('regSchool').value.trim() || 'Не указана',
-                class: regClass.value.trim() || (regRoleTeacher.classList.contains('active') ? 'Математика' : '8 класс'),
-                stats: { lessons: 0, tasks: 0, tests: 0 },
-                tokens: 0,
-                level: 1,
-                achievements: [],
-                dailyTasks: dailyTasksCopy
+        function getActionName(actionId) {
+            const names = {
+                solve: 'Решение', summary: 'Конспект', schema: 'Схема',
+                check: 'Проверка', test: 'Тест', explain: 'Объяснение',
+                lesson: 'План урока', tasks: 'Задания', variants: 'Варианты'
             };
-            saveUserData();
-            updateMainScreen();
-        });
-
-        function updateMainScreen() {
-            document.getElementById('userName').textContent = userData.name;
-            document.getElementById('userRole').textContent = userData.role === 'teacher' ? '👨‍🏫 Учитель' : '🧑‍🎓 Ученик';
-            document.getElementById('userAvatar').textContent = userData.name.charAt(0);
-            updateTokensAndLevel();
-            renderDailyTasks();
-            renderAchievements();
-            
-            if (userData.role === 'teacher') {
-                document.getElementById('teacherContent').style.display = 'block';
-                document.getElementById('studentContent').style.display = 'none';
-                currentContainerId = 'teacherChatContainer';
-            } else {
-                document.getElementById('teacherContent').style.display = 'none';
-                document.getElementById('studentContent').style.display = 'block';
-                currentContainerId = 'chatContainer';
-            }
-            registerScreen.classList.remove('active');
-            mainScreen.classList.add('active');
-            showFixedInput();
+            return names[actionId] || 'Запрос';
         }
 
-        const saved = localStorage.getItem('nevio_user');
-        if (saved) { userData = JSON.parse(saved); updateMainScreen(); }
+        function getActionIcon(actionId) {
+            const icons = {
+                solve: '📝', summary: '📚', schema: '📊',
+                check: '📷', test: '🎯', explain: '💡',
+                lesson: '🎓', tasks: '📊', variants: '📝'
+            };
+            return icons[actionId] || '📄';
+        }
 
-        // ========== ОБРАБОТЧИКИ ==========
-        document.getElementById('studentExplainCard')?.addEventListener('click', () => enterChatMode('explain'));
-        document.getElementById('studentSolveCard')?.addEventListener('click', () => enterChatMode('solve'));
-        document.getElementById('teacherLessonCard')?.addEventListener('click', () => enterChatMode('teacher'));
-        document.getElementById('teacherSolveCard')?.addEventListener('click', () => enterChatMode('solve'));
-        document.getElementById('backToFunctions').addEventListener('click', exitChatMode);
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
 
-        document.getElementById('studentTestCard')?.addEventListener('click', () => {
-            document.getElementById('testModal').classList.add('visible');
-        });
-        document.getElementById('teacherGenerateTestCard')?.addEventListener('click', () => {
-            document.getElementById('testModal').classList.add('visible');
-        });
-        document.getElementById('generateTestBtn').addEventListener('click', async () => {
-            const topic = document.getElementById('testTopic').value.trim();
-            const count = parseInt(document.getElementById('testCount').value);
-            if (!topic) { alert('Введите тему теста'); return; }
-            document.getElementById('testModal').classList.remove('visible');
-            currentTest = await generateTest(topic, count);
-            renderTest(currentTest);
-        });
-        document.getElementById('closeTestModal').addEventListener('click', () => {
-            document.getElementById('testModal').classList.remove('visible');
-        });
+            if (minutes < 1) return 'Только что';
+            if (minutes < 60) return `${minutes} мин`;
+            if (hours < 24) return `${hours} ч`;
+            if (days < 7) return `${days} дн`;
+            return date.toLocaleDateString('ru-RU');
+        }
 
-        fixedSendBtn.addEventListener('click', async () => {
-            if (!isChatMode) { alert('Сначала выберите функцию'); return; }
-            const message = fixedMessageInput.value.trim();
-            if (!message) { alert('Введите сообщение'); return; }
-            addMessage(message, true, currentContainerId);
-            fixedMessageInput.value = '';
-            const response = await callAI(message, currentMode);
-            addMessage(response, false, currentContainerId);
+        function saveToHistory(item) {
+            userData.history.push(item);
+            if (userData.history.length > 100) userData.history.shift();
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('nevioData', JSON.stringify({
+                role: userData.role,
+                history: userData.history,
+                apiKey: userData.apiKey,
+                apiProvider: userData.apiProvider
+            }));
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             
-            if (userData) {
-                if (currentMode === 'teacher') {
-                    userData.stats.lessons++;
-                    checkDailyTasks('lesson', 1);
-                } else {
-                    userData.stats.tasks++;
-                    checkDailyTasks('solve', 1);
-                    if (userData.stats.tasks === 1) checkAchievements();
-                }
-                checkAchievements();
-                saveUserData();
-                updateTokensAndLevel();
-                renderDailyTasks();
-                renderAchievements();
-            }
-        });
+            if (pageId === 'mainPage') document.querySelectorAll('.nav-item')[0].classList.add('active');
+            else if (pageId === 'historyPage') document.querySelectorAll('.nav-item')[1].classList.add('active');
+            else if (pageId === 'settingsPage') document.querySelectorAll('.nav-item')[2].classList.add('active');
+        }
 
-        fixedMessageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fixedSendBtn.click(); }
-        });
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
-        navHome.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            navHome.classList.add('active');
-            exitChatMode();
-        });
-
-        navSettings.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            navSettings.classList.add('active');
-            document.getElementById('settingsModal').classList.add('visible');
-        });
-
-        document.getElementById('profileCard').addEventListener('click', () => {
-            if (!userData) return;
-            document.getElementById('modalName').textContent = userData.name;
-            document.getElementById('modalAvatar').textContent = userData.name.charAt(0);
-            document.getElementById('modalRole').textContent = userData.role === 'teacher' ? '👨‍🏫 Учитель' : '🧑‍🎓 Ученик';
-            document.getElementById('modalSchool').textContent = userData.school;
-            document.getElementById('modalClass').textContent = userData.class;
-            document.getElementById('statLessons').textContent = userData.stats.lessons;
-            document.getElementById('statTasks').textContent = userData.stats.tasks;
-            document.getElementById('statTokens').textContent = userData.tokens;
-            document.getElementById('statLevel').textContent = userData.level;
-            
-            const unlockedList = document.getElementById('unlockedAchievementsList');
-            const unlocked = ACHIEVEMENTS.filter(a => userData.achievements.includes(a.id));
-            if (unlocked.length === 0) unlockedList.innerHTML = 'Пока нет достижений';
-            else unlockedList.innerHTML = unlocked.map(a => `${a.icon} ${a.name}`).join('<br>');
-            
-            document.getElementById('profileModal').classList.add('visible');
-        });
-
-        document.getElementById('closeProfileModal').addEventListener('click', () => {
-            document.getElementById('profileModal').classList.remove('visible');
-        });
-        document.getElementById('closeSettingsModal').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.remove('visible');
-        });
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Вы уверены, что хотите выйти?')) {
-                localStorage.removeItem('nevio_user');
-                userData = null;
-                registerScreen.classList.add('active');
-                mainScreen.classList.remove('active');
-                hideFixedInput();
-            }
-        });
-
-        const privacyButton = document.createElement('button');
-        privacyButton.className = 'btn btn-secondary';
-        privacyButton.style.marginTop = '12px';
-        privacyButton.innerHTML = '<i class="fas fa-shield-alt"></i> Политика конфиденциальности';
-        privacyButton.onclick = () => document.getElementById('privacyModal').classList.add('visible');
-        document.getElementById('settingsModal').querySelector('.modal-window').appendChild(privacyButton);
-        document.getElementById('closePrivacyModal').addEventListener('click', () => document.getElementById('privacyModal').classList.remove('visible'));
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
