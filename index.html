@@ -758,7 +758,7 @@
         tg.expand();
         tg.enableClosingConfirmation();
 
-        // ========== ВСТРОЕННЫЙ API КЛЮЧ (БЕСПЛАТНЫЙ, РАБОТАЕТ В РБ) ==========
+        // ========== ВСТРОЕННЫЙ API КЛЮЧ GROQ (БЕСПЛАТНЫЙ) ==========
         const GROQ_API_KEY = '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';
         const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
         // =================================================================
@@ -854,19 +854,19 @@
             const formContainer = document.getElementById('actionForm');
             let html = '';
 
+            // Общая часть — поле ввода есть везде
+            const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Введите условие, тему или вопрос..." rows="3"></textarea></div>`;
+
             switch(actionId) {
                 case 'solve':
-                    html = `<div class="form-group"><label>Условие задачи</label><textarea id="inputText" placeholder="Напишите условие задачи..."></textarea></div>
-                            <button class="btn btn-primary" onclick="processAction('solve')"><i class="fas fa-calculator"></i> Решить задачу</button>`;
+                    html = commonInput + `<button class="btn btn-primary" onclick="processAction('solve')"><i class="fas fa-calculator"></i> Решить задачу</button>`;
                     break;
                 case 'summary':
-                    html = `<div class="form-group"><label>Тема конспекта</label><input type="text" id="inputText" placeholder="Например: Квадратные уравнения"></div>
-                            <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('summary')"><i class="fas fa-book"></i> Создать конспект</button>`;
                     break;
                 case 'schema':
-                    html = `<div class="form-group"><label>Тема для схемы</label><input type="text" id="inputText" placeholder="Например: Строение клетки"></div>
-                            <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('schema')"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
                     break;
                 case 'check':
@@ -878,38 +878,35 @@
                             </div>
                             <div id="imagePreviewContainer"></div>
                             </div>
-                            <div class="form-group"><label>Дополнительная информация (необязательно)</label><textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea></div>
+                            <div class="form-group"><label>Ваш вопрос или комментарий</label><textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea></div>
                             <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction('check')"><i class="fas fa-check-circle"></i> Проверить решение</button>`;
                     break;
                 case 'test':
-                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
-                            <div class="form-group"><label>Тема контрольной</label><input type="text" id="inputText" placeholder="Например: Тригонометрия"></div>
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
                             <div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('test')"><i class="fas fa-clipboard-list"></i> Начать подготовку</button>`;
                     break;
                 case 'explain':
-                    html = `<div class="form-group"><label>Что нужно объяснить?</label><textarea id="inputText" placeholder="Например: Почему вода замерзает при 0°C?"></textarea></div>
-                            <div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div>
+                    html = commonInput + `<div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('explain')"><i class="fas fa-lightbulb"></i> Объяснить</button>`;
                     break;
                 case 'lesson':
-                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
-                            <div class="form-group"><label>Тема урока</label><input type="text" id="inputText" placeholder="Например: Закон Ома"></div>
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('lesson')"><i class="fas fa-chalkboard-user"></i> Создать план урока</button>`;
                     break;
                 case 'tasks':
-                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
-                            <div class="form-group"><label>Тема заданий</label><input type="text" id="inputText" placeholder="Например: Производная"></div>
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Количество заданий</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('tasks')"><i class="fas fa-tasks"></i> Сгенерировать</button>`;
                     break;
                 case 'variants':
-                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
-                            <div class="form-group"><label>Тема контрольной</label><input type="text" id="inputText" placeholder="Например: Векторы"></div>
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Количество вариантов</label><select id="countSelect"><option>2</option><option>3</option><option>4</option></select></div>
                             <button class="btn btn-primary" onclick="processAction('variants')"><i class="fas fa-copy"></i> Создать варианты</button>`;
                     break;
+                default:
+                    html = commonInput + `<button class="btn btn-primary" onclick="processAction('${actionId}')">Отправить</button>`;
             }
             formContainer.innerHTML = html;
         }
@@ -936,7 +933,7 @@
             const count = document.getElementById('countSelect')?.value || '';
 
             if (!inputText && actionId !== 'check') {
-                showToast('Заполните все поля');
+                showToast('Пожалуйста, введите ваш запрос');
                 return;
             }
             if (actionId === 'check' && !uploadedImage) {
@@ -969,24 +966,26 @@
         }
 
         function generatePrompt(actionId, data) {
-            const prompts = {
-                solve: `Реши подробно задачу:\n\n${data.inputText}`,
-                summary: `Создай конспект по теме "${data.inputText}" (${data.subject}). Структурированно с примерами.`,
-                schema: `Создай визуальную схему/шпаргалку по теме "${data.inputText}" (${data.subject}).\nФормат:\n📌 ЗАГОЛОВОК\n🔹 РАЗДЕЛ 1:\n• пункт\n🔹 РАЗДЕЛ 2:\n• пункт\n📐 ФОРМУЛЫ:\n• формула\n💡 ПРИМЕРЫ:\n• пример\n⚠️ ВАЖНО:\n• момент`,
-                check: `Проверь решение на фото. Найди ошибки, укажи строку, дай подсказку.${data.inputText ? '\n\n' + data.inputText : ''}`,
-                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, ${data.level}).\nФормат:\nВОПРОС 1:\n[текст]\nОтвет: [ответ]\n...\nВ конце "3 ГЛАВНЫХ МОМЕНТА"`,
-                explain: `Объясни: ${data.inputText}\nУровень: ${data.level}\nИспользуй аналогии и примеры.`,
-                lesson: `План урока 45 мин:\nПредмет: ${data.subject}\nТема: ${data.inputText}\nКласс: ${data.grade}\n\n1. Цель\n2. Актуализация (3 вопроса)\n3. Объяснение (20 мин)\n4. Практика (15 мин)\n5. Exit ticket\n6. Домашка`,
-                tasks: `Создай ${data.count} заданий: "${data.inputText}" (${data.subject}).\nДля каждого: номер, условие, ответ, решение.`,
-                variants: `Создай ${data.count} варианта контрольной: "${data.inputText}" (${data.subject}).\nКаждый 5-7 заданий, равные по сложности.`
+            // Добавляем просьбу использовать эмодзи в ответе
+            const emojiInstruction = " Пожалуйста, используй эмодзи для наглядности (👍, 📌, 🔹, ✅, ❌, 📐, 💡, 🎯, 📝, 🔍 и т.п.).";
+            const base = {
+                solve: `Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пояснениями.${emojiInstruction}`,
+                summary: `Создай конспект по теме "${data.inputText}" (${data.subject}). Структурируй: главные мысли, формулы, примеры.${emojiInstruction}`,
+                schema: `Создай визуальную схему/шпаргалку по теме "${data.inputText}" (${data.subject}). Используй разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты.${emojiInstruction}`,
+                check: `Проверь решение на фото. Найди ошибки, укажи строку, дай подсказку.${data.inputText ? '\nКомментарий: ' + data.inputText : ''}${emojiInstruction}`,
+                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, ${data.level}). Формат: вопрос, 4 варианта ответа, правильный ответ. В конце добавь "3 главных момента".${emojiInstruction}`,
+                explain: `Объясни: ${data.inputText} (уровень: ${data.level}). Используй аналогии, примеры из жизни. Пиши просто и понятно.${emojiInstruction}`,
+                lesson: `План урока 45 мин:\nПредмет: ${data.subject}\nТема: ${data.inputText}\nКласс: ${data.grade}\n\n1. Цель\n2. Актуализация (3 вопроса)\n3. Объяснение (20 мин)\n4. Практика (15 мин)\n5. Exit ticket\n6. Домашнее задание.${emojiInstruction}`,
+                tasks: `Создай ${data.count} заданий по теме "${data.inputText}" (${data.subject}). Для каждого: условие, ответ, краткое решение.${emojiInstruction}`,
+                variants: `Создай ${data.count} варианта контрольной по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности.${emojiInstruction}`
             };
-            return prompts[actionId] || data.inputText;
+            return base[actionId] || `Ответь на запрос: ${data.inputText}. ${emojiInstruction}`;
         }
 
         async function callGroq(prompt, imageBase64 = null) {
             let userContent = prompt;
             if (imageBase64) {
-                userContent = `[Фото задачи] ${prompt}. Проанализируй решение на фото и дай обратную связь.`;
+                userContent = `[Фото задачи] ${prompt}. Проанализируй изображение и дай обратную связь.`;
             }
             const body = {
                 model: "llama-3.3-70b-versatile",
@@ -1007,27 +1006,18 @@
                 throw new Error(`Ошибка API: ${response.status}`);
             }
             const data = await response.json();
-            return data.choices[0].message.content;
-        }
-
-        function displayResult(result, actionId) {
-            document.getElementById('loadingContainer').style.display = 'none';
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.style.display = 'block';
-            resultContainer.innerHTML = `
-                <div class="result-container">
-                    <div class="result-header">
-                        <h3><i class="fas fa-check-circle"></i> Готово!</h3>
-                        <div class="result-actions">
-                            <button class="icon-btn" onclick="copyResult()"><i class="fas fa-copy"></i></button>
-                            <button class="icon-btn" onclick="shareResult()"><i class="fas fa-share-alt"></i></button>
-                        </div>
-                    </div>
-                    <div class="result-content" id="resultContent">${formatResult(result)}</div>
-                </div>
-                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()"><i class="fas fa-undo-alt"></i> Новый запрос</button>
-            `;
-            window.currentResult = result;
+            let answer = data.choices[0].message.content;
+            // Красивое форматирование формул
+            answer = answer
+                .replace(/\^2/g, '²')
+                .replace(/\^3/g, '³')
+                .replace(/sqrt\(/g, '√(')
+                .replace(/pi/g, 'π')
+                .replace(/_(\d+)/g, (_, d) => {
+                    const sub = d.split('').map(c => String.fromCharCode(0x2080 + parseInt(c))).join('');
+                    return sub;
+                });
+            return answer;
         }
 
         function formatResult(text) {
@@ -1038,23 +1028,39 @@
                 .replace(/\n/g, '<br>');
         }
 
+        function displayResult(result, actionId) {
+            document.getElementById('loadingContainer').style.display = 'none';
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.style.display = 'block';
+            resultContainer.innerHTML = `
+                <div class="result-container">
+                    <div class="result-header">
+                        <h3><i class="fas fa-check-circle"></i> Готово!</h3>
+                        <button class="icon-btn" onclick="copyResult()"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <div class="result-content" id="resultContent">${formatResult(result)}</div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()"><i class="fas fa-undo-alt"></i> Новый запрос</button>
+            `;
+            window.currentResult = result;
+        }
+
         function resetForm() {
             document.getElementById('resultContainer').style.display = 'none';
             document.getElementById('actionForm').style.display = 'block';
             uploadedImage = null;
-            document.getElementById('fileUpload')?.classList.remove('has-file');
-            if (document.getElementById('imagePreviewContainer')) document.getElementById('imagePreviewContainer').innerHTML = '';
+            const fileUpload = document.getElementById('fileUpload');
+            if (fileUpload) fileUpload.classList.remove('has-file');
+            const preview = document.getElementById('imagePreviewContainer');
+            if (preview) preview.innerHTML = '';
+            const checkBtn = document.getElementById('checkBtn');
+            if (checkBtn) checkBtn.disabled = true;
         }
 
         function copyResult() {
             const text = document.getElementById('resultContent').innerText;
             navigator.clipboard.writeText(text);
-            showToast('Скопировано');
-        }
-
-        function shareResult() {
-            const text = window.currentResult || document.getElementById('resultContent').innerText;
-            if (tg.initDataUnsafe?.user) tg.sendData(text);
+            showToast('Скопировано в буфер обмена');
         }
 
         function updateProfile() {
