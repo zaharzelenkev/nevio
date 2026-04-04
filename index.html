@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEVIO — умный помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -58,6 +59,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
+            letter-spacing: 1px;
         }
         .header p {
             color: var(--text-secondary);
@@ -99,6 +101,7 @@
         }
         .role-btn .icon {
             font-size: 48px;
+            color: var(--gold);
             margin-bottom: 12px;
         }
         .role-btn h3 {
@@ -136,6 +139,7 @@
             font-size: 40px;
             margin-bottom: 12px;
             display: block;
+            color: var(--gold);
         }
         .menu-card h3 {
             font-size: 15px;
@@ -182,6 +186,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        .card h2 i {
+            color: var(--gold);
         }
         .card p {
             color: var(--text-secondary);
@@ -234,6 +241,7 @@
         }
         .file-upload .icon {
             font-size: 48px;
+            color: var(--gold);
             margin-bottom: 12px;
         }
         .btn {
@@ -252,6 +260,9 @@
         }
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0a0a0a;
+        }
+        .btn-primary i {
             color: #0a0a0a;
         }
         .btn-primary:hover {
@@ -410,6 +421,7 @@
             justify-content: center;
             font-size: 20px;
             background: var(--border);
+            color: var(--gold);
         }
         .settings-item-text h4 {
             font-size: 15px;
@@ -520,6 +532,7 @@
             font-size: 64px;
             margin-bottom: 16px;
             opacity: 0.3;
+            color: var(--gold);
         }
         .toast {
             position: fixed;
@@ -546,16 +559,16 @@
 
     <div class="page active" id="roleSelectionPage">
         <div class="role-selection">
-            <h2>👋 Добро пожаловать в NEVIO!</h2>
+            <h2>Добро пожаловать в NEVIO</h2>
             <p>Выберите свою роль для персонализированного опыта</p>
             <div class="role-buttons">
                 <div class="role-btn" onclick="selectRole('student')">
-                    <div class="icon">👨‍🎓</div>
+                    <div class="icon"><i class="fas fa-graduation-cap"></i></div>
                     <h3>Ученик</h3>
                     <p>Решение задач, конспекты, подготовка к контрольным</p>
                 </div>
                 <div class="role-btn" onclick="selectRole('teacher')">
-                    <div class="icon">👨‍🏫</div>
+                    <div class="icon"><i class="fas fa-chalkboard-user"></i></div>
                     <h3>Учитель</h3>
                     <p>Генерация заданий, планы уроков, материалы для класса</p>
                 </div>
@@ -565,7 +578,7 @@
 
     <div class="page" id="mainPage">
         <div class="header">
-            <h1>✨ NEVIO</h1>
+            <h1>NEVIO</h1>
             <p>Твой умный помощник в учёбе</p>
         </div>
         <div class="menu-grid" id="menuGrid"></div>
@@ -574,7 +587,7 @@
     <div class="page" id="actionPage">
         <div class="action-container">
             <div class="back-btn" onclick="showPage('mainPage')">
-                <span>←</span>
+                <i class="fas fa-arrow-left"></i>
                 <span>Назад</span>
             </div>
             <div class="card">
@@ -595,7 +608,7 @@
     <div class="page" id="settingsPage">
         <div class="action-container">
             <div class="back-btn" onclick="showPage('mainPage')">
-                <span>←</span>
+                <i class="fas fa-arrow-left"></i>
                 <span>Назад</span>
             </div>
             <div class="profile-section">
@@ -607,27 +620,27 @@
             <div class="settings-list">
                 <div class="settings-item" onclick="changeRole()">
                     <div class="settings-item-left">
-                        <div class="settings-item-icon">🔄</div>
+                        <div class="settings-item-icon"><i class="fas fa-arrows-rotate"></i></div>
                         <div class="settings-item-text">
                             <h4>Изменить роль</h4>
                             <p>Переключиться между учеником и учителем</p>
                         </div>
                     </div>
-                    <div class="settings-item-right">→</div>
+                    <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
                 </div>
                 <div class="settings-item" onclick="showHistory()">
                     <div class="settings-item-left">
-                        <div class="settings-item-icon">📚</div>
+                        <div class="settings-item-icon"><i class="fas fa-history"></i></div>
                         <div class="settings-item-text">
                             <h4>История запросов</h4>
                             <p>Посмотреть все предыдущие запросы</p>
                         </div>
                     </div>
-                    <div class="settings-item-right">→</div>
+                    <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
                 </div>
                 <div class="settings-item" onclick="clearHistory()">
                     <div class="settings-item-left">
-                        <div class="settings-item-icon">🗑️</div>
+                        <div class="settings-item-icon"><i class="fas fa-trash-alt"></i></div>
                         <div class="settings-item-text">
                             <h4>Очистить историю</h4>
                             <p>Удалить все сохранённые запросы</p>
@@ -636,7 +649,7 @@
                 </div>
                 <div class="settings-item">
                     <div class="settings-item-left">
-                        <div class="settings-item-icon">ℹ️</div>
+                        <div class="settings-item-icon"><i class="fas fa-info-circle"></i></div>
                         <div class="settings-item-text">
                             <h4>О приложении</h4>
                             <p>NEVIO v3.0 — Полностью бесплатно навсегда</p>
@@ -650,11 +663,11 @@
     <div class="page" id="historyPage">
         <div class="action-container">
             <div class="back-btn" onclick="showPage('settingsPage')">
-                <span>←</span>
+                <i class="fas fa-arrow-left"></i>
                 <span>Назад</span>
             </div>
             <div class="card">
-                <h2>📚 История запросов</h2>
+                <h2><i class="fas fa-history"></i> История запросов</h2>
                 <p>Все ваши предыдущие запросы сохранены здесь</p>
                 <div id="historyList"></div>
             </div>
@@ -663,15 +676,15 @@
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="showPage('mainPage')">
-            <div class="icon">🏠</div>
+            <div class="icon"><i class="fas fa-home"></i></div>
             <span>Главная</span>
         </div>
         <div class="nav-item" onclick="showHistory()">
-            <div class="icon">📚</div>
+            <div class="icon"><i class="fas fa-history"></i></div>
             <span>История</span>
         </div>
         <div class="nav-item" onclick="showPage('settingsPage')">
-            <div class="icon">⚙️</div>
+            <div class="icon"><i class="fas fa-gear"></i></div>
             <span>Настройки</span>
         </div>
     </div>
@@ -696,20 +709,20 @@
 
         const menuConfigs = {
             student: [
-                { id: 'solve', icon: '📝', title: 'Решить задачу', description: 'Решу любую задачу с объяснением' },
-                { id: 'summary', icon: '📚', title: 'Написать конспект', description: 'Структурированный конспект' },
-                { id: 'schema', icon: '📊', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
-                { id: 'check', icon: '📷', title: 'Проверить домашку', description: 'По фото с разбором ошибок' },
-                { id: 'test', icon: '🎯', title: 'Контрольная завтра', description: 'Подготовка за 10 минут' },
-                { id: 'explain', icon: '💡', title: 'Объяснить тему', description: 'Простыми словами' }
+                { id: 'solve', icon: 'fas fa-calculator', title: 'Решить задачу', description: 'Решу любую задачу с объяснением' },
+                { id: 'summary', icon: 'fas fa-book', title: 'Написать конспект', description: 'Структурированный конспект' },
+                { id: 'schema', icon: 'fas fa-diagram-project', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
+                { id: 'check', icon: 'fas fa-camera', title: 'Проверить домашку', description: 'По фото с разбором ошибок' },
+                { id: 'test', icon: 'fas fa-clipboard-list', title: 'Контрольная завтра', description: 'Подготовка за 10 минут' },
+                { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' }
             ],
             teacher: [
-                { id: 'lesson', icon: '🎓', title: 'Урок за 30 сек', description: 'Полный план урока' },
-                { id: 'tasks', icon: '📊', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
-                { id: 'variants', icon: '📝', title: 'Варианты контрольной', description: 'A/B варианты' },
-                { id: 'schema', icon: '📊', title: 'Схема для класса', description: 'Визуальный материал' },
-                { id: 'explain', icon: '💡', title: 'Объяснить тему', description: 'Методика объяснения' },
-                { id: 'summary', icon: '📚', title: 'Конспект урока', description: 'Структура материала' }
+                { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек', description: 'Полный план урока' },
+                { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
+                { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'A/B варианты' },
+                { id: 'schema', icon: 'fas fa-diagram-project', title: 'Схема для класса', description: 'Визуальный материал' },
+                { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Методика объяснения' },
+                { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' }
             ]
         };
 
@@ -735,7 +748,7 @@
             saveData();
             loadMainMenu();
             showPage('mainPage');
-            showToast(role === 'student' ? '👨‍🎓 Режим ученика активирован' : '👨‍🏫 Режим учителя активирован');
+            showToast(role === 'student' ? 'Режим ученика активирован' : 'Режим учителя активирован');
         }
 
         function changeRole() {
@@ -743,7 +756,7 @@
             saveData();
             loadMainMenu();
             showPage('mainPage');
-            showToast('Роль изменена!');
+            showToast('Роль изменена');
         }
 
         function loadMainMenu() {
@@ -751,7 +764,7 @@
             const items = menuConfigs[userData.role];
             menuGrid.innerHTML = items.map(item => `
                 <div class="menu-card" onclick="openAction('${item.id}')">
-                    <span class="icon">${item.icon}</span>
+                    <div class="icon"><i class="${item.icon}"></i></div>
                     <h3>${item.title}</h3>
                     <p>${item.description}</p>
                 </div>
@@ -761,7 +774,7 @@
         function openAction(actionId) {
             const config = menuConfigs[userData.role].find(m => m.id === actionId);
             if (!config) return;
-            document.getElementById('actionTitle').innerHTML = `${config.icon} ${config.title}`;
+            document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
             document.getElementById('actionDescription').textContent = config.description;
             document.getElementById('actionForm').innerHTML = '';
             document.getElementById('resultContainer').style.display = 'none';
@@ -777,58 +790,58 @@
             switch(actionId) {
                 case 'solve':
                     html = `<div class="form-group"><label>Условие задачи</label><textarea id="inputText" placeholder="Напишите условие задачи..."></textarea></div>
-                            <button class="btn btn-primary" onclick="processAction('solve')">🚀 Решить задачу</button>`;
+                            <button class="btn btn-primary" onclick="processAction('solve')"><i class="fas fa-calculator"></i> Решить задачу</button>`;
                     break;
                 case 'summary':
                     html = `<div class="form-group"><label>Тема конспекта</label><input type="text" id="inputText" placeholder="Например: Квадратные уравнения"></div>
                             <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('summary')">📝 Создать конспект</button>`;
+                            <button class="btn btn-primary" onclick="processAction('summary')"><i class="fas fa-book"></i> Создать конспект</button>`;
                     break;
                 case 'schema':
                     html = `<div class="form-group"><label>Тема для схемы</label><input type="text" id="inputText" placeholder="Например: Строение клетки"></div>
                             <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('schema')">🎨 Создать схему</button>`;
+                            <button class="btn btn-primary" onclick="processAction('schema')"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
                     break;
                 case 'check':
                     html = `<div class="form-group"><label>Загрузите фото домашки</label>
                             <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
                                 <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
-                                <div class="icon">📷</div>
+                                <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
                                 <p>Нажмите чтобы выбрать фото</p>
                             </div>
                             <div id="imagePreviewContainer"></div>
                             </div>
                             <div class="form-group"><label>Дополнительная информация (необязательно)</label><textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea></div>
-                            <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction('check')">✅ Проверить решение</button>`;
+                            <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction('check')"><i class="fas fa-check-circle"></i> Проверить решение</button>`;
                     break;
                 case 'test':
                     html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
                             <div class="form-group"><label>Тема контрольной</label><input type="text" id="inputText" placeholder="Например: Тригонометрия"></div>
                             <div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('test')">🎯 Начать подготовку</button>`;
+                            <button class="btn btn-primary" onclick="processAction('test')"><i class="fas fa-clipboard-list"></i> Начать подготовку</button>`;
                     break;
                 case 'explain':
                     html = `<div class="form-group"><label>Что нужно объяснить?</label><textarea id="inputText" placeholder="Например: Почему вода замерзает при 0°C?"></textarea></div>
                             <div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('explain')">💡 Объяснить</button>`;
+                            <button class="btn btn-primary" onclick="processAction('explain')"><i class="fas fa-lightbulb"></i> Объяснить</button>`;
                     break;
                 case 'lesson':
                     html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Тема урока</label><input type="text" id="inputText" placeholder="Например: Закон Ома"></div>
                             <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('lesson')">🎓 Создать план урока</button>`;
+                            <button class="btn btn-primary" onclick="processAction('lesson')"><i class="fas fa-chalkboard-user"></i> Создать план урока</button>`;
                     break;
                 case 'tasks':
                     html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Тема заданий</label><input type="text" id="inputText" placeholder="Например: Производная"></div>
                             <div class="form-group"><label>Количество заданий</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('tasks')">📊 Сгенерировать</button>`;
+                            <button class="btn btn-primary" onclick="processAction('tasks')"><i class="fas fa-tasks"></i> Сгенерировать</button>`;
                     break;
                 case 'variants':
                     html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Тема контрольной</label><input type="text" id="inputText" placeholder="Например: Векторы"></div>
                             <div class="form-group"><label>Количество вариантов</label><select id="countSelect"><option>2</option><option>3</option><option>4</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('variants')">📝 Создать варианты</button>`;
+                            <button class="btn btn-primary" onclick="processAction('variants')"><i class="fas fa-copy"></i> Создать варианты</button>`;
                     break;
             }
             formContainer.innerHTML = html;
@@ -856,11 +869,11 @@
             const count = document.getElementById('countSelect')?.value || '';
 
             if (!inputText && actionId !== 'check') {
-                showToast('⚠️ Заполните все поля');
+                showToast('Заполните все поля');
                 return;
             }
             if (actionId === 'check' && !uploadedImage) {
-                showToast('⚠️ Загрузите фото');
+                showToast('Загрузите фото');
                 return;
             }
 
@@ -882,7 +895,7 @@
                     timestamp: new Date().toISOString()
                 });
             } catch (error) {
-                showToast('❌ Ошибка: ' + error.message);
+                showToast('Ошибка: ' + error.message);
                 document.getElementById('loadingContainer').style.display = 'none';
                 document.getElementById('actionForm').style.display = 'block';
             }
@@ -906,7 +919,6 @@
         async function callGroq(prompt, imageBase64 = null) {
             let userContent = prompt;
             if (imageBase64) {
-                // Groq не поддерживает изображения напрямую, но мы можем отправить описание
                 userContent = `[Фото задачи] ${prompt}. Проанализируй решение на фото и дай обратную связь.`;
             }
             const body = {
@@ -938,15 +950,15 @@
             resultContainer.innerHTML = `
                 <div class="result-container">
                     <div class="result-header">
-                        <h3>✅ Готово!</h3>
+                        <h3><i class="fas fa-check-circle"></i> Готово!</h3>
                         <div class="result-actions">
-                            <button class="icon-btn" onclick="copyResult()">📋</button>
-                            <button class="icon-btn" onclick="shareResult()">📤</button>
+                            <button class="icon-btn" onclick="copyResult()"><i class="fas fa-copy"></i></button>
+                            <button class="icon-btn" onclick="shareResult()"><i class="fas fa-share-alt"></i></button>
                         </div>
                     </div>
                     <div class="result-content" id="resultContent">${formatResult(result)}</div>
                 </div>
-                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()">🔄 Новый запрос</button>
+                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()"><i class="fas fa-undo-alt"></i> Новый запрос</button>
             `;
             window.currentResult = result;
         }
@@ -964,13 +976,13 @@
             document.getElementById('actionForm').style.display = 'block';
             uploadedImage = null;
             document.getElementById('fileUpload')?.classList.remove('has-file');
-            document.getElementById('imagePreviewContainer') && (document.getElementById('imagePreviewContainer').innerHTML = '');
+            if (document.getElementById('imagePreviewContainer')) document.getElementById('imagePreviewContainer').innerHTML = '';
         }
 
         function copyResult() {
             const text = document.getElementById('resultContent').innerText;
             navigator.clipboard.writeText(text);
-            showToast('📋 Скопировано');
+            showToast('Скопировано');
         }
 
         function shareResult() {
@@ -993,14 +1005,14 @@
                 const username = user.username ? `@${user.username}` : '';
                 document.getElementById('profileUsername').textContent = username;
             }
-            const roleText = userData.role === 'student' ? '👨‍🎓 Ученик' : '👨‍🏫 Учитель';
+            const roleText = userData.role === 'student' ? 'Ученик' : 'Учитель';
             document.getElementById('profileRole').textContent = roleText;
         }
 
         function showHistory() {
             const historyList = document.getElementById('historyList');
             if (userData.history.length === 0) {
-                historyList.innerHTML = `<div class="empty-state"><div class="icon">📚</div><h3>История пуста</h3><p>Запросы будут сохраняться здесь</p></div>`;
+                historyList.innerHTML = `<div class="empty-state"><div class="icon"><i class="fas fa-folder-open"></i></div><h3>История пуста</h3><p>Запросы будут сохраняться здесь</p></div>`;
             } else {
                 historyList.innerHTML = userData.history.slice().reverse().map((item, index) => `
                     <div class="history-item" onclick="viewHistoryItem(${userData.history.length - 1 - index})">
@@ -1018,7 +1030,8 @@
         function viewHistoryItem(index) {
             const item = userData.history[index];
             if (item && item.result) {
-                document.getElementById('actionTitle').innerHTML = `${getActionIcon(item.type)} ${getActionName(item.type)}`;
+                const icon = getActionIcon(item.type);
+                document.getElementById('actionTitle').innerHTML = `<i class="${icon}"></i> ${getActionName(item.type)}`;
                 document.getElementById('actionDescription').textContent = formatDate(item.timestamp);
                 document.getElementById('actionForm').style.display = 'none';
                 displayResult(item.result, item.type);
@@ -1030,7 +1043,7 @@
             if (confirm('Удалить всю историю?')) {
                 userData.history = [];
                 saveData();
-                showToast('🗑️ История очищена');
+                showToast('История очищена');
                 showHistory();
             }
         }
@@ -1040,8 +1053,8 @@
             return names[actionId] || 'Запрос';
         }
         function getActionIcon(actionId) {
-            const icons = { solve: '📝', summary: '📚', schema: '📊', check: '📷', test: '🎯', explain: '💡', lesson: '🎓', tasks: '📊', variants: '📝' };
-            return icons[actionId] || '📄';
+            const icons = { solve: 'fas fa-calculator', summary: 'fas fa-book', schema: 'fas fa-diagram-project', check: 'fas fa-camera', test: 'fas fa-clipboard-list', explain: 'fas fa-lightbulb', lesson: 'fas fa-chalkboard-user', tasks: 'fas fa-tasks', variants: 'fas fa-copy' };
+            return icons[actionId] || 'fas fa-file';
         }
         function formatDate(timestamp) {
             const date = new Date(timestamp);
