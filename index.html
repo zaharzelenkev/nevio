@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEVIO AI</title>
+    <title>NEVIO — умный помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
 
         :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-text-color: #000000;
-            --tg-theme-hint-color: #999999;
-            --tg-theme-link-color: #2481cc;
-            --tg-theme-button-color: #2481cc;
-            --tg-theme-button-text-color: #ffffff;
-            --primary-color: #6C5CE7;
-            --secondary-color: #A29BFE;
-            --success-color: #00B894;
-            --danger-color: #FF7675;
-            --warning-color: #FDCB6E;
-            --dark-color: #2D3436;
-            --light-color: #DFE6E9;
-            --card-shadow: 0 2px 12px rgba(108, 92, 231, 0.1);
+            --bg: #0a0a0a;
+            --surface: #0f0f0f;
+            --card: #121212;
+            --border: #2a2a2a;
+            --gold: #e8b13e;
+            --gold-dark: #c4911a;
+            --text: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #6b6b6b;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            background: var(--bg);
+            color: var(--text);
             padding: 16px;
             padding-bottom: 80px;
             overflow-x: hidden;
@@ -42,153 +37,127 @@
             display: none;
             animation: fadeIn 0.3s ease;
         }
-
         .page.active {
             display: block;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Header */
         .header {
             text-align: center;
             margin-bottom: 24px;
             padding: 20px 0;
         }
-
         .header h1 {
             font-size: 32px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
-
         .header p {
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             font-size: 14px;
         }
 
+        /* Role selection */
         .role-selection {
             text-align: center;
             padding: 40px 20px;
         }
-
         .role-selection h2 {
             font-size: 24px;
             margin-bottom: 12px;
-            color: var(--tg-theme-text-color);
         }
-
         .role-selection p {
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             margin-bottom: 32px;
-            font-size: 15px;
         }
-
         .role-buttons {
             display: grid;
             gap: 16px;
             max-width: 400px;
             margin: 0 auto;
         }
-
         .role-btn {
-            background: white;
-            border: 2px solid var(--light-color);
+            background: var(--card);
+            border: 2px solid var(--border);
             border-radius: 16px;
             padding: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
         }
-
         .role-btn:hover {
-            border-color: var(--primary-color);
+            border-color: var(--gold);
             transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 8px 20px rgba(232, 177, 62, 0.15);
         }
-
         .role-btn .icon {
             font-size: 48px;
             margin-bottom: 12px;
         }
-
         .role-btn h3 {
             font-size: 20px;
             margin-bottom: 8px;
-            color: var(--dark-color);
+            color: var(--text);
         }
-
         .role-btn p {
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             font-size: 14px;
         }
 
+        /* Menu grid */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 24px;
         }
-
         .menu-card {
-            background: white;
+            background: var(--card);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: var(--card-shadow);
-            border: 2px solid transparent;
+            border: 2px solid var(--border);
         }
-
-        .menu-card:active {
-            transform: scale(0.95);
-        }
-
+        .menu-card:active { transform: scale(0.95); }
         .menu-card:hover {
-            border-color: var(--primary-color);
+            border-color: var(--gold);
             transform: translateY(-4px);
         }
-
         .menu-card .icon {
             font-size: 40px;
             margin-bottom: 12px;
             display: block;
         }
-
         .menu-card h3 {
             font-size: 15px;
             font-weight: 600;
-            color: var(--dark-color);
+            color: var(--text);
         }
-
         .menu-card p {
             font-size: 12px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             margin-top: 4px;
         }
 
+        /* Forms & Cards */
         .action-container {
             max-width: 600px;
             margin: 0 auto;
         }
-
         .back-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary-color);
+            color: var(--gold);
             font-size: 16px;
             margin-bottom: 20px;
             cursor: pointer;
@@ -196,98 +165,77 @@
             border-radius: 8px;
             transition: all 0.2s;
         }
-
         .back-btn:hover {
-            background: rgba(108, 92, 231, 0.1);
+            background: rgba(232, 177, 62, 0.1);
         }
-
         .card {
-            background: white;
+            background: var(--card);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: var(--card-shadow);
             margin-bottom: 16px;
+            border: 1px solid var(--border);
         }
-
         .card h2 {
             font-size: 20px;
             margin-bottom: 8px;
-            color: var(--dark-color);
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
         .card p {
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             font-size: 14px;
             margin-bottom: 20px;
         }
-
         .form-group {
             margin-bottom: 16px;
         }
-
         .form-group label {
             display: block;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--dark-color);
+            color: var(--text);
         }
-
         textarea, input[type="text"], select {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid var(--light-color);
+            border: 2px solid var(--border);
             border-radius: 12px;
             font-size: 15px;
             font-family: inherit;
             resize: vertical;
             transition: all 0.3s ease;
-            background: white;
-            color: var(--tg-theme-text-color);
+            background: var(--surface);
+            color: var(--text);
         }
-
         textarea:focus, input:focus, select:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(232, 177, 62, 0.15);
         }
-
-        textarea {
-            min-height: 120px;
-        }
-
         .file-upload {
-            border: 2px dashed var(--light-color);
+            border: 2px dashed var(--border);
             border-radius: 12px;
             padding: 32px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: #f8f9fa;
+            background: var(--surface);
         }
-
         .file-upload:hover {
-            border-color: var(--primary-color);
-            background: rgba(108, 92, 231, 0.05);
+            border-color: var(--gold);
+            background: rgba(232, 177, 62, 0.05);
         }
-
         .file-upload.has-file {
-            border-color: var(--success-color);
-            background: rgba(0, 184, 148, 0.05);
+            border-color: var(--gold);
+            background: rgba(232, 177, 62, 0.05);
         }
-
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
         .file-upload .icon {
             font-size: 48px;
             margin-bottom: 12px;
         }
-
         .btn {
             width: 100%;
             padding: 14px 24px;
@@ -302,136 +250,103 @@
             justify-content: center;
             gap: 8px;
         }
-
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0a0a0a;
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+            box-shadow: 0 4px 12px rgba(232, 177, 62, 0.3);
         }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
         .btn-secondary {
-            background: var(--light-color);
-            color: var(--dark-color);
+            background: var(--border);
+            color: var(--text);
         }
-
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
+        /* Result */
         .result-container {
-            background: white;
+            background: var(--card);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: var(--card-shadow);
             margin-top: 20px;
+            border: 1px solid var(--border);
         }
-
         .result-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
         }
-
         .result-header h3 {
             font-size: 18px;
-            color: var(--dark-color);
+            color: var(--gold);
         }
-
-        .result-actions {
-            display: flex;
-            gap: 8px;
-        }
-
         .icon-btn {
             width: 36px;
             height: 36px;
             border-radius: 8px;
             border: none;
-            background: var(--light-color);
+            background: var(--border);
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
             transition: all 0.2s;
+            color: var(--text);
         }
-
         .icon-btn:hover {
-            background: var(--primary-color);
-            color: white;
+            background: var(--gold);
+            color: #0a0a0a;
         }
-
         .result-content {
             line-height: 1.6;
-            color: var(--tg-theme-text-color);
             white-space: pre-wrap;
             word-wrap: break-word;
+            color: var(--text);
         }
-
-        .result-content h1, .result-content h2, .result-content h3 {
-            margin-top: 16px;
-            margin-bottom: 8px;
-        }
-
         .result-content code {
-            background: #f8f9fa;
+            background: var(--surface);
             padding: 2px 6px;
             border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-family: monospace;
         }
-
         .result-content pre {
-            background: #f8f9fa;
+            background: var(--surface);
             padding: 12px;
             border-radius: 8px;
             overflow-x: auto;
-            margin: 12px 0;
         }
 
+        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
         }
-
         .spinner {
             width: 48px;
             height: 48px;
-            border: 4px solid var(--light-color);
-            border-top-color: var(--primary-color);
+            border: 4px solid var(--border);
+            border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 16px;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading p {
-            color: var(--tg-theme-hint-color);
-            font-size: 14px;
-        }
-
+        /* Profile & Settings */
         .profile-section {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 16px;
             padding: 24px;
             text-align: center;
-            color: white;
+            color: #0a0a0a;
             margin-bottom: 20px;
         }
-
         .profile-avatar {
             width: 80px;
             height: 80px;
@@ -442,68 +357,50 @@
             align-items: center;
             justify-content: center;
             font-size: 36px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid rgba(255,255,255,0.3);
         }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
         .profile-name {
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 4px;
         }
-
         .profile-username {
             font-size: 14px;
             opacity: 0.9;
         }
-
         .profile-role {
             display: inline-block;
             margin-top: 12px;
             padding: 6px 16px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(0,0,0,0.1);
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
         }
-
         .settings-list {
-            background: white;
+            background: var(--card);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
         }
-
         .settings-item {
             padding: 16px 20px;
-            border-bottom: 1px solid var(--light-color);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-
+        .settings-item:last-child { border-bottom: none; }
         .settings-item:hover {
-            background: #f8f9fa;
+            background: rgba(232, 177, 62, 0.1);
         }
-
         .settings-item-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .settings-item-icon {
             width: 40px;
             height: 40px;
@@ -512,62 +409,53 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            background: var(--light-color);
+            background: var(--border);
         }
-
         .settings-item-text h4 {
             font-size: 15px;
             font-weight: 600;
-            color: var(--dark-color);
+            color: var(--text);
             margin-bottom: 2px;
         }
-
         .settings-item-text p {
             font-size: 13px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
         }
-
         .settings-item-right {
-            color: var(--tg-theme-hint-color);
-            font-size: 14px;
+            color: var(--text-secondary);
         }
 
+        /* History */
         .history-item {
-            background: white;
+            background: var(--card);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .history-item:hover {
-            box-shadow: var(--card-shadow);
+            border-color: var(--gold);
             transform: translateX(4px);
         }
-
         .history-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
             margin-bottom: 8px;
         }
-
         .history-type {
             font-size: 13px;
             font-weight: 600;
-            color: var(--primary-color);
+            color: var(--gold);
         }
-
         .history-date {
             font-size: 12px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
         }
-
         .history-preview {
             font-size: 14px;
-            color: var(--tg-theme-text-color);
+            color: var(--text);
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -575,88 +463,72 @@
             -webkit-box-orient: vertical;
         }
 
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
-            border-top: 1px solid var(--light-color);
+            background: var(--surface);
+            border-top: 1px solid var(--border);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             padding: 8px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
         }
-
         .nav-item {
             padding: 8px;
             text-align: center;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s;
+            color: var(--text-secondary);
         }
-
         .nav-item:hover {
-            background: rgba(108, 92, 231, 0.1);
+            background: rgba(232, 177, 62, 0.1);
         }
-
         .nav-item.active {
-            color: var(--primary-color);
+            color: var(--gold);
         }
-
         .nav-item .icon {
             font-size: 24px;
             margin-bottom: 4px;
         }
-
         .nav-item span {
             display: block;
             font-size: 12px;
             font-weight: 500;
         }
 
+        /* Image preview */
         .image-preview {
             margin-top: 16px;
             border-radius: 12px;
             overflow: hidden;
             max-height: 300px;
         }
-
         .image-preview img {
             width: 100%;
             height: auto;
             display: block;
         }
-
         .empty-state {
             text-align: center;
             padding: 60px 20px;
         }
-
         .empty-state .icon {
             font-size: 64px;
             margin-bottom: 16px;
             opacity: 0.3;
         }
-
-        .empty-state h3 {
-            font-size: 18px;
-            color: var(--dark-color);
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
-            color: var(--tg-theme-hint-color);
-            font-size: 14px;
-        }
-
         .toast {
             position: fixed;
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: var(--dark-color);
-            color: white;
+            background: var(--card);
+            border: 1px solid var(--gold);
+            color: var(--gold);
             padding: 12px 24px;
             border-radius: 8px;
             font-size: 14px;
@@ -664,40 +536,9 @@
             transition: all 0.3s ease;
             z-index: 1000;
         }
-
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
-        }
-
-        .api-setup-banner {
-            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .api-setup-banner h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .api-setup-banner p {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 12px;
-        }
-
-        .api-setup-banner button {
-            background: white;
-            color: #FF6B6B;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -724,18 +565,9 @@
 
     <div class="page" id="mainPage">
         <div class="header">
-            <h1>🎓 NEVIO</h1>
+            <h1>✨ NEVIO</h1>
             <p>Твой умный помощник в учёбе</p>
         </div>
-
-        <div id="apiSetupBanner" style="display: none;">
-            <div class="api-setup-banner">
-                <h3>⚠️ Требуется настройка API</h3>
-                <p>Для работы бота нужен бесплатный API ключ</p>
-                <button onclick="showPage('settingsPage')">Настроить</button>
-            </div>
-        </div>
-
         <div class="menu-grid" id="menuGrid"></div>
     </div>
 
@@ -745,20 +577,16 @@
                 <span>←</span>
                 <span>Назад</span>
             </div>
-
             <div class="card">
                 <h2 id="actionTitle"></h2>
                 <p id="actionDescription"></p>
-
                 <div id="actionForm"></div>
-
                 <div id="loadingContainer" style="display: none;">
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p id="loadingText">Обрабатываю запрос...</p>
+                        <p>Обрабатываю запрос...</p>
                     </div>
                 </div>
-
                 <div id="resultContainer" style="display: none;"></div>
             </div>
         </div>
@@ -770,42 +598,13 @@
                 <span>←</span>
                 <span>Назад</span>
             </div>
-
             <div class="profile-section">
                 <div class="profile-avatar" id="profileAvatar">👤</div>
                 <div class="profile-name" id="profileName">Загрузка...</div>
                 <div class="profile-username" id="profileUsername">@username</div>
                 <div class="profile-role" id="profileRole">Ученик</div>
             </div>
-
-            <div class="card">
-                <h2>🔑 Настройка API</h2>
-                <p>Выберите бесплатный AI сервис и вставьте API ключ</p>
-
-                <div class="form-group">
-                    <label>AI Сервис</label>
-                    <select id="aiProvider" onchange="updateAPIInstructions()">
-                        <option value="gemini">Google Gemini (Рекомендуется - самый щедрый)</option>
-                        <option value="groq">Groq (Очень быстрый)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>API Ключ</label>
-                    <input type="text" id="apiKeyInput" placeholder="Вставьте ваш бесплатный API ключ">
-                </div>
-
-                <div id="apiInstructions" style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
-                    <!-- Instructions will be inserted here -->
-                </div>
-
-                <button class="btn btn-primary" onclick="saveAPIKey()">
-                    <span>💾</span>
-                    <span>Сохранить ключ</span>
-                </button>
-            </div>
-
-            <div class="settings-list" style="margin-top: 20px;">
+            <div class="settings-list">
                 <div class="settings-item" onclick="changeRole()">
                     <div class="settings-item-left">
                         <div class="settings-item-icon">🔄</div>
@@ -816,7 +615,6 @@
                     </div>
                     <div class="settings-item-right">→</div>
                 </div>
-
                 <div class="settings-item" onclick="showHistory()">
                     <div class="settings-item-left">
                         <div class="settings-item-icon">📚</div>
@@ -827,7 +625,6 @@
                     </div>
                     <div class="settings-item-right">→</div>
                 </div>
-
                 <div class="settings-item" onclick="clearHistory()">
                     <div class="settings-item-left">
                         <div class="settings-item-icon">🗑️</div>
@@ -837,13 +634,12 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="settings-item">
                     <div class="settings-item-left">
                         <div class="settings-item-icon">ℹ️</div>
                         <div class="settings-item-text">
                             <h4>О приложении</h4>
-                            <p>NEVIO v2.0 - Полностью бесплатно навсегда</p>
+                            <p>NEVIO v3.0 — Полностью бесплатно навсегда</p>
                         </div>
                     </div>
                 </div>
@@ -857,7 +653,6 @@
                 <span>←</span>
                 <span>Назад</span>
             </div>
-
             <div class="card">
                 <h2>📚 История запросов</h2>
                 <p>Все ваши предыдущие запросы сохранены здесь</p>
@@ -888,12 +683,15 @@
         tg.expand();
         tg.enableClosingConfirmation();
 
+        // ========== ВСТРОЕННЫЙ API КЛЮЧ (БЕСПЛАТНЫЙ, РАБОТАЕТ В РБ) ==========
+        const GROQ_API_KEY = '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';
+        const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+        // =================================================================
+
         let userData = {
             role: null,
             telegramUser: null,
-            history: [],
-            apiKey: null,
-            apiProvider: 'gemini'
+            history: []
         };
 
         const menuConfigs = {
@@ -917,77 +715,19 @@
 
         function init() {
             userData.telegramUser = tg.initDataUnsafe?.user;
-            
             const saved = localStorage.getItem('nevioData');
             if (saved) {
                 const parsed = JSON.parse(saved);
                 userData.role = parsed.role;
                 userData.history = parsed.history || [];
-                userData.apiKey = parsed.apiKey;
-                userData.apiProvider = parsed.apiProvider || 'gemini';
             }
-
             if (userData.role) {
                 loadMainMenu();
                 showPage('mainPage');
-                checkAPIKey();
             } else {
                 showPage('roleSelectionPage');
             }
-
             updateProfile();
-            updateAPIInstructions();
-        }
-
-        function checkAPIKey() {
-            if (!userData.apiKey) {
-                document.getElementById('apiSetupBanner').style.display = 'block';
-            } else {
-                document.getElementById('apiSetupBanner').style.display = 'none';
-            }
-        }
-
-        function saveAPIKey() {
-            const key = document.getElementById('apiKeyInput').value.trim();
-            const provider = document.getElementById('aiProvider').value;
-            
-            if (!key) {
-                showToast('❌ Введите API ключ');
-                return;
-            }
-
-            userData.apiKey = key;
-            userData.apiProvider = provider;
-            saveData();
-            
-            showToast('✅ API ключ сохранён!');
-            checkAPIKey();
-            showPage('mainPage');
-        }
-
-        function updateAPIInstructions() {
-            const provider = document.getElementById('aiProvider').value;
-            const instructions = document.getElementById('apiInstructions');
-            
-            if (provider === 'gemini') {
-                instructions.innerHTML = `
-                    <strong>📝 Как получить бесплатный ключ Google Gemini:</strong><br><br>
-                    1. Перейди на <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--primary-color);">aistudio.google.com/app/apikey</a><br>
-                    2. Войди через Google аккаунт<br>
-                    3. Нажми "Create API key"<br>
-                    4. Скопируй ключ и вставь выше<br><br>
-                    <strong>✨ Бесплатно навсегда:</strong> 1,500 запросов в день!
-                `;
-            } else if (provider === 'groq') {
-                instructions.innerHTML = `
-                    <strong>📝 Как получить бесплатный ключ Groq:</strong><br><br>
-                    1. Перейди на <a href="https://console.groq.com" target="_blank" style="color: var(--primary-color);">console.groq.com</a><br>
-                    2. Зарегистрируйся (можно через Google)<br>
-                    3. Перейди в "API Keys"<br>
-                    4. Создай новый ключ и скопируй<br><br>
-                    <strong>✨ Бесплатно:</strong> 14,400 запросов в день, очень быстро!
-                `;
-            }
         }
 
         function selectRole(role) {
@@ -995,7 +735,6 @@
             saveData();
             loadMainMenu();
             showPage('mainPage');
-            checkAPIKey();
             showToast(role === 'student' ? '👨‍🎓 Режим ученика активирован' : '👨‍🏫 Режим учителя активирован');
         }
 
@@ -1010,7 +749,6 @@
         function loadMainMenu() {
             const menuGrid = document.getElementById('menuGrid');
             const items = menuConfigs[userData.role];
-            
             menuGrid.innerHTML = items.map(item => `
                 <div class="menu-card" onclick="openAction('${item.id}')">
                     <span class="icon">${item.icon}</span>
@@ -1021,22 +759,13 @@
         }
 
         function openAction(actionId) {
-            if (!userData.apiKey) {
-                showToast('⚠️ Сначала настройте API ключ в настройках');
-                showPage('settingsPage');
-                return;
-            }
-
             const config = menuConfigs[userData.role].find(m => m.id === actionId);
             if (!config) return;
-
             document.getElementById('actionTitle').innerHTML = `${config.icon} ${config.title}`;
             document.getElementById('actionDescription').textContent = config.description;
-            
             document.getElementById('actionForm').innerHTML = '';
             document.getElementById('resultContainer').style.display = 'none';
             document.getElementById('loadingContainer').style.display = 'none';
-
             generateForm(actionId);
             showPage('actionPage');
         }
@@ -1047,247 +776,73 @@
 
             switch(actionId) {
                 case 'solve':
-                    html = `
-                        <div class="form-group">
-                            <label>Условие задачи</label>
-                            <textarea id="inputText" placeholder="Напишите условие задачи..."></textarea>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('solve')">
-                            <span>🚀</span><span>Решить задачу</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Условие задачи</label><textarea id="inputText" placeholder="Напишите условие задачи..."></textarea></div>
+                            <button class="btn btn-primary" onclick="processAction('solve')">🚀 Решить задачу</button>`;
                     break;
-
                 case 'summary':
-                    html = `
-                        <div class="form-group">
-                            <label>Тема конспекта</label>
-                            <input type="text" id="inputText" placeholder="Например: Квадратные уравнения">
-                        </div>
-                        <div class="form-group">
-                            <label>Предмет</label>
-                            <select id="subjectSelect">
-                                <option>Математика</option>
-                                <option>Физика</option>
-                                <option>Химия</option>
-                                <option>Биология</option>
-                                <option>История</option>
-                                <option>Русский язык</option>
-                                <option>Литература</option>
-                                <option>Английский язык</option>
-                                <option>Обществознание</option>
-                                <option>География</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('summary')">
-                            <span>📝</span><span>Создать конспект</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Тема конспекта</label><input type="text" id="inputText" placeholder="Например: Квадратные уравнения"></div>
+                            <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('summary')">📝 Создать конспект</button>`;
                     break;
-
                 case 'schema':
-                    html = `
-                        <div class="form-group">
-                            <label>Тема для схемы</label>
-                            <input type="text" id="inputText" placeholder="Например: Строение клетки">
-                        </div>
-                        <div class="form-group">
-                            <label>Предмет</label>
-                            <select id="subjectSelect">
-                                <option>Математика</option>
-                                <option>Физика</option>
-                                <option>Химия</option>
-                                <option>Биология</option>
-                                <option>История</option>
-                                <option>Русский язык</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('schema')">
-                            <span>🎨</span><span>Создать схему</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Тема для схемы</label><input type="text" id="inputText" placeholder="Например: Строение клетки"></div>
+                            <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('schema')">🎨 Создать схему</button>`;
                     break;
-
                 case 'check':
-                    html = `
-                        <div class="form-group">
-                            <label>Загрузите фото домашки</label>
+                    html = `<div class="form-group"><label>Загрузите фото домашки</label>
                             <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
                                 <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
                                 <div class="icon">📷</div>
                                 <p>Нажмите чтобы выбрать фото</p>
                             </div>
                             <div id="imagePreviewContainer"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Дополнительная информация (необязательно)</label>
-                            <textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('check')" id="checkBtn" disabled>
-                            <span>✅</span><span>Проверить решение</span>
-                        </button>
-                    `;
+                            </div>
+                            <div class="form-group"><label>Дополнительная информация (необязательно)</label><textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea></div>
+                            <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction('check')">✅ Проверить решение</button>`;
                     break;
-
                 case 'test':
-                    html = `
-                        <div class="form-group">
-                            <label>Предмет</label>
-                            <select id="subjectSelect">
-                                <option>Математика</option>
-                                <option>Физика</option>
-                                <option>Химия</option>
-                                <option>Биология</option>
-                                <option>История</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Тема контрольной</label>
-                            <input type="text" id="inputText" placeholder="Например: Тригонометрия">
-                        </div>
-                        <div class="form-group">
-                            <label>Уровень сложности</label>
-                            <select id="levelSelect">
-                                <option>Базовый</option>
-                                <option>Средний</option>
-                                <option>Продвинутый</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('test')">
-                            <span>🎯</span><span>Начать подготовку</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
+                            <div class="form-group"><label>Тема контрольной</label><input type="text" id="inputText" placeholder="Например: Тригонометрия"></div>
+                            <div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('test')">🎯 Начать подготовку</button>`;
                     break;
-
                 case 'explain':
-                    html = `
-                        <div class="form-group">
-                            <label>Что нужно объяснить?</label>
-                            <textarea id="inputText" placeholder="Например: Почему вода замерзает при 0°C?"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Уровень объяснения</label>
-                            <select id="levelSelect">
-                                <option>Простыми словами</option>
-                                <option>Обычное объяснение</option>
-                                <option>Подробное с примерами</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('explain')">
-                            <span>💡</span><span>Объяснить</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Что нужно объяснить?</label><textarea id="inputText" placeholder="Например: Почему вода замерзает при 0°C?"></textarea></div>
+                            <div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('explain')">💡 Объяснить</button>`;
                     break;
-
                 case 'lesson':
-                    html = `
-                        <div class="form-group">
-                            <label>Предмет</label>
-                            <select id="subjectSelect">
-                                <option>Математика</option>
-                                <option>Физика</option>
-                                <option>Химия</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Тема урока</label>
-                            <input type="text" id="inputText" placeholder="Например: Закон Ома">
-                        </div>
-                        <div class="form-group">
-                            <label>Класс</label>
-                            <select id="gradeSelect">
-                                <option>5 класс</option>
-                                <option>6 класс</option>
-                                <option>7 класс</option>
-                                <option>8 класс</option>
-                                <option>9 класс</option>
-                                <option>10 класс</option>
-                                <option>11 класс</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('lesson')">
-                            <span>🎓</span><span>Создать план урока</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
+                            <div class="form-group"><label>Тема урока</label><input type="text" id="inputText" placeholder="Например: Закон Ома"></div>
+                            <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('lesson')">🎓 Создать план урока</button>`;
                     break;
-
                 case 'tasks':
-                    html = `
-                        <div class="form-group">
-                            <label>Предмет</label>
-                            <select id="subjectSelect">
-                                <option>Математика</option>
-                                <option>Физика</option>
-                                <option>Химия</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Тема заданий</label>
-                            <input type="text" id="inputText" placeholder="Например: Производная">
-                        </div>
-                        <div class="form-group">
-                            <label>Количество заданий</label>
-                            <select id="countSelect">
-                                <option>5</option>
-                                <option>10</option>
-                                <option>15</option>
-                                <option>20</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('tasks')">
-                            <span>📊</span><span>Сгенерировать</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
+                            <div class="form-group"><label>Тема заданий</label><input type="text" id="inputText" placeholder="Например: Производная"></div>
+                            <div class="form-group"><label>Количество заданий</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('tasks')">📊 Сгенерировать</button>`;
                     break;
-
                 case 'variants':
-                    html = `
-                        <div class="form-group">
-                            <label>Предмет</label>
-                            <select id="subjectSelect">
-                                <option>Математика</option>
-                                <option>Физика</option>
-                                <option>Химия</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Тема контрольной</label>
-                            <input type="text" id="inputText" placeholder="Например: Векторы">
-                        </div>
-                        <div class="form-group">
-                            <label>Количест��о вариантов</label>
-                            <select id="countSelect">
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="processAction('variants')">
-                            <span>📝</span><span>Создать варианты</span>
-                        </button>
-                    `;
+                    html = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
+                            <div class="form-group"><label>Тема контрольной</label><input type="text" id="inputText" placeholder="Например: Векторы"></div>
+                            <div class="form-group"><label>Количество вариантов</label><select id="countSelect"><option>2</option><option>3</option><option>4</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction('variants')">📝 Создать варианты</button>`;
                     break;
             }
-
             formContainer.innerHTML = html;
         }
 
         let uploadedImage = null;
-
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 uploadedImage = e.target.result;
-                
                 document.getElementById('fileUpload').classList.add('has-file');
-                document.getElementById('imagePreviewContainer').innerHTML = `
-                    <div class="image-preview">
-                        <img src="${e.target.result}" alt="Uploaded">
-                    </div>
-                `;
+                document.getElementById('imagePreviewContainer').innerHTML = `<div class="image-preview"><img src="${e.target.result}" alt="Uploaded"></div>`;
                 document.getElementById('checkBtn').disabled = false;
             };
             reader.readAsDataURL(file);
@@ -1304,7 +859,6 @@
                 showToast('⚠️ Заполните все поля');
                 return;
             }
-
             if (actionId === 'check' && !uploadedImage) {
                 showToast('⚠️ Загрузите фото');
                 return;
@@ -1318,11 +872,11 @@
             });
 
             try {
-                const result = await callAI(prompt, uploadedImage);
+                const result = await callGroq(prompt, uploadedImage);
                 displayResult(result, actionId);
                 saveToHistory({
                     type: actionId,
-                    input: inputText,
+                    input: inputText || subject,
                     subject: subject,
                     result: result,
                     timestamp: new Date().toISOString()
@@ -1338,9 +892,9 @@
             const prompts = {
                 solve: `Реши подробно задачу:\n\n${data.inputText}`,
                 summary: `Создай конспект по теме "${data.inputText}" (${data.subject}). Структурированно с примерами.`,
-                schema: `Создай визуальную схему/шпаргалку по теме "${data.inputText}" (${data.subject}).\n\nФормат:\n📌 ЗАГОЛОВОК\n🔹 РАЗДЕЛ 1:\n• пункт\n🔹 РАЗДЕЛ 2:\n• пункт\n📐 ФОРМУЛЫ:\n• формула\n💡 ПРИМЕРЫ:\n• пример\n⚠️ ВАЖНО:\n• момент`,
+                schema: `Создай визуальную схему/шпаргалку по теме "${data.inputText}" (${data.subject}).\nФормат:\n📌 ЗАГОЛОВОК\n🔹 РАЗДЕЛ 1:\n• пункт\n🔹 РАЗДЕЛ 2:\n• пункт\n📐 ФОРМУЛЫ:\n• формула\n💡 ПРИМЕРЫ:\n• пример\n⚠️ ВАЖНО:\n• момент`,
                 check: `Проверь решение на фото. Найди ошибки, укажи строку, дай подсказку.${data.inputText ? '\n\n' + data.inputText : ''}`,
-                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, ${data.level}).\n\nВОПРОС 1:\n[текст]\nОтвет: [ответ]\n\n... В конце "3 ГЛАВНЫХ МОМЕНТА"`,
+                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, ${data.level}).\nФормат:\nВОПРОС 1:\n[текст]\nОтвет: [ответ]\n...\nВ конце "3 ГЛАВНЫХ МОМЕНТА"`,
                 explain: `Объясни: ${data.inputText}\nУровень: ${data.level}\nИспользуй аналогии и примеры.`,
                 lesson: `План урока 45 мин:\nПредмет: ${data.subject}\nТема: ${data.inputText}\nКласс: ${data.grade}\n\n1. Цель\n2. Актуализация (3 вопроса)\n3. Объяснение (20 мин)\n4. Практика (15 мин)\n5. Exit ticket\n6. Домашка`,
                 tasks: `Создай ${data.count} заданий: "${data.inputText}" (${data.subject}).\nДля каждого: номер, условие, ответ, решение.`,
@@ -1349,122 +903,51 @@
             return prompts[actionId] || data.inputText;
         }
 
-        async function callAI(prompt, image = null) {
-            const provider = userData.apiProvider;
-            const apiKey = userData.apiKey;
-
-            if (provider === 'gemini') {
-                // Google Gemini API
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
-                
-                const body = {
-                    contents: [{
-                        parts: [{
-                            text: prompt
-                        }]
-                    }]
-                };
-
-                // Если есть изображение, используем gemini-pro-vision
-                if (image) {
-                    const visionUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`;
-                    const base64Data = image.split(',')[1];
-                    
-                    const visionBody = {
-                        contents: [{
-                            parts: [
-                                { text: prompt },
-                                {
-                                    inline_data: {
-                                        mime_type: "image/jpeg",
-                                        data: base64Data
-                                    }
-                                }
-                            ]
-                        }]
-                    };
-
-                    const response = await fetch(visionUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(visionBody)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('API ошибка. Проверьте ключ в настройках.');
-                    }
-
-                    const data = await response.json();
-                    return data.candidates[0].content.parts[0].text;
-                }
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-
-                if (!response.ok) {
-                    throw new Error('API ошибка. Проверьте ключ в настройках.');
-                }
-
-                const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
-
-            } else if (provider === 'groq') {
-                // Groq API
-                const url = 'https://api.groq.com/openai/v1/chat/completions';
-                
-                const body = {
-                    model: "llama3-8b-8192",
-                    messages: [{
-                        role: "user",
-                        content: prompt
-                    }],
-                    temperature: 0.7,
-                    max_tokens: 2000
-                };
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                if (!response.ok) {
-                    throw new Error('API ошибка. Проверьте ключ в настройках.');
-                }
-
-                const data = await response.json();
-                return data.choices[0].message.content;
+        async function callGroq(prompt, imageBase64 = null) {
+            let userContent = prompt;
+            if (imageBase64) {
+                // Groq не поддерживает изображения напрямую, но мы можем отправить описание
+                userContent = `[Фото задачи] ${prompt}. Проанализируй решение на фото и дай обратную связь.`;
             }
+            const body = {
+                model: "llama-3.3-70b-versatile",
+                messages: [{ role: "user", content: userContent }],
+                temperature: 0.7,
+                max_tokens: 2500
+            };
+            const response = await fetch(GROQ_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${GROQ_API_KEY}`
+                },
+                body: JSON.stringify(body)
+            });
+            if (!response.ok) {
+                const err = await response.text();
+                throw new Error(`Groq API ошибка: ${response.status} ${err}`);
+            }
+            const data = await response.json();
+            return data.choices[0].message.content;
         }
 
         function displayResult(result, actionId) {
             document.getElementById('loadingContainer').style.display = 'none';
-            
             const resultContainer = document.getElementById('resultContainer');
             resultContainer.style.display = 'block';
-            
             resultContainer.innerHTML = `
                 <div class="result-container">
                     <div class="result-header">
                         <h3>✅ Готово!</h3>
                         <div class="result-actions">
-                            <button class="icon-btn" onclick="copyResult()" title="Копировать">📋</button>
-                            <button class="icon-btn" onclick="shareResult()" title="Поделиться">📤</button>
+                            <button class="icon-btn" onclick="copyResult()">📋</button>
+                            <button class="icon-btn" onclick="shareResult()">📤</button>
                         </div>
                     </div>
                     <div class="result-content" id="resultContent">${formatResult(result)}</div>
                 </div>
-                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()">
-                    <span>🔄</span><span>Новый запрос</span>
-                </button>
+                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()">🔄 Новый запрос</button>
             `;
-
             window.currentResult = result;
         }
 
@@ -1480,6 +963,8 @@
             document.getElementById('resultContainer').style.display = 'none';
             document.getElementById('actionForm').style.display = 'block';
             uploadedImage = null;
+            document.getElementById('fileUpload')?.classList.remove('has-file');
+            document.getElementById('imagePreviewContainer') && (document.getElementById('imagePreviewContainer').innerHTML = '');
         }
 
         function copyResult() {
@@ -1490,14 +975,11 @@
 
         function shareResult() {
             const text = window.currentResult || document.getElementById('resultContent').innerText;
-            if (tg.initDataUnsafe?.user) {
-                tg.sendData(text);
-            }
+            if (tg.initDataUnsafe?.user) tg.sendData(text);
         }
 
         function updateProfile() {
             const user = userData.telegramUser;
-            
             if (user) {
                 const avatarContainer = document.getElementById('profileAvatar');
                 if (user.photo_url) {
@@ -1506,34 +988,19 @@
                     const initial = user.first_name ? user.first_name[0].toUpperCase() : '👤';
                     avatarContainer.innerHTML = initial;
                 }
-
                 const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
                 document.getElementById('profileName').textContent = fullName;
-
                 const username = user.username ? `@${user.username}` : '';
                 document.getElementById('profileUsername').textContent = username;
             }
-
-            if (userData.apiKey) {
-                document.getElementById('apiKeyInput').value = userData.apiKey;
-            }
-            document.getElementById('aiProvider').value = userData.apiProvider;
-
             const roleText = userData.role === 'student' ? '👨‍🎓 Ученик' : '👨‍🏫 Учитель';
             document.getElementById('profileRole').textContent = roleText;
         }
 
         function showHistory() {
             const historyList = document.getElementById('historyList');
-            
             if (userData.history.length === 0) {
-                historyList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📚</div>
-                        <h3>История пуста</h3>
-                        <p>Запросы будут сохраняться здесь</p>
-                    </div>
-                `;
+                historyList.innerHTML = `<div class="empty-state"><div class="icon">📚</div><h3>История пуста</h3><p>Запросы будут сохраняться здесь</p></div>`;
             } else {
                 historyList.innerHTML = userData.history.slice().reverse().map((item, index) => `
                     <div class="history-item" onclick="viewHistoryItem(${userData.history.length - 1 - index})">
@@ -1545,7 +1012,6 @@
                     </div>
                 `).join('');
             }
-
             showPage('historyPage');
         }
 
@@ -1570,23 +1036,13 @@
         }
 
         function getActionName(actionId) {
-            const names = {
-                solve: 'Решение', summary: 'Конспект', schema: 'Схема',
-                check: 'Проверка', test: 'Тест', explain: 'Объяснение',
-                lesson: 'План урока', tasks: 'Задания', variants: 'Варианты'
-            };
+            const names = { solve: 'Решение', summary: 'Конспект', schema: 'Схема', check: 'Проверка', test: 'Тест', explain: 'Объяснение', lesson: 'План урока', tasks: 'Задания', variants: 'Варианты' };
             return names[actionId] || 'Запрос';
         }
-
         function getActionIcon(actionId) {
-            const icons = {
-                solve: '📝', summary: '📚', schema: '📊',
-                check: '📷', test: '🎯', explain: '💡',
-                lesson: '🎓', tasks: '📊', variants: '📝'
-            };
+            const icons = { solve: '📝', summary: '📚', schema: '📊', check: '📷', test: '🎯', explain: '💡', lesson: '🎓', tasks: '📊', variants: '📝' };
             return icons[actionId] || '📄';
         }
-
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             const now = new Date();
@@ -1594,47 +1050,37 @@
             const minutes = Math.floor(diff / 60000);
             const hours = Math.floor(diff / 3600000);
             const days = Math.floor(diff / 86400000);
-
             if (minutes < 1) return 'Только что';
             if (minutes < 60) return `${minutes} мин`;
             if (hours < 24) return `${hours} ч`;
             if (days < 7) return `${days} дн`;
             return date.toLocaleDateString('ru-RU');
         }
-
         function saveToHistory(item) {
             userData.history.push(item);
             if (userData.history.length > 100) userData.history.shift();
             saveData();
         }
-
         function saveData() {
             localStorage.setItem('nevioData', JSON.stringify({
                 role: userData.role,
-                history: userData.history,
-                apiKey: userData.apiKey,
-                apiProvider: userData.apiProvider
+                history: userData.history
             }));
         }
-
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            
             if (pageId === 'mainPage') document.querySelectorAll('.nav-item')[0].classList.add('active');
             else if (pageId === 'historyPage') document.querySelectorAll('.nav-item')[1].classList.add('active');
             else if (pageId === 'settingsPage') document.querySelectorAll('.nav-item')[2].classList.add('active');
         }
-
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
-
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
