@@ -505,18 +505,6 @@
             font-weight: 500;
         }
 
-        /* Image preview (for any future use, but not used now) */
-        .image-preview {
-            margin-top: 16px;
-            border-radius: 12px;
-            overflow: hidden;
-            max-height: 300px;
-        }
-        .image-preview img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -564,6 +552,11 @@
                     <div class="icon"><i class="fas fa-chalkboard-user"></i></div>
                     <h3>Учитель</h3>
                     <p>Генерация заданий, планы уроков, материалы для класса</p>
+                </div>
+                <div class="role-btn" onclick="selectRole('kindergarten')">
+                    <div class="icon"><i class="fas fa-child"></i></div>
+                    <h3>Воспитатель</h3>
+                    <p>Конспекты занятий, консультации для родителей, планирование, игры, сценарии</p>
                 </div>
             </div>
         </div>
@@ -650,7 +643,6 @@
                     </div>
                     <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
                 </div>
-                <!-- Кнопка смены темы -->
                 <div class="settings-item" onclick="toggleTheme()">
                     <div class="settings-item-left">
                         <div class="settings-item-icon"><i class="fas fa-moon"></i></div>
@@ -775,6 +767,13 @@
                 { id: 'schema', icon: 'fas fa-diagram-project', title: 'Схема для класса', description: 'Визуальный материал' },
                 { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Методика объяснения' },
                 { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' }
+            ],
+            kindergarten: [
+                { id: 'lesson_plan', icon: 'fas fa-child', title: 'Конспект занятия', description: 'Для любой возрастной группы (3-7 лет)' },
+                { id: 'parent_advice', icon: 'fas fa-heart', title: 'Консультация для родителей', description: 'Кризисы, развитие, поведение' },
+                { id: 'planning', icon: 'fas fa-calendar-alt', title: 'Планирование', description: 'Перспективное и календарное планирование' },
+                { id: 'games', icon: 'fas fa-puzzle-piece', title: 'Игры и развитие', description: 'Развивающие игры по возрасту' },
+                { id: 'holiday', icon: 'fas fa-birthday-cake', title: 'Сценарии праздников', description: 'Утренники, мероприятия, развлечения' }
             ]
         };
 
@@ -795,7 +794,6 @@
                 showPage('roleSelectionPage');
             }
             updateProfile();
-            // Применить сохранённую тему
             const savedTheme = localStorage.getItem('nevioTheme');
             if (savedTheme === 'light') {
                 document.body.classList.add('light-theme');
@@ -815,7 +813,8 @@
             saveData();
             loadMainMenu();
             showPage('mainPage');
-            showToast(role === 'student' ? 'Режим ученика активирован' : 'Режим учителя активирован');
+            let roleName = role === 'student' ? 'ученика' : (role === 'teacher' ? 'учителя' : 'воспитателя');
+            showToast(`Режим ${roleName} активирован`);
         }
 
         function deleteAccount() {
@@ -859,49 +858,57 @@
         function generateForm(actionId) {
             const formContainer = document.getElementById('actionForm');
             let html = '';
-
-            const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Введите условие, тему или вопрос..." rows="3"></textarea></div>`;
+            const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Опишите, что нужно: тема, возраст детей, особенности..." rows="3"></textarea></div>`;
 
             switch(actionId) {
                 case 'solve':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-calculator"></i> Решить задачу</button>`;
-                    break;
                 case 'summary':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-book"></i> Создать конспект</button>`;
-                    break;
                 case 'schema':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
-                    break;
                 case 'lab':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Физика</option><option>Химия</option><option>Биология</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-flask"></i> Помочь с лабораторной</button>`;
-                    break;
                 case 'test':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
-                            <div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-clipboard-list"></i> Начать подготовку</button>`;
-                    break;
                 case 'explain':
-                    html = commonInput + `<div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-lightbulb"></i> Объяснить</button>`;
-                    break;
                 case 'lesson':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
-                            <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-chalkboard-user"></i> Создать план урока</button>`;
-                    break;
                 case 'tasks':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
-                            <div class="form-group"><label>Количество заданий</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-tasks"></i> Сгенерировать</button>`;
-                    break;
                 case 'variants':
-                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
-                            <div class="form-group"><label>Количество вариантов</label><select id="countSelect"><option>2</option><option>3</option><option>4</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-copy"></i> Создать варианты</button>`;
+                    // Для стандартных функций (ученик/учитель) добавляем предмет и др.
+                    const subjectSelect = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>`;
+                    const levelSelect = `<div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>`;
+                    const gradeSelect = `<div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>`;
+                    const countSelect = `<div class="form-group"><label>Количество</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>`;
+
+                    if (actionId === 'solve') html = commonInput + subjectSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-calculator"></i> Решить задачу</button>`;
+                    else if (actionId === 'summary') html = commonInput + subjectSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-book"></i> Создать конспект</button>`;
+                    else if (actionId === 'schema') html = commonInput + subjectSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
+                    else if (actionId === 'lab') html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Физика</option><option>Химия</option><option>Биология</option></select></div><button class="btn btn-primary" onclick="processAction()"><i class="fas fa-flask"></i> Помочь с лабораторной</button>`;
+                    else if (actionId === 'test') html = commonInput + subjectSelect + levelSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-clipboard-list"></i> Начать подготовку</button>`;
+                    else if (actionId === 'explain') html = commonInput + `<div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div><button class="btn btn-primary" onclick="processAction()"><i class="fas fa-lightbulb"></i> Объяснить</button>`;
+                    else if (actionId === 'lesson') html = commonInput + subjectSelect + gradeSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-chalkboard-user"></i> Создать план урока</button>`;
+                    else if (actionId === 'tasks') html = commonInput + subjectSelect + countSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-tasks"></i> Сгенерировать задания</button>`;
+                    else if (actionId === 'variants') html = commonInput + subjectSelect + countSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-copy"></i> Создать варианты</button>`;
+                    break;
+                case 'lesson_plan':
+                    html = commonInput + `<div class="form-group"><label>Возрастная группа</label><select id="ageGroup"><option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option></select></div>
+                            <div class="form-group"><label>Тип занятия</label><select id="lessonType"><option>Развитие речи</option><option>Математика</option><option>Окружающий мир</option><option>Рисование</option><option>Лепка</option><option>Аппликация</option><option>Музыкальное</option><option>Физкультурное</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-child"></i> Создать конспект занятия</button>`;
+                    break;
+                case 'parent_advice':
+                    html = commonInput + `<div class="form-group"><label>Тема консультации</label><select id="adviceTopic"><option>Кризис 3 лет</option><option>Кризис 7 лет</option><option>Адаптация к детскому саду</option><option>Как развивать речь</option><option>Подготовка к школе</option><option>Детские страхи</option><option>Гиперактивность</option><option>Как хвалить и наказывать</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-heart"></i> Получить консультацию</button>`;
+                    break;
+                case 'planning':
+                    html = commonInput + `<div class="form-group"><label>Тип планирования</label><select id="planType"><option>Календарное на неделю</option><option>Перспективное на месяц</option><option>Годовое планирование</option></select></div>
+                            <div class="form-group"><label>Возрастная группа</label><select id="planAge"><option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-calendar-alt"></i> Создать план</button>`;
+                    break;
+                case 'games':
+                    html = commonInput + `<div class="form-group"><label>Возраст</label><select id="gameAge"><option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option></select></div>
+                            <div class="form-group"><label>Тип игр</label><select id="gameType"><option>Развивающие</option><option>Подвижные</option><option>Дидактические</option><option>Ролевые</option><option>На внимание</option><option>На логику</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-puzzle-piece"></i> Подобрать игры</button>`;
+                    break;
+                case 'holiday':
+                    html = commonInput + `<div class="form-group"><label>Праздник</label><select id="holidayType"><option>Новый год</option><option>8 Марта</option><option>День рождения</option><option>Выпускной</option><option>Осенний бал</option><option>Масленица</option></select></div>
+                            <div class="form-group"><label>Возраст</label><select id="holidayAge"><option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-birthday-cake"></i> Создать сценарий</button>`;
                     break;
                 default:
                     html = commonInput + `<button class="btn btn-primary" onclick="processAction()">Отправить</button>`;
@@ -911,31 +918,46 @@
 
         async function processAction() {
             const inputText = document.getElementById('inputText')?.value || '';
-            const subject = document.getElementById('subjectSelect')?.value || '';
-            const level = document.getElementById('levelSelect')?.value || '';
-            const grade = document.getElementById('gradeSelect')?.value || '';
-            const count = document.getElementById('countSelect')?.value || '';
+            let additional = {};
 
-            if (!inputText) {
+            if (userData.role === 'kindergarten') {
+                additional.ageGroup = document.getElementById('ageGroup')?.value;
+                additional.lessonType = document.getElementById('lessonType')?.value;
+                additional.adviceTopic = document.getElementById('adviceTopic')?.value;
+                additional.planType = document.getElementById('planType')?.value;
+                additional.planAge = document.getElementById('planAge')?.value;
+                additional.gameAge = document.getElementById('gameAge')?.value;
+                additional.gameType = document.getElementById('gameType')?.value;
+                additional.holidayType = document.getElementById('holidayType')?.value;
+                additional.holidayAge = document.getElementById('holidayAge')?.value;
+            } else {
+                additional.subject = document.getElementById('subjectSelect')?.value || '';
+                additional.level = document.getElementById('levelSelect')?.value || '';
+                additional.grade = document.getElementById('gradeSelect')?.value || '';
+                additional.count = document.getElementById('countSelect')?.value || '';
+            }
+
+            if (!inputText && userData.role !== 'kindergarten') {
                 showToast('Пожалуйста, введите ваш запрос');
+                return;
+            }
+            if (userData.role === 'kindergarten' && !inputText) {
+                showToast('Опишите тему или вопрос');
                 return;
             }
 
             document.getElementById('loadingContainer').style.display = 'block';
 
-            let prompt = generatePrompt(currentActionId, {
-                inputText, subject, level, grade, count
-            });
+            let prompt = generatePrompt(currentActionId, { inputText, ...additional });
 
             try {
                 const result = await callGroq(prompt);
-                addChatMessage(inputText, true);
+                addChatMessage(inputText || 'Запрос', true);
                 addChatMessage(result, false);
                 document.getElementById('inputText').value = '';
                 saveToHistory({
                     type: currentActionId,
                     input: inputText,
-                    subject: subject,
                     result: result,
                     timestamp: new Date().toISOString()
                 });
@@ -963,22 +985,40 @@
         }
 
         function generatePrompt(actionId, data) {
-            const emojiInstruction = " Пожалуйста, используй эмодзи для наглядности (👍, 📌, 🔹, ✅, ❌, 📐, 💡, 🎯, 📝, 🔍 и т.п.).";
-            const subjectInstruction = data.subject ? ` (предмет: ${data.subject})` : '';
-            const base = {
-                solve: `Ты — эксперт по ${data.subject || 'математике, физике, химии'}. Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми пояснениями. Объясни каждый шаг, укажи формулы. Проверь ответ на ошибки.${emojiInstruction}`,
-                summary: `Создай конспект по теме "${data.inputText}"${subjectInstruction}. Конспект должен быть структурированным: главные мысли, ключевые формулы, определения, примеры. Используй заголовки и списки.${emojiInstruction}`,
-                schema: `Создай визуальную схему-шпаргалку по теме "${data.inputText}"${subjectInstruction}. Используй разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты. Сделай её максимально наглядной.${emojiInstruction}`,
-                lab: `Ты — помощник по лабораторным работам (${data.subject}). Дай пошаговый план выполнения лабораторной работы на тему: ${data.inputText}. Опиши цель, оборудование, ход эксперимента, ожидаемые результаты и выводы. Если нужно, объясни теорию.${emojiInstruction}`,
-                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат каждого вопроса: текст вопроса, 4 варианта ответа, указание правильного ответа. В конце добавь раздел "3 главных момента" для повторения.${emojiInstruction}`,
-                explain: `Объясни: ${data.inputText} (уровень: ${data.level}). Используй простой язык, аналогии из жизни, примеры. Постарайся, чтобы объяснение было понятным даже новичку.${emojiInstruction}`,
-                lesson: `Составь план урока на 45 минут по теме "${data.inputText}" (${data.subject}, класс ${data.grade}). План должен включать: цель, актуализацию знаний (3 вопроса), объяснение нового материала (20 мин), практическую часть (15 мин), проверку понимания (exit ticket), домашнее задание. Добавь методические рекомендации.${emojiInstruction}`,
-                tasks: `Создай ${data.count} разноуровневых заданий по теме "${data.inputText}" (${data.subject}). Для каждого задания укажи условие, ответ и краткое решение. Задания должны развивать разные навыки.${emojiInstruction}`,
-                variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи ответы.${emojiInstruction}`
-            };
-            let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}.${emojiInstruction}`;
-            promptText += " Отвечай максимально подробно, точно и полезно. Если можно, приведи формулы, численные ответы, проверь логику. Используй дружелюбный, но профессиональный тон.";
-            return promptText;
+            const emojiInstruction = " Пожалуйста, используй эмодзи для наглядности (👍, 📌, 🔹, ✅, ❌, 📐, 💡, 🎯, 📝, 🔍, 🧸, 🎨, 📚).";
+            if (userData.role === 'kindergarten') {
+                switch(actionId) {
+                    case 'lesson_plan':
+                        return `Составь подробный конспект занятия для детей ${data.ageGroup || 'дошкольного возраста'} по теме: ${data.inputText}. Тип занятия: ${data.lessonType || 'развитие'}. Включи: цель, задачи, оборудование, ход занятия (вводная часть, основная, заключительная), физкультминутку, рефлексию. Учти возрастные особенности.${emojiInstruction}`;
+                    case 'parent_advice':
+                        return `Напиши консультацию для родителей на тему: ${data.adviceTopic || data.inputText}. Дай практические советы, объясни причины, приведи примеры. Тон — дружелюбный, поддерживающий.${emojiInstruction}`;
+                    case 'planning':
+                        return `Составь ${data.planType || 'календарное планирование'} для детей ${data.planAge || 'дошкольного возраста'} по теме: ${data.inputText}. Опиши цели, задачи, виды деятельности (игровая, познавательная, художественная, физическая) на каждый день/неделю.${emojiInstruction}`;
+                    case 'games':
+                        return `Подбери развивающие игры для детей ${data.gameAge || 'дошкольного возраста'} типа: ${data.gameType || 'развивающие'}. Тема: ${data.inputText}. Для каждой игры укажи цель, материалы, ход игры.${emojiInstruction}`;
+                    case 'holiday':
+                        return `Напиши сценарий праздника "${data.holidayType || 'праздник'}" для детей ${data.holidayAge || 'дошкольного возраста'}. Тема: ${data.inputText}. Включи: персонажей, стихи, песни, игры, сюрпризный момент.${emojiInstruction}`;
+                    default:
+                        return `Ответь на запрос воспитателя: ${data.inputText}. Будь полезен, дай практические рекомендации.${emojiInstruction}`;
+                }
+            } else {
+                // Старые промпты для ученика/учителя
+                const subjectInstruction = data.subject ? ` (предмет: ${data.subject})` : '';
+                const base = {
+                    solve: `Ты — эксперт по ${data.subject || 'математике, физике, химии'}. Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми пояснениями. Объясни каждый шаг, укажи формулы. Проверь ответ на ошибки.${emojiInstruction}`,
+                    summary: `Создай конспект по теме "${data.inputText}"${subjectInstruction}. Конспект должен быть структурированным: главные мысли, ключевые формулы, определения, примеры. Используй заголовки и списки.${emojiInstruction}`,
+                    schema: `Создай визуальную схему-шпаргалку по теме "${data.inputText}"${subjectInstruction}. Используй разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты. Сделай её максимально наглядной.${emojiInstruction}`,
+                    lab: `Ты — помощник по лабораторным работам (${data.subject}). Дай пошаговый план выполнения лабораторной работы на тему: ${data.inputText}. Опиши цель, оборудование, ход эксперимента, ожидаемые результаты и выводы. Если нужно, объясни теорию.${emojiInstruction}`,
+                    test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат каждого вопроса: текст вопроса, 4 варианта ответа, указание правильного ответа. В конце добавь раздел "3 главных момента" для повторения.${emojiInstruction}`,
+                    explain: `Объясни: ${data.inputText} (уровень: ${data.level}). Используй простой язык, аналогии из жизни, примеры. Постарайся, чтобы объяснение было понятным даже новичку.${emojiInstruction}`,
+                    lesson: `Составь план урока на 45 минут по теме "${data.inputText}" (${data.subject}, класс ${data.grade}). План должен включать: цель, актуализацию знаний (3 вопроса), объяснение нового материала (20 мин), практическую часть (15 мин), проверку понимания (exit ticket), домашнее задание. Добавь методические рекомендации.${emojiInstruction}`,
+                    tasks: `Создай ${data.count} разноуровневых заданий по теме "${data.inputText}" (${data.subject}). Для каждого задания укажи условие, ответ и краткое решение. Задания должны развивать разные навыки.${emojiInstruction}`,
+                    variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи ответы.${emojiInstruction}`
+                };
+                let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}.${emojiInstruction}`;
+                promptText += " Отвечай максимально подробно, точно и полезно. Если можно, приведи формулы, численные ответы, проверь логику. Используй дружелюбный, но профессиональный тон.";
+                return promptText;
+            }
         }
 
         async function callGroq(prompt) {
@@ -1030,7 +1070,10 @@
                 const username = user.username ? `@${user.username}` : '';
                 document.getElementById('profileUsername').textContent = username;
             }
-            const roleText = userData.role === 'student' ? 'Ученик' : 'Учитель';
+            let roleText = '';
+            if (userData.role === 'student') roleText = 'Ученик';
+            else if (userData.role === 'teacher') roleText = 'Учитель';
+            else if (userData.role === 'kindergarten') roleText = 'Воспитатель';
             document.getElementById('profileRole').textContent = roleText;
         }
 
@@ -1045,7 +1088,7 @@
                             <span class="history-type">${getActionName(item.type)}</span>
                             <span class="history-date">${formatDate(item.timestamp)}</span>
                         </div>
-                        <div class="history-preview">${item.input || item.subject || 'Запрос'}</div>
+                        <div class="history-preview">${item.input || 'Запрос'}</div>
                     </div>
                 `).join('');
             }
@@ -1055,7 +1098,7 @@
         function viewHistoryItem(index) {
             const item = userData.history[index];
             if (item && item.result) {
-                const config = menuConfigs[userData.role].find(m => m.id === item.type);
+                const config = menuConfigs[userData.role]?.find(m => m.id === item.type);
                 if (config) {
                     openAction(item.type);
                     document.getElementById('chatMessages').innerHTML = '';
@@ -1083,9 +1126,14 @@
         }
 
         function getActionName(actionId) {
-            const names = { solve: 'Решение', summary: 'Конспект', schema: 'Схема', lab: 'Лабораторная', test: 'Тест', explain: 'Объяснение', lesson: 'План урока', tasks: 'Задания', variants: 'Варианты' };
+            const names = {
+                solve: 'Решение', summary: 'Конспект', schema: 'Схема', lab: 'Лабораторная', test: 'Тест', explain: 'Объяснение',
+                lesson: 'План урока', tasks: 'Задания', variants: 'Варианты',
+                lesson_plan: 'Конспект занятия', parent_advice: 'Консультация', planning: 'Планирование', games: 'Игры', holiday: 'Сценарий'
+            };
             return names[actionId] || 'Запрос';
         }
+
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             const now = new Date();
@@ -1099,17 +1147,20 @@
             if (days < 7) return `${days} дн`;
             return date.toLocaleDateString('ru-RU');
         }
+
         function saveToHistory(item) {
             userData.history.push(item);
             if (userData.history.length > 100) userData.history.shift();
             saveData();
         }
+
         function saveData() {
             localStorage.setItem('nevioData', JSON.stringify({
                 role: userData.role,
                 history: userData.history
             }));
         }
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -1118,12 +1169,14 @@
             else if (pageId === 'historyPage') document.querySelectorAll('.nav-item')[1].classList.add('active');
             else if (pageId === 'settingsPage') document.querySelectorAll('.nav-item')[2].classList.add('active');
         }
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
+
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
