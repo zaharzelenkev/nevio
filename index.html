@@ -273,6 +273,14 @@
             background: var(--border);
             color: var(--text);
         }
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -369,6 +377,12 @@
             justify-content: center;
             font-size: 36px;
             border: 4px solid rgba(255,255,255,0.3);
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .profile-name {
             font-size: 22px;
@@ -618,16 +632,6 @@
                 <div class="profile-role" id="profileRole">Ученик</div>
             </div>
             <div class="settings-list">
-                <div class="settings-item" onclick="changeRole()">
-                    <div class="settings-item-left">
-                        <div class="settings-item-icon"><i class="fas fa-arrows-rotate"></i></div>
-                        <div class="settings-item-text">
-                            <h4>Изменить роль</h4>
-                            <p>Переключиться между учеником и учителем</p>
-                        </div>
-                    </div>
-                    <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
-                </div>
                 <div class="settings-item" onclick="showHistory()">
                     <div class="settings-item-left">
                         <div class="settings-item-icon"><i class="fas fa-history"></i></div>
@@ -647,12 +651,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="settings-item">
+                <div class="settings-item" onclick="showPrivacy()">
                     <div class="settings-item-left">
-                        <div class="settings-item-icon"><i class="fas fa-info-circle"></i></div>
+                        <div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div>
                         <div class="settings-item-text">
-                            <h4>О приложении</h4>
-                            <p>NEVIO v3.0 — Полностью бесплатно навсегда</p>
+                            <h4>Политика конфиденциальности</h4>
+                            <p>Как мы обрабатываем данные</p>
+                        </div>
+                    </div>
+                    <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="settings-item" onclick="showTerms()">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon"><i class="fas fa-file-contract"></i></div>
+                        <div class="settings-item-text">
+                            <h4>Условия использования</h4>
+                            <p>Правила сервиса</p>
+                        </div>
+                    </div>
+                    <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="settings-item" onclick="deleteAccount()">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon"><i class="fas fa-user-slash"></i></div>
+                        <div class="settings-item-text">
+                            <h4>Удалить аккаунт</h4>
+                            <p>Удалить все данные и сменить роль</p>
                         </div>
                     </div>
                 </div>
@@ -670,6 +694,44 @@
                 <h2><i class="fas fa-history"></i> История запросов</h2>
                 <p>Все ваши предыдущие запросы сохранены здесь</p>
                 <div id="historyList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="privacyPage">
+        <div class="action-container">
+            <div class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-left"></i>
+                <span>Назад</span>
+            </div>
+            <div class="card">
+                <h2><i class="fas fa-shield-alt"></i> Политика конфиденциальности</h2>
+                <div style="line-height: 1.6; color: var(--text);">
+                    <p><strong>1. Сбор данных</strong><br>NEVIO не собирает и не хранит ваши личные данные. Вся информация (история запросов, выбранная роль) сохраняется исключительно на вашем устройстве в локальном хранилище браузера.</p>
+                    <p style="margin-top: 12px;"><strong>2. Обработка запросов</strong><br>Ваши запросы передаются анонимно в искусственный интеллект для генерации ответов. Мы не сохраняем содержимое ваших диалогов на своих серверах.</p>
+                    <p style="margin-top: 12px;"><strong>3. Telegram</strong><br>Приложение интегрируется с Telegram только для отображения вашего профиля (имя, фото). Никакие данные не передаются разработчику.</p>
+                    <p style="margin-top: 12px;"><strong>4. Ваши права</strong><br>Вы можете в любой момент очистить историю или удалить аккаунт через настройки. Все данные будут безвозвратно удалены с вашего устройства.</p>
+                    <p style="margin-top: 12px;"><strong>5. Контакты</strong><br>По вопросам конфиденциальности: @nevio_support (Telegram).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="termsPage">
+        <div class="action-container">
+            <div class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-left"></i>
+                <span>Назад</span>
+            </div>
+            <div class="card">
+                <h2><i class="fas fa-file-contract"></i> Условия использования</h2>
+                <div style="line-height: 1.6; color: var(--text);">
+                    <p><strong>1. Принимая условия</strong><br>Используя NEVIO, вы соглашаетесь с данными условиями.</p>
+                    <p style="margin-top: 12px;"><strong>2. Ответственность</strong><br>NEVIO предоставляет информацию на основе искусственного интеллекта. Мы не несём ответственности за возможные ошибки в ответах. Всегда проверяйте критически важную информацию.</p>
+                    <p style="margin-top: 12px;"><strong>3. Ограничение использования</strong><br>Запрещается использовать приложение для незаконных действий, спама, оскорблений.</p>
+                    <p style="margin-top: 12px;"><strong>4. Изменения</strong><br>Мы можем обновлять условия в любое время. Продолжение использования означает принятие новых условий.</p>
+                    <p style="margin-top: 12px;"><strong>5. Контакты</strong><br>По вопросам: @nevio_support (Telegram).</p>
+                </div>
             </div>
         </div>
     </div>
@@ -751,12 +813,17 @@
             showToast(role === 'student' ? 'Режим ученика активирован' : 'Режим учителя активирован');
         }
 
-        function changeRole() {
-            userData.role = userData.role === 'student' ? 'teacher' : 'student';
-            saveData();
-            loadMainMenu();
-            showPage('mainPage');
-            showToast('Роль изменена');
+        function deleteAccount() {
+            if (confirm('Вы действительно хотите удалить аккаунт? Все данные (история, роль) будут удалены без возможности восстановления.')) {
+                localStorage.removeItem('nevioData');
+                userData = {
+                    role: null,
+                    telegramUser: userData.telegramUser,
+                    history: []
+                };
+                showPage('roleSelectionPage');
+                showToast('Аккаунт удалён');
+            }
         }
 
         function loadMainMenu() {
@@ -937,7 +1004,7 @@
             });
             if (!response.ok) {
                 const err = await response.text();
-                throw new Error(`Groq API ошибка: ${response.status} ${err}`);
+                throw new Error(`Ошибка API: ${response.status}`);
             }
             const data = await response.json();
             return data.choices[0].message.content;
@@ -997,8 +1064,7 @@
                 if (user.photo_url) {
                     avatarContainer.innerHTML = `<img src="${user.photo_url}" alt="Avatar">`;
                 } else {
-                    const initial = user.first_name ? user.first_name[0].toUpperCase() : '👤';
-                    avatarContainer.innerHTML = initial;
+                    avatarContainer.innerHTML = '👤';
                 }
                 const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
                 document.getElementById('profileName').textContent = fullName;
@@ -1046,6 +1112,14 @@
                 showToast('История очищена');
                 showHistory();
             }
+        }
+
+        function showPrivacy() {
+            showPage('privacyPage');
+        }
+
+        function showTerms() {
+            showPage('termsPage');
         }
 
         function getActionName(actionId) {
