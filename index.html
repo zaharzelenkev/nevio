@@ -7,6 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* (стили без изменений, они уже хороши) */
         * {
             margin: 0;
             padding: 0;
@@ -65,7 +66,6 @@
             font-size: 14px;
         }
 
-        /* Role selection */
         .role-selection {
             text-align: center;
             padding: 40px 20px;
@@ -113,7 +113,6 @@
             font-size: 14px;
         }
 
-        /* Menu grid */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -151,7 +150,6 @@
             margin-top: 4px;
         }
 
-        /* Forms & Cards */
         .action-container {
             max-width: 600px;
             margin: 0 auto;
@@ -263,7 +261,6 @@
             cursor: not-allowed;
         }
 
-        /* Chat messages */
         .chat-messages {
             margin-top: 20px;
             display: flex;
@@ -305,7 +302,6 @@
             margin-bottom: 4px;
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
@@ -321,7 +317,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Profile & Settings */
         .profile-section {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 16px;
@@ -415,7 +410,6 @@
             color: var(--text-secondary);
         }
 
-        /* History */
         .history-item {
             background: var(--card);
             border-radius: 12px;
@@ -453,7 +447,6 @@
             -webkit-box-orient: vertical;
         }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -490,7 +483,6 @@
             font-weight: 500;
         }
 
-        /* Image preview (for any future use, but not used now) */
         .image-preview {
             margin-top: 16px;
             border-radius: 12px;
@@ -752,7 +744,6 @@
             ]
         };
 
-        // Текущий actionId для активной функции
         let currentActionId = null;
 
         function init() {
@@ -822,7 +813,6 @@
             const formContainer = document.getElementById('actionForm');
             let html = '';
 
-            // Общая часть — поле ввода есть везде
             const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Введите условие, тему или вопрос..." rows="3"></textarea></div>`;
 
             switch(actionId) {
@@ -884,7 +874,6 @@
                 return;
             }
 
-            // Показываем загрузку
             document.getElementById('loadingContainer').style.display = 'block';
 
             let prompt = generatePrompt(currentActionId, {
@@ -893,12 +882,9 @@
 
             try {
                 const result = await callGroq(prompt);
-                // Добавляем сообщение пользователя и ответ ИИ в чат
                 addChatMessage(inputText, true);
                 addChatMessage(result, false);
-                // Очищаем поле ввода
                 document.getElementById('inputText').value = '';
-                // Сохраняем в историю
                 saveToHistory({
                     type: currentActionId,
                     input: inputText,
@@ -922,7 +908,6 @@
             label.textContent = isUser ? 'Вы' : 'NEVIO';
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
-            // Форматируем текст (заменяем переносы на <br>)
             bubble.innerHTML = text.replace(/\n/g, '<br>');
             messageDiv.appendChild(label);
             messageDiv.appendChild(bubble);
@@ -945,7 +930,6 @@
                 variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи ответы.${emojiInstruction}`
             };
             let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}.${emojiInstruction}`;
-            // Добавляем общее указание быть максимально полезным
             promptText += " Отвечай максимально подробно, точно и полезно. Если можно, приведи формулы, численные ответы, проверь логику. Используй дружелюбный, но профессиональный тон.";
             return promptText;
         }
@@ -971,7 +955,11 @@
             }
             const data = await response.json();
             let answer = data.choices[0].message.content;
-            // Красивое форматирование формул
+            // Удаляем лишние символы * # _ (кроме тех, что могут быть частью формул, но формулы уже обработаны)
+            answer = answer.replace(/[*#_]/g, '');
+            // Убираем множественные пробелы и лишние переводы строк
+            answer = answer.replace(/\n{3,}/g, '\n\n').trim();
+            // Красивое форматирование формул (уже было)
             answer = answer
                 .replace(/\^2/g, '²')
                 .replace(/\^3/g, '³')
