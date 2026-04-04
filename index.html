@@ -46,7 +46,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Header */
         .header {
             text-align: center;
             margin-bottom: 24px;
@@ -286,59 +285,46 @@
             cursor: not-allowed;
         }
 
-        /* Result */
-        .result-container {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 24px;
+        /* Chat messages */
+        .chat-messages {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .message {
+            display: flex;
+            flex-direction: column;
+        }
+        .message.user {
+            align-items: flex-end;
+        }
+        .message.ai {
+            align-items: flex-start;
+        }
+        .message-bubble {
+            max-width: 90%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            background: var(--surface);
             border: 1px solid var(--border);
         }
-        .result-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .result-header h3 {
-            font-size: 18px;
-            color: var(--gold);
-        }
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: none;
-            background: var(--border);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.2s;
-            color: var(--text);
-        }
-        .icon-btn:hover {
+        .message.user .message-bubble {
             background: var(--gold);
             color: #0a0a0a;
+            border-bottom-right-radius: 4px;
         }
-        .result-content {
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .message.ai .message-bubble {
+            background: var(--card);
             color: var(--text);
+            border-bottom-left-radius: 4px;
         }
-        .result-content code {
-            background: var(--surface);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        .result-content pre {
-            background: var(--surface);
-            padding: 12px;
-            border-radius: 8px;
-            overflow-x: auto;
+        .message-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
         }
 
         /* Loading */
@@ -614,7 +600,7 @@
                         <p>Обрабатываю запрос...</p>
                     </div>
                 </div>
-                <div id="resultContainer" style="display: none;"></div>
+                <div id="chatMessages" class="chat-messages"></div>
             </div>
         </div>
     </div>
@@ -788,6 +774,9 @@
             ]
         };
 
+        // Текущий actionId для активной функции
+        let currentActionId = null;
+
         function init() {
             userData.telegramUser = tg.initDataUnsafe?.user;
             const saved = localStorage.getItem('nevioData');
@@ -841,10 +830,11 @@
         function openAction(actionId) {
             const config = menuConfigs[userData.role].find(m => m.id === actionId);
             if (!config) return;
+            currentActionId = actionId;
             document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
             document.getElementById('actionDescription').textContent = config.description;
             document.getElementById('actionForm').innerHTML = '';
-            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('chatMessages').innerHTML = ''; // очищаем историю чата
             document.getElementById('loadingContainer').style.display = 'none';
             generateForm(actionId);
             showPage('actionPage');
@@ -859,15 +849,15 @@
 
             switch(actionId) {
                 case 'solve':
-                    html = commonInput + `<button class="btn btn-primary" onclick="processAction('solve')"><i class="fas fa-calculator"></i> Решить задачу</button>`;
+                    html = commonInput + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-calculator"></i> Решить задачу</button>`;
                     break;
                 case 'summary':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('summary')"><i class="fas fa-book"></i> Создать конспект</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-book"></i> Создать конспект</button>`;
                     break;
                 case 'schema':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('schema')"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
                     break;
                 case 'check':
                     html = `<div class="form-group"><label>Загрузите фото домашки</label>
@@ -879,34 +869,34 @@
                             <div id="imagePreviewContainer"></div>
                             </div>
                             <div class="form-group"><label>Ваш вопрос или комментарий</label><textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea></div>
-                            <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction('check')"><i class="fas fa-check-circle"></i> Проверить решение</button>`;
+                            <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction()"><i class="fas fa-check-circle"></i> Проверить решение</button>`;
                     break;
                 case 'test':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
                             <div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('test')"><i class="fas fa-clipboard-list"></i> Начать подготовку</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-clipboard-list"></i> Начать подготовку</button>`;
                     break;
                 case 'explain':
                     html = commonInput + `<div class="form-group"><label>Уровень объяснения</label><select id="levelSelect"><option>Простыми словами</option><option>Обычное объяснение</option><option>Подробное с примерами</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('explain')"><i class="fas fa-lightbulb"></i> Объяснить</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-lightbulb"></i> Объяснить</button>`;
                     break;
                 case 'lesson':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('lesson')"><i class="fas fa-chalkboard-user"></i> Создать план урока</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-chalkboard-user"></i> Создать план урока</button>`;
                     break;
                 case 'tasks':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Количество заданий</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('tasks')"><i class="fas fa-tasks"></i> Сгенерировать</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-tasks"></i> Сгенерировать</button>`;
                     break;
                 case 'variants':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
                             <div class="form-group"><label>Количество вариантов</label><select id="countSelect"><option>2</option><option>3</option><option>4</option></select></div>
-                            <button class="btn btn-primary" onclick="processAction('variants')"><i class="fas fa-copy"></i> Создать варианты</button>`;
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-copy"></i> Создать варианты</button>`;
                     break;
                 default:
-                    html = commonInput + `<button class="btn btn-primary" onclick="processAction('${actionId}')">Отправить</button>`;
+                    html = commonInput + `<button class="btn btn-primary" onclick="processAction()">Отправить</button>`;
             }
             formContainer.innerHTML = html;
         }
@@ -925,34 +915,49 @@
             reader.readAsDataURL(file);
         }
 
-        async function processAction(actionId) {
+        async function processAction() {
             const inputText = document.getElementById('inputText')?.value || '';
             const subject = document.getElementById('subjectSelect')?.value || '';
             const level = document.getElementById('levelSelect')?.value || '';
             const grade = document.getElementById('gradeSelect')?.value || '';
             const count = document.getElementById('countSelect')?.value || '';
 
-            if (!inputText && actionId !== 'check') {
+            if (!inputText && currentActionId !== 'check') {
                 showToast('Пожалуйста, введите ваш запрос');
                 return;
             }
-            if (actionId === 'check' && !uploadedImage) {
+            if (currentActionId === 'check' && !uploadedImage) {
                 showToast('Загрузите фото');
                 return;
             }
 
-            document.getElementById('actionForm').style.display = 'none';
+            // Показываем загрузку
             document.getElementById('loadingContainer').style.display = 'block';
 
-            let prompt = generatePrompt(actionId, {
+            let prompt = generatePrompt(currentActionId, {
                 inputText, subject, level, grade, count, image: uploadedImage
             });
 
             try {
                 const result = await callGroq(prompt, uploadedImage);
-                displayResult(result, actionId);
+                // Добавляем сообщение пользователя и ответ ИИ в чат
+                addChatMessage(inputText || subject, true);
+                addChatMessage(result, false);
+                // Очищаем поле ввода
+                document.getElementById('inputText').value = '';
+                // Если это функция с фото — сбрасываем загруженное фото, но форму оставляем
+                if (currentActionId === 'check') {
+                    uploadedImage = null;
+                    const fileUpload = document.getElementById('fileUpload');
+                    if (fileUpload) fileUpload.classList.remove('has-file');
+                    const preview = document.getElementById('imagePreviewContainer');
+                    if (preview) preview.innerHTML = '';
+                    const checkBtn = document.getElementById('checkBtn');
+                    if (checkBtn) checkBtn.disabled = true;
+                }
+                // Сохраняем в историю
                 saveToHistory({
-                    type: actionId,
+                    type: currentActionId,
                     input: inputText || subject,
                     subject: subject,
                     result: result,
@@ -960,13 +965,29 @@
                 });
             } catch (error) {
                 showToast('Ошибка: ' + error.message);
+            } finally {
                 document.getElementById('loadingContainer').style.display = 'none';
-                document.getElementById('actionForm').style.display = 'block';
             }
         }
 
+        function addChatMessage(text, isUser) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            const label = document.createElement('div');
+            label.className = 'message-label';
+            label.textContent = isUser ? 'Вы' : 'NEVIO';
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            // Форматируем текст (заменяем переносы на <br>)
+            bubble.innerHTML = text.replace(/\n/g, '<br>');
+            messageDiv.appendChild(label);
+            messageDiv.appendChild(bubble);
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
         function generatePrompt(actionId, data) {
-            // Добавляем просьбу использовать эмодзи в ответе
             const emojiInstruction = " Пожалуйста, используй эмодзи для наглядности (👍, 📌, 🔹, ✅, ❌, 📐, 💡, 🎯, 📝, 🔍 и т.п.).";
             const base = {
                 solve: `Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пояснениями.${emojiInstruction}`,
@@ -1020,49 +1041,6 @@
             return answer;
         }
 
-        function formatResult(text) {
-            return text
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/`(.*?)`/g, '<code>$1</code>')
-                .replace(/\n/g, '<br>');
-        }
-
-        function displayResult(result, actionId) {
-            document.getElementById('loadingContainer').style.display = 'none';
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.style.display = 'block';
-            resultContainer.innerHTML = `
-                <div class="result-container">
-                    <div class="result-header">
-                        <h3><i class="fas fa-check-circle"></i> Готово!</h3>
-                        <button class="icon-btn" onclick="copyResult()"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="result-content" id="resultContent">${formatResult(result)}</div>
-                </div>
-                <button class="btn btn-secondary" style="margin-top: 16px;" onclick="resetForm()"><i class="fas fa-undo-alt"></i> Новый запрос</button>
-            `;
-            window.currentResult = result;
-        }
-
-        function resetForm() {
-            document.getElementById('resultContainer').style.display = 'none';
-            document.getElementById('actionForm').style.display = 'block';
-            uploadedImage = null;
-            const fileUpload = document.getElementById('fileUpload');
-            if (fileUpload) fileUpload.classList.remove('has-file');
-            const preview = document.getElementById('imagePreviewContainer');
-            if (preview) preview.innerHTML = '';
-            const checkBtn = document.getElementById('checkBtn');
-            if (checkBtn) checkBtn.disabled = true;
-        }
-
-        function copyResult() {
-            const text = document.getElementById('resultContent').innerText;
-            navigator.clipboard.writeText(text);
-            showToast('Скопировано в буфер обмена');
-        }
-
         function updateProfile() {
             const user = userData.telegramUser;
             if (user) {
@@ -1102,12 +1080,14 @@
         function viewHistoryItem(index) {
             const item = userData.history[index];
             if (item && item.result) {
-                const icon = getActionIcon(item.type);
-                document.getElementById('actionTitle').innerHTML = `<i class="${icon}"></i> ${getActionName(item.type)}`;
-                document.getElementById('actionDescription').textContent = formatDate(item.timestamp);
-                document.getElementById('actionForm').style.display = 'none';
-                displayResult(item.result, item.type);
-                showPage('actionPage');
+                const config = menuConfigs[userData.role].find(m => m.id === item.type);
+                if (config) {
+                    openAction(item.type);
+                    // После открытия функции добавляем сообщения в чат
+                    document.getElementById('chatMessages').innerHTML = '';
+                    addChatMessage(item.input, true);
+                    addChatMessage(item.result, false);
+                }
             }
         }
 
@@ -1131,10 +1111,6 @@
         function getActionName(actionId) {
             const names = { solve: 'Решение', summary: 'Конспект', schema: 'Схема', check: 'Проверка', test: 'Тест', explain: 'Объяснение', lesson: 'План урока', tasks: 'Задания', variants: 'Варианты' };
             return names[actionId] || 'Запрос';
-        }
-        function getActionIcon(actionId) {
-            const icons = { solve: 'fas fa-calculator', summary: 'fas fa-book', schema: 'fas fa-diagram-project', check: 'fas fa-camera', test: 'fas fa-clipboard-list', explain: 'fas fa-lightbulb', lesson: 'fas fa-chalkboard-user', tasks: 'fas fa-tasks', variants: 'fas fa-copy' };
-            return icons[actionId] || 'fas fa-file';
         }
         function formatDate(timestamp) {
             const date = new Date(timestamp);
