@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (стили без изменений, они уже хороши) */
         * {
             margin: 0;
             padding: 0;
@@ -15,6 +14,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
 
+        /* Тёмная тема (по умолчанию) */
         :root {
             --bg: #0a0a0a;
             --surface: #0f0f0f;
@@ -27,12 +27,26 @@
             --text-muted: #6b6b6b;
         }
 
+        /* Светлая тема */
+        body.light-theme {
+            --bg: #f5f5f5;
+            --surface: #ffffff;
+            --card: #ffffff;
+            --border: #dddddd;
+            --gold: #e8b13e;
+            --gold-dark: #c4911a;
+            --text: #1a1a1a;
+            --text-secondary: #555555;
+            --text-muted: #888888;
+        }
+
         body {
             background: var(--bg);
             color: var(--text);
             padding: 16px;
             padding-bottom: 80px;
             overflow-x: hidden;
+            transition: background 0.2s, color 0.2s;
         }
 
         .page {
@@ -66,6 +80,7 @@
             font-size: 14px;
         }
 
+        /* Role selection */
         .role-selection {
             text-align: center;
             padding: 40px 20px;
@@ -113,6 +128,7 @@
             font-size: 14px;
         }
 
+        /* Menu grid */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -150,6 +166,7 @@
             margin-top: 4px;
         }
 
+        /* Forms & Cards */
         .action-container {
             max-width: 600px;
             margin: 0 auto;
@@ -261,6 +278,7 @@
             cursor: not-allowed;
         }
 
+        /* Chat messages */
         .chat-messages {
             margin-top: 20px;
             display: flex;
@@ -302,6 +320,7 @@
             margin-bottom: 4px;
         }
 
+        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
@@ -317,6 +336,7 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Profile & Settings */
         .profile-section {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 16px;
@@ -410,6 +430,7 @@
             color: var(--text-secondary);
         }
 
+        /* History */
         .history-item {
             background: var(--card);
             border-radius: 12px;
@@ -447,6 +468,7 @@
             -webkit-box-orient: vertical;
         }
 
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -483,6 +505,7 @@
             font-weight: 500;
         }
 
+        /* Image preview (for any future use, but not used now) */
         .image-preview {
             margin-top: 16px;
             border-radius: 12px;
@@ -627,6 +650,17 @@
                     </div>
                     <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
                 </div>
+                <!-- Кнопка смены темы -->
+                <div class="settings-item" onclick="toggleTheme()">
+                    <div class="settings-item-left">
+                        <div class="settings-item-icon"><i class="fas fa-moon"></i></div>
+                        <div class="settings-item-text">
+                            <h4>Сменить тему</h4>
+                            <p>Переключить на светлую/тёмную тему</p>
+                        </div>
+                    </div>
+                    <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+                </div>
                 <div class="settings-item" onclick="deleteAccount()">
                     <div class="settings-item-left">
                         <div class="settings-item-icon"><i class="fas fa-user-slash"></i></div>
@@ -761,6 +795,19 @@
                 showPage('roleSelectionPage');
             }
             updateProfile();
+            // Применить сохранённую тему
+            const savedTheme = localStorage.getItem('nevioTheme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            localStorage.setItem('nevioTheme', isLight ? 'light' : 'dark');
+            showToast(isLight ? 'Светлая тема включена' : 'Тёмная тема включена');
         }
 
         function selectRole(role) {
@@ -955,11 +1002,8 @@
             }
             const data = await response.json();
             let answer = data.choices[0].message.content;
-            // Удаляем лишние символы * # _ (кроме тех, что могут быть частью формул, но формулы уже обработаны)
             answer = answer.replace(/[*#_]/g, '');
-            // Убираем множественные пробелы и лишние переводы строк
             answer = answer.replace(/\n{3,}/g, '\n\n').trim();
-            // Красивое форматирование формул (уже было)
             answer = answer
                 .replace(/\^2/g, '²')
                 .replace(/\^3/g, '³')
