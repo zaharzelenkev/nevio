@@ -221,28 +221,6 @@
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(232, 177, 62, 0.15);
         }
-        .file-upload {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 32px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--surface);
-        }
-        .file-upload:hover {
-            border-color: var(--gold);
-            background: rgba(232, 177, 62, 0.05);
-        }
-        .file-upload.has-file {
-            border-color: var(--gold);
-            background: rgba(232, 177, 62, 0.05);
-        }
-        .file-upload .icon {
-            font-size: 48px;
-            color: var(--gold);
-            margin-bottom: 12px;
-        }
         .btn {
             width: 100%;
             padding: 14px 24px;
@@ -512,7 +490,7 @@
             font-weight: 500;
         }
 
-        /* Image preview */
+        /* Image preview (for any future use, but not used now) */
         .image-preview {
             margin-top: 16px;
             border-radius: 12px;
@@ -697,7 +675,7 @@
                     <p style="margin-top: 12px;"><strong>2. Обработка запросов</strong><br>Ваши запросы передаются анонимно в искусственный интеллект для генерации ответов. Мы не сохраняем содержимое ваших диалогов на своих серверах.</p>
                     <p style="margin-top: 12px;"><strong>3. Telegram</strong><br>Приложение интегрируется с Telegram только для отображения вашего профиля (имя, фото). Никакие данные не передаются разработчику.</p>
                     <p style="margin-top: 12px;"><strong>4. Ваши права</strong><br>Вы можете в любой момент очистить историю или удалить аккаунт через настройки. Все данные будут безвозвратно удалены с вашего устройства.</p>
-                    <p style="margin-top: 12px;"><strong>5. Контакты</strong><br>По вопросам конфиденциальности: @nevio_support (Telegram).</p>
+                    <p style="margin-top: 12px;"><strong>5. Контакты</strong><br>По вопросам конфиденциальности вы можете обратиться через поддержку Telegram-бота.</p>
                 </div>
             </div>
         </div>
@@ -716,7 +694,7 @@
                     <p style="margin-top: 12px;"><strong>2. Ответственность</strong><br>NEVIO предоставляет информацию на основе искусственного интеллекта. Мы не несём ответственности за возможные ошибки в ответах. Всегда проверяйте критически важную информацию.</p>
                     <p style="margin-top: 12px;"><strong>3. Ограничение использования</strong><br>Запрещается использовать приложение для незаконных действий, спама, оскорблений.</p>
                     <p style="margin-top: 12px;"><strong>4. Изменения</strong><br>Мы можем обновлять условия в любое время. Продолжение использования означает принятие новых условий.</p>
-                    <p style="margin-top: 12px;"><strong>5. Контакты</strong><br>По вопросам: @nevio_support (Telegram).</p>
+                    <p style="margin-top: 12px;"><strong>5. Контакты</strong><br>По вопросам вы можете обратиться через поддержку Telegram-бота.</p>
                 </div>
             </div>
         </div>
@@ -760,7 +738,7 @@
                 { id: 'solve', icon: 'fas fa-calculator', title: 'Решить задачу', description: 'Решу любую задачу с объяснением' },
                 { id: 'summary', icon: 'fas fa-book', title: 'Написать конспект', description: 'Структурированный конспект' },
                 { id: 'schema', icon: 'fas fa-diagram-project', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
-                { id: 'check', icon: 'fas fa-camera', title: 'Проверить домашку', description: 'По фото с разбором ошибок' },
+                { id: 'lab', icon: 'fas fa-flask', title: 'Помощь с лабораторной', description: 'Пошаговый разбор опыта' },
                 { id: 'test', icon: 'fas fa-clipboard-list', title: 'Контрольная завтра', description: 'Подготовка за 10 минут' },
                 { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' }
             ],
@@ -834,7 +812,7 @@
             document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
             document.getElementById('actionDescription').textContent = config.description;
             document.getElementById('actionForm').innerHTML = '';
-            document.getElementById('chatMessages').innerHTML = ''; // очищаем историю чата
+            document.getElementById('chatMessages').innerHTML = '';
             document.getElementById('loadingContainer').style.display = 'none';
             generateForm(actionId);
             showPage('actionPage');
@@ -849,7 +827,8 @@
 
             switch(actionId) {
                 case 'solve':
-                    html = commonInput + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-calculator"></i> Решить задачу</button>`;
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-calculator"></i> Решить задачу</button>`;
                     break;
                 case 'summary':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>
@@ -859,17 +838,9 @@
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
                             <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-diagram-project"></i> Создать схему</button>`;
                     break;
-                case 'check':
-                    html = `<div class="form-group"><label>Загрузите фото домашки</label>
-                            <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
-                                <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
-                                <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                                <p>Нажмите чтобы выбрать фото</p>
-                            </div>
-                            <div id="imagePreviewContainer"></div>
-                            </div>
-                            <div class="form-group"><label>Ваш вопрос или комментарий</label><textarea id="inputText" placeholder="Что конкретно нужно проверить?"></textarea></div>
-                            <button class="btn btn-primary" id="checkBtn" disabled onclick="processAction()"><i class="fas fa-check-circle"></i> Проверить решение</button>`;
+                case 'lab':
+                    html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Физика</option><option>Химия</option><option>Биология</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-flask"></i> Помочь с лабораторной</button>`;
                     break;
                 case 'test':
                     html = commonInput + `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option></select></div>
@@ -901,20 +872,6 @@
             formContainer.innerHTML = html;
         }
 
-        let uploadedImage = null;
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedImage = e.target.result;
-                document.getElementById('fileUpload').classList.add('has-file');
-                document.getElementById('imagePreviewContainer').innerHTML = `<div class="image-preview"><img src="${e.target.result}" alt="Uploaded"></div>`;
-                document.getElementById('checkBtn').disabled = false;
-            };
-            reader.readAsDataURL(file);
-        }
-
         async function processAction() {
             const inputText = document.getElementById('inputText')?.value || '';
             const subject = document.getElementById('subjectSelect')?.value || '';
@@ -922,12 +879,8 @@
             const grade = document.getElementById('gradeSelect')?.value || '';
             const count = document.getElementById('countSelect')?.value || '';
 
-            if (!inputText && currentActionId !== 'check') {
+            if (!inputText) {
                 showToast('Пожалуйста, введите ваш запрос');
-                return;
-            }
-            if (currentActionId === 'check' && !uploadedImage) {
-                showToast('Загрузите фото');
                 return;
             }
 
@@ -935,30 +888,20 @@
             document.getElementById('loadingContainer').style.display = 'block';
 
             let prompt = generatePrompt(currentActionId, {
-                inputText, subject, level, grade, count, image: uploadedImage
+                inputText, subject, level, grade, count
             });
 
             try {
-                const result = await callGroq(prompt, uploadedImage);
+                const result = await callGroq(prompt);
                 // Добавляем сообщение пользователя и ответ ИИ в чат
-                addChatMessage(inputText || subject, true);
+                addChatMessage(inputText, true);
                 addChatMessage(result, false);
                 // Очищаем поле ввода
                 document.getElementById('inputText').value = '';
-                // Если это функция с фото — сбрасываем загруженное фото, но форму оставляем
-                if (currentActionId === 'check') {
-                    uploadedImage = null;
-                    const fileUpload = document.getElementById('fileUpload');
-                    if (fileUpload) fileUpload.classList.remove('has-file');
-                    const preview = document.getElementById('imagePreviewContainer');
-                    if (preview) preview.innerHTML = '';
-                    const checkBtn = document.getElementById('checkBtn');
-                    if (checkBtn) checkBtn.disabled = true;
-                }
                 // Сохраняем в историю
                 saveToHistory({
                     type: currentActionId,
-                    input: inputText || subject,
+                    input: inputText,
                     subject: subject,
                     result: result,
                     timestamp: new Date().toISOString()
@@ -989,30 +932,30 @@
 
         function generatePrompt(actionId, data) {
             const emojiInstruction = " Пожалуйста, используй эмодзи для наглядности (👍, 📌, 🔹, ✅, ❌, 📐, 💡, 🎯, 📝, 🔍 и т.п.).";
+            const subjectInstruction = data.subject ? ` (предмет: ${data.subject})` : '';
             const base = {
-                solve: `Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пояснениями.${emojiInstruction}`,
-                summary: `Создай конспект по теме "${data.inputText}" (${data.subject}). Структурируй: главные мысли, формулы, примеры.${emojiInstruction}`,
-                schema: `Создай визуальную схему/шпаргалку по теме "${data.inputText}" (${data.subject}). Используй разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты.${emojiInstruction}`,
-                check: `Проверь решение на фото. Найди ошибки, укажи строку, дай подсказку.${data.inputText ? '\nКомментарий: ' + data.inputText : ''}${emojiInstruction}`,
-                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, ${data.level}). Формат: вопрос, 4 варианта ответа, правильный ответ. В конце добавь "3 главных момента".${emojiInstruction}`,
-                explain: `Объясни: ${data.inputText} (уровень: ${data.level}). Используй аналогии, примеры из жизни. Пиши просто и понятно.${emojiInstruction}`,
-                lesson: `План урока 45 мин:\nПредмет: ${data.subject}\nТема: ${data.inputText}\nКласс: ${data.grade}\n\n1. Цель\n2. Актуализация (3 вопроса)\n3. Объяснение (20 мин)\n4. Практика (15 мин)\n5. Exit ticket\n6. Домашнее задание.${emojiInstruction}`,
-                tasks: `Создай ${data.count} заданий по теме "${data.inputText}" (${data.subject}). Для каждого: условие, ответ, краткое решение.${emojiInstruction}`,
-                variants: `Создай ${data.count} варианта контрольной по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности.${emojiInstruction}`
+                solve: `Ты — эксперт по ${data.subject || 'математике, физике, химии'}. Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми пояснениями. Объясни каждый шаг, укажи формулы. Проверь ответ на ошибки.${emojiInstruction}`,
+                summary: `Создай конспект по теме "${data.inputText}"${subjectInstruction}. Конспект должен быть структурированным: главные мысли, ключевые формулы, определения, примеры. Используй заголовки и списки.${emojiInstruction}`,
+                schema: `Создай визуальную схему-шпаргалку по теме "${data.inputText}"${subjectInstruction}. Используй разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты. Сделай её максимально наглядной.${emojiInstruction}`,
+                lab: `Ты — помощник по лабораторным работам (${data.subject}). Дай пошаговый план выполнения лабораторной работы на тему: ${data.inputText}. Опиши цель, оборудование, ход эксперимента, ожидаемые результаты и выводы. Если нужно, объясни теорию.${emojiInstruction}`,
+                test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат каждого вопроса: текст вопроса, 4 варианта ответа, указание правильного ответа. В конце добавь раздел "3 главных момента" для повторения.${emojiInstruction}`,
+                explain: `Объясни: ${data.inputText} (уровень: ${data.level}). Используй простой язык, аналогии из жизни, примеры. Постарайся, чтобы объяснение было понятным даже новичку.${emojiInstruction}`,
+                lesson: `Составь план урока на 45 минут по теме "${data.inputText}" (${data.subject}, класс ${data.grade}). План должен включать: цель, актуализацию знаний (3 вопроса), объяснение нового материала (20 мин), практическую часть (15 мин), проверку понимания (exit ticket), домашнее задание. Добавь методические рекомендации.${emojiInstruction}`,
+                tasks: `Создай ${data.count} разноуровневых заданий по теме "${data.inputText}" (${data.subject}). Для каждого задания укажи условие, ответ и краткое решение. Задания должны развивать разные навыки.${emojiInstruction}`,
+                variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи ответы.${emojiInstruction}`
             };
-            return base[actionId] || `Ответь на запрос: ${data.inputText}. ${emojiInstruction}`;
+            let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}.${emojiInstruction}`;
+            // Добавляем общее указание быть максимально полезным
+            promptText += " Отвечай максимально подробно, точно и полезно. Если можно, приведи формулы, численные ответы, проверь логику. Используй дружелюбный, но профессиональный тон.";
+            return promptText;
         }
 
-        async function callGroq(prompt, imageBase64 = null) {
-            let userContent = prompt;
-            if (imageBase64) {
-                userContent = `[Фото задачи] ${prompt}. Проанализируй изображение и дай обратную связь.`;
-            }
+        async function callGroq(prompt) {
             const body = {
                 model: "llama-3.3-70b-versatile",
-                messages: [{ role: "user", content: userContent }],
-                temperature: 0.7,
-                max_tokens: 2500
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.5,
+                max_tokens: 3000
             };
             const response = await fetch(GROQ_API_URL, {
                 method: 'POST',
@@ -1083,7 +1026,6 @@
                 const config = menuConfigs[userData.role].find(m => m.id === item.type);
                 if (config) {
                     openAction(item.type);
-                    // После открытия функции добавляем сообщения в чат
                     document.getElementById('chatMessages').innerHTML = '';
                     addChatMessage(item.input, true);
                     addChatMessage(item.result, false);
@@ -1109,7 +1051,7 @@
         }
 
         function getActionName(actionId) {
-            const names = { solve: 'Решение', summary: 'Конспект', schema: 'Схема', check: 'Проверка', test: 'Тест', explain: 'Объяснение', lesson: 'План урока', tasks: 'Задания', variants: 'Варианты' };
+            const names = { solve: 'Решение', summary: 'Конспект', schema: 'Схема', lab: 'Лабораторная', test: 'Тест', explain: 'Объяснение', lesson: 'План урока', tasks: 'Задания', variants: 'Варианты' };
             return names[actionId] || 'Запрос';
         }
         function formatDate(timestamp) {
