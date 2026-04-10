@@ -758,7 +758,10 @@
                 { id: 'schema', icon: 'fas fa-diagram-project', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
                 { id: 'lab', icon: 'fas fa-flask', title: 'Помощь с лабораторной', description: 'Пошаговый разбор опыта' },
                 { id: 'test', icon: 'fas fa-clipboard-list', title: 'Контрольная завтра', description: 'Подготовка за 10 минут' },
-                { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' }
+                { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' },
+                { id: 'formula_explain', icon: 'fas fa-square-root-alt', title: 'Объяснить формулу', description: 'Разбор любой формулы по шагам' },
+                { id: 'oral_exam', icon: 'fas fa-microphone-alt', title: 'Экзаменатор', description: 'Устный опрос по теме' },
+                { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Анализ произведения', description: 'Всё о книге: герои, темы, идеи' }
             ],
             teacher: [
                 { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек', description: 'Полный план урока' },
@@ -766,7 +769,8 @@
                 { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'A/B варианты' },
                 { id: 'schema', icon: 'fas fa-diagram-project', title: 'Схема для класса', description: 'Визуальный материал' },
                 { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Методика объяснения' },
-                { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' }
+                { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' },
+                { id: 'lit_lesson', icon: 'fas fa-chalkboard', title: 'Методика урока по литературе', description: 'План разбора произведения' }
             ],
             kindergarten: [
                 { id: 'lesson_plan', icon: 'fas fa-child', title: 'Конспект занятия', description: 'Для любой возрастной группы (3-7 лет)' },
@@ -861,6 +865,29 @@
             const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Опишите, что нужно: тема, возраст детей, особенности..." rows="3"></textarea></div>`;
 
             switch(actionId) {
+                // Ученик новые функции
+                case 'formula_explain':
+                    html = `<div class="form-group"><label>Формула или выражение</label><input type="text" id="formulaInput" placeholder="Например: E=mc², F=ma, S=πr², (a+b)²..."></div>
+                            <div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-square-root-alt"></i> Объяснить формулу</button>`;
+                    break;
+                case 'oral_exam':
+                    html = `<div class="form-group"><label>Тема для опроса</label><input type="text" id="examTopic" placeholder="Например: Теорема Пифагора, Квадратные уравнения"></div>
+                            <div class="form-group"><label>Количество вопросов</label><select id="examCount"><option>3</option><option>5</option><option>7</option><option>10</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-microphone-alt"></i> Начать экзамен</button>`;
+                    break;
+                case 'lit_analysis':
+                    html = `<div class="form-group"><label>Название произведения</label><input type="text" id="litTitle" placeholder="Например: Война и мир, Преступление и наказание"></div>
+                            <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Лев Толстой, Фёдор Достоевский"></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-book-open"></i> Проанализировать</button>`;
+                    break;
+                case 'lit_lesson':
+                    html = `<div class="form-group"><label>Произведение</label><input type="text" id="litTitle" placeholder="Название произведения"></div>
+                            <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Автор"></div>
+                            <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
+                            <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-chalkboard"></i> Создать план урока</button>`;
+                    break;
+                // Старые функции ученика/учителя (без изменений)
                 case 'solve':
                 case 'summary':
                 case 'schema':
@@ -870,7 +897,6 @@
                 case 'lesson':
                 case 'tasks':
                 case 'variants':
-                    // Для стандартных функций (ученик/учитель) добавляем предмет и др.
                     const subjectSelect = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>`;
                     const levelSelect = `<div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>`;
                     const gradeSelect = `<div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>`;
@@ -886,6 +912,7 @@
                     else if (actionId === 'tasks') html = commonInput + subjectSelect + countSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-tasks"></i> Сгенерировать задания</button>`;
                     else if (actionId === 'variants') html = commonInput + subjectSelect + countSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-copy"></i> Создать варианты</button>`;
                     break;
+                // Воспитатель (без изменений)
                 case 'lesson_plan':
                     html = commonInput + `<div class="form-group"><label>Возрастная группа</label><select id="ageGroup"><option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option></select></div>
                             <div class="form-group"><label>Тип занятия</label><select id="lessonType"><option>Развитие речи</option><option>Математика</option><option>Окружающий мир</option><option>Рисование</option><option>Лепка</option><option>Аппликация</option><option>Музыкальное</option><option>Физкультурное</option></select></div>
@@ -935,9 +962,27 @@
                 additional.level = document.getElementById('levelSelect')?.value || '';
                 additional.grade = document.getElementById('gradeSelect')?.value || '';
                 additional.count = document.getElementById('countSelect')?.value || '';
+                // Новые поля
+                additional.formula = document.getElementById('formulaInput')?.value || '';
+                additional.examTopic = document.getElementById('examTopic')?.value || '';
+                additional.examCount = document.getElementById('examCount')?.value || '';
+                additional.litTitle = document.getElementById('litTitle')?.value || '';
+                additional.litAuthor = document.getElementById('litAuthor')?.value || '';
             }
 
-            if (!inputText && userData.role !== 'kindergarten') {
+            let prompt = generatePrompt(currentActionId, { inputText, ...additional });
+
+            // Для устного экзамена и анализа литературы не требуется поле "Ваш запрос", но мы обрабатываем
+            if ((currentActionId === 'oral_exam' && !additional.examTopic) ||
+                (currentActionId === 'lit_analysis' && (!additional.litTitle || !additional.litAuthor)) ||
+                (currentActionId === 'lit_lesson' && (!additional.litTitle || !additional.litAuthor)) ||
+                (currentActionId === 'formula_explain' && !additional.formula)) {
+                showToast('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            if (!inputText && userData.role !== 'kindergarten' && 
+                !['oral_exam', 'lit_analysis', 'lit_lesson', 'formula_explain'].includes(currentActionId)) {
                 showToast('Пожалуйста, введите ваш запрос');
                 return;
             }
@@ -948,16 +993,20 @@
 
             document.getElementById('loadingContainer').style.display = 'block';
 
-            let prompt = generatePrompt(currentActionId, { inputText, ...additional });
-
             try {
                 const result = await callGroq(prompt);
-                addChatMessage(inputText || 'Запрос', true);
+                let userMessage = '';
+                if (currentActionId === 'formula_explain') userMessage = `Объясни формулу: ${additional.formula}`;
+                else if (currentActionId === 'oral_exam') userMessage = `Экзамен по теме "${additional.examTopic}", ${additional.examCount} вопросов`;
+                else if (currentActionId === 'lit_analysis') userMessage = `Анализ произведения "${additional.litTitle}" ${additional.litAuthor ? `(${additional.litAuthor})` : ''}`;
+                else if (currentActionId === 'lit_lesson') userMessage = `План урока по "${additional.litTitle}" ${additional.litAuthor ? `(${additional.litAuthor})` : ''}, ${additional.grade || ''}`;
+                else userMessage = inputText || 'Запрос';
+                addChatMessage(userMessage, true);
                 addChatMessage(result, false);
-                document.getElementById('inputText').value = '';
+                document.getElementById('inputText') && (document.getElementById('inputText').value = '');
                 saveToHistory({
                     type: currentActionId,
-                    input: inputText,
+                    input: userMessage,
                     result: result,
                     timestamp: new Date().toISOString()
                 });
@@ -1002,7 +1051,36 @@
                         return `Ответь на запрос воспитателя: ${data.inputText}. Будь полезен, дай практические рекомендации.${emojiInstruction}`;
                 }
             } else {
-                // Старые промпты для ученика/учителя
+                // Новые промпты для дополнительных функций
+                if (actionId === 'formula_explain') {
+                    return `Ты — эксперт по ${data.subject || 'математике, физике, химии'}. Объясни формулу "${data.formula}" максимально подробно. Распиши, что означает каждый символ, как выводится формула, где применяется, приведи пример использования. Если это математическая формула, покажи пример вычислений. Если физическая или химическая, объясни физический смысл. Используй эмодзи для наглядности.`;
+                }
+                if (actionId === 'oral_exam') {
+                    return `Ты — строгий, но справедливый экзаменатор. Проведи устный экзамен по теме "${data.examTopic}". Задай ${data.examCount || '5'} вопросов разного уровня сложности (от базовых до продвинутых). После каждого вопроса дай пользователю подумать (в реальном диалоге он ответит, но сейчас просто сгенерируй вопросы и после каждого вопроса напиши в скобках ожидаемый краткий ответ). В конце экзамена подведи итоги, укажи типичные ошибки. Формат: "Вопрос 1: ... (Ответ: ...)". Используй дружелюбный тон, поддерживай.${emojiInstruction}`;
+                }
+                if (actionId === 'lit_analysis') {
+                    return `Ты — эксперт по литературе. Дай максимально полный и одновременно сжатый анализ произведения "${data.litTitle}"${data.litAuthor ? ` (автор: ${data.litAuthor})` : ''}. Включи следующие пункты (без пропусков):
+1. Краткая информация об авторе и истории создания.
+2. Жанр произведения.
+3. Главные герои (с краткими характеристиками).
+4. Сюжет (очень кратко, только основные события).
+5. Основные темы и идеи (о чём книга, что хотел сказать автор).
+6. Проблематика (какие вопросы поднимаются).
+7. Художественные особенности (язык, композиция, символы).
+8. Значение произведения для литературы и почему его изучают в школе.
+Ответ должен быть структурирован, но без лишней воды. Упомяни детали, на которые обращают внимание учителя. Используй эмодзи.${emojiInstruction}`;
+                }
+                if (actionId === 'lit_lesson') {
+                    return `Ты — методист по литературе. Составь подробный план урока по произведению "${data.litTitle}"${data.litAuthor ? ` (${data.litAuthor})` : ''} для ${data.grade || 'средней школы'}. План должен включать:
+- Цели и задачи урока.
+- Актуализация знаний (3 вопроса для начала урока).
+- Анализ произведения (основные этапы разбора: сюжет, герои, темы, идеи, художественные средства).
+- Работа с текстом (чтение отрывков, вопросы на понимание).
+- Творческое задание (например, эссе, синквейн, иллюстрация).
+- Рефлексия и домашнее задание.
+Дай методические советы учителю: как заинтересовать учеников, на какие детали обратить внимание. Используй эмодзи.${emojiInstruction}`;
+                }
+                // Старые промпты
                 const subjectInstruction = data.subject ? ` (предмет: ${data.subject})` : '';
                 const base = {
                     solve: `Ты — эксперт по ${data.subject || 'математике, физике, химии'}. Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми пояснениями. Объясни каждый шаг, укажи формулы. Проверь ответ на ошибки.${emojiInstruction}`,
@@ -1026,7 +1104,7 @@
                 model: "llama-3.3-70b-versatile",
                 messages: [{ role: "user", content: prompt }],
                 temperature: 0.5,
-                max_tokens: 3000
+                max_tokens: 3500
             };
             const response = await fetch(GROQ_API_URL, {
                 method: 'POST',
@@ -1129,7 +1207,8 @@
             const names = {
                 solve: 'Решение', summary: 'Конспект', schema: 'Схема', lab: 'Лабораторная', test: 'Тест', explain: 'Объяснение',
                 lesson: 'План урока', tasks: 'Задания', variants: 'Варианты',
-                lesson_plan: 'Конспект занятия', parent_advice: 'Консультация', planning: 'Планирование', games: 'Игры', holiday: 'Сценарий'
+                lesson_plan: 'Конспект занятия', parent_advice: 'Консультация', planning: 'Планирование', games: 'Игры', holiday: 'Сценарий',
+                formula_explain: 'Объяснение формулы', oral_exam: 'Экзамен', lit_analysis: 'Анализ произведения', lit_lesson: 'Урок литературы'
             };
             return names[actionId] || 'Запрос';
         }
