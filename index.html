@@ -765,8 +765,9 @@
         // ========== ВСТРОЕННЫЙ API КЛЮЧ GROQ (БЕСПЛАТНЫЙ) ==========
         const GROQ_API_KEY = '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';
         const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-        // ========== OCR.space API (бесплатный демо-ключ) ==========
-        const OCR_API_KEY = 'K84490119588957'; // можно заменить на свой с https://ocr.space/ocrapi
+        
+        // ========== OpenRouter API (бесплатный, с использованием мультимодальной модели) ==========
+        const OPENROUTER_API_KEY = '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';
 
         let userData = {
             role: null,
@@ -918,25 +919,50 @@
             });
         }
 
-        // Распознавание текста через OCR.space
+        // Новая функция распознавания текста через OpenRouter (бесплатная модель gemini-2.0-flash-lite-001)
         async function recognizeText(imageDataUrl) {
-            const formData = new FormData();
-            const blob = await (await fetch(imageDataUrl)).blob();
-            formData.append('file', blob, 'image.jpg');
-            formData.append('apikey', OCR_API_KEY);
-            formData.append('language', 'rus');
-            formData.append('OCREngine', '2'); // 2 = стандартный, хорош для текста
+            const url = 'https://openrouter.ai/api/v1/chat/completions';
+            const headers = {
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://nevio.app',
+                'X-Title': 'Nevio OCR'
+            };
+            const payload = {
+                model: 'google/gemini-2.0-flash-lite-001',
+                messages: [
+                    {
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: 'Извлеки весь текст с этого изображения. Верни только распознанный текст, без лишних комментариев и форматирования.'
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: imageDataUrl
+                            }
+                        ]
+                    }
+                ],
+                max_tokens: 1500
+            };
 
-            const response = await fetch('https://api.ocr.space/parse/image', {
+            const response = await fetch(url, {
                 method: 'POST',
-                body: formData
+                headers: headers,
+                body: JSON.stringify(payload)
             });
-            const data = await response.json();
-            if (data.OCRExitCode === 1 && data.ParsedResults && data.ParsedResults.length > 0) {
-                return data.ParsedResults[0].ParsedText;
-            } else {
-                throw new Error(data.ErrorMessage || 'Не удалось распознать текст');
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`OpenRouter API ошибка: ${response.status} - ${errorText}`);
             }
+
+            const data = await response.json();
+            const recognizedText = data.choices[0].message.content.trim();
+            if (!recognizedText) throw new Error('Текст не распознан');
+            return recognizedText;
         }
 
         // Генерация формы (добавлена поддержка OCR для summary)
@@ -1290,8 +1316,7 @@
             document.getElementById('profileRole').textContent = roleText;
         }
 
-        // ... остальные вспомогательные функции (showHistory, clearHistory, showPrivacy, showTerms, getActionName, formatDate, saveToHistory, saveData, showPage, showToast) без изменений
-        // они уже есть в коде, повторять не будем для краткости, но в финальный HTML они войдут полностью
+        // Вспомогательные функции
         function showHistory() {
             const historyList = document.getElementById('historyList');
             if (userData.history.length === 0) {
