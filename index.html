@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (стили без изменений, они такие же как в предыдущей версии) */
         * {
             margin: 0;
             padding: 0;
@@ -852,10 +851,19 @@
         function generateForm(actionId) {
             const formContainer = document.getElementById('actionForm');
             let html = '';
-            const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Опишите, что нужно: тема, возраст детей, особенности..." rows="3"></textarea></div>`;
+            // Изменённый placeholder: "Введите запрос"
+            const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Введите запрос" rows="3"></textarea></div>`;
+
+            const fullSubjectList = `
+                <option>Математика</option><option>Алгебра</option><option>Геометрия</option><option>Физика</option><option>Химия</option>
+                <option>Биология</option><option>Русский язык</option><option>Литература</option><option>Белорусский язык</option><option>Белорусская литература</option>
+                <option>История</option><option>Обществознание</option><option>География</option><option>Информатика</option><option>Английский язык</option>
+                <option>Немецкий язык</option><option>Французский язык</option><option>Испанский язык</option><option>ОБЖ</option><option>Физическая культура</option>
+                <option>Черчение</option><option>Астрономия</option><option>Экономика</option><option>Право</option><option>Мировая художественная культура</option>
+                <option>Технология</option><option>Естествознание</option><option>Краеведение</option><option>Психология</option><option>Логика</option>
+            `;
 
             switch(actionId) {
-                // Новые функции ученика (без formula_explain)
                 case 'oral_exam':
                     html = `<div class="form-group"><label>Тема для опроса</label><input type="text" id="examTopic" placeholder="Например: Теорема Пифагора, Квадратные уравнения"></div>
                             <div class="form-group"><label>Количество вопросов</label><select id="examCount"><option>3</option><option>5</option><option>7</option><option>10</option></select></div>
@@ -872,7 +880,6 @@
                             <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
                             <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-chalkboard"></i> Создать план урока</button>`;
                     break;
-                // Старые функции ученика/учителя
                 case 'solve':
                 case 'summary':
                 case 'schema':
@@ -882,7 +889,7 @@
                 case 'lesson':
                 case 'tasks':
                 case 'variants':
-                    const subjectSelect = `<div class="form-group"><label>Предмет</label><select id="subjectSelect"><option>Математика</option><option>Физика</option><option>Химия</option><option>Биология</option><option>История</option><option>Русский язык</option><option>Литература</option><option>Английский язык</option></select></div>`;
+                    const subjectSelect = `<div class="form-group"><label>Предмет</label><select id="subjectSelect">${fullSubjectList}</select></div>`;
                     const levelSelect = `<div class="form-group"><label>Уровень сложности</label><select id="levelSelect"><option>Базовый</option><option>Средний</option><option>Продвинутый</option></select></div>`;
                     const gradeSelect = `<div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>`;
                     const countSelect = `<div class="form-group"><label>Количество</label><select id="countSelect"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>`;
@@ -897,7 +904,6 @@
                     else if (actionId === 'tasks') html = commonInput + subjectSelect + countSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-tasks"></i> Сгенерировать задания</button>`;
                     else if (actionId === 'variants') html = commonInput + subjectSelect + countSelect + `<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-copy"></i> Создать варианты</button>`;
                     break;
-                // Воспитатель
                 case 'lesson_plan':
                     html = commonInput + `<div class="form-group"><label>Возрастная группа</label><select id="ageGroup"><option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option></select></div>
                             <div class="form-group"><label>Тип занятия</label><select id="lessonType"><option>Развитие речи</option><option>Математика</option><option>Окружающий мир</option><option>Рисование</option><option>Лепка</option><option>Аппликация</option><option>Музыкальное</option><option>Физкультурное</option></select></div>
@@ -947,14 +953,12 @@
                 additional.level = document.getElementById('levelSelect')?.value || '';
                 additional.grade = document.getElementById('gradeSelect')?.value || '';
                 additional.count = document.getElementById('countSelect')?.value || '';
-                // Новые поля
                 additional.examTopic = document.getElementById('examTopic')?.value || '';
                 additional.examCount = document.getElementById('examCount')?.value || '';
                 additional.litTitle = document.getElementById('litTitle')?.value || '';
                 additional.litAuthor = document.getElementById('litAuthor')?.value || '';
             }
 
-            // Валидация для новых функций
             if ((currentActionId === 'oral_exam' && !additional.examTopic) ||
                 (currentActionId === 'lit_analysis' && (!additional.litTitle || !additional.litAuthor)) ||
                 (currentActionId === 'lit_lesson' && (!additional.litTitle || !additional.litAuthor))) {
@@ -1033,47 +1037,36 @@
                         return `Ответь на запрос воспитателя: ${data.inputText}. Будь полезен, дай практические рекомендации.${emojiInstruction}`;
                 }
             } else {
-                // Новые промпты для дополнительных функций
                 if (actionId === 'oral_exam') {
-                    return `Ты — строгий, но справедливый экзаменатор. Проведи устный экзамен по теме "${data.examTopic}". Задай ${data.examCount || '5'} вопросов разного уровня сложности (от базовых до продвинутых). После каждого вопроса дай пользователю подумать (в реальном диалоге он ответит, но сейчас просто сгенерируй вопросы и после каждого вопроса напиши в скобках ожидаемый краткий ответ). В конце экзамена подведи итоги, укажи типичные ошибки. Формат: "Вопрос 1: ... (Ответ: ...)". Используй дружелюбный тон, поддерживай.${emojiInstruction}`;
+                    return `Ты — строгий, но справедливый экзаменатор. Проведи устный экзамен по теме "${data.examTopic}". Задай ${data.examCount || '5'} вопросов разного уровня сложности (от базовых до продвинутых). После каждого вопроса напиши в скобках ожидаемый краткий ответ. В конце экзамена подведи итоги, укажи типичные ошибки. Формат: "Вопрос 1: ... (Ответ: ...)". Используй дружелюбный тон.${emojiInstruction}`;
                 }
                 if (actionId === 'lit_analysis') {
-                    return `Ты — эксперт по литературе. Дай максимально подробный, содержательный и точный анализ произведения "${data.litTitle}"${data.litAuthor ? ` (автор: ${data.litAuthor})` : ''}. Ответ должен быть похож на лучшие краткие пересказы, но с деталями, которые учителя обычно спрашивают. Включи следующие пункты (обязательно все):
-
-1. Краткая история создания (если известна).
+                    return `Ты — эксперт по литературе. Дай максимально подробный, содержательный анализ произведения "${data.litTitle}"${data.litAuthor ? ` (автор: ${data.litAuthor})` : ''}. Включи следующие пункты:
+1. Краткая история создания.
 2. Жанр произведения.
-3. Сюжет (подробно, по ключевым событиям, без лишних отступлений).
-4. Главные герои (перечисли и дай краткие, но ёмкие характеристики каждому: кто они, какие поступки совершают, что двигает ими).
-5. Основные темы и идеи (о чём книга, что хотел сказать автор, главная мысль).
-6. Проблематика (какие вопросы поднимает автор: любовь, долг, честь, справедливость, нравственный выбор и т.д.).
-
-НЕ пиши разделы "Художественные особенности" и "Значение произведения для литературы". Пиши живым, понятным языком, используй эмодзи для выделения. Старайся, чтобы ответ был не слишком длинным, но и не упускал важных деталей. Упомяни цитаты или ключевые сцены, если это важно.${emojiInstruction}`;
+3. Подробный сюжет (ключевые события).
+4. Характеристика главных героев.
+5. Основные темы и идеи.
+6. Проблематика.
+Пиши живым, понятным языком. Используй эмодзи для выделения.${emojiInstruction}`;
                 }
                 if (actionId === 'lit_lesson') {
-                    return `Ты — методист по литературе. Составь подробный план урока по произведению "${data.litTitle}"${data.litAuthor ? ` (${data.litAuthor})` : ''} для ${data.grade || 'средней школы'}. План должен включать:
-- Цели и задачи урока.
-- Актуализация знаний (3 вопроса для начала урока).
-- Анализ произведения (основные этапы разбора: сюжет, герои, темы, идеи, художественные средства).
-- Работа с текстом (чтение отрывков, вопросы на понимание).
-- Творческое задание (например, эссе, синквейн, иллюстрация).
-- Рефлексия и домашнее задание.
-Дай методические советы учителю: как заинтересовать учеников, на какие детали обратить внимание. Используй эмодзи.${emojiInstruction}`;
+                    return `Ты — методист по литературе. Составь подробный план урока по произведению "${data.litTitle}"${data.litAuthor ? ` (${data.litAuthor})` : ''} для ${data.grade || 'средней школы'}. План должен включать: цели, актуализацию (3 вопроса), анализ произведения (сюжет, герои, темы, идеи), работу с текстом, творческое задание, рефлексию и домашнее задание. Дай методические советы учителю. Используй эмодзи.${emojiInstruction}`;
                 }
-                // Старые промпты
                 const subjectInstruction = data.subject ? ` (предмет: ${data.subject})` : '';
                 const base = {
-                    solve: `Ты — эксперт по ${data.subject || 'математике, физике, химии'}. Реши подробно задачу: ${data.inputText}. Оформи решение как в школьной тетради: "Дано:", "Найти:", "Решение:" с пошаговыми пояснениями. Объясни каждый шаг, укажи формулы. Проверь ответ на ошибки.${emojiInstruction}`,
-                    summary: `Создай конспект по теме "${data.inputText}"${subjectInstruction}. Конспект должен быть структурированным: главные мысли, ключевые формулы, определения, примеры. Используй заголовки и списки.${emojiInstruction}`,
-                    schema: `Создай визуальную схему-шпаргалку по теме "${data.inputText}"${subjectInstruction}. Используй разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты. Сделай её максимально наглядной.${emojiInstruction}`,
-                    lab: `Ты — помощник по лабораторным работам (${data.subject}). Дай пошаговый план выполнения лабораторной работы на тему: ${data.inputText}. Опиши цель, оборудование, ход эксперимента, ожидаемые результаты и выводы. Если нужно, объясни теорию.${emojiInstruction}`,
-                    test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат каждого вопроса: текст вопроса, 4 варианта ответа, указание правильного ответа. В конце добавь раздел "3 главных момента" для повторения.${emojiInstruction}`,
-                    explain: `Объясни: ${data.inputText} (уровень: ${data.level}). Используй простой язык, аналогии из жизни, примеры. Постарайся, чтобы объяснение было понятным даже новичку.${emojiInstruction}`,
-                    lesson: `Составь план урока на 45 минут по теме "${data.inputText}" (${data.subject}, класс ${data.grade}). План должен включать: цель, актуализацию знаний (3 вопроса), объяснение нового материала (20 мин), практическую часть (15 мин), проверку понимания (exit ticket), домашнее задание. Добавь методические рекомендации.${emojiInstruction}`,
+                    solve: `Ты — лучший репетитор по предмету "${data.subject}". Реши подробно задачу: ${data.inputText}. Оформи решение в школьном стиле: "Дано:", "Найти:", "Решение:" с пошаговыми пояснениями. Объясни каждый шаг, укажи формулы, проверь ответ. Используй эмодзи.${emojiInstruction}`,
+                    summary: `Создай подробный конспект по теме "${data.inputText}"${subjectInstruction}. Конспект должен быть структурирован: заголовки, ключевые понятия, формулы, примеры, выводы. Используй списки и эмодзи.${emojiInstruction}`,
+                    schema: `Создай наглядную схему-шпаргалку по теме "${data.inputText}"${subjectInstruction}. Разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты. Сделай максимально полезной.${emojiInstruction}`,
+                    lab: `Ты — помощник по лабораторным работам (${data.subject}). Дай пошаговый план выполнения лабораторной работы на тему: ${data.inputText}. Опиши цель, оборудование, ход эксперимента, ожидаемые результаты и выводы. Добавь советы по безопасности.${emojiInstruction}`,
+                    test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат: вопрос, 4 варианта ответа, указание правильного ответа. В конце добавь "3 главных момента" для запоминания.${emojiInstruction}`,
+                    explain: `Объясни тему: ${data.inputText} (уровень: ${data.level}). Используй простой язык, аналогии из жизни, примеры. Постарайся, чтобы объяснение было понятно даже новичку. Добавь эмодзи.${emojiInstruction}`,
+                    lesson: `Ты — опытный учитель. Составь детальный план урока на 45 минут по теме "${data.inputText}" (${data.subject}, класс ${data.grade}). План должен включать: цель, актуализацию (3 вопроса), объяснение нового материала (с разбивкой по времени), практическую часть, проверку понимания, домашнее задание. Добавь методические рекомендации.${emojiInstruction}`,
                     tasks: `Создай ${data.count} разноуровневых заданий по теме "${data.inputText}" (${data.subject}). Для каждого задания укажи условие, ответ и краткое решение. Задания должны развивать разные навыки.${emojiInstruction}`,
                     variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи ответы.${emojiInstruction}`
                 };
-                let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}.${emojiInstruction}`;
-                promptText += " Отвечай максимально подробно, точно и полезно. Если можно, приведи формулы, численные ответы, проверь логику. Используй дружелюбный, но профессиональный тон.";
+                let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}. Подробно и полезно.${emojiInstruction}`;
+                promptText += " Отвечай максимально подробно, точно. Если есть формулы, записывай их красиво (x², √5, π). Используй профессиональный, но дружелюбный тон.";
                 return promptText;
             }
         }
