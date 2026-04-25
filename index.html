@@ -94,16 +94,13 @@
         .menu-card {
             background: var(--card);
             border-radius: 16px;
-            padding: 20px 16px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid var(--border);
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .menu-card::before {
             content: '';
@@ -118,22 +115,10 @@
         .menu-card:active { transform: scale(0.95); }
         .menu-card:hover { border-color: var(--gold); transform: translateY(-4px); }
         .menu-card .icon {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 36px;
             margin-bottom: 12px;
+            display: block;
             color: var(--gold);
-            flex-shrink: 0;
-        }
-        .menu-card .icon i {
-            font-size: 24px;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .menu-card h3 { font-size: 14px; font-weight: 600; color: var(--text); }
         .menu-card p { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
@@ -540,7 +525,7 @@
             <div id="chatMessages" class="chat-messages"></div>
             <div id="continueChatArea" style="display:none;">
                 <div class="chat-input-area">
-                    <textarea id="continueInput" placeholder="Задай уточняющий вопрос..." rows="1"
+                    <textarea id="continueInput" placeholder="Написать сообщение..." rows="1"
                         onkeydown="handleContinueKey(event)"></textarea>
                     <button class="send-btn" id="sendContinueBtn" onclick="sendContinue()">
                         <i class="fas fa-paper-plane"></i>
@@ -794,9 +779,6 @@ const systemPrompts = {
 - Пиши на русском языке`
 };
 
-// ============================================================
-//  ИНИЦИАЛИЗАЦИЯ
-// ============================================================
 function init() {
     state.telegramUser = tg?.initDataUnsafe?.user || null;
 
@@ -864,9 +846,6 @@ function openAction(actionId) {
     showPage('actionPage');
 }
 
-// ============================================================
-//  ГЕНЕРАЦИЯ ФОРМ
-// ============================================================
 function generateForm(actionId) {
     const formContainer = document.getElementById('actionForm');
 
@@ -879,7 +858,7 @@ function generateForm(actionId) {
     const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option>${g} класс</option>`).join('');
     const countOpts = [5,10,15,20].map(c => `<option>${c}</option>`).join('');
 
-    const ph = 'Напиши запрос — и я сразу отвечу';
+    const ph = 'Написать сообщение...';
 
     const ta = (id, placeholder, rows) =>
         `<div class="form-group"><label>Ваш запрос</label>
@@ -987,7 +966,6 @@ function generateForm(actionId) {
                 + btn('fas fa-paper-plane', 'Отправить');
             break;
 
-        // --- УЧИТЕЛЬ ---
         case 'lesson':
             html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
@@ -1030,7 +1008,6 @@ function generateForm(actionId) {
                 + btn('fas fa-layer-group', 'Создать разноуровневые задания');
             break;
 
-        // --- ВОСПИТАТЕЛЬ ---
         case 'lesson_plan':
             html = ta('inputText', ph)
                 + sel('ageGroup', 'Возрастная группа', `
@@ -1119,9 +1096,6 @@ function generateForm(actionId) {
     formContainer.innerHTML = html;
 }
 
-// ============================================================
-//  ОБРАБОТКА
-// ============================================================
 async function processAction() {
     if (state.isLoading) return;
 
@@ -1206,9 +1180,6 @@ function handleContinueKey(event) {
     event.target.style.height = Math.min(event.target.scrollHeight, 120) + 'px';
 }
 
-// ============================================================
-//  API GROQ СО СТРИМИНГОМ
-// ============================================================
 async function callGroqWithStream(messages, loadingId) {
     const systemMessage = {
         role: 'system',
@@ -1315,9 +1286,6 @@ function formatAIResponse(text) {
     return formatted;
 }
 
-// ============================================================
-//  СБОР ДАННЫХ ФОРМ
-// ============================================================
 function collectFormData() {
     return {
         subject:        document.getElementById('subjectSelect')?.value || '',
@@ -1368,9 +1336,6 @@ function disableForm(disabled) {
         .forEach(el => el.disabled = disabled);
 }
 
-// ============================================================
-//  ПОСТРОЕНИЕ СООБЩЕНИЙ И ПРОМПТОВ
-// ============================================================
 function buildUserMessage(actionId, inputText, data) {
     const map = {
         solve:           'Задача: ' + inputText + ' (' + data.subject + ', ' + data.grade + ')',
@@ -1734,9 +1699,6 @@ ${inputText}
     return p[actionId] || inputText;
 }
 
-// ============================================================
-//  СООБЩЕНИЯ В ЧАТЕ
-// ============================================================
 function addChatMessage(text, isUser) {
     const container = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
@@ -1800,9 +1762,6 @@ function copyToClipboard(text, btn) {
     }).catch(() => showToast('Не удалось скопировать'));
 }
 
-// ============================================================
-//  ИСТОРИЯ
-// ============================================================
 function saveToHistory(item) {
     state.history.push(item);
     if (state.history.length > 150) state.history.shift();
@@ -1869,9 +1828,6 @@ function clearHistory() {
     }
 }
 
-// ============================================================
-//  ПРОФИЛЬ И НАСТРОЙКИ
-// ============================================================
 function updateProfile() {
     const user = state.telegramUser;
     if (user) {
@@ -1915,9 +1871,6 @@ function deleteAccount() {
 function showPrivacy() { showPage('privacyPage'); }
 function showTerms()   { showPage('termsPage'); }
 
-// ============================================================
-//  НАВИГАЦИЯ
-// ============================================================
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId)?.classList.add('active');
@@ -1935,9 +1888,6 @@ function goBack() {
     state.conversationHistory = [];
 }
 
-// ============================================================
-//  ВСПОМОГАТЕЛЬНЫЕ
-// ============================================================
 function getActionName(actionId) {
     const names = {
         solve: 'Решение задачи',        explain: 'Объяснение темы',
