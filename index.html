@@ -7,6 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* (стили без изменений, они такие же как в финальной версии) */
         * {
             margin: 0;
             padding: 0;
@@ -733,7 +734,6 @@
         // ========== ВСТРОЕННЫЙ API КЛЮЧ GROQ (БЕСПЛАТНЫЙ) ==========
         const GROQ_API_KEY = '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';
         const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-        // =================================================================
 
         let userData = {
             role: null,
@@ -750,7 +750,8 @@
                 { id: 'test', icon: 'fas fa-clipboard-list', title: 'Контрольная завтра', description: 'Подготовка за 10 минут' },
                 { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' },
                 { id: 'oral_exam', icon: 'fas fa-microphone-alt', title: 'Экзаменатор', description: 'Устный опрос по теме' },
-                { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Анализ произведения', description: 'Всё о книге: герои, темы, идеи' }
+                { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Анализ произведения', description: 'Всё о книге: герои, темы, идеи' },
+                { id: 'generate_quiz', icon: 'fas fa-question-circle', title: 'Создать вопросы', description: 'По любому тексту' }
             ],
             teacher: [
                 { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек', description: 'Полный план урока' },
@@ -759,7 +760,8 @@
                 { id: 'schema', icon: 'fas fa-diagram-project', title: 'Схема для класса', description: 'Визуальный материал' },
                 { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Методика объяснения' },
                 { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' },
-                { id: 'lit_lesson', icon: 'fas fa-chalkboard', title: 'Методика урока по литературе', description: 'План разбора произведения' }
+                { id: 'lit_lesson', icon: 'fas fa-chalkboard', title: 'Методика урока по литературе', description: 'План разбора произведения' },
+                { id: 'generate_quiz', icon: 'fas fa-question-circle', title: 'Создать вопросы', description: 'Для проверки знаний' }
             ],
             kindergarten: [
                 { id: 'lesson_plan', icon: 'fas fa-child', title: 'Конспект занятия', description: 'Для любой возрастной группы (3-7 лет)' },
@@ -848,12 +850,11 @@
             showPage('actionPage');
         }
 
+        // --- Функция для обычных форм (без фото) ---
         function generateForm(actionId) {
             const formContainer = document.getElementById('actionForm');
             let html = '';
-            // Изменённый placeholder: "Введите запрос"
             const commonInput = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Введите запрос" rows="3"></textarea></div>`;
-
             const fullSubjectList = `
                 <option>Математика</option><option>Алгебра</option><option>Геометрия</option><option>Физика</option><option>Химия</option>
                 <option>Биология</option><option>Русский язык</option><option>Литература</option><option>Белорусский язык</option><option>Белорусская литература</option>
@@ -879,6 +880,14 @@
                             <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Автор"></div>
                             <div class="form-group"><label>Класс</label><select id="gradeSelect"><option>5 класс</option><option>6 класс</option><option>7 класс</option><option>8 класс</option><option>9 класс</option><option>10 класс</option><option>11 класс</option></select></div>
                             <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-chalkboard"></i> Создать план урока</button>`;
+                    break;
+                case 'generate_quiz':
+                    html = `
+                        <div class="form-group"><label>Текст (скопируйте сюда содержание параграфа, сказки, статьи)</label><textarea id="inputText" placeholder="Вставьте текст..." rows="6"></textarea></div>
+                        <div class="form-group"><label>Количество вопросов</label><select id="quizCount"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
+                        <div class="form-group"><label>Тип вопросов</label><select id="quizType"><option>Открытые (нужно написать ответ)</option><option>С вариантами ответов (тест)</option></select></div>
+                        <button class="btn btn-primary" onclick="processAction()"><i class="fas fa-question-circle"></i> Создать вопросы</button>
+                    `;
                     break;
                 case 'solve':
                 case 'summary':
@@ -957,17 +966,22 @@
                 additional.examCount = document.getElementById('examCount')?.value || '';
                 additional.litTitle = document.getElementById('litTitle')?.value || '';
                 additional.litAuthor = document.getElementById('litAuthor')?.value || '';
+                // Для генератора вопросов
+                additional.quizCount = document.getElementById('quizCount')?.value || '';
+                additional.quizType = document.getElementById('quizType')?.value || '';
             }
 
+            // Валидация
             if ((currentActionId === 'oral_exam' && !additional.examTopic) ||
                 (currentActionId === 'lit_analysis' && (!additional.litTitle || !additional.litAuthor)) ||
-                (currentActionId === 'lit_lesson' && (!additional.litTitle || !additional.litAuthor))) {
+                (currentActionId === 'lit_lesson' && (!additional.litTitle || !additional.litAuthor)) ||
+                (currentActionId === 'generate_quiz' && !inputText)) {
                 showToast('Пожалуйста, заполните все поля');
                 return;
             }
 
             if (!inputText && userData.role !== 'kindergarten' && 
-                !['oral_exam', 'lit_analysis', 'lit_lesson'].includes(currentActionId)) {
+                !['oral_exam', 'lit_analysis', 'lit_lesson', 'generate_quiz'].includes(currentActionId)) {
                 showToast('Пожалуйста, введите ваш запрос');
                 return;
             }
@@ -986,6 +1000,7 @@
                 if (currentActionId === 'oral_exam') userMessage = `Экзамен по теме "${additional.examTopic}", ${additional.examCount} вопросов`;
                 else if (currentActionId === 'lit_analysis') userMessage = `Анализ произведения "${additional.litTitle}" ${additional.litAuthor ? `(${additional.litAuthor})` : ''}`;
                 else if (currentActionId === 'lit_lesson') userMessage = `План урока по "${additional.litTitle}" ${additional.litAuthor ? `(${additional.litAuthor})` : ''}, ${additional.grade || ''}`;
+                else if (currentActionId === 'generate_quiz') userMessage = `Вопросы по тексту (${additional.quizCount} шт., тип: ${additional.quizType === 'С вариантами ответов (тест)' ? 'тест' : 'открытые'})`;
                 else userMessage = inputText || 'Запрос';
                 addChatMessage(userMessage, true);
                 addChatMessage(result, false);
@@ -1024,15 +1039,15 @@
             if (userData.role === 'kindergarten') {
                 switch(actionId) {
                     case 'lesson_plan':
-                        return `Составь подробный конспект занятия для детей ${data.ageGroup || 'дошкольного возраста'} по теме: ${data.inputText}. Тип занятия: ${data.lessonType || 'развитие'}. Включи: цель, задачи, оборудование, ход занятия (вводная часть, основная, заключительная), физкультминутку, рефлексию. Учти возрастные особенности.${emojiInstruction}`;
+                        return `Составь подробный конспект занятия для dzieci ${data.ageGroup || 'doшкольного возраста'} по теме: ${data.inputText}. Тип занятия: ${data.lessonType || 'развитие'}. Включи: цель, задачи, оборудование, ход занятия (вводная часть, основная, заключительная), физкультминутку, рефлексию. Учти возрастные особенности.${emojiInstruction}`;
                     case 'parent_advice':
                         return `Напиши консультацию для родителей на тему: ${data.adviceTopic || data.inputText}. Дай практические советы, объясни причины, приведи примеры. Тон — дружелюбный, поддерживающий.${emojiInstruction}`;
                     case 'planning':
-                        return `Составь ${data.planType || 'календарное планирование'} для детей ${data.planAge || 'дошкольного возраста'} по теме: ${data.inputText}. Опиши цели, задачи, виды деятельности (игровая, познавательная, художественная, физическая) на каждый день/неделю.${emojiInstruction}`;
+                        return `Составь ${data.planType || 'календарное планирование'} для dzieci ${data.planAge || 'doшкольного возраста'} по теме: ${data.inputText}. Опиши цели, задачи, виды деятельности (игровая, познавательная, художественная, физическая) на каждый день/неделю.${emojiInstruction}`;
                     case 'games':
-                        return `Подбери развивающие игры для детей ${data.gameAge || 'дошкольного возраста'} типа: ${data.gameType || 'развивающие'}. Тема: ${data.inputText}. Для каждой игры укажи цель, материалы, ход игры.${emojiInstruction}`;
+                        return `Подбери развивающие игры dla dzieci ${data.gameAge || 'doшкольного возраста'} типа: ${data.gameType || 'развивающие'}. Тема: ${data.inputText}. Для каждой игры укажи цель, материалы, ход игры.${emojiInstruction}`;
                     case 'holiday':
-                        return `Напиши сценарий праздника "${data.holidayType || 'праздник'}" для детей ${data.holidayAge || 'дошкольного возраста'}. Тема: ${data.inputText}. Включи: персонажей, стихи, песни, игры, сюрпризный момент.${emojiInstruction}`;
+                        return `Напиши сценарий праздника "${data.holidayType || 'праздник'}" dla dzieci ${data.holidayAge || 'doшкольного возраста'}. Тема: ${data.inputText}. Включи: персонажей, стихи, песни, игры, сюрпризный момент.${emojiInstruction}`;
                     default:
                         return `Ответь на запрос воспитателя: ${data.inputText}. Будь полезен, дай практические рекомендации.${emojiInstruction}`;
                 }
@@ -1051,7 +1066,15 @@
 Пиши живым, понятным языком. Используй эмодзи для выделения.${emojiInstruction}`;
                 }
                 if (actionId === 'lit_lesson') {
-                    return `Ты — методист по литературе. Составь подробный план урока по произведению "${data.litTitle}"${data.litAuthor ? ` (${data.litAuthor})` : ''} для ${data.grade || 'средней школы'}. План должен включать: цели, актуализацию (3 вопроса), анализ произведения (сюжет, герои, темы, идеи), работу с текстом, творческое задание, рефлексию и домашнее задание. Дай методические советы учителю. Используй эмодзи.${emojiInstruction}`;
+                    return `Ты — методист по литературе. Составь подробный план урока по произведению "${data.litTitle}"${data.litAuthor ? ` (${data.litAuthor})` : ''} dla ${data.grade || 'средней школы'}. План должен включать: цели, актуализацию (3 вопроса), анализ произведения (сюжет, герои, темы, идеи), работу с текстом, творческое задание, рефлексию и домашнее задание. Дай методические советы учителю. Используй эмодзи.${emojiInstruction}`;
+                }
+                if (actionId === 'generate_quiz') {
+                    const isMultiple = data.quizType === 'С вариантами ответов (тест)';
+                    return `Ты — опытный педагог. На основе следующего текста создай ${data.quizCount || '10'} ${isMultiple ? 'тестовых вопросов с 4 вариантами ответов (укажи правильный вариант)' : 'открытых вопросов (пользователь должен написать ответ)'}. Вопросы должны охватывать ключевые моменты текста, быть чёткими и понятными. Отвечай строго в формате, перечисляя вопросы по порядку.
+${isMultiple ? 'Для каждого вопроса после вариантов напиши "Правильный ответ: X".' : ''}
+
+Текст:
+${data.inputText}`;
                 }
                 const subjectInstruction = data.subject ? ` (предмет: ${data.subject})` : '';
                 const base = {
@@ -1059,14 +1082,14 @@
                     summary: `Создай подробный конспект по теме "${data.inputText}"${subjectInstruction}. Конспект должен быть структурирован: заголовки, ключевые понятия, формулы, примеры, выводы. Используй списки и эмодзи.${emojiInstruction}`,
                     schema: `Создай наглядную схему-шпаргалку по теме "${data.inputText}"${subjectInstruction}. Разделы: 🔹 Основные понятия, 📐 Формулы, 💡 Примеры, ⚠️ Важные моменты. Сделай максимально полезной.${emojiInstruction}`,
                     lab: `Ты — помощник по лабораторным работам (${data.subject}). Дай пошаговый план выполнения лабораторной работы на тему: ${data.inputText}. Опиши цель, оборудование, ход эксперимента, ожидаемые результаты и выводы. Добавь советы по безопасности.${emojiInstruction}`,
-                    test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат: вопрос, 4 варианта ответа, указание правильного ответа. В конце добавь "3 главных момента" для запоминания.${emojiInstruction}`,
+                    test: `Создай тест из 10 вопросов по теме "${data.inputText}" (${data.subject}, уровень ${data.level}). Формат: вопрос, 4 варианта ответа, указание правильного ответа. В конце добавь "3 главных момента" dla запоминания.${emojiInstruction}`,
                     explain: `Объясни тему: ${data.inputText} (уровень: ${data.level}). Используй простой язык, аналогии из жизни, примеры. Постарайся, чтобы объяснение было понятно даже новичку. Добавь эмодзи.${emojiInstruction}`,
                     lesson: `Ты — опытный учитель. Составь детальный план урока на 45 минут по теме "${data.inputText}" (${data.subject}, класс ${data.grade}). План должен включать: цель, актуализацию (3 вопроса), объяснение нового материала (с разбивкой по времени), практическую часть, проверку понимания, домашнее задание. Добавь методические рекомендации.${emojiInstruction}`,
                     tasks: `Создай ${data.count} разноуровневых заданий по теме "${data.inputText}" (${data.subject}). Для каждого задания укажи условие, ответ и краткое решение. Задания должны развивать разные навыки.${emojiInstruction}`,
-                    variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи ответы.${emojiInstruction}`
+                    variants: `Создай ${data.count} варианта контрольной работы по теме "${data.inputText}" (${data.subject}). Каждый вариант содержит 5-7 заданий одинаковой сложности. Для каждого варианта приведи odpowiedzi.${emojiInstruction}`
                 };
                 let promptText = base[actionId] || `Ответь на запрос: ${data.inputText}. Подробно и полезно.${emojiInstruction}`;
-                promptText += " Отвечай максимально подробно, точно. Если есть формулы, записывай их красиво (x², √5, π). Используй профессиональный, но дружелюбный тон.";
+                promptText += " Отвечай максимально подробно, точно. Jeśli есть формулы, записывай их красиво (x², √5, π). Используй профессиональный, но дружелюбный тон.";
                 return promptText;
             }
         }
@@ -1127,6 +1150,7 @@
             document.getElementById('profileRole').textContent = roleText;
         }
 
+        // Вспомогательные функции (история, навигация, сохранение) – без изменений
         function showHistory() {
             const historyList = document.getElementById('historyList');
             if (userData.history.length === 0) {
@@ -1180,7 +1204,7 @@
                 solve: 'Решение', summary: 'Конспект', schema: 'Схема', lab: 'Лабораторная', test: 'Тест', explain: 'Объяснение',
                 lesson: 'План урока', tasks: 'Задания', variants: 'Варианты',
                 lesson_plan: 'Конспект занятия', parent_advice: 'Консультация', planning: 'Планирование', games: 'Игры', holiday: 'Сценарий',
-                oral_exam: 'Экзамен', lit_analysis: 'Анализ произведения', lit_lesson: 'Урок литературы'
+                oral_exam: 'Экзамен', lit_analysis: 'Анализ произведения', lit_lesson: 'Урок литературы', generate_quiz: 'Генератор вопросов'
             };
             return names[actionId] || 'Запрос';
         }
