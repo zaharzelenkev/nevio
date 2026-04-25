@@ -63,7 +63,6 @@
         }
         .header p { color: var(--text-secondary); font-size: 14px; }
 
-        /* ===== РОЛЬ ===== */
         .role-selection { text-align: center; padding: 40px 20px; }
         .role-selection h2 { font-size: 24px; margin-bottom: 12px; }
         .role-selection > p { color: var(--text-secondary); margin-bottom: 32px; }
@@ -86,7 +85,6 @@
         .role-btn h3 { font-size: 20px; margin-bottom: 8px; }
         .role-btn p { color: var(--text-secondary); font-size: 14px; }
 
-        /* ===== МЕНЮ ===== */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -120,7 +118,6 @@
         .menu-card h3 { font-size: 14px; font-weight: 600; color: var(--text); }
         .menu-card p { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
 
-        /* ===== ДЕЙСТВИЕ / ЧАТ ===== */
         .action-container { max-width: 600px; margin: 0 auto; }
         .back-btn {
             display: inline-flex;
@@ -200,15 +197,8 @@
             box-shadow: 0 4px 12px rgba(232,177,62,0.3);
         }
         .btn-secondary { background: var(--border); color: var(--text); }
-        .btn-danger { background: #dc2626; color: white; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-        .btn-sm {
-            width: auto;
-            padding: 8px 16px;
-            font-size: 13px;
-        }
 
-        /* ===== ЧАТ СООБЩЕНИЯ ===== */
         .chat-messages {
             margin-top: 20px;
             display: flex;
@@ -244,7 +234,6 @@
             padding: 0 4px;
         }
 
-        /* ===== СТРИМИНГ КУРСОР ===== */
         .streaming-cursor {
             display: inline-block;
             width: 2px;
@@ -259,7 +248,6 @@
             50% { opacity: 0; }
         }
 
-        /* ===== ЗАГРУЗКА ===== */
         .loading-dots {
             display: flex;
             gap: 6px;
@@ -285,7 +273,6 @@
             margin-left: 8px;
         }
 
-        /* ===== ДИАЛОГ (продолжение чата) ===== */
         .chat-input-area {
             display: flex;
             gap: 8px;
@@ -319,7 +306,6 @@
         .send-btn:hover { transform: scale(1.1); }
         .send-btn:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
 
-        /* ===== ПРОФИЛЬ ===== */
         .profile-section {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 16px;
@@ -354,7 +340,6 @@
             font-weight: 600;
         }
 
-        /* ===== НАСТРОЙКИ ===== */
         .settings-list {
             background: var(--card);
             border-radius: 16px;
@@ -388,7 +373,6 @@
         .settings-item-text p { font-size: 13px; color: var(--text-secondary); }
         .settings-item-right { color: var(--text-muted); }
 
-        /* ===== ИСТОРИЯ ===== */
         .history-item {
             background: var(--surface);
             border-radius: 12px;
@@ -412,7 +396,6 @@
             -webkit-box-orient: vertical;
         }
 
-        /* ===== НАВБАР ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -437,7 +420,6 @@
         .nav-item .icon { font-size: 22px; margin-bottom: 3px; }
         .nav-item span { display: block; font-size: 11px; font-weight: 500; }
 
-        /* ===== ПРОЧЕЕ ===== */
         .empty-state { text-align: center; padding: 60px 20px; }
         .empty-state .icon { font-size: 56px; margin-bottom: 16px; opacity: 0.25; color: var(--gold); }
         .empty-state h3 { color: var(--text-secondary); margin-bottom: 8px; }
@@ -461,31 +443,7 @@
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* ===== БЕЙДЖИ ===== */
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 600;
-            background: rgba(232,177,62,0.15);
-            color: var(--gold);
-            margin-left: 8px;
-        }
-
-        /* ===== ФОРМАТИРОВАНИЕ ОТВЕТА ===== */
-        .ai-content h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--gold);
-            margin: 12px 0 6px;
-        }
         .ai-content p { margin-bottom: 8px; }
-        .ai-content ul, .ai-content ol {
-            padding-left: 20px;
-            margin-bottom: 8px;
-        }
-        .ai-content li { margin-bottom: 4px; }
         .ai-content strong { color: var(--gold); }
         .ai-content code {
             background: var(--border);
@@ -494,21 +452,7 @@
             font-family: monospace;
             font-size: 13px;
         }
-        .ai-content hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 12px 0;
-        }
 
-        /* Счётчик токенов */
-        .token-info {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-align: right;
-            margin-top: 6px;
-        }
-
-        /* Кнопка копирования */
         .copy-btn {
             display: inline-flex;
             align-items: center;
@@ -516,7 +460,7 @@
             font-size: 12px;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
             border: 1px solid var(--border);
             background: transparent;
@@ -528,7 +472,7 @@
 </head>
 <body>
 
-<!-- СТРАНИЦА ВЫБОРА РОЛИ -->
+<!-- ВЫБОР РОЛИ -->
 <div class="page active" id="roleSelectionPage">
     <div class="role-selection">
         <h2>Добро пожаловать в NEVIO</h2>
@@ -537,32 +481,32 @@
             <div class="role-btn" onclick="selectRole('student')">
                 <div class="icon"><i class="fas fa-graduation-cap"></i></div>
                 <h3>Ученик</h3>
-                <p>Решение задач, конспекты, подготовка к экзаменам</p>
+                <p>Решение задач, конспекты, подготовка к контрольным</p>
             </div>
             <div class="role-btn" onclick="selectRole('teacher')">
                 <div class="icon"><i class="fas fa-chalkboard-user"></i></div>
                 <h3>Учитель</h3>
-                <p>Планы уроков, задания, контрольные работы</p>
+                <p>Генерация заданий, планы уроков, материалы для класса</p>
             </div>
             <div class="role-btn" onclick="selectRole('kindergarten')">
                 <div class="icon"><i class="fas fa-child"></i></div>
                 <h3>Воспитатель</h3>
-                <p>Конспекты занятий, планирование, сценарии праздников</p>
+                <p>Конспекты занятий, консультации для родителей, планирование, игры, сценарии</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ГЛАВНАЯ СТРАНИЦА -->
+<!-- ГЛАВНАЯ -->
 <div class="page" id="mainPage">
     <div class="header">
         <h1>NEVIO</h1>
-        <p id="mainSubtitle">Твой умный помощник</p>
+        <p>Твой умный помощник в учёбе</p>
     </div>
     <div class="menu-grid" id="menuGrid"></div>
 </div>
 
-<!-- СТРАНИЦА ДЕЙСТВИЯ -->
+<!-- ДЕЙСТВИЕ -->
 <div class="page" id="actionPage">
     <div class="action-container">
         <div class="back-btn" onclick="goBack()">
@@ -574,7 +518,6 @@
             <p id="actionDescription"></p>
             <div id="actionForm"></div>
             <div id="chatMessages" class="chat-messages"></div>
-            <!-- Поле для продолжения диалога (появляется после первого ответа) -->
             <div id="continueChatArea" style="display:none;">
                 <div class="chat-input-area">
                     <textarea id="continueInput" placeholder="Задай уточняющий вопрос..." rows="1"
@@ -606,7 +549,7 @@
                     <div class="settings-item-icon"><i class="fas fa-history"></i></div>
                     <div class="settings-item-text">
                         <h4>История запросов</h4>
-                        <p>Все предыдущие запросы</p>
+                        <p>Посмотреть все предыдущие запросы</p>
                     </div>
                 </div>
                 <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
@@ -652,12 +595,12 @@
             </div>
             <div class="settings-item" onclick="deleteAccount()">
                 <div class="settings-item-left">
-                    <div class="settings-item-icon" style="background:#2a0a0a; color:#f87171;">
+                    <div class="settings-item-icon" style="background:#1a0a0a; color:#f87171;">
                         <i class="fas fa-user-slash"></i>
                     </div>
                     <div class="settings-item-text">
-                        <h4 style="color:#f87171;">Сменить роль</h4>
-                        <p>Удалить все данные и начать заново</p>
+                        <h4 style="color:#f87171;">Удалить аккаунт</h4>
+                        <p>Удалить все данные и сменить роль</p>
                     </div>
                 </div>
             </div>
@@ -689,9 +632,10 @@
             <h2><i class="fas fa-shield-alt"></i> Политика конфиденциальности</h2>
             <div style="line-height:1.7; color:var(--text); font-size:14px;">
                 <p><strong>1. Сбор данных</strong><br>NEVIO не собирает и не хранит ваши личные данные на серверах. Вся история хранится только на вашем устройстве.</p>
-                <p style="margin-top:12px;"><strong>2. Запросы к ИИ</strong><br>Ваши запросы передаются в ИИ через защищённое соединение для генерации ответов. Содержимое диалогов не сохраняется на наших серверах.</p>
-                <p style="margin-top:12px;"><strong>3. Telegram</strong><br>Используется только имя и фото профиля для персонализации. Никакие данные не передаются третьим лицам.</p>
-                <p style="margin-top:12px;"><strong>4. Ваши права</strong><br>Вы можете в любой момент очистить историю или сменить роль через настройки.</p>
+                <p style="margin-top:12px;"><strong>2. Обработка запросов</strong><br>Ваши запросы передаются анонимно в искусственный интеллект для генерации ответов. Мы не сохраняем содержимое ваших диалогов на своих серверах.</p>
+                <p style="margin-top:12px;"><strong>3. Telegram</strong><br>Приложение интегрируется с Telegram только для отображения вашего профиля (имя, фото). Никакие данные не передаются разработчику.</p>
+                <p style="margin-top:12px;"><strong>4. Ваши права</strong><br>Вы можете в любой момент очистить историю или удалить аккаунт через настройки. Все данные будут безвозвратно удалены с вашего устройства.</p>
+                <p style="margin-top:12px;"><strong>5. Контакты</strong><br>По вопросам конфиденциальности вы можете обратиться через поддержку Telegram-бота.</p>
             </div>
         </div>
     </div>
@@ -706,10 +650,11 @@
         <div class="card">
             <h2><i class="fas fa-file-contract"></i> Условия использования</h2>
             <div style="line-height:1.7; color:var(--text); font-size:14px;">
-                <p><strong>1. Принятие условий</strong><br>Используя NEVIO, вы соглашаетесь с данными условиями.</p>
-                <p style="margin-top:12px;"><strong>2. Ответственность</strong><br>NEVIO предоставляет ответы на основе ИИ. Всегда проверяйте критически важную информацию самостоятельно.</p>
-                <p style="margin-top:12px;"><strong>3. Ограничения</strong><br>Запрещается использовать приложение для незаконных действий, распространения вредоносного контента.</p>
-                <p style="margin-top:12px;"><strong>4. Изменения</strong><br>Условия могут обновляться. Продолжение использования означает принятие новых условий.</p>
+                <p><strong>1. Принимая условия</strong><br>Используя NEVIO, вы соглашаетесь с данными условиями.</p>
+                <p style="margin-top:12px;"><strong>2. Ответственность</strong><br>NEVIO предоставляет информацию на основе искусственного интеллекта. Мы не несём ответственности за возможные ошибки в ответах. Всегда проверяйте критически важную информацию.</p>
+                <p style="margin-top:12px;"><strong>3. Ограничение использования</strong><br>Запрещается использовать приложение для незаконных действий, спама, оскорблений.</p>
+                <p style="margin-top:12px;"><strong>4. Изменения</strong><br>Мы можем обновлять условия в любое время. Продолжение использования означает принятие новых условий.</p>
+                <p style="margin-top:12px;"><strong>5. Контакты</strong><br>По вопросам вы можете обратиться через поддержку Telegram-бота.</p>
             </div>
         </div>
     </div>
@@ -734,144 +679,98 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-//  NEVIO — УМНЫЙ ОБРАЗОВАТЕЛЬНЫЙ ИИ
-//  Версия 2.0 — с диалогом, стримингом и умными промптами
-// ============================================================
-
 const tg = window.Telegram?.WebApp;
 if (tg) {
     tg.expand();
     tg.enableClosingConfirmation();
 }
 
-// ⚠️ ВАЖНО: Замени на свой ключ с groq.com (бесплатно)
-// Получи ключ: https://console.groq.com/keys
 const GROQ_API_KEY = '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';
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL = 'llama-3.3-70b-versatile';
 
-// ============================================================
-//  СОСТОЯНИЕ ПРИЛОЖЕНИЯ
-// ============================================================
 let state = {
     role: null,
     telegramUser: null,
     history: [],
-    // Диалоговая история текущего чата
     conversationHistory: [],
     currentActionId: null,
-    isLoading: false,
-    currentPage: 'mainPage'
+    isLoading: false
 };
 
-// ============================================================
-//  КОНФИГУРАЦИЯ МЕНЮ
-// ============================================================
 const menuConfigs = {
     student: [
-        { id: 'solve',       icon: 'fas fa-calculator',      title: '🧮 Решить задачу',        description: 'С полным объяснением шагов' },
-        { id: 'explain',     icon: 'fas fa-lightbulb',       title: '💡 Объяснить тему',       description: 'Простыми словами + примеры' },
-        { id: 'summary',     icon: 'fas fa-book',            title: '📝 Конспект',             description: 'Структурированный конспект' },
-        { id: 'schema',      icon: 'fas fa-diagram-project', title: '🗺️ Схема-шпаргалка',     description: 'Визуальная структура темы' },
-        { id: 'test',        icon: 'fas fa-clipboard-list',  title: '📋 Подготовка к тесту',   description: 'Экспресс-подготовка за 10 мин' },
-        { id: 'oral_exam',   icon: 'fas fa-microphone-alt',  title: '🎤 Экзаменатор',          description: 'Устный опрос по теме' },
-        { id: 'lab',         icon: 'fas fa-flask',           title: '🔬 Лабораторная',         description: 'Пошаговый разбор опыта' },
-        { id: 'lit_analysis',icon: 'fas fa-book-open',       title: '📖 Анализ произведения',  description: 'Полный литературный разбор' },
-        { id: 'generate_quiz',icon:'fas fa-question-circle', title: '❓ Вопросы по тексту',    description: 'Создать тест из любого текста' },
-        { id: 'essay',       icon: 'fas fa-pen-fancy',       title: '✍️ Помощь с сочинением',  description: 'План, аргументы, вступление' },
-        { id: 'chat',        icon: 'fas fa-comments',        title: '💬 Свободный чат',        description: 'Спроси что угодно' }
+        { id: 'solve',        icon: 'fas fa-calculator',      title: 'Решить задачу',         description: 'С полным объяснением шагов' },
+        { id: 'explain',      icon: 'fas fa-lightbulb',       title: 'Объяснить тему',        description: 'Простыми словами с примерами' },
+        { id: 'summary',      icon: 'fas fa-book',            title: 'Написать конспект',     description: 'Структурированный конспект' },
+        { id: 'schema',       icon: 'fas fa-diagram-project', title: 'Сделать схему',         description: 'Визуальная шпаргалка' },
+        { id: 'test',         icon: 'fas fa-clipboard-list',  title: 'Контрольная завтра',    description: 'Подготовка за 10 минут' },
+        { id: 'oral_exam',    icon: 'fas fa-microphone-alt',  title: 'Экзаменатор',           description: 'Устный опрос по теме' },
+        { id: 'lab',          icon: 'fas fa-flask',           title: 'Помощь с лабораторной', description: 'Пошаговый разбор опыта' },
+        { id: 'lit_analysis', icon: 'fas fa-book-open',       title: 'Анализ произведения',   description: 'Всё о книге: герои, темы, идеи' },
+        { id: 'essay',        icon: 'fas fa-pen-fancy',       title: 'Помощь с сочинением',   description: 'План, аргументы, вступление' },
+        { id: 'generate_quiz',icon: 'fas fa-question-circle', title: 'Создать вопросы',       description: 'По любому тексту' },
+        { id: 'chat',         icon: 'fas fa-comments',        title: 'Свободный чат',         description: 'Спроси что угодно' }
     ],
     teacher: [
-        { id: 'lesson',      icon: 'fas fa-chalkboard-user', title: '📚 План урока',           description: 'Полный план за 30 секунд' },
-        { id: 'tasks',       icon: 'fas fa-tasks',           title: '✏️ Генератор заданий',    description: 'Уникальные задачи по теме' },
-        { id: 'variants',    icon: 'fas fa-copy',            title: '📄 Контрольная',          description: 'A/B варианты с ответами' },
-        { id: 'explain',     icon: 'fas fa-lightbulb',       title: '💡 Методика объяснения',  description: 'Как объяснить тему классу' },
-        { id: 'schema',      icon: 'fas fa-diagram-project', title: '🗺️ Схема для класса',    description: 'Наглядный материал' },
-        { id: 'summary',     icon: 'fas fa-book',            title: '📝 Конспект урока',       description: 'Структура материала' },
-        { id: 'lit_lesson',  icon: 'fas fa-chalkboard',      title: '📖 Урок литературы',      description: 'Методика разбора произведения' },
-        { id: 'generate_quiz',icon:'fas fa-question-circle', title: '❓ Создать тест',         description: 'Для проверки знаний' },
-        { id: 'differentiation', icon:'fas fa-layer-group',  title: '🎯 Дифференциация',       description: 'Задания для разных уровней' },
-        { id: 'chat',        icon: 'fas fa-comments',        title: '💬 Консультация',         description: 'Педагогический совет от ИИ' }
+        { id: 'lesson',          icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек',          description: 'Полный план урока' },
+        { id: 'tasks',           icon: 'fas fa-tasks',           title: 'Генератор заданий',        description: 'Уникальные задачи по теме' },
+        { id: 'variants',        icon: 'fas fa-copy',            title: 'Варианты контрольной',     description: 'A/B варианты с ответами' },
+        { id: 'explain',         icon: 'fas fa-lightbulb',       title: 'Методика объяснения',      description: 'Как объяснить тему классу' },
+        { id: 'schema',          icon: 'fas fa-diagram-project', title: 'Схема для класса',         description: 'Визуальный материал' },
+        { id: 'summary',         icon: 'fas fa-book',            title: 'Конспект урока',           description: 'Структура материала' },
+        { id: 'lit_lesson',      icon: 'fas fa-chalkboard',      title: 'Урок литературы',          description: 'Методика разбора произведения' },
+        { id: 'generate_quiz',   icon: 'fas fa-question-circle', title: 'Создать тест',             description: 'Для проверки знаний' },
+        { id: 'differentiation', icon: 'fas fa-layer-group',     title: 'Дифференциация',           description: 'Задания для разных уровней' },
+        { id: 'chat',            icon: 'fas fa-comments',        title: 'Педагогическая консультация', description: 'Совет от ИИ' }
     ],
     kindergarten: [
-        { id: 'lesson_plan', icon: 'fas fa-child',           title: '🎨 Конспект занятия',     description: 'Для возраста 3-7 лет' },
-        { id: 'parent_advice',icon:'fas fa-heart',           title: '💝 Консультация родителям',description: 'Кризисы, поведение, развитие' },
-        { id: 'planning',    icon: 'fas fa-calendar-alt',    title: '📅 Планирование',         description: 'Недельное и месячное' },
-        { id: 'games',       icon: 'fas fa-puzzle-piece',    title: '🧩 Игры и развитие',      description: 'По возрасту и теме' },
-        { id: 'holiday',     icon: 'fas fa-birthday-cake',   title: '🎉 Сценарий праздника',   description: 'Утренники и мероприятия' },
-        { id: 'observation', icon: 'fas fa-eye',             title: '👁️ Наблюдение за ребёнком',description: 'Анализ развития и поведения' },
-        { id: 'chat',        icon: 'fas fa-comments',        title: '💬 Свободный вопрос',     description: 'Спросить совет у ИИ' }
+        { id: 'lesson_plan',  icon: 'fas fa-child',          title: 'Конспект занятия',          description: 'Для любой возрастной группы' },
+        { id: 'parent_advice',icon: 'fas fa-heart',          title: 'Консультация для родителей', description: 'Кризисы, развитие, поведение' },
+        { id: 'planning',     icon: 'fas fa-calendar-alt',   title: 'Планирование',              description: 'Перспективное и календарное' },
+        { id: 'games',        icon: 'fas fa-puzzle-piece',   title: 'Игры и развитие',           description: 'Развивающие игры по возрасту' },
+        { id: 'holiday',      icon: 'fas fa-birthday-cake',  title: 'Сценарии праздников',       description: 'Утренники и мероприятия' },
+        { id: 'observation',  icon: 'fas fa-eye',            title: 'Наблюдение за ребёнком',    description: 'Анализ развития и поведения' },
+        { id: 'chat',         icon: 'fas fa-comments',       title: 'Свободный вопрос',          description: 'Спросить совет у ИИ' }
     ]
 };
 
-// ============================================================
-//  СИСТЕМНЫЕ ПРОМПТЫ ДЛЯ КАЖДОЙ РОЛИ
-// ============================================================
 const systemPrompts = {
-    student: `Ты — NEVIO, умный образовательный ИИ-ассистент для учеников.
+    student: `Ты — NEVIO, умный образовательный ассистент для учеников.
 
-ТВОЯ ЛИЧНОСТЬ:
-- Ты как лучший репетитор и друг, который всегда готов помочь
-- Объясняешь сложное простыми словами
-- Никогда не осуждаешь за незнание
-- Поощряешь и мотивируешь ученика
+Твоя задача — помогать ученикам понимать материал, решать задачи и готовиться к контрольным.
 
-ПРАВИЛА ОТВЕТОВ:
-- Используй эмодзи для структурирования (📌 ✅ 🔹 💡 📐 ⚠️ 🎯)
-- Давай ПОДРОБНЫЕ ответы с примерами
-- Всегда объясняй ПОЧЕМУ, а не только КАК
-- Если задача — показывай каждый шаг
-- Используй аналогии из реальной жизни
-- В конце предлагай проверочный вопрос или совет
+Правила:
+- Объясняй сложное простыми словами
+- Показывай каждый шаг решения
+- Приводи примеры из реальной жизни
+- Поощряй и мотивируй
+- Никогда не осуждай за незнание
+- В конце предлагай проверочный вопрос
 - Пиши на русском языке
-
-ФОРМАТИРОВАНИЕ:
-- Заголовки выделяй эмодзи
-- Важные термины — выдели
-- Формулы пиши красиво: x², √5, π, ≠, ≤, ≥
-- Разбивай на абзацы для читаемости`,
+- Формулы: x², √5, π, ≠, ≤, ≥`,
 
     teacher: `Ты — NEVIO, профессиональный педагогический ассистент для учителей.
 
-ТВОЯ ЛИЧНОСТЬ:
-- Ты как опытный методист с 20-летним стажем
-- Знаешь ФГОС и современные педагогические технологии
-- Помогаешь создавать качественные учебные материалы
-- Уважаешь время учителя — даёшь готовые решения
+Твоя задача — помогать создавать качественные учебные материалы и планы уроков.
 
-ПРАВИЛА ОТВЕТОВ:
-- Используй педагогическую терминологию правильно
+Правила:
 - Давай структурированные, готовые к использованию материалы
 - Учитывай возрастные особенности учеников
 - Предлагай дифференцированный подход
 - Включай методические рекомендации
-
-ФОРМАТИРОВАНИЕ:
-- Чёткая структура с заголовками
-- Временные рамки для этапов урока
-- Эмодзи для наглядности
+- Соблюдай педагогическую терминологию
 - Пиши на русском языке`,
 
     kindergarten: `Ты — NEVIO, профессиональный ассистент для воспитателей детского сада.
 
-ТВОЯ ЛИЧНОСТЬ:
-- Ты как опытный методист дошкольного образования
-- Знаешь ФГОС ДО, возрастную психологию и педагогику
-- Создаёшь тёплые, игровые, развивающие материалы
-- Понимаешь специфику работы с детьми 3-7 лет
+Твоя задача — помогать создавать развивающие материалы для детей 3-7 лет.
 
-ПРАВИЛА ОТВЕТОВ:
-- Учитывай возрастные особенности (ведущая деятельность — игра!)
+Правила:
+- Учитывай возрастные особенности (ведущая деятельность — игра)
 - Включай здоровьесберегающие технологии
-- Предлагай практические, реализуемые идеи
+- Предлагай практические реализуемые идеи
 - Используй принцип интеграции образовательных областей
-- Помни про принцип сезонности и тематического планирования
-
-ФОРМАТИРОВАНИЕ:
-- Структурированные конспекты
-- Яркие, тёплые эмодзи (🌟 🎨 🌈 🧸 🌺)
-- Чёткие этапы занятия
 - Пиши на русском языке`
 };
 
@@ -887,9 +786,7 @@ function init() {
             const parsed = JSON.parse(saved);
             state.role = parsed.role;
             state.history = parsed.history || [];
-        } catch(e) {
-            console.warn('Ошибка загрузки данных');
-        }
+        } catch(e) {}
     }
 
     const savedTheme = localStorage.getItem('nevioTheme');
@@ -908,31 +805,17 @@ function init() {
     updateProfile();
 }
 
-// ============================================================
-//  ВЫБОР РОЛИ
-// ============================================================
 function selectRole(role) {
     state.role = role;
     state.history = [];
     saveData();
     loadMainMenu();
     showPage('mainPage');
-
-    const names = { student: 'ученика 🎓', teacher: 'учителя 👨‍🏫', kindergarten: 'воспитателя 🌟' };
-    showToast(`Режим ${names[role]} активирован`);
+    const names = { student: 'ученика', teacher: 'учителя', kindergarten: 'воспитателя' };
+    showToast('Режим ' + names[role] + ' активирован');
 }
 
-// ============================================================
-//  ЗАГРУЗКА МЕНЮ
-// ============================================================
 function loadMainMenu() {
-    const subtitles = {
-        student: '🎓 Режим ученика',
-        teacher: '👨‍🏫 Режим учителя',
-        kindergarten: '🌟 Режим воспитателя'
-    };
-    document.getElementById('mainSubtitle').textContent = subtitles[state.role] || 'Твой умный помощник';
-
     const menuGrid = document.getElementById('menuGrid');
     const items = menuConfigs[state.role];
     menuGrid.innerHTML = items.map(item => `
@@ -944,9 +827,6 @@ function loadMainMenu() {
     `).join('');
 }
 
-// ============================================================
-//  ОТКРЫТИЕ ДЕЙСТВИЯ
-// ============================================================
 function openAction(actionId) {
     const config = menuConfigs[state.role].find(m => m.id === actionId);
     if (!config) return;
@@ -969,41 +849,43 @@ function openAction(actionId) {
 // ============================================================
 function generateForm(actionId) {
     const formContainer = document.getElementById('actionForm');
+
     const subjects = ['Математика','Алгебра','Геометрия','Физика','Химия','Биология',
         'Русский язык','Литература','Белорусский язык','Белорусская литература',
         'История','Обществознание','География','Информатика',
         'Английский язык','Немецкий язык','Французский язык','ОБЖ',
-        'Астрonomия','Экономика','Право','Технология'];
-
+        'Астрономия','Экономика','Право','Технология'];
     const subjectOpts = subjects.map(s => `<option>${s}</option>`).join('');
     const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option>${g} класс</option>`).join('');
     const countOpts = [5,10,15,20].map(c => `<option>${c}</option>`).join('');
 
-    const textArea = (id, placeholder, rows=3) =>
-        `<div class="form-group"><label>Ваш запрос</label>
-         <textarea id="${id}" placeholder="${placeholder}" rows="${rows}"></textarea></div>`;
+    const universalPlaceholder = 'Опишите запрос подробнее — чем точнее вы напишете, тем лучше ответит ИИ';
 
-    const select = (id, label, options) =>
+    const textArea = (id, placeholder, rows) =>
+        `<div class="form-group"><label>Ваш запрос</label>
+         <textarea id="${id}" placeholder="${placeholder || universalPlaceholder}" rows="${rows || 3}"></textarea></div>`;
+
+    const sel = (id, label, options) =>
         `<div class="form-group"><label>${label}</label><select id="${id}">${options}</select></div>`;
 
-    const submitBtn = (icon, text, fn='processAction()') =>
-        `<button class="btn btn-primary" onclick="${fn}"><i class="${icon}"></i> ${text}</button>`;
+    const submitBtn = (icon, text) =>
+        `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
 
     let html = '';
 
     switch(actionId) {
 
         case 'solve':
-            html = textArea('inputText', 'Например: Решить уравнение x² - 5x + 6 = 0\nИли: Задача о поезде...', 4)
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('gradeSelect', 'Класс', gradeOpts)
+            html = textArea('inputText', 'Например: x² - 5x + 6 = 0, или задача про поезда — опишите всё условие')
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-calculator', 'Решить с объяснением');
             break;
 
         case 'explain':
-            html = textArea('inputText', 'Например: Производная функции\nИли: Второй закон Ньютона')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('levelSelect', 'Объяснить как...', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('levelSelect', 'Объяснить как...', `
                     <option>Для новичка (максимально просто)</option>
                     <option>Обычное объяснение</option>
                     <option>Подробно с доказательствами</option>`)
@@ -1011,68 +893,68 @@ function generateForm(actionId) {
             break;
 
         case 'summary':
-            html = textArea('inputText', 'Тема конспекта, например: Квадратные уравнения')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('gradeSelect', 'Класс', gradeOpts)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-book', 'Создать конспект');
             break;
 
         case 'schema':
-            html = textArea('inputText', 'Тема для схемы-шпаргалки')
-                + select('subjectSelect', 'Предмет', subjectOpts)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
                 + submitBtn('fas fa-diagram-project', 'Создать схему');
             break;
 
         case 'test':
-            html = textArea('inputText', 'Тема для подготовки, например: Тригонометрические уравнения')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('levelSelect', 'Уровень сложности', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('levelSelect', 'Уровень сложности', `
                     <option>Базовый</option><option>Средний</option><option>Продвинутый</option>`)
-                + select('gradeSelect', 'Класс', gradeOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-clipboard-list', 'Начать подготовку');
             break;
 
         case 'oral_exam':
             html = `<div class="form-group"><label>Тема для опроса</label>
-                    <input type="text" id="examTopic" placeholder="Например: Теорема Пифагора"></div>`
-                + select('examCount', 'Количество вопросов', `<option>3</option><option>5</option><option>7</option><option>10</option>`)
-                + select('gradeSelect', 'Класс', gradeOpts)
+                    <input type="text" id="examTopic" placeholder="${universalPlaceholder}"></div>`
+                + sel('examCount', 'Количество вопросов', `<option>3</option><option>5</option><option>7</option><option>10</option>`)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-microphone-alt', 'Начать экзамен');
             break;
 
         case 'lab':
-            html = textArea('inputText', 'Тема лабораторной работы')
-                + select('subjectSelect', 'Предмет', `<option>Физика</option><option>Химия</option><option>Биология</option>`)
-                + select('gradeSelect', 'Класс', gradeOpts)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', `<option>Физика</option><option>Химия</option><option>Биология</option>`)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-flask', 'Помочь с лабораторной');
             break;
 
         case 'lit_analysis':
             html = `<div class="form-group"><label>Название произведения</label>
-                    <input type="text" id="litTitle" placeholder="Например: Мастер и Маргарита"></div>
+                    <input type="text" id="litTitle" placeholder="${universalPlaceholder}"></div>
                     <div class="form-group"><label>Автор</label>
-                    <input type="text" id="litAuthor" placeholder="Михаил Булгаков"></div>`
-                + select('gradeSelect', 'Класс', gradeOpts)
+                    <input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-book-open', 'Проанализировать');
             break;
 
         case 'essay':
-            html = textArea('inputText', 'Тема сочинения, например: Тема маленького человека в литературе')
-                + select('essayType', 'Тип помощи', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('essayType', 'Тип помощи', `
                     <option>Составить план</option>
                     <option>Написать вступление</option>
                     <option>Подобрать аргументы и цитаты</option>
                     <option>Написать заключение</option>
                     <option>Полный анализ темы</option>`)
-                + select('gradeSelect', 'Класс', gradeOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-pen-fancy', 'Помочь с сочинением');
             break;
 
         case 'generate_quiz':
             html = `<div class="form-group"><label>Текст (параграф, статья, условие)</label>
-                    <textarea id="inputText" placeholder="Вставьте текст сюда..." rows="6"></textarea></div>`
-                + select('quizCount', 'Количество вопросов', countOpts)
-                + select('quizType', 'Тип вопросов', `
+                    <textarea id="inputText" placeholder="Вставьте текст — ИИ создаст вопросы по его содержанию" rows="6"></textarea></div>`
+                + sel('quizCount', 'Количество вопросов', countOpts)
+                + sel('quizType', 'Тип вопросов', `
                     <option>Открытые (написать ответ)</option>
                     <option>Тест с вариантами (A/B/C/D)</option>
                     <option>Смешанный формат</option>`)
@@ -1080,62 +962,62 @@ function generateForm(actionId) {
             break;
 
         case 'chat':
-            html = textArea('inputText', 'Задай любой вопрос... Например: Как правильно учиться? Или: Что такое синус?', 4)
+            html = textArea('inputText', universalPlaceholder, 4)
                 + submitBtn('fas fa-paper-plane', 'Отправить');
             break;
 
-        // ===== УЧИТЕЛЬ =====
+        // --- УЧИТЕЛЬ ---
         case 'lesson':
-            html = textArea('inputText', 'Тема урока, например: Квадратные уравнения — графический способ решения')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('gradeSelect', 'Класс', gradeOpts)
-                + select('lessonDuration', 'Длительность', `<option>45 минут</option><option>90 минут (сдвоенный)</option><option>40 минут</option>`)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
+                + sel('lessonDuration', 'Длительность', `<option>45 минут</option><option>90 минут (сдвоенный)</option><option>40 минут</option>`)
                 + submitBtn('fas fa-chalkboard-user', 'Создать план урока');
             break;
 
         case 'tasks':
-            html = textArea('inputText', 'Тема для заданий, например: Дроби, Глаголы')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('gradeSelect', 'Класс', gradeOpts)
-                + select('countSelect', 'Количество заданий', countOpts)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
+                + sel('countSelect', 'Количество заданий', countOpts)
                 + submitBtn('fas fa-tasks', 'Создать задания');
             break;
 
         case 'variants':
-            html = textArea('inputText', 'Тема контрольной работы')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('gradeSelect', 'Класс', gradeOpts)
-                + select('variantCount', 'Количество вариантов', `<option>2 варианта</option><option>4 варианта</option>`)
-                + select('taskCount', 'Заданий в варианте', `<option>5</option><option>7</option><option>10</option>`)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
+                + sel('variantCount', 'Количество вариантов', `<option>2 варианта</option><option>4 варианта</option>`)
+                + sel('taskCount', 'Заданий в варианте', `<option>5</option><option>7</option><option>10</option>`)
                 + submitBtn('fas fa-copy', 'Создать контрольную');
             break;
 
         case 'lit_lesson':
             html = `<div class="form-group"><label>Произведение</label>
-                    <input type="text" id="litTitle" placeholder="Название произведения"></div>
+                    <input type="text" id="litTitle" placeholder="${universalPlaceholder}"></div>
                     <div class="form-group"><label>Автор</label>
-                    <input type="text" id="litAuthor" placeholder="Автор"></div>`
-                + select('gradeSelect', 'Класс', gradeOpts)
-                + select('lessonDuration', 'Длительность', `<option>45 минут</option><option>90 минут</option>`)
+                    <input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
+                + sel('gradeSelect', 'Класс', gradeOpts)
+                + sel('lessonDuration', 'Длительность', `<option>45 минут</option><option>90 минут</option>`)
                 + submitBtn('fas fa-chalkboard', 'Создать план урока');
             break;
 
         case 'differentiation':
-            html = textArea('inputText', 'Тема, например: Умножение дробей')
-                + select('subjectSelect', 'Предмет', subjectOpts)
-                + select('gradeSelect', 'Класс', gradeOpts)
+            html = textArea('inputText', universalPlaceholder)
+                + sel('subjectSelect', 'Предмет', subjectOpts)
+                + sel('gradeSelect', 'Класс', gradeOpts)
                 + submitBtn('fas fa-layer-group', 'Создать разноуровневые задания');
             break;
 
-        // ===== ВОСПИТАТЕЛЬ =====
+        // --- ВОСПИТАТЕЛЬ ---
         case 'lesson_plan':
-            html = textArea('inputText', 'Тема занятия, например: Осень в лесу, Профессии')
-                + select('ageGroup', 'Возрастная группа', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('ageGroup', 'Возрастная группа', `
                     <option>Младшая (3-4 года)</option>
                     <option>Средняя (4-5 лет)</option>
                     <option>Старшая (5-6 лет)</option>
                     <option>Подготовительная (6-7 лет)</option>`)
-                + select('lessonType', 'Тип занятия', `
+                + sel('lessonType', 'Тип занятия', `
                     <option>Развитие речи</option><option>ФЭМП (математика)</option>
                     <option>Окружающий мир</option><option>Рисование</option>
                     <option>Лепка</option><option>Аппликация</option>
@@ -1145,8 +1027,8 @@ function generateForm(actionId) {
             break;
 
         case 'parent_advice':
-            html = textArea('inputText', 'Опишите ситуацию или вопрос, например: Ребёнок 4 лет не хочет идти в детский сад')
-                + select('adviceTopic', 'Тема консультации', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('adviceTopic', 'Тема консультации', `
                     <option>Кризис 3 лет</option><option>Кризис 7 лет</option>
                     <option>Адаптация к детскому саду</option>
                     <option>Развитие речи</option><option>Подготовка к школе</option>
@@ -1159,12 +1041,12 @@ function generateForm(actionId) {
             break;
 
         case 'planning':
-            html = textArea('inputText', 'Тема/раздел, например: Осень, Дикие животные, Зима')
-                + select('planType', 'Тип планирования', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('planType', 'Тип планирования', `
                     <option>Календарное на неделю</option>
                     <option>Перспективное на месяц</option>
                     <option>Тематический план проекта</option>`)
-                + select('planAge', 'Возрастная группа', `
+                + sel('planAge', 'Возрастная группа', `
                     <option>Младшая (3-4 года)</option>
                     <option>Средняя (4-5 лет)</option>
                     <option>Старшая (5-6 лет)</option>
@@ -1173,27 +1055,27 @@ function generateForm(actionId) {
             break;
 
         case 'games':
-            html = textArea('inputText', 'Тема игр, например: Развитие мелкой моторики, Цвета и формы')
-                + select('gameAge', 'Возраст', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('gameAge', 'Возраст', `
                     <option>3-4 года</option><option>4-5 лет</option>
                     <option>5-6 лет</option><option>6-7 лет</option>`)
-                + select('gameType', 'Тип игр', `
+                + sel('gameType', 'Тип игр', `
                     <option>Дидактические</option><option>Подвижные</option>
                     <option>Сюжетно-ролевые</option><option>На логику и внимание</option>
                     <option>Пальчиковые</option><option>На развитие речи</option>`)
-                + select('countSelect', 'Количество игр', `<option>3</option><option>5</option><option>10</option>`)
+                + sel('countSelect', 'Количество игр', `<option>3</option><option>5</option><option>10</option>`)
                 + submitBtn('fas fa-puzzle-piece', 'Подобрать игры');
             break;
 
         case 'holiday':
-            html = textArea('inputText', 'Дополнительные пожелания, например: добавить конкурс рисунков')
-                + select('holidayType', 'Праздник', `
+            html = textArea('inputText', universalPlaceholder)
+                + sel('holidayType', 'Праздник', `
                     <option>Новый год</option><option>8 Марта</option>
                     <option>23 Февраля</option><option>День рождения</option>
                     <option>Выпускной</option><option>Осенний бал</option>
                     <option>Масленица</option><option>День матери</option>
                     <option>День знаний (1 сентября)</option>`)
-                + select('holidayAge', 'Возраст', `
+                + sel('holidayAge', 'Возраст', `
                     <option>3-4 года</option><option>4-5 лет</option>
                     <option>5-6 лет</option><option>6-7 лет</option>
                     <option>Разновозрастная группа</option>`)
@@ -1201,23 +1083,29 @@ function generateForm(actionId) {
             break;
 
         case 'observation':
-            html = textArea('inputText', 'Опишите поведение/ситуацию: например, ребёнок 5 лет часто дерётся, не слушается', 5)
-                + select('ageGroup', 'Возраст ребёнка', `
+            html = textArea('inputText', universalPlaceholder, 5)
+                + sel('ageGroup', 'Возраст ребёнка', `
                     <option>3-4 года</option><option>4-5 лет</option>
                     <option>5-6 лет</option><option>6-7 лет</option>`)
                 + submitBtn('fas fa-eye', 'Получить анализ');
             break;
 
         default:
-            html = textArea('inputText', 'Введите ваш запрос...', 4)
+            html = textArea('inputText', universalPlaceholder, 4)
                 + submitBtn('fas fa-paper-plane', 'Отправить');
     }
 
     formContainer.innerHTML = html;
 }
 
+// helper — нужен внутри generateForm
+function textArea(id, placeholder, rows) {
+    return `<div class="form-group"><label>Ваш запрос</label>
+            <textarea id="${id}" placeholder="${placeholder}" rows="${rows || 3}"></textarea></div>`;
+}
+
 // ============================================================
-//  ОБРАБОТКА ДЕЙСТВИЯ (ГЛАВНАЯ ФУНКЦИЯ)
+//  ОБРАБОТКА
 // ============================================================
 async function processAction() {
     if (state.isLoading) return;
@@ -1225,57 +1113,40 @@ async function processAction() {
     const inputText = document.getElementById('inputText')?.value?.trim() || '';
     const data = collectFormData();
 
-    // Валидация
     if (!validateForm(data, inputText)) return;
 
     const prompt = buildPrompt(state.currentActionId, inputText, data);
     const userMessage = buildUserMessage(state.currentActionId, inputText, data);
 
-    // Добавляем в историю диалога
     state.conversationHistory.push({ role: 'user', content: prompt });
-
     addChatMessage(userMessage, true);
 
-    // Показываем индикатор загрузки
     const loadingId = addLoadingMessage();
-
     state.isLoading = true;
     disableForm(true);
 
     try {
         const response = await callGroqWithStream(state.conversationHistory, loadingId);
-
-        // Добавляем ответ ИИ в историю диалога
         state.conversationHistory.push({ role: 'assistant', content: response });
-
-        // Сохраняем в историю приложения
         saveToHistory({
             type: state.currentActionId,
             input: userMessage,
             result: response,
-            timestamp: new Date().toISOString(),
-            role: state.role
+            timestamp: new Date().toISOString()
         });
-
-        // Показываем поле для продолжения диалога
         showContinueChat();
-
     } catch (error) {
         removeLoadingMessage(loadingId);
-        addChatMessage('❌ Ошибка: ' + error.message + '\n\nПопробуй ещё раз или проверь подключение к интернету.', false);
+        addChatMessage('Ошибка: ' + error.message + '\n\nПопробуйте ещё раз или проверьте подключение к интернету.', false);
         showToast('Ошибка соединения');
     } finally {
         state.isLoading = false;
         disableForm(false);
-        // Сбрасываем поле ввода
         const inputEl = document.getElementById('inputText');
         if (inputEl) inputEl.value = '';
     }
 }
 
-// ============================================================
-//  ПРОДОЛЖЕНИЕ ДИАЛОГА
-// ============================================================
 function showContinueChat() {
     const area = document.getElementById('continueChatArea');
     area.style.display = 'block';
@@ -1304,7 +1175,7 @@ async function sendContinue() {
         state.conversationHistory.push({ role: 'assistant', content: response });
     } catch(e) {
         removeLoadingMessage(loadingId);
-        addChatMessage('❌ Ошибка: ' + e.message, false);
+        addChatMessage('Ошибка: ' + e.message, false);
     } finally {
         state.isLoading = false;
         document.getElementById('sendContinueBtn').disabled = false;
@@ -1316,7 +1187,6 @@ function handleContinueKey(event) {
         event.preventDefault();
         sendContinue();
     }
-    // Авторасширение textarea
     event.target.style.height = 'auto';
     event.target.style.height = Math.min(event.target.scrollHeight, 120) + 'px';
 }
@@ -1348,14 +1218,11 @@ async function callGroqWithStream(messages, loadingId) {
     });
 
     if (!response.ok) {
-        const err = await response.text();
-        throw new Error(`API ошибка ${response.status}`);
+        throw new Error('API ошибка ' + response.status);
     }
 
-    // Удаляем индикатор загрузки
     removeLoadingMessage(loadingId);
 
-    // Создаём пузырь для стримингового ответа
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message ai';
 
@@ -1368,15 +1235,14 @@ async function callGroqWithStream(messages, loadingId) {
 
     const cursor = document.createElement('span');
     cursor.className = 'streaming-cursor';
-
     bubble.appendChild(cursor);
+
     messageDiv.appendChild(label);
     messageDiv.appendChild(bubble);
 
     const container = document.getElementById('chatMessages');
     container.appendChild(messageDiv);
 
-    // Читаем стрим
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let fullText = '';
@@ -1400,12 +1266,11 @@ async function callGroqWithStream(messages, loadingId) {
                         bubble.innerHTML = formatAIResponse(fullText) + '<span class="streaming-cursor"></span>';
                         container.scrollTop = container.scrollHeight;
                     }
-                } catch(e) { /* пропускаем невалидный JSON */ }
+                } catch(e) {}
             }
         }
     }
 
-    // Убираем курсор, добавляем кнопку копирования
     bubble.innerHTML = formatAIResponse(fullText);
 
     const copyBtn = document.createElement('button');
@@ -1418,76 +1283,67 @@ async function callGroqWithStream(messages, loadingId) {
     return fullText;
 }
 
-// ============================================================
-//  ФОРМАТИРОВАНИЕ ОТВЕТА ИИ
-// ============================================================
 function formatAIResponse(text) {
-    // Экранируем HTML
     let formatted = text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 
-    // Заголовки (строки с эмодзи в начале или с цифрой и точкой)
-    formatted = formatted.replace(/^(\d+\.\s+.+)$/gm, '<strong>$1</strong>');
-
-    // Переносы строк
+    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
     formatted = formatted.replace(/\n\n/g, '</p><p>');
     formatted = formatted.replace(/\n/g, '<br>');
 
-    // Оборачиваем в параграфы если нет
     if (!formatted.startsWith('<')) {
         formatted = '<p>' + formatted + '</p>';
     }
-
     return formatted;
 }
 
 // ============================================================
-//  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ФОРМ
+//  СБОР ДАННЫХ ФОРМ
 // ============================================================
 function collectFormData() {
     return {
-        subject:      document.getElementById('subjectSelect')?.value || '',
-        grade:        document.getElementById('gradeSelect')?.value || '',
-        level:        document.getElementById('levelSelect')?.value || '',
-        count:        document.getElementById('countSelect')?.value || '',
-        examTopic:    document.getElementById('examTopic')?.value?.trim() || '',
-        examCount:    document.getElementById('examCount')?.value || '5',
-        litTitle:     document.getElementById('litTitle')?.value?.trim() || '',
-        litAuthor:    document.getElementById('litAuthor')?.value?.trim() || '',
-        quizCount:    document.getElementById('quizCount')?.value || '10',
-        quizType:     document.getElementById('quizType')?.value || '',
-        ageGroup:     document.getElementById('ageGroup')?.value || '',
-        lessonType:   document.getElementById('lessonType')?.value || '',
-        adviceTopic:  document.getElementById('adviceTopic')?.value || '',
-        planType:     document.getElementById('planType')?.value || '',
-        planAge:      document.getElementById('planAge')?.value || '',
-        gameAge:      document.getElementById('gameAge')?.value || '',
-        gameType:     document.getElementById('gameType')?.value || '',
-        holidayType:  document.getElementById('holidayType')?.value || '',
-        holidayAge:   document.getElementById('holidayAge')?.value || '',
-        essayType:    document.getElementById('essayType')?.value || '',
+        subject:       document.getElementById('subjectSelect')?.value || '',
+        grade:         document.getElementById('gradeSelect')?.value || '',
+        level:         document.getElementById('levelSelect')?.value || '',
+        count:         document.getElementById('countSelect')?.value || '',
+        examTopic:     document.getElementById('examTopic')?.value?.trim() || '',
+        examCount:     document.getElementById('examCount')?.value || '5',
+        litTitle:      document.getElementById('litTitle')?.value?.trim() || '',
+        litAuthor:     document.getElementById('litAuthor')?.value?.trim() || '',
+        quizCount:     document.getElementById('quizCount')?.value || '10',
+        quizType:      document.getElementById('quizType')?.value || '',
+        ageGroup:      document.getElementById('ageGroup')?.value || '',
+        lessonType:    document.getElementById('lessonType')?.value || '',
+        adviceTopic:   document.getElementById('adviceTopic')?.value || '',
+        planType:      document.getElementById('planType')?.value || '',
+        planAge:       document.getElementById('planAge')?.value || '',
+        gameAge:       document.getElementById('gameAge')?.value || '',
+        gameType:      document.getElementById('gameType')?.value || '',
+        holidayType:   document.getElementById('holidayType')?.value || '',
+        holidayAge:    document.getElementById('holidayAge')?.value || '',
+        essayType:     document.getElementById('essayType')?.value || '',
         lessonDuration:document.getElementById('lessonDuration')?.value || '45 минут',
-        variantCount: document.getElementById('variantCount')?.value || '2 варианта',
-        taskCount:    document.getElementById('taskCount')?.value || '5',
+        variantCount:  document.getElementById('variantCount')?.value || '2 варианта',
+        taskCount:     document.getElementById('taskCount')?.value || '5'
     };
 }
 
 function validateForm(data, inputText) {
     const id = state.currentActionId;
-
     if (id === 'oral_exam' && !data.examTopic) {
         showToast('Введите тему для опроса'); return false;
     }
     if (['lit_analysis', 'lit_lesson'].includes(id) && (!data.litTitle || !data.litAuthor)) {
-        showToast('Введите название и автора'); return false;
+        showToast('Введите название произведения и автора'); return false;
     }
-    if (['generate_quiz'].includes(id) && !inputText) {
-        showToast('Вставьте текст для вопросов'); return false;
+    if (id === 'generate_quiz' && !inputText) {
+        showToast('Вставьте текст для создания вопросов'); return false;
     }
     if (!['oral_exam','lit_analysis','lit_lesson'].includes(id) && !inputText) {
-        showToast('Заполните поле запроса'); return false;
+        showToast('Пожалуйста, заполните поле запроса'); return false;
     }
     return true;
 }
@@ -1498,277 +1354,238 @@ function disableForm(disabled) {
 }
 
 // ============================================================
-//  ПОСТРОЕНИЕ ПРОМПТОВ
+//  ПОСТРОЕНИЕ СООБЩЕНИЙ И ПРОМПТОВ
 // ============================================================
 function buildUserMessage(actionId, inputText, data) {
     const map = {
-        solve:        `Задача: ${inputText} (${data.subject}, ${data.grade})`,
-        explain:      `Объяснить: ${inputText} — ${data.level}`,
-        summary:      `Конспект по теме: "${inputText}" (${data.subject}, ${data.grade})`,
-        schema:       `Схема по теме: "${inputText}" (${data.subject})`,
-        test:         `Подготовка к тесту: "${inputText}" (${data.subject}, ${data.grade}, уровень: ${data.level})`,
-        oral_exam:    `Устный экзамен по теме: "${data.examTopic}", ${data.examCount} вопросов, ${data.grade}`,
-        lab:          `Лабораторная работа: "${inputText}" (${data.subject}, ${data.grade})`,
-        lit_analysis: `Анализ произведения: "${data.litTitle}" — ${data.litAuthor}`,
-        essay:        `Сочинение: "${inputText}" — ${data.essayType}`,
-        generate_quiz:`Создать ${data.quizCount} вопросов (${data.quizType})`,
-        chat:         inputText,
-        lesson:       `План урока: "${inputText}" (${data.subject}, ${data.grade}, ${data.lessonDuration})`,
-        tasks:        `Задания по теме: "${inputText}" (${data.subject}, ${data.grade}, ${data.count} шт.)`,
-        variants:     `Контрольная: "${inputText}" (${data.subject}, ${data.grade}, ${data.variantCount})`,
-        lit_lesson:   `Урок литературы: "${data.litTitle}" ${data.litAuthor} (${data.grade})`,
-        differentiation: `Разноуровневые задания: "${inputText}" (${data.subject}, ${data.grade})`,
-        lesson_plan:  `Конспект занятия: "${inputText}" (${data.ageGroup}, ${data.lessonType})`,
-        parent_advice:`Консультация: ${data.adviceTopic} — ${inputText}`,
-        planning:     `${data.planType}: тема "${inputText}" (${data.planAge})`,
-        games:        `Игры для ${data.gameAge}: тема "${inputText}" (${data.gameType}, ${data.count} игр)`,
-        holiday:      `Сценарий праздника "${data.holidayType}" для ${data.holidayAge}`,
-        observation:  `Анализ поведения ребёнка ${data.ageGroup}: ${inputText}`,
+        solve:           'Задача: ' + inputText + ' (' + data.subject + ', ' + data.grade + ')',
+        explain:         'Объяснить: ' + inputText + ' — ' + data.level,
+        summary:         'Конспект по теме: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        schema:          'Схема по теме: "' + inputText + '" (' + data.subject + ')',
+        test:            'Подготовка к тесту: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', уровень: ' + data.level + ')',
+        oral_exam:       'Устный экзамен по теме: "' + data.examTopic + '", ' + data.examCount + ' вопросов, ' + data.grade,
+        lab:             'Лабораторная работа: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        lit_analysis:    'Анализ произведения: "' + data.litTitle + '" — ' + data.litAuthor,
+        essay:           'Сочинение: "' + inputText + '" — ' + data.essayType,
+        generate_quiz:   'Создать ' + data.quizCount + ' вопросов (' + data.quizType + ')',
+        chat:            inputText,
+        lesson:          'План урока: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.lessonDuration + ')',
+        tasks:           'Задания по теме: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.count + ' шт.)',
+        variants:        'Контрольная: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.variantCount + ')',
+        lit_lesson:      'Урок литературы: "' + data.litTitle + '" ' + data.litAuthor + ' (' + data.grade + ')',
+        differentiation: 'Разноуровневые задания: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        lesson_plan:     'Конспект занятия: "' + inputText + '" (' + data.ageGroup + ', ' + data.lessonType + ')',
+        parent_advice:   'Консультация: ' + data.adviceTopic + ' — ' + inputText,
+        planning:        data.planType + ': тема "' + inputText + '" (' + data.planAge + ')',
+        games:           'Игры для ' + data.gameAge + ': тема "' + inputText + '" (' + data.gameType + ')',
+        holiday:         'Сценарий праздника "' + data.holidayType + '" для ' + data.holidayAge,
+        observation:     'Анализ поведения ребёнка ' + data.ageGroup + ': ' + inputText
     };
     return map[actionId] || inputText;
 }
 
 function buildPrompt(actionId, inputText, data) {
-    // Подробные промпты для каждого действия
     const p = {
-        solve: `Реши задачу по предмету "${data.subject}" для ${data.grade}:
+        solve:
+`Реши задачу по предмету "${data.subject}" для ${data.grade}:
 
 ${inputText}
 
 Оформи решение в школьном стиле:
-📋 ДАНО: (если применимо)
-🎯 НАЙТИ: (что нужно найти)
-📐 РЕШЕНИЕ: (каждый шаг с объяснением)
-✅ ОТВЕТ:
-💡 ПРОВЕРКА: (проверь ответ)
+ДАНО: (если применимо)
+НАЙТИ: (что нужно найти)
+РЕШЕНИЕ: (каждый шаг с объяснением — почему именно так)
+ОТВЕТ:
+ПРОВЕРКА: (проверь ответ)
 
-После решения объясни главный метод/принцип и дай 1 похожую задачу для самопроверки.`,
+После решения объясни главный метод и дай 1 похожую задачу для самопроверки.`,
 
-        explain: `Объясни тему "${inputText}" по предмету "${data.subject}".
-Уровень объяснения: ${data.level || 'обычный'}.
+        explain:
+`Объясни тему "${inputText}" по предмету "${data.subject}".
+Уровень: ${data.level || 'обычный'}.
 
-Структура объяснения:
-💡 ЧТО ЭТО — простое определение своими словами
-🌍 В ЖИЗНИ — реальный пример из жизни (аналогия)
-📐 КАК РАБОТАЕТ — механизм/формулы/правила
-✏️ ПРИМЕР — разбор конкретного примера шаг за шагом
-⚠️ ЧАСТЫЕ ОШИБКИ — что важно не перепутать
-🎯 ЗАПОМНИ — главная мысль одним предложением`,
+Структура:
+ЧТО ЭТО — простое определение своими словами
+В ЖИЗНИ — реальный пример из жизни (аналогия)
+КАК РАБОТАЕТ — механизм, формулы, правила
+ПРИМЕР — разбор конкретного примера шаг за шагом
+ЧАСТЫЕ ОШИБКИ — что важно не перепутать
+ЗАПОМНИ — главная мысль одним предложением`,
 
-        summary: `Создай подробный конспект по теме "${inputText}" для ${data.grade} (предмет: ${data.subject}).
+        summary:
+`Создай подробный конспект по теме "${inputText}" для ${data.grade} (предмет: ${data.subject}).
 
 Структура конспекта:
-📌 ТЕМА: (название)
-🎯 ЦЕЛИ ИЗУЧЕНИЯ: (что узнаем)
-📚 ОСНОВНЫЕ ПОНЯТИЯ: (ключевые термины с определениями)
-📐 ФОРМУЛЫ И ПРАВИЛА: (если есть)
-🔹 ОСНОВНОЕ СОДЕРЖАНИЕ: (структурированный текст)
-✏️ ПРИМЕРЫ: (разобранные примеры)
-⚠️ ВАЖНО ПОМНИТЬ:
-❓ ВОПРОСЫ ДЛЯ САМОПРОВЕРКИ: (3-5 вопросов)`,
+ТЕМА:
+ОСНОВНЫЕ ПОНЯТИЯ: (ключевые термины с определениями)
+ФОРМУЛЫ И ПРАВИЛА: (если есть)
+ОСНОВНОЕ СОДЕРЖАНИЕ: (структурированный текст)
+ПРИМЕРЫ: (разобранные примеры)
+ВАЖНО ПОМНИТЬ:
+ВОПРОСЫ ДЛЯ САМОПРОВЕРКИ: (3-5 вопросов)`,
 
-        schema: `Создай наглядную схему-шпаргалку по теме "${inputText}" (${data.subject}).
+        schema:
+`Создай наглядную схему-шпаргалку по теме "${inputText}" (${data.subject}).
 
-Формат схемы:
-🗺️ СХЕМА: ${inputText}
+СХЕМА: ${inputText}
 
-🔹 ГЛАВНОЕ:
-(основные понятия)
+ГЛАВНОЕ: (основные понятия)
+ФОРМУЛЫ И ПРАВИЛА: (самое важное)
+ПРИМЕРЫ: (краткие примеры)
+НЕ ЗАБУДЬ: (типичные ошибки)
+ВЫВОД: (одно ключевое предложение)
 
-📐 ФОРМУЛЫ/ПРАВИЛА:
-(самое важное)
+Сделай максимально компактно — как настоящая шпаргалка.`,
 
-💡 ПРИМЕРЫ:
-(краткие примеры)
-
-⚠️ НЕ ЗАБУДЬ:
-(типичные ошибки)
-
-🎯 ВЫВОД:
-(одно ключевое предложение)
-
-Сделай максимально компактно, как настоящая шпаргалка.`,
-
-        test: `Создай тест из 10 вопросов для подготовки к контрольной по теме "${inputText}" (${data.subject}, ${data.grade}, уровень: ${data.level}).
+        test:
+`Создай тест из 10 вопросов для подготовки к контрольной по теме "${inputText}" (${data.subject}, ${data.grade}, уровень: ${data.level}).
 
 Формат:
-❓ ВОПРОС 1: ...
+ВОПРОС 1: ...
 A) ...
 B) ...
 C) ...
 D) ...
-✅ Ответ: X) — краткое объяснение почему
+Ответ: X) — краткое объяснение почему
 
-...и так 10 вопросов.
+...10 вопросов.
 
 После теста:
-📌 3 ГЛАВНЫХ МОМЕНТА которые нужно знать по этой теме
-💡 СОВЕТ как лучше запомнить материал`,
+3 ГЛАВНЫХ МОМЕНТА которые нужно знать по этой теме
+СОВЕТ как лучше запомнить материал`,
 
-        oral_exam: `Проведи устный экзамен по теме "${data.examTopic}" для ${data.grade}.
+        oral_exam:
+`Проведи устный экзамен по теме "${data.examTopic}" для ${data.grade}.
 Количество вопросов: ${data.examCount}.
 
-Формат экзамена:
-🎤 ЭКЗАМЕНАТОР: Начинаем устный опрос по теме "${data.examTopic}".
-
+Формат:
 Вопрос 1 (базовый): [вопрос]
-💭 Ожидаемый ответ: [что должен ответить ученик]
+Ожидаемый ответ: [что должен ответить ученик]
 
 Вопрос 2: [вопрос сложнее]
-💭 Ожидаемый ответ: ...
+Ожидаемый ответ: ...
 
-...продолжай до ${data.examCount} вопросов, повышая сложность.
+...до ${data.examCount} вопросов с повышением сложности.
 
-📊 ИТОГО:
-- Лёгкие вопросы (знание): ...
-- Средние (понимание): ...
-- Сложные (применение): ...
-⚠️ ТИПИЧНЫЕ ОШИБКИ по этой теме: ...
-💡 СОВЕТ для успешной сдачи: ...`,
+В конце:
+ТИПИЧНЫЕ ОШИБКИ по этой теме: ...
+СОВЕТ для успешной сдачи: ...`,
 
-        lab: `Составь пошаговую инструкцию для лабораторной работы по теме "${inputText}" (${data.subject}, ${data.grade}).
+        lab:
+`Составь пошаговую инструкцию для лабораторной работы по теме "${inputText}" (${data.subject}, ${data.grade}).
 
-🔬 ЛАБОРАТОРНАЯ РАБОТА: ${inputText}
+ЛАБОРАТОРНАЯ РАБОТА: ${inputText}
+ЦЕЛЬ:
+ОБОРУДОВАНИЕ И МАТЕРИАЛЫ:
+ПРАВИЛА БЕЗОПАСНОСТИ:
+ХОД РАБОТЫ: (пошагово)
+ОБРАБОТКА РЕЗУЛЬТАТОВ:
+ВЫВОДЫ:
+КОНТРОЛЬНЫЕ ВОПРОСЫ: (3 вопроса для защиты)`,
 
-🎯 ЦЕЛЬ: ...
-📋 ЗАДАЧИ: ...
-⚗️ ОБОРУДОВАНИЕ И МАТЕРИАЛЫ: (список)
-⚠️ ПРАВИЛА БЕЗОПАСНОСТИ: (обязательно!)
+        lit_analysis:
+`Дай полный анализ произведения "${data.litTitle}" автора ${data.litAuthor} (для ${data.grade}).
 
-📝 ХОД РАБОТЫ:
-Шаг 1: ...
-Шаг 2: ...
-(и т.д.)
+ОБ АВТОРЕ: (краткая биография, связь с произведением)
+ИСТОРИЯ СОЗДАНИЯ: (когда, почему, контекст эпохи)
+ЖАНР И НАПРАВЛЕНИЕ:
+СЮЖЕТ: (подробный пересказ ключевых событий)
+СИСТЕМА ОБРАЗОВ: (характеристика главных и второстепенных героев)
+ТЕМЫ И ИДЕИ: (главная идея, основные темы)
+ПРОБЛЕМАТИКА: (какие проблемы поднимает автор)
+ХУДОЖЕСТВЕННЫЕ ОСОБЕННОСТИ: (стиль, приёмы)
+КЛЮЧЕВЫЕ ЦИТАТЫ: (5 цитат)
+ВЫВОД: (значение произведения)`,
 
-📊 ОБРАБОТКА РЕЗУЛЬТАТОВ:
-(как записать и обработать данные)
-
-✅ ВЫВОДЫ:
-(что должны получить в итоге)
-
-❓ КОНТРОЛЬНЫЕ ВОПРОСЫ: (3 вопроса для защиты)`,
-
-        lit_analysis: `Дай полный анализ произведения "${data.litTitle}" автора ${data.litAuthor} (для ${data.grade}).
-
-📖 АНАЛИЗ ПРОИЗВЕДЕНИЯ: "${data.litTitle}"
-
-✍️ ОБ АВТОРЕ: (краткая биография, связь с произведением)
-📅 ИСТОРИЯ СОЗДАНИЯ: (когда, почему, контекст эпохи)
-📚 ЖАНР И НАПРАВЛЕНИЕ:
-🗺️ СЮЖЕТ: (подробный пересказ ключевых событий)
-
-👥 СИСТЕМА ОБРАЗОВ:
-- Главные герои (характеристика каждого)
-- Второстепенные герои
-
-🎭 ТЕМЫ И ИДЕИ:
-- Главная идея произведения
-- Основные темы
-
-❗ ПРОБЛЕМАТИКА: (какие проблемы поднимает автор)
-🎨 ХУДОЖЕСТВЕННЫЕ ОСОБЕННОСТИ: (стиль, приёмы)
-💬 ЦИТАТЫ: (5 ключевых цитат)
-📝 ВЫВОД: (значение произведения)`,
-
-        essay: `Помоги написать сочинение на тему "${inputText}" для ${data.grade}.
+        essay:
+`Помоги написать сочинение на тему "${inputText}" для ${data.grade}.
 Тип помощи: ${data.essayType}.
 
-Выполни конкретно то, что просит тип помощи:
-- "Составить план" → дай подробный план с тезисами
-- "Написать вступление" → напиши 2-3 варианта вступления
-- "Подобрать аргументы" → дай 3-5 аргументов с цитатами
-- "Написать заключение" → напиши 2 варианта заключения
-- "Полный анализ" → разбери тему полностью
+Выполни именно то, что указано:
+- "Составить план" — подробный план с тезисами
+- "Написать вступление" — 2-3 варианта вступления
+- "Подобрать аргументы и цитаты" — 3-5 аргументов с цитатами из произведений
+- "Написать заключение" — 2 варианта заключения
+- "Полный анализ темы" — полный разбор темы
 
-Используй литературоведческие термины правильно. Приводи конкретные примеры из произведений.`,
+Приводи конкретные примеры из литературы.`,
 
-        generate_quiz: `На основе следующего текста создай ${data.quizCount} вопросов типа "${data.quizType}":
+        generate_quiz:
+`На основе следующего текста создай ${data.quizCount} вопросов типа "${data.quizType}":
 
 ${inputText}
 
 ${data.quizType.includes('Тест') ?
-`Формат для каждого вопроса:
-❓ Вопрос [N]: [вопрос]
-A) [вариант]
-B) [вариант]
-C) [вариант]
-D) [вариант]
-✅ Правильный ответ: X) — [краткое объяснение]` :
+`Формат:
+Вопрос N: [вопрос]
+A) [вариант]  B) [вариант]  C) [вариант]  D) [вариант]
+Правильный ответ: X) — [краткое объяснение]` :
 data.quizType.includes('Открытые') ?
 `Формат:
-❓ Вопрос [N]: [вопрос]
-✅ Примерный ответ: [ответ]` :
+Вопрос N: [вопрос]
+Примерный ответ: [ответ]` :
 `Смешай тестовые и открытые вопросы примерно поровну.`}
 
 Вопросы должны проверять понимание, а не просто память.`,
 
-        chat: `${inputText}`,
+        chat: inputText,
 
-        // УЧИТЕЛЬ
-        lesson: `Составь детальный план урока на ${data.lessonDuration} по теме "${inputText}" (${data.subject}, ${data.grade}).
+        lesson:
+`Составь детальный план урока на ${data.lessonDuration} по теме "${inputText}" (${data.subject}, ${data.grade}).
 
-📚 ТЕХНОЛОГИЧЕСКАЯ КАРТА УРОКА
+ТЕХНОЛОГИЧЕСКАЯ КАРТА УРОКА
 
-📌 Тема: ${inputText}
-📋 Предмет: ${data.subject} | Класс: ${data.grade} | Время: ${data.lessonDuration}
-🎯 Цель урока: ...
-📝 Задачи: образовательные / развивающие / воспитательные
-🔧 Оборудование: ...
-📖 Тип урока: ...
+Тема: ${inputText}
+Предмет: ${data.subject} | Класс: ${data.grade} | Время: ${data.lessonDuration}
+Цель урока:
+Задачи: образовательные / развивающие / воспитательные
+Оборудование:
+Тип урока:
 
-⏰ ХОД УРОКА:
+ХОД УРОКА:
+1. Организационный момент (2 мин):
+2. Актуализация знаний (5 мин): (3 вопроса к классу)
+3. Объяснение нового материала (15 мин): (план объяснения)
+4. Первичное закрепление (10 мин): (задания)
+5. Самостоятельная работа (8 мин): (задания)
+6. Рефлексия (3 мин):
+7. Домашнее задание (2 мин):
 
-1️⃣ Организационный момент (2 мин): ...
-2️⃣ Актуализация знаний (5 мин): (3 вопроса к классу)
-3️⃣ Объяснение нового материала (15 мин): (план объяснения)
-4️⃣ Первичное закрепление (10 мин): (задания)
-5️⃣ Самостоятельная работа (8 мин): (задания)
-6️⃣ Рефлексия (3 мин): ...
-7️⃣ Домашнее задание (2 мин): ...
+МЕТОДИЧЕСКИЕ СОВЕТЫ:
+ТИПИЧНЫЕ ЗАТРУДНЕНИЯ учеников и как их преодолеть:`,
 
-💡 МЕТОДИЧЕСКИЕ СОВЕТЫ:
-⚠️ ТИПИЧНЫЕ ЗАТРУДНЕНИЯ учеников и как их преодолеть:`,
+        tasks:
+`Создай ${data.count} разноуровневых заданий по теме "${inputText}" (${data.subject}, ${data.grade}).
 
-        tasks: `Создай ${data.count} разноуровневых заданий по теме "${inputText}" (${data.subject}, ${data.grade}).
-
-Распредели по уровням:
-⭐ БАЗОВЫЙ УРОВЕНЬ (знание/воспроизведение):
+БАЗОВЫЙ УРОВЕНЬ (знание/воспроизведение):
 (задания 1-${Math.floor(data.count/3)})
 
-⭐⭐ СРЕДНИЙ УРОВЕНЬ (понимание/применение):
+СРЕДНИЙ УРОВЕНЬ (понимание/применение):
 (задания ${Math.floor(data.count/3)+1}-${Math.floor(data.count*2/3)})
 
-⭐⭐⭐ ПРОДВИНУТЫЙ УРОВЕНЬ (анализ/творчество):
+ПРОДВИНУТЫЙ УРОВЕНЬ (анализ/творчество):
 (задания ${Math.floor(data.count*2/3)+1}-${data.count})
 
 Для каждого задания: условие + ответ + краткое решение.`,
 
-        variants: `Создай ${data.variantCount} контрольной работы по теме "${inputText}" (${data.subject}, ${data.grade}).
+        variants:
+`Создай ${data.variantCount} контрольной работы по теме "${inputText}" (${data.subject}, ${data.grade}).
 По ${data.taskCount} заданий в каждом варианте.
 
-Задания должны быть равнозначными по сложности между вариантами, но разными.
+Задания равнозначны по сложности, но разные по содержанию.
 
-ВАРИАНТ 1:
-Задание 1: ...
-Задание 2: ...
-...
+ВАРИАНТ 1: (задания)
+ВАРИАНТ 2: (аналогичные по сложности, другие по содержанию)
 
-ВАРИАНТ 2:
-Задание 1: (аналогичное по сложности, другое по содержанию)
-...
+ОТВЕТЫ И КРИТЕРИИ ОЦЕНИВАНИЯ:`,
 
-📝 ОТВЕТЫ И КРИТЕРИИ ОЦЕНИВАНИЯ:
-Вариант 1: 1)... 2)... ...
-Вариант 2: 1)... 2)... ...`,
+        lit_lesson:
+`Составь методический план урока литературы по произведению "${data.litTitle}" (${data.litAuthor}) для ${data.grade}. Длительность: ${data.lessonDuration}.
 
-        lit_lesson: `Составь методический план урока литературы по произведению "${data.litTitle}" (автор: ${data.litAuthor}) для ${data.grade}. Продолжительность: ${data.lessonDuration}.
+Тема: "${data.litTitle}" — ${data.litAuthor}
+Цели:
 
-📚 ПЛАН УРОКА ЛИТЕРАТУРЫ
-
-📌 Тема: "${data.litTitle}" — ${data.litAuthor}
-🎯 Цели: ...
-
-⏰ ХОД УРОКА:
+ХОД УРОКА:
 1. Вступительное слово (биография автора, эпоха) — 5 мин
 2. Проверка домашнего чтения (3 вопроса) — 5 мин
 3. Анализ произведения (сюжет, герои, темы) — 20 мин
@@ -1776,198 +1593,136 @@ data.quizType.includes('Открытые') ?
 5. Творческое задание — 5 мин
 6. Рефлексия и домашнее задание — 2 мин
 
-❓ ВОПРОСЫ ДЛЯ КЛАССА: (10 вопросов разного уровня)
-💡 МЕТОДИЧЕСКИЕ ПРИЁМЫ: ...`,
+ВОПРОСЫ ДЛЯ КЛАССА: (10 вопросов разного уровня)
+МЕТОДИЧЕСКИЕ ПРИЁМЫ:`,
 
-        differentiation: `Создай систему разноуровневых заданий по теме "${inputText}" (${data.subject}, ${data.grade}) для дифференцированного обучения.
+        differentiation:
+`Создай систему разноуровневых заданий по теме "${inputText}" (${data.subject}, ${data.grade}).
 
-🎯 ДИФФЕРЕНЦИАЦИЯ заданий по теме "${inputText}"
-
-📗 УРОВЕНЬ А (для слабых учеников):
-Задания по образцу, с опорной схемой:
+УРОВЕНЬ А (для слабых учеников): задания по образцу
 (3-4 простых задания)
 
-📘 УРОВЕНЬ Б (для средних учеников):
-Задания с применением знаний:
+УРОВЕНЬ Б (для средних учеников): задания с применением знаний
 (3-4 средних задания)
 
-📕 УРОВЕНЬ В (для сильных учеников):
-Творческие и нестандартные задания:
+УРОВЕНЬ В (для сильных учеников): творческие и нестандартные задания
 (3-4 сложных задания)
 
-⭐ ОЛИМПИАДНЫЙ УРОВЕНЬ:
+ОЛИМПИАДНЫЙ УРОВЕНЬ:
 (1-2 задания для самых сильных)
 
-📝 ОТВЕТЫ ко всем заданиям:`,
+ОТВЕТЫ ко всем заданиям:`,
 
-        // ВОСПИТАТЕЛЬ
-        lesson_plan: `Составь подробный конспект занятия для ${data.ageGroup} по теме "${inputText}". Тип занятия: ${data.lessonType}.
+        lesson_plan:
+`Составь подробный конспект занятия для ${data.ageGroup} по теме "${inputText}". Тип занятия: ${data.lessonType}.
 
-🌟 КОНСПЕКТ ЗАНЯТИЯ
+КОНСПЕКТ ЗАНЯТИЯ
 
-📌 Тема: ${inputText}
-👶 Возрастная группа: ${data.ageGroup}
-🎨 Образовательная область: ${data.lessonType}
-⏰ Продолжительность: (по СанПиН для возраста)
+Тема: ${inputText}
+Возрастная группа: ${data.ageGroup}
+Образовательная область: ${data.lessonType}
+Продолжительность: (по СанПиН)
 
-🎯 ЦЕЛЬ: ...
-📝 ЗАДАЧИ:
-- Образовательные: ...
-- Развивающие: ...
-- Воспитательные: ...
+ЦЕЛЬ:
+ЗАДАЧИ: образовательные / развивающие / воспитательные
+ОБОРУДОВАНИЕ И МАТЕРИАЛЫ:
+ПРЕДВАРИТЕЛЬНАЯ РАБОТА:
 
-🔧 ОБОРУДОВАНИЕ И МАТЕРИАЛЫ: ...
+ХОД ЗАНЯТИЯ:
+1. ВВОДНАЯ ЧАСТЬ (2-3 мин): (мотивационный момент, загадка, сюрпризный момент)
+2. ОСНОВНАЯ ЧАСТЬ: (подробное описание с диалогами воспитателя)
+ФИЗКУЛЬТМИНУТКА: (конкретное упражнение с текстом)
+3. ЗАКЛЮЧИТЕЛЬНАЯ ЧАСТЬ (2-3 мин): (рефлексия, вопросы детям)
 
-📋 ПРЕДВАРИТЕЛЬНАЯ РАБОТА: ...
+МЕТОДИЧЕСКИЕ СОВЕТЫ воспитателю:`,
 
-⏰ ХОД ЗАНЯТИЯ:
+        parent_advice:
+`Напиши консультацию для родителей на тему: "${data.adviceTopic}".
+Дополнительно: ${inputText}.
 
-🌟 1. ВВОДНАЯ ЧАСТЬ (мотивационный момент) — 2-3 мин:
-(сюрпризный момент, загадка, игровая ситуация)
-
-📚 2. ОСНОВНАЯ ЧАСТЬ — основная часть времени:
-(подробное описание с диалогами воспитателя)
-
-🤸 ФИЗКУЛЬТМИНУТКА (в середине):
-(конкретное упражнение с текстом)
-
-🎯 ЗАКРЕПЛЕНИЕ:
-
-🌈 3. ЗАКЛЮЧИТЕЛЬНАЯ ЧАСТЬ — 2-3 мин:
-РЕФЛЕКСИЯ (вопросы детям): ...
-
-💡 МЕТОДИЧЕСКИЕ СОВЕТЫ воспитателю: ...`,
-
-        parent_advice: `Напиши консультацию для родителей на тему: "${data.adviceTopic}".
-Дополнительный контекст: ${inputText}.
-
-💝 КОНСУЛЬТАЦИЯ ДЛЯ РОДИТЕЛЕЙ
+КОНСУЛЬТАЦИЯ ДЛЯ РОДИТЕЛЕЙ
 Тема: ${data.adviceTopic}
 
-🔍 ПОЧЕМУ ЭТО ПРОИСХОДИТ:
-(психологические причины с научным обоснованием)
+ПОЧЕМУ ЭТО ПРОИСХОДИТ: (психологические причины)
+КАК ЧУВСТВУЕТ СЕБЯ РЕБЁНОК: (взгляд с точки зрения ребёнка)
+ЧТО ДЕЛАТЬ: (конкретные советы, нумерованный список)
+ЧЕГО НЕ ДЕЛАТЬ: (типичные ошибки родителей)
+КАК ГОВОРИТЬ С РЕБЁНКОМ: (конкретные фразы)
+КОГДА ОБРАТИТЬСЯ К СПЕЦИАЛИСТУ: (признаки, требующие помощи)`,
 
-💭 КАК ЧУВСТВУЕТ СЕБЯ РЕБЁНОК:
-(взгляд с точки зрения ребёнка)
+        planning:
+`Составь ${data.planType} для ${data.planAge} по теме "${inputText}".
 
-✅ ЧТО ДЕЛАТЬ (конкретные советы):
-1. ...
-2. ...
-3. ...
-
-❌ ЧЕГО НЕ ДЕЛАТЬ:
-(типичные ошибки родителей)
-
-🗣️ КАК ГОВОРИТЬ С РЕБЁНКОМ:
-(конкретные фразы, которые помогают)
-
-⏰ КОГДА ОБРАТИТЬСЯ К СПЕЦИАЛИСТУ:
-(признаки, требующие помощи психолога/невролога)
-
-💪 СЛОВА ПОДДЕРЖКИ для родителей:`,
-
-        planning: `Составь ${data.planType} для ${data.planAge} по теме/разделу: "${inputText}".
-
-📅 ${data.planType.toUpperCase()}
-Тема: ${inputText} | Группа: ${data.planAge}
-
-${data.planType.includes('неделю') ? `
-ПОНЕДЕЛЬНИК:
-🎨 Познавательное: ...
-📖 Речевое: ...
-🏃 Физическое: ...
-🎭 Социально-коммуникативное: ...
-
+${data.planType.includes('неделю') ?
+`ПОНЕДЕЛЬНИК: (познавательное, речевое, физическое, социально-коммуникативное)
 ВТОРНИК: ...
 СРЕДА: ...
 ЧЕТВЕРГ: ...
 ПЯТНИЦА: ...` :
-`НЕДЕЛИ МЕСЯЦА:
-1 неделя: Тема — ... Задачи — ...
+`1 неделя: Тема — ... Задачи — ...
 2 неделя: ...
 3 неделя: ...
 4 неделя: итоговое мероприятие — ...
 
 ВИДЫ ДЕЯТЕЛЬНОСТИ каждую неделю:
-🎨 Изобразительная: ...
-📖 Речевая: ...
-🧩 Игровая: ...
-🏃 Двигательная: ...
-`}
+Изобразительная / Речевая / Игровая / Двигательная`}
 
-📊 ИТОГОВОЕ МЕРОПРИЯТИЕ: ...`,
+ИТОГОВОЕ МЕРОПРИЯТИЕ:`,
 
-        games: `Подбери ${data.count || 5} игр для детей ${data.gameAge} типа "${data.gameType}" по теме "${inputText}".
-
-🧩 ИГРЫ для ${data.gameAge}
-Тема: ${inputText} | Тип: ${data.gameType}
+        games:
+`Подбери ${data.count || 5} игр для детей ${data.gameAge} типа "${data.gameType}" по теме "${inputText}".
 
 Для каждой игры:
-🎮 НАЗВАНИЕ:
-🎯 ЦЕЛЬ: (что развивает)
-👥 КТО ИГРАЕТ: (количество детей)
-🔧 МАТЕРИАЛЫ: (что нужно)
-📋 КАК ИГРАТЬ: (пошаговые правила)
-🔄 УСЛОЖНЕНИЕ: (для более старших/умелых)`,
+НАЗВАНИЕ:
+ЦЕЛЬ: (что развивает)
+КТО ИГРАЕТ: (количество детей)
+МАТЕРИАЛЫ:
+КАК ИГРАТЬ: (пошаговые правила)
+УСЛОЖНЕНИЕ: (для более старших или умелых)`,
 
-        holiday: `Напиши подробный сценарий праздника "${data.holidayType}" для детей ${data.holidayAge}.
+        holiday:
+`Напиши подробный сценарий праздника "${data.holidayType}" для детей ${data.holidayAge}.
 Дополнительные пожелания: ${inputText}.
 
-🎉 СЦЕНАРИЙ ПРАЗДНИКА: ${data.holidayType}
-👶 Возраст: ${data.holidayAge}
+СЦЕНАРИЙ ПРАЗДНИКА: ${data.holidayType}
+Возраст: ${data.holidayAge}
 
-📋 ДЕЙСТВУЮЩИЕ ЛИЦА: (персонажи и роли)
-🔧 ОБОРУДОВАНИЕ: ...
-🎵 МУЗЫКАЛЬНОЕ СОПРОВОЖДЕНИЕ: ...
+ДЕЙСТВУЮЩИЕ ЛИЦА:
+ОБОРУДОВАНИЕ:
+МУЗЫКАЛЬНОЕ СОПРОВОЖДЕНИЕ:
 
-⏰ ХОД ПРАЗДНИКА:
+ХОД ПРАЗДНИКА:
+ОТКРЫТИЕ: (слова ведущего, появление персонажа)
+ВЫСТУПЛЕНИЯ ДЕТЕЙ: (стихи, танцы, песни — с текстами)
+ИГРЫ И КОНКУРСЫ: (3-4 игры с описанием)
+СЮРПРИЗНЫЙ МОМЕНТ:
+ФИНАЛ И ЗАКРЫТИЕ:
 
-🎭 ОТКРЫТИЕ:
-(слова ведущего, появление персонажа)
+ТЕКСТЫ ДЛЯ ПЕРСОНАЖЕЙ:`,
 
-🎵 ВЫСТУПЛЕНИЯ ДЕТЕЙ:
-(стихи, танцы, песни — с текстами)
-
-🎮 ИГРЫ И КОНКУРСЫ:
-(3-4 игры с описанием)
-
-🎁 СЮРПРИЗНЫЙ МОМЕНТ: ...
-
-🌟 ФИНАЛ И ЗАКРЫТИЕ: ...
-
-📝 СТИХИ И ТЕКСТЫ: (готовые тексты для персонажей)`,
-
-        observation: `Проанализируй описанное поведение ребёнка ${data.ageGroup} и дай педагогические рекомендации:
+        observation:
+`Проанализируй описанное поведение ребёнка ${data.ageGroup}:
 
 ${inputText}
 
-🔍 АНАЛИЗ СИТУАЦИИ:
-(нормально ли это для данного возраста)
-
-🧠 ВОЗМОЖНЫЕ ПРИЧИНЫ:
-(психологические, педагогические, физиологические)
-
-✅ РЕКОМЕНДАЦИИ ДЛЯ ВОСПИТАТЕЛЯ:
-1. ...
-2. ...
-
-💝 РЕКОМЕНДАЦИИ ДЛЯ РОДИТЕЛЕЙ:
-...
-
-⚠️ НА ЧТО ОБРАТИТЬ ВНИМАНИЕ: ...
-👨‍⚕️ КОГДА НУЖНА ПОМОЩЬ СПЕЦИАЛИСТА: ...`
+АНАЛИЗ: (нормально ли это для данного возраста)
+ВОЗМОЖНЫЕ ПРИЧИНЫ: (психологические, педагогические, физиологические)
+РЕКОМЕНДАЦИИ ДЛЯ ВОСПИТАТЕЛЯ:
+РЕКОМЕНДАЦИИ ДЛЯ РОДИТЕЛЕЙ:
+НА ЧТО ОБРАТИТЬ ВНИМАНИЕ:
+КОГДА НУЖНА ПОМОЩЬ СПЕЦИАЛИСТА:`
     };
 
     return p[actionId] || inputText;
 }
 
 // ============================================================
-//  ЧУЖИЕ СООБЩЕНИЯ
+//  СООБЩЕНИЯ В ЧАТЕ
 // ============================================================
 function addChatMessage(text, isUser) {
     const container = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+    messageDiv.className = 'message ' + (isUser ? 'user' : 'ai');
 
     const label = document.createElement('div');
     label.className = 'message-label';
@@ -2020,20 +1775,11 @@ function removeLoadingMessage(id) {
     if (el) el.remove();
 }
 
-// ============================================================
-//  КОПИРОВАНИЕ
-// ============================================================
 function copyToClipboard(text, btn) {
     navigator.clipboard.writeText(text).then(() => {
-        btn.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
-        btn.style.color = 'var(--gold)';
-        setTimeout(() => {
-            btn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
-            btn.style.color = '';
-        }, 2000);
-    }).catch(() => {
-        showToast('Не удалось скопировать');
-    });
+        btn.innerHTML = '<i class="fas fa-check"></i> Скопировано';
+        setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Скопировать'; }, 2000);
+    }).catch(() => showToast('Не удалось скопировать'));
 }
 
 // ============================================================
@@ -2052,7 +1798,7 @@ function showHistory() {
             <div class="empty-state">
                 <div class="icon"><i class="fas fa-folder-open"></i></div>
                 <h3>История пуста</h3>
-                <p>Ваши запросы будут сохраняться здесь</p>
+                <p>Запросы будут сохраняться здесь</p>
             </div>`;
     } else {
         const reversed = [...state.history].reverse();
@@ -2088,7 +1834,6 @@ function viewHistoryItem(index) {
     addChatMessage(item.input, true);
     addChatMessage(item.result, false);
 
-    // Восстанавливаем контекст диалога
     state.conversationHistory = [
         { role: 'user', content: item.input },
         { role: 'assistant', content: item.result }
@@ -2114,23 +1859,21 @@ function updateProfile() {
     if (user) {
         const avatarEl = document.getElementById('profileAvatar');
         avatarEl.innerHTML = user.photo_url
-            ? `<img src="${user.photo_url}" alt="Фото профиля">`
+            ? `<img src="${user.photo_url}" alt="Аватар">`
             : '👤';
-
         const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
         document.getElementById('profileName').textContent = fullName;
-        document.getElementById('profileUsername').textContent = user.username ? `@${user.username}` : '';
+        document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
     }
-
-    const roleNames = { student: '🎓 Ученик', teacher: '👨‍🏫 Учитель', kindergarten: '🌟 Воспитатель' };
-    document.getElementById('profileRole').textContent = roleNames[state.role] || 'Пользователь';
+    const roleNames = { student: 'Ученик', teacher: 'Учитель', kindergarten: 'Воспитатель' };
+    document.getElementById('profileRole').textContent = roleNames[state.role] || '';
 }
 
 function toggleTheme() {
     const isLight = document.body.classList.toggle('light-theme');
     localStorage.setItem('nevioTheme', isLight ? 'light' : 'dark');
     updateThemeUI(isLight);
-    showToast(isLight ? '☀️ Светлая тема' : '🌙 Тёмная тема');
+    showToast(isLight ? 'Светлая тема включена' : 'Тёмная тема включена');
 }
 
 function updateThemeUI(isLight) {
@@ -2147,27 +1890,25 @@ function deleteAccount() {
         state.history = [];
         state.conversationHistory = [];
         showPage('roleSelectionPage');
-        showToast('Данные удалены');
+        showToast('Аккаунт удалён');
     }
 }
 
 function showPrivacy() { showPage('privacyPage'); }
-function showTerms() { showPage('termsPage'); }
+function showTerms()   { showPage('termsPage'); }
 
 // ============================================================
-//  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+//  НАВИГАЦИЯ
 // ============================================================
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId)?.classList.add('active');
 
-    // Навигация
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
-    else if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
-    else if (pageId === 'settingsPage') document.getElementById('nav-settings')?.classList.add('active');
+    if (pageId === 'mainPage')    document.getElementById('nav-main')?.classList.add('active');
+    if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
+    if (pageId === 'settingsPage')document.getElementById('nav-settings')?.classList.add('active');
 
-    state.currentPage = pageId;
     window.scrollTo(0, 0);
 }
 
@@ -2176,33 +1917,37 @@ function goBack() {
     state.conversationHistory = [];
 }
 
+// ============================================================
+//  ВСПОМОГАТЕЛЬНЫЕ
+// ============================================================
 function getActionName(actionId) {
     const names = {
-        solve: '🧮 Решение',  explain: '💡 Объяснение', summary: '📝 Конспект',
-        schema: '🗺️ Схема',  test: '📋 Подготовка к тесту', oral_exam: '🎤 Экзамен',
-        lab: '🔬 Лабораторная', lit_analysis: '📖 Анализ произведения',
-        essay: '✍️ Сочинение', generate_quiz: '❓ Вопросы',
-        chat: '💬 Чат', lesson: '📚 План урока', tasks: '✏️ Задания',
-        variants: '📄 Контрольная', lit_lesson: '📖 Урок лит-ры',
-        differentiation: '🎯 Дифференциация', lesson_plan: '🎨 Конспект занятия',
-        parent_advice: '💝 Консультация', planning: '📅 Планирование',
-        games: '🧩 Игры', holiday: '🎉 Праздник', observation: '👁️ Наблюдение'
+        solve: 'Решение задачи',       explain: 'Объяснение темы',
+        summary: 'Конспект',           schema: 'Схема',
+        test: 'Подготовка к тесту',    oral_exam: 'Устный экзамен',
+        lab: 'Лабораторная работа',    lit_analysis: 'Анализ произведения',
+        essay: 'Сочинение',            generate_quiz: 'Вопросы по тексту',
+        chat: 'Свободный чат',
+        lesson: 'План урока',          tasks: 'Задания',
+        variants: 'Контрольная работа',lit_lesson: 'Урок литературы',
+        differentiation: 'Дифференциация',
+        lesson_plan: 'Конспект занятия',parent_advice: 'Консультация',
+        planning: 'Планирование',       games: 'Игры',
+        holiday: 'Сценарий праздника',  observation: 'Наблюдение'
     };
-    return names[actionId] || '📌 Запрос';
+    return names[actionId] || 'Запрос';
 }
 
 function formatDate(timestamp) {
     const date = new Date(timestamp);
-    const now = new Date();
-    const diff = now - date;
+    const diff = Date.now() - date;
     const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-
-    if (minutes < 1) return 'Только что';
-    if (minutes < 60) return `${minutes} мин назад`;
-    if (hours < 24) return `${hours} ч назад`;
-    if (days < 7) return `${days} дн назад`;
+    const hours   = Math.floor(diff / 3600000);
+    const days    = Math.floor(diff / 86400000);
+    if (minutes < 1)  return 'Только что';
+    if (minutes < 60) return minutes + ' мин назад';
+    if (hours < 24)   return hours + ' ч назад';
+    if (days < 7)     return days + ' дн назад';
     return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
 }
 
@@ -2212,9 +1957,7 @@ function saveData() {
             role: state.role,
             history: state.history
         }));
-    } catch(e) {
-        console.warn('Ошибка сохранения данных');
-    }
+    } catch(e) {}
 }
 
 function showToast(message) {
@@ -2224,9 +1967,6 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ============================================================
-//  ЗАПУСК
-// ============================================================
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
