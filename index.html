@@ -94,13 +94,16 @@
         .menu-card {
             background: var(--card);
             border-radius: 16px;
-            padding: 20px;
+            padding: 20px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid var(--border);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .menu-card::before {
             content: '';
@@ -114,7 +117,24 @@
         .menu-card:hover::before { opacity: 1; }
         .menu-card:active { transform: scale(0.95); }
         .menu-card:hover { border-color: var(--gold); transform: translateY(-4px); }
-        .menu-card .icon { font-size: 36px; margin-bottom: 12px; display: block; color: var(--gold); }
+        .menu-card .icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+        .menu-card .icon i {
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .menu-card h3 { font-size: 14px; font-weight: 600; color: var(--text); }
         .menu-card p { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
 
@@ -708,30 +728,30 @@ const menuConfigs = {
         { id: 'oral_exam',    icon: 'fas fa-microphone-alt',  title: 'Экзаменатор',           description: 'Устный опрос по теме' },
         { id: 'lab',          icon: 'fas fa-flask',           title: 'Помощь с лабораторной', description: 'Пошаговый разбор опыта' },
         { id: 'lit_analysis', icon: 'fas fa-book-open',       title: 'Анализ произведения',   description: 'Всё о книге: герои, темы, идеи' },
-        { id: 'essay',        icon: 'fas fa-pen-fancy',       title: 'Помощь с сочинением',   description: 'План, аргументы, вступление' },
+        { id: 'essay',        icon: 'fas fa-pen-fancy',       title: 'Помощь с сочинением',   description: 'Написать, план, аргументы' },
         { id: 'generate_quiz',icon: 'fas fa-question-circle', title: 'Создать вопросы',       description: 'По любому тексту' },
         { id: 'chat',         icon: 'fas fa-comments',        title: 'Свободный чат',         description: 'Спроси что угодно' }
     ],
     teacher: [
-        { id: 'lesson',          icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек',          description: 'Полный план урока' },
-        { id: 'tasks',           icon: 'fas fa-tasks',           title: 'Генератор заданий',        description: 'Уникальные задачи по теме' },
-        { id: 'variants',        icon: 'fas fa-copy',            title: 'Варианты контрольной',     description: 'A/B варианты с ответами' },
-        { id: 'explain',         icon: 'fas fa-lightbulb',       title: 'Методика объяснения',      description: 'Как объяснить тему классу' },
-        { id: 'schema',          icon: 'fas fa-diagram-project', title: 'Схема для класса',         description: 'Визуальный материал' },
-        { id: 'summary',         icon: 'fas fa-book',            title: 'Конспект урока',           description: 'Структура материала' },
-        { id: 'lit_lesson',      icon: 'fas fa-chalkboard',      title: 'Урок литературы',          description: 'Методика разбора произведения' },
-        { id: 'generate_quiz',   icon: 'fas fa-question-circle', title: 'Создать тест',             description: 'Для проверки знаний' },
-        { id: 'differentiation', icon: 'fas fa-layer-group',     title: 'Дифференциация',           description: 'Задания для разных уровней' },
+        { id: 'lesson',          icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек',             description: 'Полный план урока' },
+        { id: 'tasks',           icon: 'fas fa-tasks',           title: 'Генератор заданий',           description: 'Уникальные задачи по теме' },
+        { id: 'variants',        icon: 'fas fa-copy',            title: 'Варианты контрольной',        description: 'A/B варианты с ответами' },
+        { id: 'explain',         icon: 'fas fa-lightbulb',       title: 'Методика объяснения',         description: 'Как объяснить тему классу' },
+        { id: 'schema',          icon: 'fas fa-diagram-project', title: 'Схема для класса',            description: 'Визуальный материал' },
+        { id: 'summary',         icon: 'fas fa-book',            title: 'Конспект урока',              description: 'Структура материала' },
+        { id: 'lit_lesson',      icon: 'fas fa-chalkboard',      title: 'Урок литературы',             description: 'Методика разбора произведения' },
+        { id: 'generate_quiz',   icon: 'fas fa-question-circle', title: 'Создать тест',                description: 'Для проверки знаний' },
+        { id: 'differentiation', icon: 'fas fa-layer-group',     title: 'Дифференциация',              description: 'Задания для разных уровней' },
         { id: 'chat',            icon: 'fas fa-comments',        title: 'Педагогическая консультация', description: 'Совет от ИИ' }
     ],
     kindergarten: [
-        { id: 'lesson_plan',  icon: 'fas fa-child',          title: 'Конспект занятия',          description: 'Для любой возрастной группы' },
+        { id: 'lesson_plan',  icon: 'fas fa-child',          title: 'Конспект занятия',           description: 'Для любой возрастной группы' },
         { id: 'parent_advice',icon: 'fas fa-heart',          title: 'Консультация для родителей', description: 'Кризисы, развитие, поведение' },
-        { id: 'planning',     icon: 'fas fa-calendar-alt',   title: 'Планирование',              description: 'Перспективное и календарное' },
-        { id: 'games',        icon: 'fas fa-puzzle-piece',   title: 'Игры и развитие',           description: 'Развивающие игры по возрасту' },
-        { id: 'holiday',      icon: 'fas fa-birthday-cake',  title: 'Сценарии праздников',       description: 'Утренники и мероприятия' },
-        { id: 'observation',  icon: 'fas fa-eye',            title: 'Наблюдение за ребёнком',    description: 'Анализ развития и поведения' },
-        { id: 'chat',         icon: 'fas fa-comments',       title: 'Свободный вопрос',          description: 'Спросить совет у ИИ' }
+        { id: 'planning',     icon: 'fas fa-calendar-alt',   title: 'Планирование',               description: 'Перспективное и календарное' },
+        { id: 'games',        icon: 'fas fa-puzzle-piece',   title: 'Игры и развитие',            description: 'Развивающие игры по возрасту' },
+        { id: 'holiday',      icon: 'fas fa-birthday-cake',  title: 'Сценарии праздников',        description: 'Утренники и мероприятия' },
+        { id: 'observation',  icon: 'fas fa-eye',            title: 'Наблюдение за ребёнком',     description: 'Анализ развития и поведения' },
+        { id: 'chat',         icon: 'fas fa-comments',       title: 'Свободный вопрос',           description: 'Спросить совет у ИИ' }
     ]
 };
 
@@ -859,16 +879,16 @@ function generateForm(actionId) {
     const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option>${g} класс</option>`).join('');
     const countOpts = [5,10,15,20].map(c => `<option>${c}</option>`).join('');
 
-    const universalPlaceholder = 'Опишите запрос подробнее — чем точнее вы напишете, тем лучше ответит ИИ';
+    const ph = 'Напиши запрос — и я сразу отвечу';
 
-    const textArea = (id, placeholder, rows) =>
+    const ta = (id, placeholder, rows) =>
         `<div class="form-group"><label>Ваш запрос</label>
-         <textarea id="${id}" placeholder="${placeholder || universalPlaceholder}" rows="${rows || 3}"></textarea></div>`;
+         <textarea id="${id}" placeholder="${placeholder || ph}" rows="${rows || 3}"></textarea></div>`;
 
     const sel = (id, label, options) =>
         `<div class="form-group"><label>${label}</label><select id="${id}">${options}</select></div>`;
 
-    const submitBtn = (icon, text) =>
+    const btn = (icon, text) =>
         `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
 
     let html = '';
@@ -876,142 +896,143 @@ function generateForm(actionId) {
     switch(actionId) {
 
         case 'solve':
-            html = textArea('inputText', 'Например: x² - 5x + 6 = 0, или задача про поезда — опишите всё условие')
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-calculator', 'Решить с объяснением');
+                + btn('fas fa-calculator', 'Решить с объяснением');
             break;
 
         case 'explain':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('levelSelect', 'Объяснить как...', `
                     <option>Для новичка (максимально просто)</option>
                     <option>Обычное объяснение</option>
                     <option>Подробно с доказательствами</option>`)
-                + submitBtn('fas fa-lightbulb', 'Объяснить');
+                + btn('fas fa-lightbulb', 'Объяснить');
             break;
 
         case 'summary':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-book', 'Создать конспект');
+                + btn('fas fa-book', 'Создать конспект');
             break;
 
         case 'schema':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
-                + submitBtn('fas fa-diagram-project', 'Создать схему');
+                + btn('fas fa-diagram-project', 'Создать схему');
             break;
 
         case 'test':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('levelSelect', 'Уровень сложности', `
                     <option>Базовый</option><option>Средний</option><option>Продвинутый</option>`)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-clipboard-list', 'Начать подготовку');
+                + btn('fas fa-clipboard-list', 'Начать подготовку');
             break;
 
         case 'oral_exam':
-            html = `<div class="form-group"><label>Тема для опроса</label>
-                    <input type="text" id="examTopic" placeholder="${universalPlaceholder}"></div>`
+            html = `<div class="form-group"><label>Ваш запрос</label>
+                    <input type="text" id="examTopic" placeholder="${ph}"></div>`
                 + sel('examCount', 'Количество вопросов', `<option>3</option><option>5</option><option>7</option><option>10</option>`)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-microphone-alt', 'Начать экзамен');
+                + btn('fas fa-microphone-alt', 'Начать экзамен');
             break;
 
         case 'lab':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', `<option>Физика</option><option>Химия</option><option>Биология</option>`)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-flask', 'Помочь с лабораторной');
+                + btn('fas fa-flask', 'Помочь с лабораторной');
             break;
 
         case 'lit_analysis':
             html = `<div class="form-group"><label>Название произведения</label>
-                    <input type="text" id="litTitle" placeholder="${universalPlaceholder}"></div>
+                    <input type="text" id="litTitle" placeholder="${ph}"></div>
                     <div class="form-group"><label>Автор</label>
                     <input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-book-open', 'Проанализировать');
+                + btn('fas fa-book-open', 'Проанализировать');
             break;
 
         case 'essay':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('essayType', 'Тип помощи', `
+                    <option>Написать сочинение</option>
                     <option>Составить план</option>
                     <option>Написать вступление</option>
                     <option>Подобрать аргументы и цитаты</option>
                     <option>Написать заключение</option>
                     <option>Полный анализ темы</option>`)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-pen-fancy', 'Помочь с сочинением');
+                + btn('fas fa-pen-fancy', 'Помочь с сочинением');
             break;
 
         case 'generate_quiz':
-            html = `<div class="form-group"><label>Текст (параграф, статья, условие)</label>
-                    <textarea id="inputText" placeholder="Вставьте текст — ИИ создаст вопросы по его содержанию" rows="6"></textarea></div>`
+            html = `<div class="form-group"><label>Ваш запрос</label>
+                    <textarea id="inputText" placeholder="Вставь текст — создам вопросы по нему" rows="6"></textarea></div>`
                 + sel('quizCount', 'Количество вопросов', countOpts)
                 + sel('quizType', 'Тип вопросов', `
                     <option>Открытые (написать ответ)</option>
                     <option>Тест с вариантами (A/B/C/D)</option>
                     <option>Смешанный формат</option>`)
-                + submitBtn('fas fa-question-circle', 'Создать вопросы');
+                + btn('fas fa-question-circle', 'Создать вопросы');
             break;
 
         case 'chat':
-            html = textArea('inputText', universalPlaceholder, 4)
-                + submitBtn('fas fa-paper-plane', 'Отправить');
+            html = ta('inputText', ph, 4)
+                + btn('fas fa-paper-plane', 'Отправить');
             break;
 
         // --- УЧИТЕЛЬ ---
         case 'lesson':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('gradeSelect', 'Класс', gradeOpts)
                 + sel('lessonDuration', 'Длительность', `<option>45 минут</option><option>90 минут (сдвоенный)</option><option>40 минут</option>`)
-                + submitBtn('fas fa-chalkboard-user', 'Создать план урока');
+                + btn('fas fa-chalkboard-user', 'Создать план урока');
             break;
 
         case 'tasks':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('gradeSelect', 'Класс', gradeOpts)
                 + sel('countSelect', 'Количество заданий', countOpts)
-                + submitBtn('fas fa-tasks', 'Создать задания');
+                + btn('fas fa-tasks', 'Создать задания');
             break;
 
         case 'variants':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('gradeSelect', 'Класс', gradeOpts)
                 + sel('variantCount', 'Количество вариантов', `<option>2 варианта</option><option>4 варианта</option>`)
                 + sel('taskCount', 'Заданий в варианте', `<option>5</option><option>7</option><option>10</option>`)
-                + submitBtn('fas fa-copy', 'Создать контрольную');
+                + btn('fas fa-copy', 'Создать контрольную');
             break;
 
         case 'lit_lesson':
             html = `<div class="form-group"><label>Произведение</label>
-                    <input type="text" id="litTitle" placeholder="${universalPlaceholder}"></div>
+                    <input type="text" id="litTitle" placeholder="${ph}"></div>
                     <div class="form-group"><label>Автор</label>
                     <input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
                 + sel('gradeSelect', 'Класс', gradeOpts)
                 + sel('lessonDuration', 'Длительность', `<option>45 минут</option><option>90 минут</option>`)
-                + submitBtn('fas fa-chalkboard', 'Создать план урока');
+                + btn('fas fa-chalkboard', 'Создать план урока');
             break;
 
         case 'differentiation':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
                 + sel('gradeSelect', 'Класс', gradeOpts)
-                + submitBtn('fas fa-layer-group', 'Создать разноуровневые задания');
+                + btn('fas fa-layer-group', 'Создать разноуровневые задания');
             break;
 
         // --- ВОСПИТАТЕЛЬ ---
         case 'lesson_plan':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('ageGroup', 'Возрастная группа', `
                     <option>Младшая (3-4 года)</option>
                     <option>Средняя (4-5 лет)</option>
@@ -1023,11 +1044,11 @@ function generateForm(actionId) {
                     <option>Лепка</option><option>Аппликация</option>
                     <option>Конструирование</option><option>Музыкальное</option>
                     <option>Физкультурное</option>`)
-                + submitBtn('fas fa-child', 'Создать конспект занятия');
+                + btn('fas fa-child', 'Создать конспект занятия');
             break;
 
         case 'parent_advice':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('adviceTopic', 'Тема консультации', `
                     <option>Кризис 3 лет</option><option>Кризис 7 лет</option>
                     <option>Адаптация к детскому саду</option>
@@ -1037,11 +1058,11 @@ function generateForm(actionId) {
                     <option>Гиперактивность (СДВГ)</option>
                     <option>Как хвалить и наказывать</option>
                     <option>Экранное время (гаджеты)</option>`)
-                + submitBtn('fas fa-heart', 'Получить консультацию');
+                + btn('fas fa-heart', 'Получить консультацию');
             break;
 
         case 'planning':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('planType', 'Тип планирования', `
                     <option>Календарное на неделю</option>
                     <option>Перспективное на месяц</option>
@@ -1051,11 +1072,11 @@ function generateForm(actionId) {
                     <option>Средняя (4-5 лет)</option>
                     <option>Старшая (5-6 лет)</option>
                     <option>Подготовительная (6-7 лет)</option>`)
-                + submitBtn('fas fa-calendar-alt', 'Создать план');
+                + btn('fas fa-calendar-alt', 'Создать план');
             break;
 
         case 'games':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('gameAge', 'Возраст', `
                     <option>3-4 года</option><option>4-5 лет</option>
                     <option>5-6 лет</option><option>6-7 лет</option>`)
@@ -1064,11 +1085,11 @@ function generateForm(actionId) {
                     <option>Сюжетно-ролевые</option><option>На логику и внимание</option>
                     <option>Пальчиковые</option><option>На развитие речи</option>`)
                 + sel('countSelect', 'Количество игр', `<option>3</option><option>5</option><option>10</option>`)
-                + submitBtn('fas fa-puzzle-piece', 'Подобрать игры');
+                + btn('fas fa-puzzle-piece', 'Подобрать игры');
             break;
 
         case 'holiday':
-            html = textArea('inputText', universalPlaceholder)
+            html = ta('inputText', ph)
                 + sel('holidayType', 'Праздник', `
                     <option>Новый год</option><option>8 Марта</option>
                     <option>23 Февраля</option><option>День рождения</option>
@@ -1079,29 +1100,23 @@ function generateForm(actionId) {
                     <option>3-4 года</option><option>4-5 лет</option>
                     <option>5-6 лет</option><option>6-7 лет</option>
                     <option>Разновозрастная группа</option>`)
-                + submitBtn('fas fa-birthday-cake', 'Создать сценарий');
+                + btn('fas fa-birthday-cake', 'Создать сценарий');
             break;
 
         case 'observation':
-            html = textArea('inputText', universalPlaceholder, 5)
+            html = ta('inputText', ph, 5)
                 + sel('ageGroup', 'Возраст ребёнка', `
                     <option>3-4 года</option><option>4-5 лет</option>
                     <option>5-6 лет</option><option>6-7 лет</option>`)
-                + submitBtn('fas fa-eye', 'Получить анализ');
+                + btn('fas fa-eye', 'Получить анализ');
             break;
 
         default:
-            html = textArea('inputText', universalPlaceholder, 4)
-                + submitBtn('fas fa-paper-plane', 'Отправить');
+            html = ta('inputText', ph, 4)
+                + btn('fas fa-paper-plane', 'Отправить');
     }
 
     formContainer.innerHTML = html;
-}
-
-// helper — нужен внутри generateForm
-function textArea(id, placeholder, rows) {
-    return `<div class="form-group"><label>Ваш запрос</label>
-            <textarea id="${id}" placeholder="${placeholder}" rows="${rows || 3}"></textarea></div>`;
 }
 
 // ============================================================
@@ -1305,29 +1320,29 @@ function formatAIResponse(text) {
 // ============================================================
 function collectFormData() {
     return {
-        subject:       document.getElementById('subjectSelect')?.value || '',
-        grade:         document.getElementById('gradeSelect')?.value || '',
-        level:         document.getElementById('levelSelect')?.value || '',
-        count:         document.getElementById('countSelect')?.value || '',
-        examTopic:     document.getElementById('examTopic')?.value?.trim() || '',
-        examCount:     document.getElementById('examCount')?.value || '5',
-        litTitle:      document.getElementById('litTitle')?.value?.trim() || '',
-        litAuthor:     document.getElementById('litAuthor')?.value?.trim() || '',
-        quizCount:     document.getElementById('quizCount')?.value || '10',
-        quizType:      document.getElementById('quizType')?.value || '',
-        ageGroup:      document.getElementById('ageGroup')?.value || '',
-        lessonType:    document.getElementById('lessonType')?.value || '',
-        adviceTopic:   document.getElementById('adviceTopic')?.value || '',
-        planType:      document.getElementById('planType')?.value || '',
-        planAge:       document.getElementById('planAge')?.value || '',
-        gameAge:       document.getElementById('gameAge')?.value || '',
-        gameType:      document.getElementById('gameType')?.value || '',
-        holidayType:   document.getElementById('holidayType')?.value || '',
-        holidayAge:    document.getElementById('holidayAge')?.value || '',
-        essayType:     document.getElementById('essayType')?.value || '',
-        lessonDuration:document.getElementById('lessonDuration')?.value || '45 минут',
-        variantCount:  document.getElementById('variantCount')?.value || '2 варианта',
-        taskCount:     document.getElementById('taskCount')?.value || '5'
+        subject:        document.getElementById('subjectSelect')?.value || '',
+        grade:          document.getElementById('gradeSelect')?.value || '',
+        level:          document.getElementById('levelSelect')?.value || '',
+        count:          document.getElementById('countSelect')?.value || '',
+        examTopic:      document.getElementById('examTopic')?.value?.trim() || '',
+        examCount:      document.getElementById('examCount')?.value || '5',
+        litTitle:       document.getElementById('litTitle')?.value?.trim() || '',
+        litAuthor:      document.getElementById('litAuthor')?.value?.trim() || '',
+        quizCount:      document.getElementById('quizCount')?.value || '10',
+        quizType:       document.getElementById('quizType')?.value || '',
+        ageGroup:       document.getElementById('ageGroup')?.value || '',
+        lessonType:     document.getElementById('lessonType')?.value || '',
+        adviceTopic:    document.getElementById('adviceTopic')?.value || '',
+        planType:       document.getElementById('planType')?.value || '',
+        planAge:        document.getElementById('planAge')?.value || '',
+        gameAge:        document.getElementById('gameAge')?.value || '',
+        gameType:       document.getElementById('gameType')?.value || '',
+        holidayType:    document.getElementById('holidayType')?.value || '',
+        holidayAge:     document.getElementById('holidayAge')?.value || '',
+        essayType:      document.getElementById('essayType')?.value || '',
+        lessonDuration: document.getElementById('lessonDuration')?.value || '45 минут',
+        variantCount:   document.getElementById('variantCount')?.value || '2 варианта',
+        taskCount:      document.getElementById('taskCount')?.value || '5'
     };
 }
 
@@ -1498,17 +1513,20 @@ D) ...
 ВЫВОД: (значение произведения)`,
 
         essay:
-`Помоги написать сочинение на тему "${inputText}" для ${data.grade}.
+`Помоги с сочинением на тему "${inputText}" для ${data.grade}.
 Тип помощи: ${data.essayType}.
 
-Выполни именно то, что указано:
-- "Составить план" — подробный план с тезисами
-- "Написать вступление" — 2-3 варианта вступления
-- "Подобрать аргументы и цитаты" — 3-5 аргументов с цитатами из произведений
-- "Написать заключение" — 2 варианта заключения
-- "Полный анализ темы" — полный разбор темы
-
-Приводи конкретные примеры из литературы.`,
+${data.essayType === 'Написать сочинение' ?
+`Напиши полноценное сочинение на эту тему. Включи вступление, основную часть с аргументами и примерами из литературы, заключение. Соблюдай структуру, используй литературоведческие термины, приводи цитаты.` :
+data.essayType === 'Составить план' ?
+`Составь подробный план сочинения с тезисами для каждого пункта.` :
+data.essayType === 'Написать вступление' ?
+`Напиши 2-3 варианта вступления для этого сочинения.` :
+data.essayType === 'Подобрать аргументы и цитаты' ?
+`Подбери 3-5 аргументов с цитатами из произведений для этой темы.` :
+data.essayType === 'Написать заключение' ?
+`Напиши 2 варианта заключения для этого сочинения.` :
+`Сделай полный разбор темы сочинения.`}`,
 
         generate_quiz:
 `На основе следующего текста создай ${data.quizCount} вопросов типа "${data.quizType}":
@@ -1905,9 +1923,9 @@ function showPage(pageId) {
     document.getElementById(pageId)?.classList.add('active');
 
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    if (pageId === 'mainPage')    document.getElementById('nav-main')?.classList.add('active');
-    if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
-    if (pageId === 'settingsPage')document.getElementById('nav-settings')?.classList.add('active');
+    if (pageId === 'mainPage')     document.getElementById('nav-main')?.classList.add('active');
+    if (pageId === 'historyPage')  document.getElementById('nav-history')?.classList.add('active');
+    if (pageId === 'settingsPage') document.getElementById('nav-settings')?.classList.add('active');
 
     window.scrollTo(0, 0);
 }
@@ -1922,14 +1940,14 @@ function goBack() {
 // ============================================================
 function getActionName(actionId) {
     const names = {
-        solve: 'Решение задачи',       explain: 'Объяснение темы',
-        summary: 'Конспект',           schema: 'Схема',
-        test: 'Подготовка к тесту',    oral_exam: 'Устный экзамен',
-        lab: 'Лабораторная работа',    lit_analysis: 'Анализ произведения',
-        essay: 'Сочинение',            generate_quiz: 'Вопросы по тексту',
+        solve: 'Решение задачи',        explain: 'Объяснение темы',
+        summary: 'Конспект',            schema: 'Схема',
+        test: 'Подготовка к тесту',     oral_exam: 'Устный экзамен',
+        lab: 'Лабораторная работа',     lit_analysis: 'Анализ произведения',
+        essay: 'Сочинение',             generate_quiz: 'Вопросы по тексту',
         chat: 'Свободный чат',
-        lesson: 'План урока',          tasks: 'Задания',
-        variants: 'Контрольная работа',lit_lesson: 'Урок литературы',
+        lesson: 'План урока',           tasks: 'Задания',
+        variants: 'Контрольная работа', lit_lesson: 'Урок литературы',
         differentiation: 'Дифференциация',
         lesson_plan: 'Конспект занятия',parent_advice: 'Консультация',
         planning: 'Планирование',       games: 'Игры',
