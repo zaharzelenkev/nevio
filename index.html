@@ -16,252 +16,321 @@
         }
         :root {
             --bg: #0a0a0a;
-            --surface: #0f0f0f;
-            --card: #121212;
-            --border: #2a2a2a;
+            --surface: #111111;
+            --card: #161616;
+            --border: #272727;
             --gold: #e8b13e;
             --gold-dark: #c4911a;
-            --text: #ffffff;
-            --text-secondary: #a0a0a0;
-            --text-muted: #6b6b6b;
+            --gold-light: #f5cc6e;
+            --text: #f0f0f0;
+            --text-secondary: #909090;
+            --text-muted: #555555;
+            --accent: #1a1a2e;
         }
         body.light-theme {
-            --bg: #f5f5f5;
+            --bg: #f0f2f5;
             --surface: #ffffff;
             --card: #ffffff;
-            --border: #dddddd;
+            --border: #e0e0e0;
             --text: #1a1a1a;
             --text-secondary: #555555;
-            --text-muted: #888888;
+            --text-muted: #999999;
+            --accent: #f5f5f5;
         }
         body {
             background: var(--bg);
             color: var(--text);
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
             overflow-x: hidden;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.3s, color 0.3s;
         }
-        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page { display: none; animation: fadeIn 0.35s ease; }
         .page.active { display: block; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ===== ШАПКА ===== */
         .header {
             text-align: center;
-            margin-bottom: 24px;
-            padding: 20px 0;
+            margin-bottom: 28px;
+            padding: 24px 0 8px;
         }
         .header h1 {
             font-family: 'Abril Fatface', cursive;
-            font-size: 32px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            font-size: 38px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            background-clip: text;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
         }
-        .header p { color: var(--text-secondary); font-size: 14px; }
+        .header p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
 
-        .role-selection { text-align: center; padding: 40px 20px; }
-        .role-selection h2 { font-size: 24px; margin-bottom: 12px; }
-        .role-selection > p { color: var(--text-secondary); margin-bottom: 32px; }
-        .role-buttons { display: grid; gap: 16px; max-width: 400px; margin: 0 auto; }
+        /* ===== ВЫБОР РОЛИ ===== */
+        .role-selection { text-align: center; padding: 32px 16px; }
+        .role-selection h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .role-selection > p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+        .role-buttons { display: grid; gap: 14px; max-width: 420px; margin: 0 auto; }
         .role-btn {
             background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            padding: 22px 24px;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 18px;
         }
         .role-btn:hover {
             border-color: var(--gold);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(232,177,62,0.15);
+            box-shadow: 0 8px 32px rgba(232,177,62,0.12);
         }
-        .role-btn .icon { font-size: 48px; color: var(--gold); margin-bottom: 12px; }
-        .role-btn h3 { font-size: 20px; margin-bottom: 8px; }
-        .role-btn p { color: var(--text-secondary); font-size: 14px; }
+        .role-btn:active { transform: scale(0.98); }
+        .role-btn .role-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(232,177,62,0.15), rgba(232,177,62,0.05));
+            border: 1px solid rgba(232,177,62,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+        .role-btn-text h3 { font-size: 17px; font-weight: 600; margin-bottom: 3px; }
+        .role-btn-text p { color: var(--text-secondary); font-size: 13px; line-height: 1.4; }
 
+        /* ===== МЕНЮ ===== */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
         .menu-card {
             background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 18px;
+            padding: 18px 14px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid var(--border);
+            transition: all 0.25s ease;
+            border: 1.5px solid var(--border);
             position: relative;
             overflow: hidden;
         }
-        .menu-card::before {
+        .menu-card::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            inset: 0;
+            background: linear-gradient(135deg, rgba(232,177,62,0.06), transparent);
             opacity: 0;
             transition: opacity 0.3s;
         }
-        .menu-card:hover::before { opacity: 1; }
-        .menu-card:active { transform: scale(0.95); }
-        .menu-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+        .menu-card:hover::after { opacity: 1; }
+        .menu-card:hover {
+            border-color: rgba(232,177,62,0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        .menu-card:active { transform: scale(0.96); }
         .menu-card .icon {
-            font-size: 36px;
-            margin-bottom: 12px;
+            font-size: 28px;
+            margin-bottom: 10px;
             display: block;
             color: var(--gold);
         }
-        .menu-card h3 { font-size: 14px; font-weight: 600; color: var(--text); }
-        .menu-card p { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+        .menu-card h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .menu-card p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+            line-height: 1.3;
+        }
 
+        /* ===== СЕКЦИЯ КАТЕГОРИЙ ===== */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 20px 0 10px 4px;
+        }
+
+        /* ===== КАРТОЧКА ДЕЙСТВИЯ ===== */
         .action-container { max-width: 600px; margin: 0 auto; }
         .back-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             color: var(--gold);
-            font-size: 16px;
-            margin-bottom: 20px;
+            font-size: 15px;
+            margin-bottom: 18px;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
             transition: all 0.2s;
+            font-weight: 500;
         }
-        .back-btn:hover { background: rgba(232,177,62,0.1); }
+        .back-btn:hover { background: rgba(232,177,62,0.08); }
         .card {
             background: var(--card);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 14px;
+            border: 1.5px solid var(--border);
+        }
+        .card-header {
+            margin-bottom: 18px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
         .card h2 {
-            font-size: 20px;
-            margin-bottom: 8px;
+            font-size: 19px;
             color: var(--text);
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 4px;
         }
-        .card h2 i { color: var(--gold); }
-        .card > p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 16px; }
+        .card h2 i { color: var(--gold); font-size: 18px; }
+        .card-desc { color: var(--text-secondary); font-size: 13px; }
+
+        .form-group { margin-bottom: 14px; }
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text);
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
         }
         textarea, input[type="text"], select {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
             border-radius: 12px;
             font-size: 15px;
             font-family: inherit;
             resize: vertical;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             background: var(--surface);
             color: var(--text);
         }
         textarea:focus, input:focus, select:focus {
             outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(232,177,62,0.15);
+            box-shadow: 0 0 0 3px rgba(232,177,62,0.1);
         }
+        select { cursor: pointer; }
+
         .btn {
             width: 100%;
             padding: 14px 24px;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            letter-spacing: 0.3px;
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
             color: #0a0a0a;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(232,177,62,0.3);
+            box-shadow: 0 6px 20px rgba(232,177,62,0.35);
         }
-        .btn-secondary { background: var(--border); color: var(--text); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
+        /* ===== ЧАТ ===== */
         .chat-messages {
-            margin-top: 20px;
+            margin-top: 18px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
         .message { display: flex; flex-direction: column; }
         .message.user { align-items: flex-end; }
         .message.ai { align-items: flex-start; }
         .message-bubble {
-            max-width: 92%;
-            padding: 14px 18px;
+            max-width: 90%;
+            padding: 12px 16px;
             border-radius: 18px;
             font-size: 14px;
             line-height: 1.7;
         }
         .message.user .message-bubble {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
             color: #0a0a0a;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 5px;
             font-weight: 500;
         }
         .message.ai .message-bubble {
             background: var(--surface);
             color: var(--text);
-            border: 1px solid var(--border);
-            border-bottom-left-radius: 4px;
+            border: 1.5px solid var(--border);
+            border-bottom-left-radius: 5px;
         }
         .message-label {
             font-size: 11px;
             color: var(--text-muted);
             margin-bottom: 4px;
             padding: 0 4px;
+            font-weight: 500;
         }
-
         .streaming-cursor {
             display: inline-block;
             width: 2px;
-            height: 16px;
+            height: 15px;
             background: var(--gold);
             margin-left: 2px;
             vertical-align: middle;
             animation: blink 0.7s infinite;
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
         .loading-dots {
             display: flex;
-            gap: 6px;
-            padding: 16px;
+            gap: 5px;
+            padding: 12px 16px;
             align-items: center;
         }
         .loading-dots span {
-            width: 8px;
-            height: 8px;
+            width: 7px; height: 7px;
             background: var(--gold);
             border-radius: 50%;
             animation: bounce 1.2s infinite;
@@ -269,19 +338,15 @@
         .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bounce {
-            0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
-            40% { transform: translateY(-8px); opacity: 1; }
+            0%,80%,100%{transform:translateY(0);opacity:0.4}
+            40%{transform:translateY(-7px);opacity:1}
         }
-        .loading-text {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-left: 8px;
-        }
+        .loading-text { font-size: 13px; color: var(--text-secondary); margin-left: 6px; }
 
         .chat-input-area {
             display: flex;
             gap: 8px;
-            margin-top: 16px;
+            margin-top: 14px;
             align-items: flex-end;
         }
         .chat-input-area textarea {
@@ -294,65 +359,84 @@
             border-radius: 22px;
         }
         .send-btn {
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 17px;
             color: #0a0a0a;
             flex-shrink: 0;
             transition: all 0.2s;
         }
-        .send-btn:hover { transform: scale(1.1); }
-        .send-btn:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+        .send-btn:hover { transform: scale(1.08); }
+        .send-btn:disabled { opacity: 0.4; transform: none; cursor: not-allowed; }
 
+        /* ===== ПРОФИЛЬ ===== */
         .profile-section {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border-radius: 16px;
+            background: linear-gradient(135deg, #1a1400, #2a1f00);
+            border: 1.5px solid rgba(232,177,62,0.3);
+            border-radius: 20px;
             padding: 24px;
             text-align: center;
-            color: #0a0a0a;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(232,177,62,0.06) 0%, transparent 60%);
+        }
+        body.light-theme .profile-section {
+            background: linear-gradient(135deg, #fdf8ee, #fef3d0);
+            border-color: rgba(232,177,62,0.4);
         }
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 76px; height: 76px;
             border-radius: 50%;
-            margin: 0 auto 16px;
-            background: white;
+            margin: 0 auto 14px;
+            background: rgba(232,177,62,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            border: 4px solid rgba(255,255,255,0.3);
+            font-size: 32px;
+            border: 2px solid rgba(232,177,62,0.4);
             overflow: hidden;
+            position: relative;
         }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-        .profile-username { font-size: 14px; opacity: 0.9; }
+        .profile-name { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+        .profile-username { font-size: 13px; color: var(--text-secondary); }
         .profile-role {
             display: inline-block;
-            margin-top: 12px;
-            padding: 6px 16px;
-            background: rgba(0,0,0,0.15);
+            margin-top: 10px;
+            padding: 5px 16px;
+            background: rgba(232,177,62,0.15);
+            border: 1px solid rgba(232,177,62,0.3);
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.5px;
         }
 
+        /* ===== НАСТРОЙКИ ===== */
         .settings-list {
             background: var(--card);
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
         }
         .settings-item {
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -361,34 +445,36 @@
             transition: all 0.2s;
         }
         .settings-item:last-child { border-bottom: none; }
-        .settings-item:hover { background: rgba(232,177,62,0.08); }
+        .settings-item:hover { background: rgba(232,177,62,0.05); }
+        .settings-item:active { background: rgba(232,177,62,0.1); }
         .settings-item-left { display: flex; align-items: center; gap: 12px; }
         .settings-item-icon {
-            width: 40px;
-            height: 40px;
+            width: 38px; height: 38px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            background: var(--border);
+            font-size: 16px;
+            background: rgba(232,177,62,0.08);
             color: var(--gold);
+            border: 1px solid rgba(232,177,62,0.15);
         }
-        .settings-item-text h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
-        .settings-item-text p { font-size: 13px; color: var(--text-secondary); }
-        .settings-item-right { color: var(--text-muted); }
+        .settings-item-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 1px; }
+        .settings-item-text p { font-size: 12px; color: var(--text-secondary); }
+        .settings-item-right { color: var(--text-muted); font-size: 13px; }
 
+        /* ===== ИСТОРИЯ ===== */
         .history-item {
             background: var(--surface);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 14px 16px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border);
+            margin-bottom: 8px;
+            border: 1.5px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
         }
-        .history-item:hover { border-color: var(--gold); transform: translateX(4px); }
-        .history-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .history-item:hover { border-color: rgba(232,177,62,0.4); transform: translateX(3px); }
+        .history-header { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; }
         .history-type { font-size: 12px; font-weight: 600; color: var(--gold); }
         .history-date { font-size: 11px; color: var(--text-muted); }
         .history-preview {
@@ -399,8 +485,10 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            line-height: 1.4;
         }
 
+        /* ===== НАВБАР ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -408,55 +496,51 @@
             border-top: 1px solid var(--border);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            padding: 8px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            padding: 8px 8px 12px;
             z-index: 100;
+            backdrop-filter: blur(10px);
         }
         .nav-item {
-            padding: 8px;
+            padding: 8px 4px;
             text-align: center;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 12px;
             transition: all 0.2s;
             color: var(--text-muted);
         }
-        .nav-item:hover { background: rgba(232,177,62,0.1); }
+        .nav-item:hover { background: rgba(232,177,62,0.08); color: var(--gold); }
         .nav-item.active { color: var(--gold); }
-        .nav-item .icon { font-size: 22px; margin-bottom: 3px; }
-        .nav-item span { display: block; font-size: 11px; font-weight: 500; }
+        .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
+        .nav-item span { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
 
-        .empty-state { text-align: center; padding: 60px 20px; }
-        .empty-state .icon { font-size: 56px; margin-bottom: 16px; opacity: 0.25; color: var(--gold); }
-        .empty-state h3 { color: var(--text-secondary); margin-bottom: 8px; }
-        .empty-state p { color: var(--text-muted); font-size: 14px; }
+        /* ===== ПРОЧЕЕ ===== */
+        .empty-state { text-align: center; padding: 50px 20px; }
+        .empty-state .icon { font-size: 48px; margin-bottom: 14px; opacity: 0.2; color: var(--gold); }
+        .empty-state h3 { color: var(--text-secondary); margin-bottom: 6px; font-size: 16px; }
+        .empty-state p { color: var(--text-muted); font-size: 13px; }
 
         .toast {
             position: fixed;
-            bottom: 90px;
-            left: 50%;
+            bottom: 95px; left: 50%;
             transform: translateX(-50%) translateY(20px);
             background: var(--card);
-            border: 1px solid var(--gold);
+            border: 1px solid rgba(232,177,62,0.4);
             color: var(--gold);
             padding: 10px 20px;
             border-radius: 20px;
             font-size: 13px;
+            font-weight: 500;
             opacity: 0;
             transition: all 0.3s ease;
             z-index: 200;
             white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .ai-content p { margin-bottom: 8px; }
-        .ai-content strong { color: var(--gold); }
-        .ai-content code {
-            background: var(--border);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 13px;
-        }
+        .ai-content strong { color: var(--gold); font-weight: 600; }
+        .ai-content em { font-style: italic; }
 
         .copy-btn {
             display: inline-flex;
@@ -465,38 +549,63 @@
             font-size: 12px;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 5px 10px;
+            border-radius: 8px;
             border: 1px solid var(--border);
             background: transparent;
             margin-top: 8px;
             transition: all 0.2s;
+            font-weight: 500;
         }
-        .copy-btn:hover { color: var(--gold); border-color: var(--gold); }
+        .copy-btn:hover { color: var(--gold); border-color: rgba(232,177,62,0.4); }
+
+        /* ===== ЦТ БЕЙДЖ ===== */
+        .ct-badge {
+            display: inline-block;
+            padding: 2px 7px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            color: #0a0a0a;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
 
 <!-- ВЫБОР РОЛИ -->
 <div class="page active" id="roleSelectionPage">
+    <div style="padding: 20px 0 10px; text-align:center;">
+        <h1 style="font-family:'Abril Fatface',cursive; font-size:42px; background:linear-gradient(135deg,#f5cc6e,#e8b13e,#c4911a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:2px;">NEVIO</h1>
+        <p style="color:var(--text-secondary); font-size:13px; margin-top:4px;">Умный помощник в учёбе</p>
+    </div>
     <div class="role-selection">
-        <h2>Добро пожаловать в NEVIO</h2>
+        <h2>Добро пожаловать</h2>
         <p>Выберите свою роль для персонализированного опыта</p>
         <div class="role-buttons">
             <div class="role-btn" onclick="selectRole('student')">
-                <div class="icon"><i class="fas fa-graduation-cap"></i></div>
-                <h3>Ученик</h3>
-                <p>Решение задач, конспекты, подготовка к контрольным</p>
+                <div class="role-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="role-btn-text">
+                    <h3>Ученик</h3>
+                    <p>Задачи, конспекты, подготовка к ЦТ и экзаменам</p>
+                </div>
             </div>
             <div class="role-btn" onclick="selectRole('teacher')">
-                <div class="icon"><i class="fas fa-chalkboard-user"></i></div>
-                <h3>Учитель</h3>
-                <p>Генерация заданий, планы уроков, материалы для класса</p>
+                <div class="role-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <div class="role-btn-text">
+                    <h3>Учитель</h3>
+                    <p>Планы уроков, задания, контрольные работы</p>
+                </div>
             </div>
             <div class="role-btn" onclick="selectRole('kindergarten')">
-                <div class="icon"><i class="fas fa-child"></i></div>
-                <h3>Воспитатель</h3>
-                <p>Конспекты занятий, консультации для родителей, планирование, игры, сценарии</p>
+                <div class="role-icon"><i class="fas fa-child"></i></div>
+                <div class="role-btn-text">
+                    <h3>Воспитатель</h3>
+                    <p>Конспекты занятий, планирование, сценарии</p>
+                </div>
             </div>
         </div>
     </div>
@@ -508,7 +617,7 @@
         <h1>NEVIO</h1>
         <p>Твой умный помощник в учёбе</p>
     </div>
-    <div class="menu-grid" id="menuGrid"></div>
+    <div id="menuContainer"></div>
 </div>
 
 <!-- ДЕЙСТВИЕ -->
@@ -519,8 +628,10 @@
             <span>Назад</span>
         </div>
         <div class="card">
-            <h2 id="actionTitle"></h2>
-            <p id="actionDescription"></p>
+            <div class="card-header">
+                <h2 id="actionTitle"></h2>
+                <p class="card-desc" id="actionDescription"></p>
+            </div>
             <div id="actionForm"></div>
             <div id="chatMessages" class="chat-messages"></div>
             <div id="continueChatArea" style="display:none;">
@@ -552,55 +663,40 @@
             <div class="settings-item" onclick="showHistory()">
                 <div class="settings-item-left">
                     <div class="settings-item-icon"><i class="fas fa-history"></i></div>
-                    <div class="settings-item-text">
-                        <h4>История запросов</h4>
-                        <p>Посмотреть все предыдущие запросы</p>
-                    </div>
+                    <div class="settings-item-text"><h4>История запросов</h4><p>Все предыдущие запросы</p></div>
                 </div>
                 <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
             </div>
             <div class="settings-item" onclick="clearHistory()">
                 <div class="settings-item-left">
                     <div class="settings-item-icon"><i class="fas fa-trash-alt"></i></div>
-                    <div class="settings-item-text">
-                        <h4>Очистить историю</h4>
-                        <p>Удалить все сохранённые запросы</p>
-                    </div>
+                    <div class="settings-item-text"><h4>Очистить историю</h4><p>Удалить все сохранённые запросы</p></div>
                 </div>
             </div>
             <div class="settings-item" onclick="toggleTheme()">
                 <div class="settings-item-left">
                     <div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div>
-                    <div class="settings-item-text">
-                        <h4>Сменить тему</h4>
-                        <p id="themeText">Переключить на светлую тему</p>
-                    </div>
+                    <div class="settings-item-text"><h4>Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div>
                 </div>
                 <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
             </div>
             <div class="settings-item" onclick="showPrivacy()">
                 <div class="settings-item-left">
                     <div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="settings-item-text">
-                        <h4>Политика конфиденциальности</h4>
-                        <p>Как мы обрабатываем данные</p>
-                    </div>
+                    <div class="settings-item-text"><h4>Конфиденциальность</h4><p>Как мы обрабатываем данные</p></div>
                 </div>
                 <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
             </div>
             <div class="settings-item" onclick="showTerms()">
                 <div class="settings-item-left">
                     <div class="settings-item-icon"><i class="fas fa-file-contract"></i></div>
-                    <div class="settings-item-text">
-                        <h4>Условия использования</h4>
-                        <p>Правила сервиса</p>
-                    </div>
+                    <div class="settings-item-text"><h4>Условия использования</h4><p>Правила сервиса</p></div>
                 </div>
                 <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
             </div>
             <div class="settings-item" onclick="deleteAccount()">
                 <div class="settings-item-left">
-                    <div class="settings-item-icon" style="background:#1a0a0a; color:#f87171;">
+                    <div class="settings-item-icon" style="background:rgba(248,113,113,0.08);color:#f87171;border-color:rgba(248,113,113,0.2);">
                         <i class="fas fa-user-slash"></i>
                     </div>
                     <div class="settings-item-text">
@@ -620,8 +716,10 @@
             <i class="fas fa-arrow-left"></i><span>Назад</span>
         </div>
         <div class="card">
-            <h2><i class="fas fa-history"></i> История запросов</h2>
-            <p>Все ваши предыдущие запросы сохранены здесь</p>
+            <div class="card-header">
+                <h2><i class="fas fa-history"></i> История запросов</h2>
+                <p class="card-desc">Все ваши предыдущие запросы сохранены здесь</p>
+            </div>
             <div id="historyList"></div>
         </div>
     </div>
@@ -634,13 +732,14 @@
             <i class="fas fa-arrow-left"></i><span>Назад</span>
         </div>
         <div class="card">
-            <h2><i class="fas fa-shield-alt"></i> Политика конфиденциальности</h2>
-            <div style="line-height:1.7; color:var(--text); font-size:14px;">
+            <div class="card-header">
+                <h2><i class="fas fa-shield-alt"></i> Конфиденциальность</h2>
+            </div>
+            <div style="line-height:1.8; color:var(--text); font-size:14px;">
                 <p><strong>1. Сбор данных</strong><br>NEVIO не собирает и не хранит ваши личные данные на серверах. Вся история хранится только на вашем устройстве.</p>
-                <p style="margin-top:12px;"><strong>2. Обработка запросов</strong><br>Ваши запросы передаются анонимно в искусственный интеллект для генерации ответов. Мы не сохраняем содержимое ваших диалогов на своих серверах.</p>
-                <p style="margin-top:12px;"><strong>3. Telegram</strong><br>Приложение интегрируется с Telegram только для отображения вашего профиля (имя, фото). Никакие данные не передаются разработчику.</p>
-                <p style="margin-top:12px;"><strong>4. Ваши права</strong><br>Вы можете в любой момент очистить историю или удалить аккаунт через настройки. Все данные будут безвозвратно удалены с вашего устройства.</p>
-                <p style="margin-top:12px;"><strong>5. Контакты</strong><br>По вопросам конфиденциальности вы можете обратиться через поддержку Telegram-бота.</p>
+                <p style="margin-top:14px;"><strong>2. Обработка запросов</strong><br>Ваши запросы передаются анонимно в искусственный интеллект. Мы не сохраняем содержимое диалогов на своих серверах.</p>
+                <p style="margin-top:14px;"><strong>3. Telegram</strong><br>Используется только имя и фото профиля. Никакие данные не передаются разработчику.</p>
+                <p style="margin-top:14px;"><strong>4. Ваши права</strong><br>Вы можете очистить историю или удалить аккаунт через настройки.</p>
             </div>
         </div>
     </div>
@@ -653,13 +752,14 @@
             <i class="fas fa-arrow-left"></i><span>Назад</span>
         </div>
         <div class="card">
-            <h2><i class="fas fa-file-contract"></i> Условия использования</h2>
-            <div style="line-height:1.7; color:var(--text); font-size:14px;">
-                <p><strong>1. Принимая условия</strong><br>Используя NEVIO, вы соглашаетесь с данными условиями.</p>
-                <p style="margin-top:12px;"><strong>2. Ответственность</strong><br>NEVIO предоставляет информацию на основе искусственного интеллекта. Мы не несём ответственности за возможные ошибки в ответах. Всегда проверяйте критически важную информацию.</p>
-                <p style="margin-top:12px;"><strong>3. Ограничение использования</strong><br>Запрещается использовать приложение для незаконных действий, спама, оскорблений.</p>
-                <p style="margin-top:12px;"><strong>4. Изменения</strong><br>Мы можем обновлять условия в любое время. Продолжение использования означает принятие новых условий.</p>
-                <p style="margin-top:12px;"><strong>5. Контакты</strong><br>По вопросам вы можете обратиться через поддержку Telegram-бота.</p>
+            <div class="card-header">
+                <h2><i class="fas fa-file-contract"></i> Условия использования</h2>
+            </div>
+            <div style="line-height:1.8; color:var(--text); font-size:14px;">
+                <p><strong>1. Принятие условий</strong><br>Используя NEVIO, вы соглашаетесь с данными условиями.</p>
+                <p style="margin-top:14px;"><strong>2. Ответственность</strong><br>NEVIO предоставляет информацию на основе ИИ. Всегда проверяйте критически важную информацию.</p>
+                <p style="margin-top:14px;"><strong>3. Ограничения</strong><br>Запрещается использовать для незаконных действий, спама, оскорблений.</p>
+                <p style="margin-top:14px;"><strong>4. Изменения</strong><br>Условия могут обновляться. Продолжение использования означает принятие новых условий.</p>
             </div>
         </div>
     </div>
@@ -685,12 +785,9 @@
 
 <script>
 const tg = window.Telegram?.WebApp;
-if (tg) {
-    tg.expand();
-    tg.enableClosingConfirmation();
-}
+if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
-const GROQ_API_KEY = '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';
+const GROQ_API_KEY = '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';
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL = 'llama-3.3-70b-versatile';
 
@@ -703,107 +800,143 @@ let state = {
     isLoading: false
 };
 
+// ============================================================
+//  КОНФИГУРАЦИЯ МЕНЮ — С КАТЕГОРИЯМИ
+// ============================================================
 const menuConfigs = {
-    student: [
-        { id: 'solve',        icon: 'fas fa-calculator',      title: 'Решить задачу',         description: 'С полным объяснением шагов' },
-        { id: 'explain',      icon: 'fas fa-lightbulb',       title: 'Объяснить тему',        description: 'Простыми словами с примерами' },
-        { id: 'summary',      icon: 'fas fa-book',            title: 'Написать конспект',     description: 'Структурированный конспект' },
-        { id: 'schema',       icon: 'fas fa-diagram-project', title: 'Сделать схему',         description: 'Визуальная шпаргалка' },
-        { id: 'test',         icon: 'fas fa-clipboard-list',  title: 'Контрольная завтра',    description: 'Подготовка за 10 минут' },
-        { id: 'oral_exam',    icon: 'fas fa-microphone-alt',  title: 'Экзаменатор',           description: 'Устный опрос по теме' },
-        { id: 'lab',          icon: 'fas fa-flask',           title: 'Помощь с лабораторной', description: 'Пошаговый разбор опыта' },
-        { id: 'lit_analysis', icon: 'fas fa-book-open',       title: 'Анализ произведения',   description: 'Всё о книге: герои, темы, идеи' },
-        { id: 'essay',        icon: 'fas fa-pen-fancy',       title: 'Помощь с сочинением',   description: 'Написать, план, аргументы' },
-        { id: 'generate_quiz',icon: 'fas fa-question-circle', title: 'Создать вопросы',       description: 'По любому тексту' },
-        { id: 'chat',         icon: 'fas fa-comments',        title: 'Свободный чат',         description: 'Спроси что угодно' }
-    ],
-    teacher: [
-        { id: 'lesson',          icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек',             description: 'Полный план урока' },
-        { id: 'tasks',           icon: 'fas fa-tasks',           title: 'Генератор заданий',           description: 'Уникальные задачи по теме' },
-        { id: 'variants',        icon: 'fas fa-copy',            title: 'Варианты контрольной',        description: 'A/B варианты с ответами' },
-        { id: 'explain',         icon: 'fas fa-lightbulb',       title: 'Методика объяснения',         description: 'Как объяснить тему классу' },
-        { id: 'schema',          icon: 'fas fa-diagram-project', title: 'Схема для класса',            description: 'Визуальный материал' },
-        { id: 'summary',         icon: 'fas fa-book',            title: 'Конспект урока',              description: 'Структура материала' },
-        { id: 'lit_lesson',      icon: 'fas fa-chalkboard',      title: 'Урок литературы',             description: 'Методика разбора произведения' },
-        { id: 'generate_quiz',   icon: 'fas fa-question-circle', title: 'Создать тест',                description: 'Для проверки знаний' },
-        { id: 'differentiation', icon: 'fas fa-layer-group',     title: 'Дифференциация',              description: 'Задания для разных уровней' },
-        { id: 'chat',            icon: 'fas fa-comments',        title: 'Педагогическая консультация', description: 'Совет от ИИ' }
-    ],
-    kindergarten: [
-        { id: 'lesson_plan',  icon: 'fas fa-child',          title: 'Конспект занятия',           description: 'Для любой возрастной группы' },
-        { id: 'parent_advice',icon: 'fas fa-heart',          title: 'Консультация для родителей', description: 'Кризисы, развитие, поведение' },
-        { id: 'planning',     icon: 'fas fa-calendar-alt',   title: 'Планирование',               description: 'Перспективное и календарное' },
-        { id: 'games',        icon: 'fas fa-puzzle-piece',   title: 'Игры и развитие',            description: 'Развивающие игры по возрасту' },
-        { id: 'holiday',      icon: 'fas fa-birthday-cake',  title: 'Сценарии праздников',        description: 'Утренники и мероприятия' },
-        { id: 'observation',  icon: 'fas fa-eye',            title: 'Наблюдение за ребёнком',     description: 'Анализ развития и поведения' },
-        { id: 'chat',         icon: 'fas fa-comments',       title: 'Свободный вопрос',           description: 'Спросить совет у ИИ' }
-    ]
+    student: {
+        sections: [
+            {
+                label: 'Основное',
+                items: [
+                    { id: 'solve',        icon: 'fas fa-calculator',      title: 'Решить задачу',         description: 'С полным объяснением шагов' },
+                    { id: 'explain',      icon: 'fas fa-lightbulb',       title: 'Объяснить тему',        description: 'Простыми словами с примерами' },
+                    { id: 'summary',      icon: 'fas fa-book',            title: 'Написать конспект',     description: 'Структурированный конспект' },
+                    { id: 'schema',       icon: 'fas fa-diagram-project', title: 'Сделать схему',         description: 'Визуальная шпаргалка' },
+                ]
+            },
+            {
+                label: 'Подготовка к экзаменам',
+                items: [
+                    { id: 'ct_prep',      icon: 'fas fa-trophy',          title: 'Подготовка к ЦТ/ЦЭ',   description: 'После 11 класса — Беларусь', badge: 'ЦТ' },
+                    { id: 'exam9_prep',   icon: 'fas fa-star',            title: 'Экзамены после 9 кл.',  description: 'Подготовка к переводным', badge: '9 кл' },
+                    { id: 'test',         icon: 'fas fa-clipboard-list',  title: 'Контрольная завтра',    description: 'Подготовка за 10 минут' },
+                    { id: 'oral_exam',    icon: 'fas fa-microphone-alt',  title: 'Экзаменатор',           description: 'Устный опрос по теме' },
+                ]
+            },
+            {
+                label: 'Дополнительно',
+                items: [
+                    { id: 'lab',          icon: 'fas fa-flask',           title: 'Помощь с лабораторной', description: 'Пошаговый разбор опыта' },
+                    { id: 'lit_analysis', icon: 'fas fa-book-open',       title: 'Анализ произведения',   description: 'Герои, темы, идеи' },
+                    { id: 'essay',        icon: 'fas fa-pen-fancy',       title: 'Помощь с сочинением',   description: 'Написать, план, аргументы' },
+                    { id: 'generate_quiz',icon: 'fas fa-question-circle', title: 'Создать вопросы',       description: 'По любому тексту' },
+                    { id: 'chat',         icon: 'fas fa-comments',        title: 'Свободный чат',         description: 'Спроси что угодно' },
+                ]
+            }
+        ]
+    },
+    teacher: {
+        sections: [
+            {
+                label: 'Планирование',
+                items: [
+                    { id: 'lesson',          icon: 'fas fa-chalkboard-user', title: 'Урок за 30 сек',          description: 'Полный план урока' },
+                    { id: 'tasks',           icon: 'fas fa-tasks',           title: 'Генератор заданий',        description: 'Уникальные задачи по теме' },
+                    { id: 'variants',        icon: 'fas fa-copy',            title: 'Варианты контрольной',     description: 'A/B варианты с ответами' },
+                    { id: 'differentiation', icon: 'fas fa-layer-group',     title: 'Дифференциация',           description: 'Задания для разных уровней' },
+                ]
+            },
+            {
+                label: 'Материалы',
+                items: [
+                    { id: 'explain',         icon: 'fas fa-lightbulb',       title: 'Методика объяснения',      description: 'Как объяснить тему классу' },
+                    { id: 'schema',          icon: 'fas fa-diagram-project', title: 'Схема для класса',         description: 'Визуальный материал' },
+                    { id: 'summary',         icon: 'fas fa-book',            title: 'Конспект урока',           description: 'Структура материала' },
+                    { id: 'lit_lesson',      icon: 'fas fa-chalkboard',      title: 'Урок литературы',          description: 'Методика разбора произведения' },
+                    { id: 'generate_quiz',   icon: 'fas fa-question-circle', title: 'Создать тест',             description: 'Для проверки знаний' },
+                    { id: 'chat',            icon: 'fas fa-comments',        title: 'Педагогическая консультация', description: 'Совет от ИИ' },
+                ]
+            }
+        ]
+    },
+    kindergarten: {
+        sections: [
+            {
+                label: 'Занятия',
+                items: [
+                    { id: 'lesson_plan',  icon: 'fas fa-child',          title: 'Конспект занятия',           description: 'Для любой возрастной группы' },
+                    { id: 'planning',     icon: 'fas fa-calendar-alt',   title: 'Планирование',               description: 'Перспективное и календарное' },
+                    { id: 'games',        icon: 'fas fa-puzzle-piece',   title: 'Игры и развитие',            description: 'Развивающие игры по возрасту' },
+                    { id: 'holiday',      icon: 'fas fa-birthday-cake',  title: 'Сценарии праздников',        description: 'Утренники и мероприятия' },
+                ]
+            },
+            {
+                label: 'Работа с детьми и родителями',
+                items: [
+                    { id: 'parent_advice',icon: 'fas fa-heart',          title: 'Консультация для родителей', description: 'Кризисы, развитие, поведение' },
+                    { id: 'observation',  icon: 'fas fa-eye',            title: 'Наблюдение за ребёнком',     description: 'Анализ развития и поведения' },
+                    { id: 'chat',         icon: 'fas fa-comments',       title: 'Свободный вопрос',           description: 'Спросить совет у ИИ' },
+                ]
+            }
+        ]
+    }
 };
 
 const systemPrompts = {
-    student: `Ты — NEVIO, умный образовательный ассистент для учеников.
+    student: `Ты — NEVIO, умный образовательный ассистент для учеников школы и абитуриентов.
 
-Твоя задача — помогать ученикам понимать материал, решать задачи и готовиться к контрольным.
+Твоя задача — помогать понимать материал, решать задачи, готовиться к ЦТ, ЦЭ и экзаменам.
 
 Правила:
 - Объясняй сложное простыми словами
-- Показывай каждый шаг решения
+- Показывай каждый шаг решения с обоснованием
 - Приводи примеры из реальной жизни
-- Поощряй и мотивируй
+- Мотивируй и поддерживай
 - Никогда не осуждай за незнание
 - В конце предлагай проверочный вопрос
 - Пиши на русском языке
-- Формулы: x², √5, π, ≠, ≤, ≥`,
+- Формулы красиво: x², √5, π, ≠, ≤, ≥`,
 
     teacher: `Ты — NEVIO, профессиональный педагогический ассистент для учителей.
 
-Твоя задача — помогать создавать качественные учебные материалы и планы уроков.
+Твоя задача — помогать создавать качественные учебные материалы.
 
 Правила:
-- Давай структурированные, готовые к использованию материалы
+- Структурированные, готовые к использованию материалы
 - Учитывай возрастные особенности учеников
-- Предлагай дифференцированный подход
-- Включай методические рекомендации
-- Соблюдай педагогическую терминологию
-- Пиши на русском языке`,
+- Дифференцированный подход
+- Методические рекомендации
+- Педагогическая терминология
+- Русский язык`,
 
     kindergarten: `Ты — NEVIO, профессиональный ассистент для воспитателей детского сада.
 
-Твоя задача — помогать создавать развивающие материалы для детей 3-7 лет.
-
 Правила:
-- Учитывай возрастные особенности (ведущая деятельность — игра)
-- Включай здоровьесберегающие технологии
-- Предлагай практические реализуемые идеи
-- Используй принцип интеграции образовательных областей
-- Пиши на русском языке`
+- Возрастные особенности детей 3-7 лет (игра — ведущая деятельность)
+- Здоровьесберегающие технологии
+- ФГОС ДО
+- Практические реализуемые идеи
+- Русский язык`
 };
 
+// ============================================================
+//  ИНИЦИАЛИЗАЦИЯ
+// ============================================================
 function init() {
     state.telegramUser = tg?.initDataUnsafe?.user || null;
-
     const saved = localStorage.getItem('nevioData_v2');
     if (saved) {
         try {
-            const parsed = JSON.parse(saved);
-            state.role = parsed.role;
-            state.history = parsed.history || [];
+            const p = JSON.parse(saved);
+            state.role = p.role;
+            state.history = p.history || [];
         } catch(e) {}
     }
-
     const savedTheme = localStorage.getItem('nevioTheme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        updateThemeUI(true);
-    }
-
-    if (state.role) {
-        loadMainMenu();
-        showPage('mainPage');
-    } else {
-        showPage('roleSelectionPage');
-    }
-
+    if (savedTheme === 'light') { document.body.classList.add('light-theme'); updateThemeUI(true); }
+    if (state.role) { loadMainMenu(); showPage('mainPage'); }
+    else showPage('roleSelectionPage');
     updateProfile();
 }
 
@@ -813,24 +946,35 @@ function selectRole(role) {
     saveData();
     loadMainMenu();
     showPage('mainPage');
-    const names = { student: 'ученика', teacher: 'учителя', kindergarten: 'воспитателя' };
-    showToast('Режим ' + names[role] + ' активирован');
+    const n = { student: 'ученика', teacher: 'учителя', kindergarten: 'воспитателя' };
+    showToast('Режим ' + n[role] + ' активирован');
 }
 
 function loadMainMenu() {
-    const menuGrid = document.getElementById('menuGrid');
-    const items = menuConfigs[state.role];
-    menuGrid.innerHTML = items.map(item => `
-        <div class="menu-card" onclick="openAction('${item.id}')">
-            <div class="icon"><i class="${item.icon}"></i></div>
-            <h3>${item.title}</h3>
-            <p>${item.description}</p>
-        </div>
-    `).join('');
+    const container = document.getElementById('menuContainer');
+    const config = menuConfigs[state.role];
+    let html = '';
+    config.sections.forEach(section => {
+        html += `<div class="section-label">${section.label}</div>`;
+        html += `<div class="menu-grid">`;
+        section.items.forEach(item => {
+            const badge = item.badge ? `<span class="ct-badge">${item.badge}</span>` : '';
+            html += `
+                <div class="menu-card" onclick="openAction('${item.id}')">
+                    <div class="icon"><i class="${item.icon}"></i></div>
+                    <h3>${item.title}${badge}</h3>
+                    <p>${item.description}</p>
+                </div>`;
+        });
+        html += `</div>`;
+    });
+    container.innerHTML = html;
 }
 
 function openAction(actionId) {
-    const config = menuConfigs[state.role].find(m => m.id === actionId);
+    const allItems = [];
+    menuConfigs[state.role].sections.forEach(s => s.items.forEach(i => allItems.push(i)));
+    const config = allItems.find(m => m.id === actionId);
     if (!config) return;
 
     state.currentActionId = actionId;
@@ -846,6 +990,9 @@ function openAction(actionId) {
     showPage('actionPage');
 }
 
+// ============================================================
+//  ГЕНЕРАЦИЯ ФОРМ
+// ============================================================
 function generateForm(actionId) {
     const formContainer = document.getElementById('actionForm');
 
@@ -857,22 +1004,56 @@ function generateForm(actionId) {
     const subjectOpts = subjects.map(s => `<option>${s}</option>`).join('');
     const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option>${g} класс</option>`).join('');
     const countOpts = [5,10,15,20].map(c => `<option>${c}</option>`).join('');
-
     const ph = 'Написать сообщение...';
 
     const ta = (id, placeholder, rows) =>
         `<div class="form-group"><label>Ваш запрос</label>
-         <textarea id="${id}" placeholder="${placeholder || ph}" rows="${rows || 3}"></textarea></div>`;
-
+         <textarea id="${id}" placeholder="${placeholder||ph}" rows="${rows||3}"></textarea></div>`;
     const sel = (id, label, options) =>
         `<div class="form-group"><label>${label}</label><select id="${id}">${options}</select></div>`;
-
     const btn = (icon, text) =>
         `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
 
     let html = '';
 
     switch(actionId) {
+        case 'ct_prep':
+            html = `<div class="form-group"><label>Предмет ЦТ/ЦЭ</label><select id="subjectSelect">
+                    <option>Математика</option><option>Физика</option><option>Химия</option>
+                    <option>Биология</option><option>Русский язык</option><option>Белорусский язык</option>
+                    <option>История Беларуси</option><option>Всемирная история</option>
+                    <option>География</option><option>Обществоведение</option>
+                    <option>Английский язык</option><option>Немецкий язык</option>
+                    <option>Французский язык</option><option>Информатика</option>
+                    </select></div>`
+                + sel('ctSection', 'Что нужно', `
+                    <option>Разбор типичных заданий ЦТ с решением</option>
+                    <option>Теория — все формулы и правила</option>
+                    <option>Пробный тест формата ЦТ (30 вопросов)</option>
+                    <option>Разбор сложных тем</option>
+                    <option>Стратегия сдачи ЦТ</option>
+                    <option>Работа над ошибками</option>`)
+                + ta('inputText', 'Укажи тему или задание которое не получается (необязательно)')
+                + btn('fas fa-trophy', 'Начать подготовку к ЦТ');
+            break;
+
+        case 'exam9_prep':
+            html = `<div class="form-group"><label>Предмет экзамена</label><select id="subjectSelect">
+                    <option>Математика</option><option>Русский язык (изложение)</option>
+                    <option>Белорусский язык (изложение)</option><option>Физика</option>
+                    <option>Химия</option><option>Биология</option><option>История</option>
+                    <option>География</option><option>Английский язык</option>
+                    <option>Информатика</option>
+                    </select></div>`
+                + sel('exam9Section', 'Что нужно', `
+                    <option>Разбор типичных заданий экзамена</option>
+                    <option>Теория — всё что нужно знать</option>
+                    <option>Пробный экзамен</option>
+                    <option>Стратегия сдачи экзамена</option>
+                    <option>Разбор сложных тем</option>`)
+                + ta('inputText', 'Укажи тему или что не получается (необязательно)')
+                + btn('fas fa-star', 'Начать подготовку');
+            break;
 
         case 'solve':
             html = ta('inputText', ph)
@@ -907,8 +1088,7 @@ function generateForm(actionId) {
         case 'test':
             html = ta('inputText', ph)
                 + sel('subjectSelect', 'Предмет', subjectOpts)
-                + sel('levelSelect', 'Уровень сложности', `
-                    <option>Базовый</option><option>Средний</option><option>Продвинутый</option>`)
+                + sel('levelSelect', 'Уровень', `<option>Базовый</option><option>Средний</option><option>Продвинутый</option>`)
                 + sel('gradeSelect', 'Класс', gradeOpts)
                 + btn('fas fa-clipboard-list', 'Начать подготовку');
             break;
@@ -1011,16 +1191,13 @@ function generateForm(actionId) {
         case 'lesson_plan':
             html = ta('inputText', ph)
                 + sel('ageGroup', 'Возрастная группа', `
-                    <option>Младшая (3-4 года)</option>
-                    <option>Средняя (4-5 лет)</option>
-                    <option>Старшая (5-6 лет)</option>
-                    <option>Подготовительная (6-7 лет)</option>`)
+                    <option>Младшая (3-4 года)</option><option>Средняя (4-5 лет)</option>
+                    <option>Старшая (5-6 лет)</option><option>Подготовительная (6-7 лет)</option>`)
                 + sel('lessonType', 'Тип занятия', `
                     <option>Развитие речи</option><option>ФЭМП (математика)</option>
                     <option>Окружающий мир</option><option>Рисование</option>
                     <option>Лепка</option><option>Аппликация</option>
-                    <option>Конструирование</option><option>Музыкальное</option>
-                    <option>Физкультурное</option>`)
+                    <option>Конструирование</option><option>Музыкальное</option><option>Физкультурное</option>`)
                 + btn('fas fa-child', 'Создать конспект занятия');
             break;
 
@@ -1028,13 +1205,10 @@ function generateForm(actionId) {
             html = ta('inputText', ph)
                 + sel('adviceTopic', 'Тема консультации', `
                     <option>Кризис 3 лет</option><option>Кризис 7 лет</option>
-                    <option>Адаптация к детскому саду</option>
-                    <option>Развитие речи</option><option>Подготовка к школе</option>
-                    <option>Детские страхи и тревожность</option>
-                    <option>Агрессия и капризы</option>
-                    <option>Гиперактивность (СДВГ)</option>
-                    <option>Как хвалить и наказывать</option>
-                    <option>Экранное время (гаджеты)</option>`)
+                    <option>Адаптация к детскому саду</option><option>Развитие речи</option>
+                    <option>Подготовка к школе</option><option>Детские страхи</option>
+                    <option>Агрессия и капризы</option><option>Гиперактивность (СДВГ)</option>
+                    <option>Как хвалить и наказывать</option><option>Экранное время</option>`)
                 + btn('fas fa-heart', 'Получить консультацию');
             break;
 
@@ -1045,18 +1219,14 @@ function generateForm(actionId) {
                     <option>Перспективное на месяц</option>
                     <option>Тематический план проекта</option>`)
                 + sel('planAge', 'Возрастная группа', `
-                    <option>Младшая (3-4 года)</option>
-                    <option>Средняя (4-5 лет)</option>
-                    <option>Старшая (5-6 лет)</option>
-                    <option>Подготовительная (6-7 лет)</option>`)
+                    <option>Младшая (3-4 года)</option><option>Средняя (4-5 лет)</option>
+                    <option>Старшая (5-6 лет)</option><option>Подготовительная (6-7 лет)</option>`)
                 + btn('fas fa-calendar-alt', 'Создать план');
             break;
 
         case 'games':
             html = ta('inputText', ph)
-                + sel('gameAge', 'Возраст', `
-                    <option>3-4 года</option><option>4-5 лет</option>
-                    <option>5-6 лет</option><option>6-7 лет</option>`)
+                + sel('gameAge', 'Возраст', `<option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option>`)
                 + sel('gameType', 'Тип игр', `
                     <option>Дидактические</option><option>Подвижные</option>
                     <option>Сюжетно-ролевые</option><option>На логику и внимание</option>
@@ -1068,15 +1238,12 @@ function generateForm(actionId) {
         case 'holiday':
             html = ta('inputText', ph)
                 + sel('holidayType', 'Праздник', `
-                    <option>Новый год</option><option>8 Марта</option>
-                    <option>23 Февраля</option><option>День рождения</option>
-                    <option>Выпускной</option><option>Осенний бал</option>
-                    <option>Масленица</option><option>День матери</option>
-                    <option>День знаний (1 сентября)</option>`)
+                    <option>Новый год</option><option>8 Марта</option><option>23 Февраля</option>
+                    <option>День рождения</option><option>Выпускной</option><option>Осенний бал</option>
+                    <option>Масленица</option><option>День матери</option><option>День знаний</option>`)
                 + sel('holidayAge', 'Возраст', `
                     <option>3-4 года</option><option>4-5 лет</option>
-                    <option>5-6 лет</option><option>6-7 лет</option>
-                    <option>Разновозрастная группа</option>`)
+                    <option>5-6 лет</option><option>6-7 лет</option><option>Разновозрастная группа</option>`)
                 + btn('fas fa-birthday-cake', 'Создать сценарий');
             break;
 
@@ -1089,19 +1256,19 @@ function generateForm(actionId) {
             break;
 
         default:
-            html = ta('inputText', ph, 4)
-                + btn('fas fa-paper-plane', 'Отправить');
+            html = ta('inputText', ph, 4) + btn('fas fa-paper-plane', 'Отправить');
     }
 
     formContainer.innerHTML = html;
 }
 
+// ============================================================
+//  ОБРАБОТКА
+// ============================================================
 async function processAction() {
     if (state.isLoading) return;
-
     const inputText = document.getElementById('inputText')?.value?.trim() || '';
     const data = collectFormData();
-
     if (!validateForm(data, inputText)) return;
 
     const prompt = buildPrompt(state.currentActionId, inputText, data);
@@ -1117,22 +1284,17 @@ async function processAction() {
     try {
         const response = await callGroqWithStream(state.conversationHistory, loadingId);
         state.conversationHistory.push({ role: 'assistant', content: response });
-        saveToHistory({
-            type: state.currentActionId,
-            input: userMessage,
-            result: response,
-            timestamp: new Date().toISOString()
-        });
+        saveToHistory({ type: state.currentActionId, input: userMessage, result: response, timestamp: new Date().toISOString() });
         showContinueChat();
     } catch (error) {
         removeLoadingMessage(loadingId);
-        addChatMessage('Ошибка: ' + error.message + '\n\nПопробуйте ещё раз или проверьте подключение к интернету.', false);
+        addChatMessage('Ошибка: ' + error.message + '\n\nПопробуйте ещё раз.', false);
         showToast('Ошибка соединения');
     } finally {
         state.isLoading = false;
         disableForm(false);
-        const inputEl = document.getElementById('inputText');
-        if (inputEl) inputEl.value = '';
+        const el = document.getElementById('inputText');
+        if (el) el.value = '';
     }
 }
 
@@ -1144,21 +1306,16 @@ function showContinueChat() {
 
 async function sendContinue() {
     if (state.isLoading) return;
-
     const input = document.getElementById('continueInput');
     const text = input?.value?.trim();
     if (!text) return;
-
     input.value = '';
     input.style.height = 'auto';
-
     state.conversationHistory.push({ role: 'user', content: text });
     addChatMessage(text, true);
-
     const loadingId = addLoadingMessage();
     state.isLoading = true;
     document.getElementById('sendContinueBtn').disabled = true;
-
     try {
         const response = await callGroqWithStream(state.conversationHistory, loadingId);
         state.conversationHistory.push({ role: 'assistant', content: response });
@@ -1172,62 +1329,39 @@ async function sendContinue() {
 }
 
 function handleContinueKey(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendContinue();
-    }
+    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendContinue(); }
     event.target.style.height = 'auto';
     event.target.style.height = Math.min(event.target.scrollHeight, 120) + 'px';
 }
 
 async function callGroqWithStream(messages, loadingId) {
-    const systemMessage = {
-        role: 'system',
-        content: systemPrompts[state.role] || systemPrompts.student
-    };
-
     const body = {
         model: MODEL,
-        messages: [systemMessage, ...messages],
+        messages: [{ role: 'system', content: systemPrompts[state.role] || systemPrompts.student }, ...messages],
         temperature: 0.6,
         max_tokens: 4000,
         stream: true
     };
-
     const response = await fetch(GROQ_API_URL, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${GROQ_API_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
         body: JSON.stringify(body)
     });
-
-    if (!response.ok) {
-        throw new Error('API ошибка ' + response.status);
-    }
+    if (!response.ok) throw new Error('API ошибка ' + response.status);
 
     removeLoadingMessage(loadingId);
 
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message ai';
-
     const label = document.createElement('div');
     label.className = 'message-label';
     label.textContent = 'NEVIO';
-
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble ai-content';
-
-    const cursor = document.createElement('span');
-    cursor.className = 'streaming-cursor';
-    bubble.appendChild(cursor);
-
+    bubble.appendChild(document.createElement('span')).className = 'streaming-cursor';
     messageDiv.appendChild(label);
     messageDiv.appendChild(bubble);
-
-    const container = document.getElementById('chatMessages');
-    container.appendChild(messageDiv);
+    document.getElementById('chatMessages').appendChild(messageDiv);
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -1236,54 +1370,39 @@ async function callGroqWithStream(messages, loadingId) {
     while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
+        const lines = decoder.decode(value).split('\n');
         for (const line of lines) {
-            if (line.startsWith('data: ')) {
-                const data = line.slice(6);
-                if (data === '[DONE]') continue;
-                try {
-                    const parsed = JSON.parse(data);
-                    const delta = parsed.choices?.[0]?.delta?.content;
-                    if (delta) {
-                        fullText += delta;
-                        bubble.innerHTML = formatAIResponse(fullText) + '<span class="streaming-cursor"></span>';
-                        container.scrollTop = container.scrollHeight;
-                    }
-                } catch(e) {}
-            }
+            if (!line.startsWith('data: ')) continue;
+            const data = line.slice(6);
+            if (data === '[DONE]') continue;
+            try {
+                const delta = JSON.parse(data).choices?.[0]?.delta?.content;
+                if (delta) {
+                    fullText += delta;
+                    bubble.innerHTML = formatAIResponse(fullText) + '<span class="streaming-cursor"></span>';
+                    document.getElementById('chatMessages').scrollTop = 99999;
+                }
+            } catch(e) {}
         }
     }
 
     bubble.innerHTML = formatAIResponse(fullText);
-
     const copyBtn = document.createElement('button');
     copyBtn.className = 'copy-btn';
     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
     copyBtn.onclick = () => copyToClipboard(fullText, copyBtn);
     messageDiv.appendChild(copyBtn);
-
-    container.scrollTop = container.scrollHeight;
+    document.getElementById('chatMessages').scrollTop = 99999;
     return fullText;
 }
 
 function formatAIResponse(text) {
-    let formatted = text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-
-    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    formatted = formatted.replace(/\n\n/g, '</p><p>');
-    formatted = formatted.replace(/\n/g, '<br>');
-
-    if (!formatted.startsWith('<')) {
-        formatted = '<p>' + formatted + '</p>';
-    }
-    return formatted;
+    let f = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    f = f.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    f = f.replace(/\*(.+?)\*/g,'<em>$1</em>');
+    f = f.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+    if (!f.startsWith('<')) f = '<p>' + f + '</p>';
+    return f;
 }
 
 function collectFormData() {
@@ -1310,450 +1429,272 @@ function collectFormData() {
         essayType:      document.getElementById('essayType')?.value || '',
         lessonDuration: document.getElementById('lessonDuration')?.value || '45 минут',
         variantCount:   document.getElementById('variantCount')?.value || '2 варианта',
-        taskCount:      document.getElementById('taskCount')?.value || '5'
+        taskCount:      document.getElementById('taskCount')?.value || '5',
+        ctSection:      document.getElementById('ctSection')?.value || '',
+        exam9Section:   document.getElementById('exam9Section')?.value || ''
     };
 }
 
 function validateForm(data, inputText) {
     const id = state.currentActionId;
-    if (id === 'oral_exam' && !data.examTopic) {
-        showToast('Введите тему для опроса'); return false;
-    }
-    if (['lit_analysis', 'lit_lesson'].includes(id) && (!data.litTitle || !data.litAuthor)) {
-        showToast('Введите название произведения и автора'); return false;
-    }
-    if (id === 'generate_quiz' && !inputText) {
-        showToast('Вставьте текст для создания вопросов'); return false;
-    }
-    if (!['oral_exam','lit_analysis','lit_lesson'].includes(id) && !inputText) {
-        showToast('Пожалуйста, заполните поле запроса'); return false;
-    }
+    if (id === 'oral_exam' && !data.examTopic) { showToast('Введите тему для опроса'); return false; }
+    if (['lit_analysis','lit_lesson'].includes(id) && (!data.litTitle || !data.litAuthor)) { showToast('Введите название и автора'); return false; }
+    if (id === 'generate_quiz' && !inputText) { showToast('Вставьте текст для создания вопросов'); return false; }
+    if (!['oral_exam','lit_analysis','lit_lesson','ct_prep','exam9_prep'].includes(id) && !inputText) { showToast('Заполните поле запроса'); return false; }
     return true;
 }
 
-function disableForm(disabled) {
-    document.querySelectorAll('#actionForm button, #actionForm textarea, #actionForm input, #actionForm select')
-        .forEach(el => el.disabled = disabled);
+function disableForm(d) {
+    document.querySelectorAll('#actionForm button,#actionForm textarea,#actionForm input,#actionForm select').forEach(el => el.disabled = d);
 }
 
 function buildUserMessage(actionId, inputText, data) {
     const map = {
+        ct_prep:         'Подготовка к ЦТ/ЦЭ: ' + data.subject + ' — ' + data.ctSection + (inputText ? ' | ' + inputText : ''),
+        exam9_prep:      'Экзамен после 9 класса: ' + data.subject + ' — ' + data.exam9Section + (inputText ? ' | ' + inputText : ''),
         solve:           'Задача: ' + inputText + ' (' + data.subject + ', ' + data.grade + ')',
         explain:         'Объяснить: ' + inputText + ' — ' + data.level,
-        summary:         'Конспект по теме: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
-        schema:          'Схема по теме: "' + inputText + '" (' + data.subject + ')',
-        test:            'Подготовка к тесту: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', уровень: ' + data.level + ')',
-        oral_exam:       'Устный экзамен по теме: "' + data.examTopic + '", ' + data.examCount + ' вопросов, ' + data.grade,
-        lab:             'Лабораторная работа: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
-        lit_analysis:    'Анализ произведения: "' + data.litTitle + '" — ' + data.litAuthor,
+        summary:         'Конспект: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        schema:          'Схема: "' + inputText + '" (' + data.subject + ')',
+        test:            'Подготовка к тесту: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        oral_exam:       'Устный экзамен: "' + data.examTopic + '", ' + data.examCount + ' вопросов',
+        lab:             'Лабораторная: "' + inputText + '" (' + data.subject + ')',
+        lit_analysis:    'Анализ: "' + data.litTitle + '" — ' + data.litAuthor,
         essay:           'Сочинение: "' + inputText + '" — ' + data.essayType,
-        generate_quiz:   'Создать ' + data.quizCount + ' вопросов (' + data.quizType + ')',
+        generate_quiz:   'Вопросы по тексту (' + data.quizCount + ' шт., ' + data.quizType + ')',
         chat:            inputText,
-        lesson:          'План урока: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.lessonDuration + ')',
-        tasks:           'Задания по теме: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.count + ' шт.)',
-        variants:        'Контрольная: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.variantCount + ')',
-        lit_lesson:      'Урок литературы: "' + data.litTitle + '" ' + data.litAuthor + ' (' + data.grade + ')',
-        differentiation: 'Разноуровневые задания: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
-        lesson_plan:     'Конспект занятия: "' + inputText + '" (' + data.ageGroup + ', ' + data.lessonType + ')',
-        parent_advice:   'Консультация: ' + data.adviceTopic + ' — ' + inputText,
-        planning:        data.planType + ': тема "' + inputText + '" (' + data.planAge + ')',
-        games:           'Игры для ' + data.gameAge + ': тема "' + inputText + '" (' + data.gameType + ')',
-        holiday:         'Сценарий праздника "' + data.holidayType + '" для ' + data.holidayAge,
-        observation:     'Анализ поведения ребёнка ' + data.ageGroup + ': ' + inputText
+        lesson:          'План урока: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        tasks:           'Задания: "' + inputText + '" (' + data.subject + ', ' + data.grade + ', ' + data.count + ' шт.)',
+        variants:        'Контрольная: "' + inputText + '" (' + data.subject + ', ' + data.grade + ')',
+        lit_lesson:      'Урок лит.: "' + data.litTitle + '" ' + data.litAuthor,
+        differentiation: 'Дифференциация: "' + inputText + '" (' + data.subject + ')',
+        lesson_plan:     'Конспект занятия: "' + inputText + '" (' + data.ageGroup + ')',
+        parent_advice:   'Консультация: ' + data.adviceTopic,
+        planning:        data.planType + ': "' + inputText + '"',
+        games:           'Игры для ' + data.gameAge + ': "' + inputText + '"',
+        holiday:         'Сценарий: ' + data.holidayType + ' для ' + data.holidayAge,
+        observation:     'Наблюдение за ребёнком ' + data.ageGroup + ': ' + inputText
     };
     return map[actionId] || inputText;
 }
 
 function buildPrompt(actionId, inputText, data) {
     const p = {
-        solve:
-`Реши задачу по предмету "${data.subject}" для ${data.grade}:
+        ct_prep:
+`Ты — эксперт по подготовке к ЦТ/ЦЭ в Беларуси. Помоги абитуриенту подготовиться.
 
+Предмет: ${data.subject}
+Запрос: ${data.ctSection}
+${inputText ? 'Конкретная тема/задание: ' + inputText : ''}
+
+${data.ctSection.includes('типичных заданий') ? `
+Дай 5-7 типичных заданий формата ЦТ по этому предмету с полным разбором каждого.
+Укажи: тип задания, уровень сложности, подробное решение, типичные ошибки.
+` : data.ctSection.includes('Теория') ? `
+Дай полную теорию для ЦТ по ${data.subject}: все формулы, правила, определения которые нужно знать.
+Структурируй по темам. Выдели самое важное.
+` : data.ctSection.includes('Пробный тест') ? `
+Создай пробный тест формата ЦТ по ${data.subject} — 20 вопросов с вариантами ответов A/B/C/D.
+После теста дай правильные ответы с объяснениями.
+` : data.ctSection.includes('Стратегия') ? `
+Дай подробную стратегию сдачи ЦТ по ${data.subject}:
+- Как распределить время на экзамене
+- С чего начинать
+- Как работать с заданиями разного уровня
+- Психологический настрой
+- Частые ошибки абитуриентов
+- Последние советы перед экзаменом
+` : `
+Помоги разобрать тему/задание: ${inputText || data.subject}
+Дай подробный разбор с примерами в формате ЦТ.
+`}`,
+
+        exam9_prep:
+`Ты — эксперт по подготовке к переводным экзаменам после 9 класса в Беларуси.
+
+Предмет: ${data.subject}
+Запрос: ${data.exam9Section}
+${inputText ? 'Конкретная тема: ' + inputText : ''}
+
+${data.exam9Section.includes('типичных заданий') ? `
+Дай 5-7 типичных заданий экзамена после 9 класса по ${data.subject} с полным разбором.
+` : data.exam9Section.includes('Теория') ? `
+Дай всю теорию за курс 9 класса по ${data.subject} которая нужна для экзамена.
+` : data.exam9Section.includes('Пробный') ? `
+Составь пробный экзамен по ${data.subject} (уровень 9 класса) с вопросами и задачами.
+Дай ответы после.
+` : data.exam9Section.includes('Стратегия') ? `
+Дай стратегию успешной сдачи экзамена по ${data.subject} после 9 класса.
+Советы, типичные ошибки, как готовиться в последние дни.
+` : `
+Помоги подготовиться к экзамену по ${data.subject}: ${inputText}
+`}`,
+
+        solve:
+`Реши задачу по "${data.subject}" для ${data.grade}:
 ${inputText}
 
-Оформи решение в школьном стиле:
 ДАНО: (если применимо)
-НАЙТИ: (что нужно найти)
-РЕШЕНИЕ: (каждый шаг с объяснением — почему именно так)
+НАЙТИ:
+РЕШЕНИЕ: (каждый шаг с объяснением)
 ОТВЕТ:
-ПРОВЕРКА: (проверь ответ)
+ПРОВЕРКА:
 
-После решения объясни главный метод и дай 1 похожую задачу для самопроверки.`,
+После решения объясни метод и дай 1 похожую задачу.`,
 
         explain:
-`Объясни тему "${inputText}" по предмету "${data.subject}".
-Уровень: ${data.level || 'обычный'}.
+`Объясни тему "${inputText}" по предмету "${data.subject}". Уровень: ${data.level}.
 
-Структура:
-ЧТО ЭТО — простое определение своими словами
-В ЖИЗНИ — реальный пример из жизни (аналогия)
-КАК РАБОТАЕТ — механизм, формулы, правила
-ПРИМЕР — разбор конкретного примера шаг за шагом
-ЧАСТЫЕ ОШИБКИ — что важно не перепутать
-ЗАПОМНИ — главная мысль одним предложением`,
+ЧТО ЭТО — простое определение
+В ЖИЗНИ — реальная аналогия
+КАК РАБОТАЕТ — механизм, формулы
+ПРИМЕР — конкретный разбор
+ЧАСТЫЕ ОШИБКИ
+ЗАПОМНИ — главная мысль`,
 
         summary:
-`Создай подробный конспект по теме "${inputText}" для ${data.grade} (предмет: ${data.subject}).
+`Конспект по теме "${inputText}" для ${data.grade} (${data.subject}).
 
-Структура конспекта:
 ТЕМА:
-ОСНОВНЫЕ ПОНЯТИЯ: (ключевые термины с определениями)
-ФОРМУЛЫ И ПРАВИЛА: (если есть)
-ОСНОВНОЕ СОДЕРЖАНИЕ: (структурированный текст)
-ПРИМЕРЫ: (разобранные примеры)
+ОСНОВНЫЕ ПОНЯТИЯ:
+ФОРМУЛЫ И ПРАВИЛА:
+ОСНОВНОЕ СОДЕРЖАНИЕ:
+ПРИМЕРЫ:
 ВАЖНО ПОМНИТЬ:
-ВОПРОСЫ ДЛЯ САМОПРОВЕРКИ: (3-5 вопросов)`,
+ВОПРОСЫ ДЛЯ САМОПРОВЕРКИ: (3-5)`,
 
         schema:
-`Создай наглядную схему-шпаргалку по теме "${inputText}" (${data.subject}).
-
-СХЕМА: ${inputText}
-
-ГЛАВНОЕ: (основные понятия)
-ФОРМУЛЫ И ПРАВИЛА: (самое важное)
-ПРИМЕРЫ: (краткие примеры)
-НЕ ЗАБУДЬ: (типичные ошибки)
-ВЫВОД: (одно ключевое предложение)
-
-Сделай максимально компактно — как настоящая шпаргалка.`,
+`Схема-шпаргалка по теме "${inputText}" (${data.subject}).
+ГЛАВНОЕ / ФОРМУЛЫ / ПРИМЕРЫ / НЕ ЗАБУДЬ / ВЫВОД
+Максимально компактно.`,
 
         test:
-`Создай тест из 10 вопросов для подготовки к контрольной по теме "${inputText}" (${data.subject}, ${data.grade}, уровень: ${data.level}).
-
-Формат:
-ВОПРОС 1: ...
-A) ...
-B) ...
-C) ...
-D) ...
-Ответ: X) — краткое объяснение почему
-
-...10 вопросов.
-
-После теста:
-3 ГЛАВНЫХ МОМЕНТА которые нужно знать по этой теме
-СОВЕТ как лучше запомнить материал`,
+`Тест 10 вопросов по "${inputText}" (${data.subject}, ${data.grade}, ${data.level}).
+Формат: вопрос + A/B/C/D + правильный ответ с объяснением.
+После теста: 3 главных момента + совет.`,
 
         oral_exam:
-`Проведи устный экзамен по теме "${data.examTopic}" для ${data.grade}.
-Количество вопросов: ${data.examCount}.
-
-Формат:
-Вопрос 1 (базовый): [вопрос]
-Ожидаемый ответ: [что должен ответить ученик]
-
-Вопрос 2: [вопрос сложнее]
-Ожидаемый ответ: ...
-
-...до ${data.examCount} вопросов с повышением сложности.
-
-В конце:
-ТИПИЧНЫЕ ОШИБКИ по этой теме: ...
-СОВЕТ для успешной сдачи: ...`,
+`Устный экзамен по "${data.examTopic}" для ${data.grade}. ${data.examCount} вопросов.
+Формат: Вопрос N (уровень) + Ожидаемый ответ.
+Повышай сложность. В конце: типичные ошибки + совет.`,
 
         lab:
-`Составь пошаговую инструкцию для лабораторной работы по теме "${inputText}" (${data.subject}, ${data.grade}).
-
-ЛАБОРАТОРНАЯ РАБОТА: ${inputText}
-ЦЕЛЬ:
-ОБОРУДОВАНИЕ И МАТЕРИАЛЫ:
-ПРАВИЛА БЕЗОПАСНОСТИ:
-ХОД РАБОТЫ: (пошагово)
-ОБРАБОТКА РЕЗУЛЬТАТОВ:
-ВЫВОДЫ:
-КОНТРОЛЬНЫЕ ВОПРОСЫ: (3 вопроса для защиты)`,
+`Лабораторная по "${inputText}" (${data.subject}, ${data.grade}).
+ЦЕЛЬ / ОБОРУДОВАНИЕ / БЕЗОПАСНОСТЬ / ХОД РАБОТЫ / РЕЗУЛЬТАТЫ / ВЫВОДЫ / КОНТРОЛЬНЫЕ ВОПРОСЫ`,
 
         lit_analysis:
-`Дай полный анализ произведения "${data.litTitle}" автора ${data.litAuthor} (для ${data.grade}).
-
-ОБ АВТОРЕ: (краткая биография, связь с произведением)
-ИСТОРИЯ СОЗДАНИЯ: (когда, почему, контекст эпохи)
-ЖАНР И НАПРАВЛЕНИЕ:
-СЮЖЕТ: (подробный пересказ ключевых событий)
-СИСТЕМА ОБРАЗОВ: (характеристика главных и второстепенных героев)
-ТЕМЫ И ИДЕИ: (главная идея, основные темы)
-ПРОБЛЕМАТИКА: (какие проблемы поднимает автор)
-ХУДОЖЕСТВЕННЫЕ ОСОБЕННОСТИ: (стиль, приёмы)
-КЛЮЧЕВЫЕ ЦИТАТЫ: (5 цитат)
-ВЫВОД: (значение произведения)`,
+`Анализ произведения "${data.litTitle}" (${data.litAuthor}) для ${data.grade}.
+ОБ АВТОРЕ / ИСТОРИЯ СОЗДАНИЯ / ЖАНР / СЮЖЕТ / ГЕРОИ / ТЕМЫ И ИДЕИ / ПРОБЛЕМАТИКА / ПРИЁМЫ / ЦИТАТЫ / ВЫВОД`,
 
         essay:
-`Помоги с сочинением на тему "${inputText}" для ${data.grade}.
-Тип помощи: ${data.essayType}.
-
-${data.essayType === 'Написать сочинение' ?
-`Напиши полноценное сочинение на эту тему. Включи вступление, основную часть с аргументами и примерами из литературы, заключение. Соблюдай структуру, используй литературоведческие термины, приводи цитаты.` :
-data.essayType === 'Составить план' ?
-`Составь подробный план сочинения с тезисами для каждого пункта.` :
-data.essayType === 'Написать вступление' ?
-`Напиши 2-3 варианта вступления для этого сочинения.` :
-data.essayType === 'Подобрать аргументы и цитаты' ?
-`Подбери 3-5 аргументов с цитатами из произведений для этой темы.` :
-data.essayType === 'Написать заключение' ?
-`Напиши 2 варианта заключения для этого сочинения.` :
-`Сделай полный разбор темы сочинения.`}`,
+`Сочинение на тему "${inputText}" для ${data.grade}. Тип: ${data.essayType}.
+${data.essayType === 'Написать сочинение' ? 'Напиши полное сочинение: вступление, основная часть с аргументами из литературы, заключение.' :
+data.essayType === 'Составить план' ? 'Подробный план с тезисами.' :
+data.essayType === 'Написать вступление' ? '2-3 варианта вступления.' :
+data.essayType === 'Подобрать аргументы и цитаты' ? '3-5 аргументов с цитатами.' :
+data.essayType === 'Написать заключение' ? '2 варианта заключения.' : 'Полный разбор темы.'}`,
 
         generate_quiz:
-`На основе следующего текста создай ${data.quizCount} вопросов типа "${data.quizType}":
-
+`Создай ${data.quizCount} вопросов (${data.quizType}) по тексту:
 ${inputText}
-
-${data.quizType.includes('Тест') ?
-`Формат:
-Вопрос N: [вопрос]
-A) [вариант]  B) [вариант]  C) [вариант]  D) [вариант]
-Правильный ответ: X) — [краткое объяснение]` :
-data.quizType.includes('Открытые') ?
-`Формат:
-Вопрос N: [вопрос]
-Примерный ответ: [ответ]` :
-`Смешай тестовые и открытые вопросы примерно поровну.`}
-
-Вопросы должны проверять понимание, а не просто память.`,
+${data.quizType.includes('Тест') ? 'Формат: вопрос + A/B/C/D + правильный ответ' : 'Формат: вопрос + примерный ответ'}
+Проверяй понимание, не только память.`,
 
         chat: inputText,
 
         lesson:
-`Составь детальный план урока на ${data.lessonDuration} по теме "${inputText}" (${data.subject}, ${data.grade}).
-
-ТЕХНОЛОГИЧЕСКАЯ КАРТА УРОКА
-
-Тема: ${inputText}
-Предмет: ${data.subject} | Класс: ${data.grade} | Время: ${data.lessonDuration}
-Цель урока:
-Задачи: образовательные / развивающие / воспитательные
-Оборудование:
-Тип урока:
-
-ХОД УРОКА:
-1. Организационный момент (2 мин):
-2. Актуализация знаний (5 мин): (3 вопроса к классу)
-3. Объяснение нового материала (15 мин): (план объяснения)
-4. Первичное закрепление (10 мин): (задания)
-5. Самостоятельная работа (8 мин): (задания)
-6. Рефлексия (3 мин):
-7. Домашнее задание (2 мин):
-
-МЕТОДИЧЕСКИЕ СОВЕТЫ:
-ТИПИЧНЫЕ ЗАТРУДНЕНИЯ учеников и как их преодолеть:`,
+`План урока ${data.lessonDuration} по "${inputText}" (${data.subject}, ${data.grade}).
+Цель / Задачи / Оборудование / Тип урока
+ХОД: оргмомент → актуализация (3 вопроса) → объяснение → закрепление → самостоятельная → рефлексия → домашнее задание
+МЕТОДИЧЕСКИЕ СОВЕТЫ / ТИПИЧНЫЕ ЗАТРУДНЕНИЯ`,
 
         tasks:
-`Создай ${data.count} разноуровневых заданий по теме "${inputText}" (${data.subject}, ${data.grade}).
-
-БАЗОВЫЙ УРОВЕНЬ (знание/воспроизведение):
-(задания 1-${Math.floor(data.count/3)})
-
-СРЕДНИЙ УРОВЕНЬ (понимание/применение):
-(задания ${Math.floor(data.count/3)+1}-${Math.floor(data.count*2/3)})
-
-ПРОДВИНУТЫЙ УРОВЕНЬ (анализ/творчество):
-(задания ${Math.floor(data.count*2/3)+1}-${data.count})
-
-Для каждого задания: условие + ответ + краткое решение.`,
+`${data.count} разноуровневых заданий по "${inputText}" (${data.subject}, ${data.grade}).
+Базовый / Средний / Продвинутый уровни.
+Каждое задание: условие + ответ + решение.`,
 
         variants:
-`Создай ${data.variantCount} контрольной работы по теме "${inputText}" (${data.subject}, ${data.grade}).
-По ${data.taskCount} заданий в каждом варианте.
-
-Задания равнозначны по сложности, но разные по содержанию.
-
-ВАРИАНТ 1: (задания)
-ВАРИАНТ 2: (аналогичные по сложности, другие по содержанию)
-
+`${data.variantCount} варианта контрольной по "${inputText}" (${data.subject}, ${data.grade}).
+По ${data.taskCount} заданий. Равная сложность, разное содержание.
 ОТВЕТЫ И КРИТЕРИИ ОЦЕНИВАНИЯ:`,
 
         lit_lesson:
-`Составь методический план урока литературы по произведению "${data.litTitle}" (${data.litAuthor}) для ${data.grade}. Длительность: ${data.lessonDuration}.
-
-Тема: "${data.litTitle}" — ${data.litAuthor}
-Цели:
-
-ХОД УРОКА:
-1. Вступительное слово (биография автора, эпоха) — 5 мин
-2. Проверка домашнего чтения (3 вопроса) — 5 мин
-3. Анализ произведения (сюжет, герои, темы) — 20 мин
-4. Работа с текстом (цитаты, художественные приёмы) — 8 мин
-5. Творческое задание — 5 мин
-6. Рефлексия и домашнее задание — 2 мин
-
-ВОПРОСЫ ДЛЯ КЛАССА: (10 вопросов разного уровня)
-МЕТОДИЧЕСКИЕ ПРИЁМЫ:`,
+`Урок литературы "${data.litTitle}" (${data.litAuthor}), ${data.grade}, ${data.lessonDuration}.
+Цели → Актуализация → Анализ (сюжет, герои, темы) → Работа с текстом → Творческое задание → Рефлексия
+10 вопросов для класса. Методические приёмы.`,
 
         differentiation:
-`Создай систему разноуровневых заданий по теме "${inputText}" (${data.subject}, ${data.grade}).
-
-УРОВЕНЬ А (для слабых учеников): задания по образцу
-(3-4 простых задания)
-
-УРОВЕНЬ Б (для средних учеников): задания с применением знаний
-(3-4 средних задания)
-
-УРОВЕНЬ В (для сильных учеников): творческие и нестандартные задания
-(3-4 сложных задания)
-
-ОЛИМПИАДНЫЙ УРОВЕНЬ:
-(1-2 задания для самых сильных)
-
-ОТВЕТЫ ко всем заданиям:`,
+`Разноуровневые задания по "${inputText}" (${data.subject}, ${data.grade}).
+УРОВЕНЬ А (слабые) / УРОВЕНЬ Б (средние) / УРОВЕНЬ В (сильные) / ОЛИМПИАДНЫЙ
+ОТВЕТЫ ко всем.`,
 
         lesson_plan:
-`Составь подробный конспект занятия для ${data.ageGroup} по теме "${inputText}". Тип занятия: ${data.lessonType}.
-
-КОНСПЕКТ ЗАНЯТИЯ
-
-Тема: ${inputText}
-Возрастная группа: ${data.ageGroup}
-Образовательная область: ${data.lessonType}
-Продолжительность: (по СанПиН)
-
-ЦЕЛЬ:
-ЗАДАЧИ: образовательные / развивающие / воспитательные
-ОБОРУДОВАНИЕ И МАТЕРИАЛЫ:
-ПРЕДВАРИТЕЛЬНАЯ РАБОТА:
-
-ХОД ЗАНЯТИЯ:
-1. ВВОДНАЯ ЧАСТЬ (2-3 мин): (мотивационный момент, загадка, сюрпризный момент)
-2. ОСНОВНАЯ ЧАСТЬ: (подробное описание с диалогами воспитателя)
-ФИЗКУЛЬТМИНУТКА: (конкретное упражнение с текстом)
-3. ЗАКЛЮЧИТЕЛЬНАЯ ЧАСТЬ (2-3 мин): (рефлексия, вопросы детям)
-
-МЕТОДИЧЕСКИЕ СОВЕТЫ воспитателю:`,
+`Конспект занятия для ${data.ageGroup}: "${inputText}". Тип: ${data.lessonType}.
+Цель / Задачи / Оборудование / Предварительная работа
+ХОД: вводная часть → основная → физкультминутка → закрепление → рефлексия
+МЕТОДИЧЕСКИЕ СОВЕТЫ`,
 
         parent_advice:
-`Напиши консультацию для родителей на тему: "${data.adviceTopic}".
-Дополнительно: ${inputText}.
-
-КОНСУЛЬТАЦИЯ ДЛЯ РОДИТЕЛЕЙ
-Тема: ${data.adviceTopic}
-
-ПОЧЕМУ ЭТО ПРОИСХОДИТ: (психологические причины)
-КАК ЧУВСТВУЕТ СЕБЯ РЕБЁНОК: (взгляд с точки зрения ребёнка)
-ЧТО ДЕЛАТЬ: (конкретные советы, нумерованный список)
-ЧЕГО НЕ ДЕЛАТЬ: (типичные ошибки родителей)
-КАК ГОВОРИТЬ С РЕБЁНКОМ: (конкретные фразы)
-КОГДА ОБРАТИТЬСЯ К СПЕЦИАЛИСТУ: (признаки, требующие помощи)`,
+`Консультация родителям: ${data.adviceTopic}. ${inputText}
+ПОЧЕМУ ЭТО ПРОИСХОДИТ / КАК ЧУВСТВУЕТ РЕБЁНОК / ЧТО ДЕЛАТЬ / ЧЕГО НЕ ДЕЛАТЬ / КАК ГОВОРИТЬ С РЕБЁНКОМ / КОГДА К СПЕЦИАЛИСТУ`,
 
         planning:
-`Составь ${data.planType} для ${data.planAge} по теме "${inputText}".
-
-${data.planType.includes('неделю') ?
-`ПОНЕДЕЛЬНИК: (познавательное, речевое, физическое, социально-коммуникативное)
-ВТОРНИК: ...
-СРЕДА: ...
-ЧЕТВЕРГ: ...
-ПЯТНИЦА: ...` :
-`1 неделя: Тема — ... Задачи — ...
-2 неделя: ...
-3 неделя: ...
-4 неделя: итоговое мероприятие — ...
-
-ВИДЫ ДЕЯТЕЛЬНОСТИ каждую неделю:
-Изобразительная / Речевая / Игровая / Двигательная`}
-
-ИТОГОВОЕ МЕРОПРИЯТИЕ:`,
+`${data.planType} для ${data.planAge}: "${inputText}".
+${data.planType.includes('неделю') ? 'Пн/Вт/Ср/Чт/Пт — виды деятельности каждый день' : '4 недели + виды деятельности + итоговое мероприятие'}`,
 
         games:
-`Подбери ${data.count || 5} игр для детей ${data.gameAge} типа "${data.gameType}" по теме "${inputText}".
-
-Для каждой игры:
-НАЗВАНИЕ:
-ЦЕЛЬ: (что развивает)
-КТО ИГРАЕТ: (количество детей)
-МАТЕРИАЛЫ:
-КАК ИГРАТЬ: (пошаговые правила)
-УСЛОЖНЕНИЕ: (для более старших или умелых)`,
+`${data.count || 5} игр для ${data.gameAge} (${data.gameType}): "${inputText}".
+Для каждой: название / цель / кол-во детей / материалы / правила / усложнение`,
 
         holiday:
-`Напиши подробный сценарий праздника "${data.holidayType}" для детей ${data.holidayAge}.
-Дополнительные пожелания: ${inputText}.
-
-СЦЕНАРИЙ ПРАЗДНИКА: ${data.holidayType}
-Возраст: ${data.holidayAge}
-
-ДЕЙСТВУЮЩИЕ ЛИЦА:
-ОБОРУДОВАНИЕ:
-МУЗЫКАЛЬНОЕ СОПРОВОЖДЕНИЕ:
-
-ХОД ПРАЗДНИКА:
-ОТКРЫТИЕ: (слова ведущего, появление персонажа)
-ВЫСТУПЛЕНИЯ ДЕТЕЙ: (стихи, танцы, песни — с текстами)
-ИГРЫ И КОНКУРСЫ: (3-4 игры с описанием)
-СЮРПРИЗНЫЙ МОМЕНТ:
-ФИНАЛ И ЗАКРЫТИЕ:
-
-ТЕКСТЫ ДЛЯ ПЕРСОНАЖЕЙ:`,
+`Сценарий "${data.holidayType}" для ${data.holidayAge}. ${inputText}
+Действующие лица / Оборудование / Музыка
+Открытие → Выступления (тексты) → Игры (3-4 шт.) → Сюрприз → Финал
+Тексты для персонажей.`,
 
         observation:
-`Проанализируй описанное поведение ребёнка ${data.ageGroup}:
-
-${inputText}
-
-АНАЛИЗ: (нормально ли это для данного возраста)
-ВОЗМОЖНЫЕ ПРИЧИНЫ: (психологические, педагогические, физиологические)
-РЕКОМЕНДАЦИИ ДЛЯ ВОСПИТАТЕЛЯ:
-РЕКОМЕНДАЦИИ ДЛЯ РОДИТЕЛЕЙ:
-НА ЧТО ОБРАТИТЬ ВНИМАНИЕ:
-КОГДА НУЖНА ПОМОЩЬ СПЕЦИАЛИСТА:`
+`Анализ поведения ребёнка ${data.ageGroup}: ${inputText}
+АНАЛИЗ (норма?) / ПРИЧИНЫ / РЕКОМЕНДАЦИИ ВОСПИТАТЕЛЮ / РЕКОМЕНДАЦИИ РОДИТЕЛЯМ / КОГДА К СПЕЦИАЛИСТУ`
     };
-
     return p[actionId] || inputText;
 }
 
+// ============================================================
+//  ЧАТ
+// ============================================================
 function addChatMessage(text, isUser) {
     const container = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ' + (isUser ? 'user' : 'ai');
-
+    const div = document.createElement('div');
+    div.className = 'message ' + (isUser ? 'user' : 'ai');
     const label = document.createElement('div');
     label.className = 'message-label';
     label.textContent = isUser ? 'Вы' : 'NEVIO';
-
     const bubble = document.createElement('div');
-    bubble.className = 'message-bubble';
-    if (isUser) {
-        bubble.textContent = text;
-    } else {
-        bubble.classList.add('ai-content');
-        bubble.innerHTML = formatAIResponse(text);
-    }
-
-    messageDiv.appendChild(label);
-    messageDiv.appendChild(bubble);
-    container.appendChild(messageDiv);
-    container.scrollTop = container.scrollHeight;
+    bubble.className = 'message-bubble' + (isUser ? '' : ' ai-content');
+    if (isUser) bubble.textContent = text;
+    else bubble.innerHTML = formatAIResponse(text);
+    div.appendChild(label);
+    div.appendChild(bubble);
+    container.appendChild(div);
+    container.scrollTop = 99999;
 }
 
 function addLoadingMessage() {
-    const container = document.getElementById('chatMessages');
     const id = 'loading_' + Date.now();
-
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ai';
-    messageDiv.id = id;
-
+    const div = document.createElement('div');
+    div.className = 'message ai'; div.id = id;
     const label = document.createElement('div');
-    label.className = 'message-label';
-    label.textContent = 'NEVIO';
-
+    label.className = 'message-label'; label.textContent = 'NEVIO';
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    bubble.innerHTML = `
-        <div class="loading-dots">
-            <span></span><span></span><span></span>
-            <span class="loading-text">Думаю...</span>
-        </div>`;
-
-    messageDiv.appendChild(label);
-    messageDiv.appendChild(bubble);
-    container.appendChild(messageDiv);
-    container.scrollTop = container.scrollHeight;
+    bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span><span class="loading-text">Думаю...</span></div>';
+    div.appendChild(label); div.appendChild(bubble);
+    document.getElementById('chatMessages').appendChild(div);
+    document.getElementById('chatMessages').scrollTop = 99999;
     return id;
 }
 
-function removeLoadingMessage(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-}
+function removeLoadingMessage(id) { document.getElementById(id)?.remove(); }
 
 function copyToClipboard(text, btn) {
     navigator.clipboard.writeText(text).then(() => {
@@ -1762,6 +1703,9 @@ function copyToClipboard(text, btn) {
     }).catch(() => showToast('Не удалось скопировать'));
 }
 
+// ============================================================
+//  ИСТОРИЯ
+// ============================================================
 function saveToHistory(item) {
     state.history.push(item);
     if (state.history.length > 150) state.history.shift();
@@ -1769,25 +1713,18 @@ function saveToHistory(item) {
 }
 
 function showHistory() {
-    const historyList = document.getElementById('historyList');
-    if (state.history.length === 0) {
-        historyList.innerHTML = `
-            <div class="empty-state">
-                <div class="icon"><i class="fas fa-folder-open"></i></div>
-                <h3>История пуста</h3>
-                <p>Запросы будут сохраняться здесь</p>
-            </div>`;
+    const list = document.getElementById('historyList');
+    if (!state.history.length) {
+        list.innerHTML = '<div class="empty-state"><div class="icon"><i class="fas fa-folder-open"></i></div><h3>История пуста</h3><p>Запросы будут сохраняться здесь</p></div>';
     } else {
-        const reversed = [...state.history].reverse();
-        historyList.innerHTML = reversed.map((item, idx) => `
-            <div class="history-item" onclick="viewHistoryItem(${state.history.length - 1 - idx})">
+        list.innerHTML = [...state.history].reverse().map((item, idx) => `
+            <div class="history-item" onclick="viewHistoryItem(${state.history.length-1-idx})">
                 <div class="history-header">
                     <span class="history-type">${getActionName(item.type)}</span>
                     <span class="history-date">${formatDate(item.timestamp)}</span>
                 </div>
                 <div class="history-preview">${item.input}</div>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
     showPage('historyPage');
 }
@@ -1795,26 +1732,23 @@ function showHistory() {
 function viewHistoryItem(index) {
     const item = state.history[index];
     if (!item) return;
-
-    const config = menuConfigs[state.role]?.find(m => m.id === item.type);
+    const allItems = [];
+    menuConfigs[state.role].sections.forEach(s => s.items.forEach(i => allItems.push(i)));
+    const config = allItems.find(m => m.id === item.type);
     if (!config) return;
 
     state.currentActionId = item.type;
-    state.conversationHistory = [];
-
+    state.conversationHistory = [
+        { role: 'user', content: item.input },
+        { role: 'assistant', content: item.result }
+    ];
     document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
     document.getElementById('actionDescription').textContent = 'Из истории';
     document.getElementById('actionForm').innerHTML = '';
     document.getElementById('chatMessages').innerHTML = '';
     document.getElementById('continueChatArea').style.display = 'none';
-
     addChatMessage(item.input, true);
     addChatMessage(item.result, false);
-
-    state.conversationHistory = [
-        { role: 'user', content: item.input },
-        { role: 'assistant', content: item.result }
-    ];
     showContinueChat();
     showPage('actionPage');
 }
@@ -1828,111 +1762,89 @@ function clearHistory() {
     }
 }
 
+// ============================================================
+//  ПРОФИЛЬ И НАСТРОЙКИ
+// ============================================================
 function updateProfile() {
     const user = state.telegramUser;
     if (user) {
-        const avatarEl = document.getElementById('profileAvatar');
-        avatarEl.innerHTML = user.photo_url
-            ? `<img src="${user.photo_url}" alt="Аватар">`
-            : '👤';
-        const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
-        document.getElementById('profileName').textContent = fullName;
+        document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '👤';
+        document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
         document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
     }
-    const roleNames = { student: 'Ученик', teacher: 'Учитель', kindergarten: 'Воспитатель' };
-    document.getElementById('profileRole').textContent = roleNames[state.role] || '';
+    const r = { student: 'Ученик', teacher: 'Учитель', kindergarten: 'Воспитатель' };
+    document.getElementById('profileRole').textContent = r[state.role] || '';
 }
 
 function toggleTheme() {
     const isLight = document.body.classList.toggle('light-theme');
     localStorage.setItem('nevioTheme', isLight ? 'light' : 'dark');
     updateThemeUI(isLight);
-    showToast(isLight ? 'Светлая тема включена' : 'Тёмная тема включена');
+    showToast(isLight ? 'Светлая тема' : 'Тёмная тема');
 }
 
 function updateThemeUI(isLight) {
-    const icon = document.getElementById('themeIcon');
-    const text = document.getElementById('themeText');
-    if (icon) icon.innerHTML = `<i class="fas fa-${isLight ? 'sun' : 'moon'}"></i>`;
-    if (text) text.textContent = isLight ? 'Переключить на тёмную тему' : 'Переключить на светлую тему';
+    document.getElementById('themeIcon').innerHTML = `<i class="fas fa-${isLight ? 'sun' : 'moon'}"></i>`;
+    document.getElementById('themeText').textContent = isLight ? 'Переключить на тёмную' : 'Переключить на светлую';
 }
 
 function deleteAccount() {
-    if (confirm('Удалить все данные и сменить роль?\n\nЭто действие нельзя отменить.')) {
+    if (confirm('Удалить все данные и сменить роль?')) {
         localStorage.removeItem('nevioData_v2');
-        state.role = null;
-        state.history = [];
-        state.conversationHistory = [];
+        state.role = null; state.history = []; state.conversationHistory = [];
         showPage('roleSelectionPage');
         showToast('Аккаунт удалён');
     }
 }
 
 function showPrivacy() { showPage('privacyPage'); }
-function showTerms()   { showPage('termsPage'); }
+function showTerms() { showPage('termsPage'); }
 
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId)?.classList.add('active');
-
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    if (pageId === 'mainPage')     document.getElementById('nav-main')?.classList.add('active');
-    if (pageId === 'historyPage')  document.getElementById('nav-history')?.classList.add('active');
+    if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
+    if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
     if (pageId === 'settingsPage') document.getElementById('nav-settings')?.classList.add('active');
-
     window.scrollTo(0, 0);
 }
 
-function goBack() {
-    showPage('mainPage');
-    state.conversationHistory = [];
-}
+function goBack() { showPage('mainPage'); state.conversationHistory = []; }
 
-function getActionName(actionId) {
-    const names = {
-        solve: 'Решение задачи',        explain: 'Объяснение темы',
-        summary: 'Конспект',            schema: 'Схема',
-        test: 'Подготовка к тесту',     oral_exam: 'Устный экзамен',
-        lab: 'Лабораторная работа',     lit_analysis: 'Анализ произведения',
-        essay: 'Сочинение',             generate_quiz: 'Вопросы по тексту',
-        chat: 'Свободный чат',
-        lesson: 'План урока',           tasks: 'Задания',
-        variants: 'Контрольная работа', lit_lesson: 'Урок литературы',
-        differentiation: 'Дифференциация',
-        lesson_plan: 'Конспект занятия',parent_advice: 'Консультация',
-        planning: 'Планирование',       games: 'Игры',
-        holiday: 'Сценарий праздника',  observation: 'Наблюдение'
+function getActionName(id) {
+    const n = {
+        ct_prep:'Подготовка к ЦТ/ЦЭ', exam9_prep:'Экзамен 9 класса',
+        solve:'Решение задачи', explain:'Объяснение темы', summary:'Конспект',
+        schema:'Схема', test:'Подготовка к тесту', oral_exam:'Устный экзамен',
+        lab:'Лабораторная', lit_analysis:'Анализ произведения', essay:'Сочинение',
+        generate_quiz:'Вопросы по тексту', chat:'Свободный чат',
+        lesson:'План урока', tasks:'Задания', variants:'Контрольная',
+        lit_lesson:'Урок литературы', differentiation:'Дифференциация',
+        lesson_plan:'Конспект занятия', parent_advice:'Консультация',
+        planning:'Планирование', games:'Игры', holiday:'Праздник', observation:'Наблюдение'
     };
-    return names[actionId] || 'Запрос';
+    return n[id] || 'Запрос';
 }
 
-function formatDate(timestamp) {
-    const date = new Date(timestamp);
-    const diff = Date.now() - date;
-    const minutes = Math.floor(diff / 60000);
-    const hours   = Math.floor(diff / 3600000);
-    const days    = Math.floor(diff / 86400000);
-    if (minutes < 1)  return 'Только что';
-    if (minutes < 60) return minutes + ' мин назад';
-    if (hours < 24)   return hours + ' ч назад';
-    if (days < 7)     return days + ' дн назад';
-    return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+function formatDate(ts) {
+    const d = new Date(ts), diff = Date.now() - d;
+    const m = Math.floor(diff/60000), h = Math.floor(diff/3600000), days = Math.floor(diff/86400000);
+    if (m < 1) return 'Только что';
+    if (m < 60) return m + ' мин назад';
+    if (h < 24) return h + ' ч назад';
+    if (days < 7) return days + ' дн назад';
+    return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
 }
 
 function saveData() {
-    try {
-        localStorage.setItem('nevioData_v2', JSON.stringify({
-            role: state.role,
-            history: state.history
-        }));
-    } catch(e) {}
+    try { localStorage.setItem('nevioData_v2', JSON.stringify({ role: state.role, history: state.history })); } catch(e) {}
 }
 
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 document.addEventListener('DOMContentLoaded', init);
