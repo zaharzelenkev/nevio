@@ -143,9 +143,8 @@
         .legal-content strong { color:var(--text); }
     </style>
 </head>
-<body>
+<body class="light-theme">
 
-<!-- ВЫБОР РОЛИ -->
 <div class="page active" id="roleSelectionPage">
     <div class="role-selection">
         <div class="role-logo">NEVIO</div>
@@ -169,13 +168,11 @@
     </div>
 </div>
 
-<!-- ГЛАВНАЯ -->
 <div class="page" id="mainPage">
     <div class="header"><h1>NEVIO</h1><p>Твой умный помощник в учёбе</p></div>
     <div id="menuContainer"></div>
 </div>
 
-<!-- ДЕЙСТВИЕ -->
 <div class="page" id="actionPage">
     <div class="action-container">
         <div class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
@@ -196,7 +193,6 @@
     </div>
 </div>
 
-<!-- НАСТРОЙКИ -->
 <div class="page" id="settingsPage">
     <div class="action-container">
         <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
@@ -215,7 +211,7 @@
                 <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-trash-alt"></i></div><div class="settings-item-text"><h4>Очистить историю</h4><p>Удалить все сохранённые запросы</p></div></div>
             </div>
             <div class="settings-item" onclick="toggleTheme()">
-                <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div><div class="settings-item-text"><h4>Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
+                <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-sun"></i></div><div class="settings-item-text"><h4>Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
                 <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
             </div>
             <div class="settings-item" onclick="showPrivacy()">
@@ -236,7 +232,6 @@
     </div>
 </div>
 
-<!-- ИСТОРИЯ -->
 <div class="page" id="historyPage">
     <div class="action-container">
         <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
@@ -247,7 +242,6 @@
     </div>
 </div>
 
-<!-- ПОЛИТИКА -->
 <div class="page" id="privacyPage">
     <div class="action-container">
         <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
@@ -273,7 +267,6 @@
     </div>
 </div>
 
-<!-- УСЛОВИЯ -->
 <div class="page" id="termsPage">
     <div class="action-container">
         <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
@@ -299,7 +292,6 @@
     </div>
 </div>
 
-<!-- НАВИГАЦИЯ -->
 <div class="bottom-nav">
     <div class="nav-item active" id="nav-main" onclick="showPage('mainPage')"><div class="icon"><i class="fas fa-home"></i></div><span>Главная</span></div>
     <div class="nav-item" id="nav-history" onclick="showHistory()"><div class="icon"><i class="fas fa-history"></i></div><span>История</span></div>
@@ -324,8 +316,8 @@ const menuConfigs = {
             {
                 label: 'Подготовка к экзаменам',
                 items: [
-                    { id:'ct_prep',    icon:'fas fa-trophy',        title:'Подготовка к ЦТ / ЦЭ',   description:'После 11 класса — все предметы', badge:'11 кл', highlight:true },
-                    { id:'exam9_prep', icon:'fas fa-star',          title:'Экзамены после 9 класса', description:'Математика, языки, история',     badge:'9 кл',  highlight:true },
+                    { id:'ct_prep',    icon:'fas fa-trophy',        title:'Подготовка к ЦТ / ЦЭ',   description:'После 11 класса — все предметы по спецификации РИКЗ', badge:'11 кл', highlight:true },
+                    { id:'exam9_prep', icon:'fas fa-star',          title:'Экзамены после 9 класса', description:'Математика, диктанты, билеты по истории Беларуси',     badge:'9 кл',  highlight:true },
                 ]
             },
             {
@@ -392,9 +384,7 @@ const menuConfigs = {
 
 const systemPrompts = {
     student: `Ты — NEVIO, лучший образовательный ИИ-ассистент для учеников школы и абитуриентов в Беларуси и СНГ.
-
 Твоя главная задача — помочь ученику реально понять материал и успешно сдать экзамены.
-
 Принципы:
 - Объясняй максимально понятно, как лучший репетитор
 - При решении задач показывай КАЖДЫЙ шаг с обоснованием
@@ -404,8 +394,23 @@ const systemPrompts = {
 - Формулы: x², √5, π, ≠, ≤, ≥
 - Пиши на русском языке`,
 
-    teacher: `Ты — NEVIO, профессиональный педагогический ИИ-ассистент для учителей.
+    ct_prep: `Ты — NEVIO, узкоспециализированный ИИ-эксперт по подготовке к ЦТ (Централизованному тестированию) и ЦЭ (Централизованному экзамену) в Республике Беларусь.
+Твоя цель — готовить абитуриентов строго по программам и спецификациям РИКЗ (Республиканского института контроля знаний).
+Правила работы:
+1. Строго разделяй задания на Часть А (выбор ответа) и Часть Б (краткий открытый ответ в виде целого числа или слова/словосочетания).
+2. При объяснении тем или разборе тестов ссылайся на правила из учебных пособий, утвержденных Министерством образования РБ.
+3. Категорически запрещено использовать форматы и терминологию российского ЕГЭ (например, "профиль/база", "первичные баллы ЕГЭ", "критерии ФИПИ"). Только правила ЦЭ/ЦТ и шкала РИКЗ!
+4. Помогай ученику разбирать ловушки РИКЗ, типичные ошибки в Части Б и учи эффективно распределять время на экзамене.`,
 
+    exam9_prep: `Ты — NEVIO, эксперт по подготовке к выпускным экзаменам за период обучения на уровне общего базового образования (9 класс) в Республике Беларусь.
+Ты знаешь всё о требованиях Министерства образования РБ к экзаменам за 9 класс.
+Правила работы:
+1. Математика: Помогай решать задачи из официального Сборника заданий для выпускного экзамена. Разбирай оформление геометрических задач и уравнений, так как за оформление снижают оценки.
+2. Русский/Белорусский язык: Помогай разбирать сложные правила орфографии и пунктуации для успешного написания диктантов и изложений.
+3. История Беларуси: Помогай готовиться по экзаменационным билетам (все 25 билетов). Структурируй ответ на первый (теория) и второй (практический вопрос, работа с картой/документом) вопросы билета.
+4. Объясняй всё простым языком, подходящим для 9-классника, поддерживай и снижай уровень стресса перед первыми серьезными экзаменами.`,
+
+    teacher: `Ты — NEVIO, профессиональный педагогический ИИ-ассистент для учителей.
 Принципы:
 - Давай готовые к использованию материалы
 - Учитывай возрастные особенности учеников
@@ -414,7 +419,6 @@ const systemPrompts = {
 - Пиши на русском языке`,
 
     kindergarten: `Ты — NEVIO, профессиональный ИИ-ассистент для воспитателей детского сада.
-
 Принципы:
 - Учитывай возрастные особенности (игра — ведущая деятельность)
 - Соблюдай требования ФГОС ДО
@@ -427,7 +431,16 @@ function init() {
     const saved = localStorage.getItem('nevioData_v2');
     if (saved) { try { const p = JSON.parse(saved); state.role = p.role; state.history = p.history || []; } catch(e) {} }
     const savedTheme = localStorage.getItem('nevioTheme');
-    if (savedTheme === 'light') { document.body.classList.add('light-theme'); updateThemeUI(true); }
+    
+    // Светлая тема по умолчанию, если не сохранена темная
+    if (savedTheme === 'dark') { 
+        document.body.classList.remove('light-theme'); 
+        updateThemeUI(false); 
+    } else {
+        document.body.classList.add('light-theme'); 
+        updateThemeUI(true); 
+    }
+    
     if (state.role) { loadMainMenu(); showPage('mainPage'); } else showPage('roleSelectionPage');
     updateProfile();
 }
@@ -471,787 +484,336 @@ function openAction(actionId) {
     state.conversationHistory = [];
     document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
     document.getElementById('actionDescription').textContent = config.description;
-    document.getElementById('actionForm').innerHTML = '';
+    
     document.getElementById('chatMessages').innerHTML = '';
+    
+    let placeholderText = "Введите ваш вопрос или тему для разбора...";
+    if (actionId === 'ct_prep') placeholderText = "Напишите предмет и тему из ЦЭ/ЦТ (например: Русский язык, задание А12) или вставьте текст задачи...";
+    if (actionId === 'exam9_prep') placeholderText = "Напишите, к чему готовимся: Математика, Билет № по Истории Беларуси, или правила для диктанта...";
+    
+    let formHtml = `
+        <div class="form-group">
+            <textarea id="actionInput" placeholder="${placeholderText}" rows="4"></textarea>
+        </div>
+        <button class="btn btn-primary" id="submitActionBtn" onclick="sendInitialQuery()">
+            <i class="fas fa-paper-plane"></i> Сгенерировать ответ
+        </button>
+    `;
+    
+    document.getElementById('actionForm').innerHTML = formHtml;
+    document.getElementById('actionForm').style.display = 'block';
     document.getElementById('continueChatArea').style.display = 'none';
-    generateForm(actionId);
+    
     showPage('actionPage');
 }
 
-function generateForm(actionId) {
-    const fc = document.getElementById('actionForm');
-    const ph = 'Написать сообщение...';
-    const ta = (id, placeholder, rows) =>
-        `<div class="form-group"><label>Ваш запрос</label><textarea id="${id}" placeholder="${placeholder||ph}" rows="${rows||3}"></textarea></div>`;
-    const sel = (id, label, options) =>
-        `<div class="form-group"><label>${label}</label><select id="${id}">${options}</select></div>`;
-    const btn = (icon, text) =>
-        `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
-
-    const subjects11 = ['Математика','Физика','Химия','Биология','Русский язык','Белорусский язык','История Беларуси','Всемирная история','Обществоведение','География','Английский язык','Немецкий язык','Французский язык','Испанский язык','Информатика'];
-    const subjects9  = ['Математика','Русский язык','Белорусский язык','История Беларуси','История России'];
-    const subjectsAll = ['Математика','Алгебра','Геометрия','Физика','Химия','Биология','Русский язык','Литература','Белорусский язык','Белорусская литература','История','Обществознание','География','Информатика','Английский язык','Немецкий язык','Французский язык','ОБЖ','Астрономия','Экономика','Право','Технология'];
-    const gradeOpts = [5,6,7,8,9,10,11].map(g=>`<option>${g} класс</option>`).join('');
-    const countOpts = [5,10,15,20].map(c=>`<option>${c}</option>`).join('');
-
-    let html = '';
-
-    switch(actionId) {
-
-        case 'ct_prep':
-            html = sel('subjectCT','Предмет ЦТ / ЦЭ', subjects11.map(s=>`<option>${s}</option>`).join(''))
-                + sel('ctMode','Что нужно сделать',`
-                    <option>Разбор типичных заданий с полным решением</option>
-                    <option>Разбор своего задания</option>
-                    <option>Вся теория — формулы, правила, определения</option>
-                    <option>Пробный тест формата ЦТ (20 заданий)</option>
-                    <option>Разбор сложной темы</option>
-                    <option>Стратегия и советы по сдаче ЦТ</option>
-                    <option>Работа над ошибками</option>`)
-                + ta('inputText','Вставь своё задание или укажи тему (обязательно для "Разбора своего задания")', 4)
-                + btn('fas fa-trophy','Начать подготовку к ЦТ');
-            break;
-
-        case 'exam9_prep':
-            html = sel('subject9','Предмет экзамена', subjects9.map(s=>`<option>${s}</option>`).join(''))
-                + sel('exam9Mode','Что нужно сделать',`
-                    <option>Разбор типичных заданий с полным решением</option>
-                    <option>Разбор своего задания</option>
-                    <option>Вся теория для экзамена</option>
-                    <option>Пробный экзамен</option>
-                    <option>Стратегия сдачи экзамена</option>
-                    <option>Разбор сложной темы</option>`)
-                + ta('inputText','Вставь своё задание или укажи тему (обязательно для "Разбора своего задания")', 4)
-                + btn('fas fa-star','Начать подготовку');
-            break;
-
-        case 'solve':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('gradeSelect','Класс', gradeOpts)
-                + btn('fas fa-calculator','Решить с объяснением');
-            break;
-
-        case 'explain':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('levelSelect','Объяснить как...',`
-                    <option>Для новичка (максимально просто)</option>
-                    <option>Обычное объяснение</option>
-                    <option>Подробно с доказательствами</option>`)
-                + btn('fas fa-lightbulb','Объяснить');
-            break;
-
-        case 'summary':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('gradeSelect','Класс', gradeOpts)
-                + btn('fas fa-book','Создать конспект');
-            break;
-
-        case 'schema':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + btn('fas fa-diagram-project','Создать схему');
-            break;
-
-        case 'oral_exam':
-            html = `<div class="form-group"><label>Ваш запрос</label><input type="text" id="examTopic" placeholder="${ph}"></div>`
-                + sel('examCount','Количество вопросов',`<option>3</option><option>5</option><option>7</option><option>10</option>`)
-                + sel('gradeSelect','Класс', gradeOpts)
-                + btn('fas fa-microphone-alt','Начать устный опрос');
-            break;
-
-        case 'lit_analysis':
-            html = `<div class="form-group"><label>Название произведения</label><input type="text" id="litTitle" placeholder="${ph}"></div>
-                    <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
-                + sel('gradeSelect','Класс', gradeOpts)
-                + btn('fas fa-book-open','Проанализировать');
-            break;
-
-        case 'essay':
-            html = ta('inputText', ph)
-                + sel('essayType','Тип помощи',`
-                    <option>Написать сочинение</option>
-                    <option>Составить план</option>
-                    <option>Написать вступление</option>
-                    <option>Подобрать аргументы и цитаты</option>
-                    <option>Написать заключение</option>
-                    <option>Полный анализ темы</option>`)
-                + sel('gradeSelect','Класс', gradeOpts)
-                + btn('fas fa-pen-fancy','Помочь с сочинением');
-            break;
-
-        case 'chat':
-            html = ta('inputText', ph, 4) + btn('fas fa-paper-plane','Отправить');
-            break;
-
-        case 'lesson':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('gradeSelect','Класс', gradeOpts)
-                + sel('lessonDuration','Длительность',`<option>45 минут</option><option>90 минут (сдвоенный)</option><option>40 минут</option>`)
-                + btn('fas fa-chalkboard-user','Создать план урока');
-            break;
-
-        case 'tasks':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('gradeSelect','Класс', gradeOpts)
-                + sel('countSelect','Количество заданий', countOpts)
-                + btn('fas fa-tasks','Создать задания');
-            break;
-
-        case 'variants':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('gradeSelect','Класс', gradeOpts)
-                + sel('variantCount','Количество вариантов',`<option>2 варианта</option><option>4 варианта</option>`)
-                + sel('taskCount','Заданий в варианте',`<option>5</option><option>7</option><option>10</option>`)
-                + btn('fas fa-copy','Создать контрольную');
-            break;
-
-        case 'differentiation':
-            html = ta('inputText', ph)
-                + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-                + sel('gradeSelect','Класс', gradeOpts)
-                + btn('fas fa-layer-group','Создать разноуровневые задания');
-            break;
-
-        case 'lit_lesson':
-            html = `<div class="form-group"><label>Произведение</label><input type="text" id="litTitle" placeholder="${ph}"></div>
-                    <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
-                + sel('gradeSelect','Класс', gradeOpts)
-                + sel('lessonDuration','Длительность',`<option>45 минут</option><option>90 минут</option>`)
-                + btn('fas fa-chalkboard','Создать план урока');
-            break;
-
-        case 'generate_quiz':
-            html = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Вставь текст — создам вопросы по нему" rows="6"></textarea></div>`
-                + sel('quizCount','Количество вопросов', countOpts)
-                + sel('quizType','Тип вопросов',`
-                    <option>Открытые (написать ответ)</option>
-                    <option>Тест с вариантами (A/B/C/D)</option>
-                    <option>Смешанный формат</option>`)
-                + btn('fas fa-question-circle','Создать вопросы');
-            break;
-
-        case 'lesson_plan':
-            html = ta('inputText', ph)
-                + sel('ageGroup','Возрастная группа',`
-                    <option>Младшая (3-4 года)</option><option>Средняя (4-5 лет)</option>
-                    <option>Старшая (5-6 лет)</option><option>Подготовительная (6-7 лет)</option>`)
-                + sel('lessonType','Тип занятия',`
-                    <option>Развитие речи</option><option>ФЭМП (математика)</option>
-                    <option>Окружающий мир</option><option>Рисование</option>
-                    <option>Лепка</option><option>Аппликация</option>
-                    <option>Конструирование</option><option>Музыкальное</option><option>Физкультурное</option>`)
-                + btn('fas fa-child','Создать конспект занятия');
-            break;
-
-        case 'parent_advice':
-            html = ta('inputText', ph)
-                + sel('adviceTopic','Тема консультации',`
-                    <option>Кризис 3 лет</option><option>Кризис 7 лет</option>
-                    <option>Адаптация к детскому саду</option><option>Развитие речи</option>
-                    <option>Подготовка к школе</option><option>Детские страхи</option>
-                    <option>Агрессия и капризы</option><option>Гиперактивность (СДВГ)</option>
-                    <option>Как хвалить и наказывать</option><option>Экранное время</option>`)
-                + btn('fas fa-heart','Получить консультацию');
-            break;
-
-        case 'planning':
-            html = ta('inputText', ph)
-                + sel('planType','Тип планирования',`
-                    <option>Календарное на неделю</option>
-                    <option>Перспективное на месяц</option>
-                    <option>Тематический план проекта</option>`)
-                + sel('planAge','Возрастная группа',`
-                    <option>Младшая (3-4 года)</option><option>Средняя (4-5 лет)</option>
-                    <option>Старшая (5-6 лет)</option><option>Подготовительная (6-7 лет)</option>`)
-                + btn('fas fa-calendar-alt','Создать план');
-            break;
-
-        case 'games':
-            html = ta('inputText', ph)
-                + sel('gameAge','Возраст',`<option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option>`)
-                + sel('gameType','Тип игр',`
-                    <option>Дидактические</option><option>Подвижные</option>
-                    <option>Сюжетно-ролевые</option><option>На логику и внимание</option>
-                    <option>Пальчиковые</option><option>На развитие речи</option>`)
-                + sel('countSelect','Количество игр',`<option>3</option><option>5</option><option>10</option>`)
-                + btn('fas fa-puzzle-piece','Подобрать игры');
-            break;
-
-        case 'holiday':
-            html = ta('inputText', ph)
-                + sel('holidayType','Праздник',`
-                    <option>Новый год</option><option>8 Марта</option><option>23 Февраля</option>
-                    <option>День рождения</option><option>Выпускной</option><option>Осенний бал</option>
-                    <option>Масленица</option><option>День матери</option><option>День знаний</option>`)
-                + sel('holidayAge','Возраст',`
-                    <option>3-4 года</option><option>4-5 лет</option>
-                    <option>5-6 лет</option><option>6-7 лет</option><option>Разновозрастная группа</option>`)
-                + btn('fas fa-birthday-cake','Создать сценарий');
-            break;
-
-        case 'observation':
-            html = ta('inputText', ph, 5)
-                + sel('ageGroup','Возраст ребёнка',`<option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option>`)
-                + btn('fas fa-eye','Получить анализ');
-            break;
-
-        default:
-            html = ta('inputText', ph, 4) + btn('fas fa-paper-plane','Отправить');
-    }
-    fc.innerHTML = html;
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (pageId === 'mainPage') document.getElementById('nav-main').classList.add('active');
+    if (pageId === 'historyPage') document.getElementById('nav-history').classList.add('active');
+    if (pageId === 'settingsPage') document.getElementById('nav-settings').classList.add('active');
 }
 
-async function processAction() {
-    if (state.isLoading) return;
-    const inputText = document.getElementById('inputText')?.value?.trim() || '';
-    const data = collectFormData();
-    if (!validateForm(data, inputText)) return;
-
-    const prompt = buildPrompt(state.currentActionId, inputText, data);
-    const userMsg = buildUserMessage(state.currentActionId, inputText, data);
-
-    state.conversationHistory.push({ role:'user', content:prompt });
-    addChatMessage(userMsg, true);
-
-    const loadingId = addLoadingMessage();
-    state.isLoading = true;
-    disableForm(true);
-
-    try {
-        const response = await callGroqWithStream(state.conversationHistory, loadingId);
-        state.conversationHistory.push({ role:'assistant', content:response });
-        saveToHistory({ type:state.currentActionId, input:userMsg, result:response, timestamp:new Date().toISOString() });
-        showContinueChat();
-    } catch(error) {
-        removeLoadingMessage(loadingId);
-        addChatMessage('Ошибка: ' + error.message + '\n\nПопробуйте ещё раз.', false);
-        showToast('Ошибка соединения');
-    } finally {
-        state.isLoading = false;
-        disableForm(false);
-        const el = document.getElementById('inputText');
-        if (el) el.value = '';
-    }
+function goBack() {
+    showPage('mainPage');
 }
 
-function showContinueChat() {
-    const area = document.getElementById('continueChatArea');
-    area.style.display = 'block';
-    area.scrollIntoView({ behavior:'smooth', block:'end' });
+async function sendInitialQuery() {
+    const inputEl = document.getElementById('actionInput');
+    const text = inputEl.value.trim();
+    if (!text || state.isLoading) return;
+    
+    document.getElementById('actionForm').style.display = 'none';
+    document.getElementById('continueChatArea').style.display = 'block';
+    
+    await processUserMessage(text);
 }
 
 async function sendContinue() {
-    if (state.isLoading) return;
-    const input = document.getElementById('continueInput');
-    const text = input?.value?.trim();
-    if (!text) return;
-    input.value = ''; input.style.height = 'auto';
-    state.conversationHistory.push({ role:'user', content:text });
-    addChatMessage(text, true);
-    const loadingId = addLoadingMessage();
-    state.isLoading = true;
-    document.getElementById('sendContinueBtn').disabled = true;
-    try {
-        const response = await callGroqWithStream(state.conversationHistory, loadingId);
-        state.conversationHistory.push({ role:'assistant', content:response });
-    } catch(e) {
-        removeLoadingMessage(loadingId);
-        addChatMessage('Ошибка: ' + e.message, false);
-    } finally {
-        state.isLoading = false;
-        document.getElementById('sendContinueBtn').disabled = false;
-    }
+    const inputEl = document.getElementById('continueInput');
+    const text = inputEl.value.trim();
+    if (!text || state.isLoading) return;
+    
+    inputEl.value = '';
+    inputEl.style.height = 'auto';
+    await processUserMessage(text);
 }
 
 function handleContinueKey(event) {
-    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendContinue(); }
-    event.target.style.height = 'auto';
-    event.target.style.height = Math.min(event.target.scrollHeight, 120) + 'px';
-}
-
-async function callGroqWithStream(messages, loadingId) {
-    const body = {
-        model: MODEL,
-        messages: [{ role:'system', content:systemPrompts[state.role] || systemPrompts.student }, ...messages],
-        temperature: 0.6, max_tokens: 4000, stream: true
-    };
-    const response = await fetch(GROQ_API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}` },
-        body: JSON.stringify(body)
-    });
-    if (!response.ok) throw new Error('API ошибка ' + response.status);
-
-    removeLoadingMessage(loadingId);
-
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ai';
-    const label = document.createElement('div');
-    label.className = 'message-label'; label.textContent = 'NEVIO';
-    const bubble = document.createElement('div');
-    bubble.className = 'message-bubble ai-content';
-    bubble.innerHTML = '<span class="streaming-cursor"></span>';
-    messageDiv.appendChild(label); messageDiv.appendChild(bubble);
-    document.getElementById('chatMessages').appendChild(messageDiv);
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = '';
-
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        for (const line of decoder.decode(value).split('\n')) {
-            if (!line.startsWith('data: ')) continue;
-            const d = line.slice(6);
-            if (d === '[DONE]') continue;
-            try {
-                const delta = JSON.parse(d).choices?.[0]?.delta?.content;
-                if (delta) {
-                    fullText += delta;
-                    bubble.innerHTML = formatAIResponse(fullText) + '<span class="streaming-cursor"></span>';
-                    document.getElementById('chatMessages').scrollTop = 99999;
-                }
-            } catch(e) {}
-        }
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendContinue();
     }
-
-    bubble.innerHTML = formatAIResponse(fullText);
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'copy-btn';
-    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
-    copyBtn.onclick = () => copyToClipboard(fullText, copyBtn);
-    messageDiv.appendChild(copyBtn);
-    document.getElementById('chatMessages').scrollTop = 99999;
-    return fullText;
 }
 
-function formatAIResponse(text) {
-    let f = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    f = f.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-    f = f.replace(/\*(.+?)\*/g,'<em>$1</em>');
-    f = f.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-    if (!f.startsWith('<')) f = '<p>' + f + '</p>';
-    return f;
+async function processUserMessage(text) {
+    state.isLoading = true;
+    updateLoadingState(true);
+    
+    appendMessage('user', text);
+    
+    let sysPrompt = systemPrompts[state.role] || systemPrompts.student;
+    if (state.currentActionId === 'ct_prep') sysPrompt = systemPrompts.ct_prep;
+    if (state.currentActionId === 'exam9_prep') sysPrompt = systemPrompts.exam9_prep;
+    
+    state.conversationHistory.push({ role: 'user', content: text });
+    
+    const messagesBody = [
+        { role: 'system', content: sysPrompt },
+        ...state.conversationHistory
+    ];
+    
+    const aiMessageId = appendMessage('ai', '', true);
+    
+    try {
+        const response = await fetch(GROQ_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GROQ_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: MODEL,
+                messages: messagesBody,
+                temperature: 0.6,
+                max_tokens: 2048
+            })
+        });
+        
+        if (!response.ok) throw new Error('Ошибка сервера ИИ');
+        
+        const data = await response.json();
+        const aiResponseText = data.choices[0].message.content;
+        
+        updateAiMessage(aiMessageId, aiResponseText);
+        state.conversationHistory.push({ role: 'assistant', content: aiResponseText });
+        
+        saveToHistory(text, aiResponseText);
+        
+    } catch (error) {
+        console.error(error);
+        updateAiMessage(aiMessageId, 'Произошла ошибка при генерации ответа. Пожалуйста, попробуйте еще раз.');
+    } finally {
+        state.isLoading = false;
+        updateLoadingState(false);
+    }
 }
 
-function collectFormData() {
-    const g = id => document.getElementById(id)?.value?.trim() || '';
-    return {
-        subject:        g('subjectSelect'), grade:          g('gradeSelect'),
-        level:          g('levelSelect'),   count:          g('countSelect'),
-        examTopic:      g('examTopic'),     examCount:      g('examCount') || '5',
-        litTitle:       g('litTitle'),      litAuthor:      g('litAuthor'),
-        quizCount:      g('quizCount') || '10', quizType:   g('quizType'),
-        ageGroup:       g('ageGroup'),      lessonType:     g('lessonType'),
-        adviceTopic:    g('adviceTopic'),   planType:       g('planType'),
-        planAge:        g('planAge'),       gameAge:        g('gameAge'),
-        gameType:       g('gameType'),      holidayType:    g('holidayType'),
-        holidayAge:     g('holidayAge'),    essayType:      g('essayType'),
-        lessonDuration: g('lessonDuration') || '45 минут',
-        variantCount:   g('variantCount') || '2 варианта',
-        taskCount:      g('taskCount') || '5',
-        subjectCT:      g('subjectCT'),     ctMode:         g('ctMode'),
-        subject9:       g('subject9'),      exam9Mode:      g('exam9Mode'),
-    };
+function appendMessage(sender, text, isSkeleton = false) {
+    const chatContainer = document.getElementById('chatMessages');
+    const msgId = 'msg_' + Date.now() + Math.random().toString(36).substr(2, 5);
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${sender}`;
+    msgDiv.id = msgId;
+    
+    const label = sender === 'user' ? 'Вы' : 'NEVIO Эксперт';
+    
+    let content = '';
+    if (isSkeleton) {
+        content = `
+            <div class="message-label">${label}</div>
+            <div class="message-bubble ai">
+                <div class="loading-dots"><span></span><span></span><span></span><div class="loading-text">Думаю...</div></div>
+            </div>
+        `;
+    } else {
+        content = `
+            <div class="message-label">${label}</div>
+            <div class="message-bubble ${sender === 'user' ? 'user' : 'ai-content'}">${formatMarkdown(text)}</div>
+            ${sender === 'ai' ? `<button class="copy-btn" onclick="copyText('${text.replace(/'/g, "\\'")}')"><i class="far fa-copy"></i> Копировать</button>` : ''}
+        `;
+    }
+    
+    msgDiv.innerHTML = content;
+    chatContainer.appendChild(msgDiv);
+    window.scrollTo(0, document.body.scrollHeight);
+    return msgId;
 }
 
-function validateForm(data, inputText) {
-    const id = state.currentActionId;
-    if (id === 'oral_exam' && !data.examTopic) { showToast('Введите тему для опроса'); return false; }
-    if (['lit_analysis','lit_lesson'].includes(id) && (!data.litTitle || !data.litAuthor)) { showToast('Введите название и автора'); return false; }
-    if (id === 'generate_quiz' && !inputText) { showToast('Вставьте текст для создания вопросов'); return false; }
-    if (id === 'ct_prep' && data.ctMode === 'Разбор своего задания' && !inputText) { showToast('Вставьте своё задание'); return false; }
-    if (id === 'exam9_prep' && data.exam9Mode === 'Разбор своего задания' && !inputText) { showToast('Вставьте своё задание'); return false; }
-    if (!['oral_exam','lit_analysis','lit_lesson','ct_prep','exam9_prep'].includes(id) && !inputText) { showToast('Заполните поле запроса'); return false; }
-    return true;
+function updateAiMessage(msgId, text) {
+    const msgDiv = document.getElementById(msgId);
+    if (!msgDiv) return;
+    const bubble = msgDiv.querySelector('.message-bubble');
+    bubble.className = 'message-bubble ai-content';
+    bubble.innerHTML = formatMarkdown(text);
+    
+    let btn = msgDiv.querySelector('.copy-btn');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.innerHTML = `<i class="far fa-copy"></i> Копировать`;
+        btn.onclick = () => copyText(text);
+        msgDiv.appendChild(btn);
+    }
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
-function disableForm(d) {
-    document.querySelectorAll('#actionForm button,#actionForm textarea,#actionForm input,#actionForm select').forEach(el => el.disabled = d);
+function updateLoadingState(isLoading) {
+    document.getElementById('sendContinueBtn').disabled = isLoading;
+    const contInput = document.getElementById('continueInput');
+    if (contInput) contInput.disabled = isLoading;
 }
 
-function buildUserMessage(actionId, inputText, data) {
-    const map = {
-        ct_prep:      `ЦТ/ЦЭ: ${data.subjectCT} — ${data.ctMode}${inputText ? ' | ' + inputText : ''}`,
-        exam9_prep:   `Экзамен 9 кл.: ${data.subject9} — ${data.exam9Mode}${inputText ? ' | ' + inputText : ''}`,
-        solve:        `Задача: ${inputText} (${data.subject}, ${data.grade})`,
-        explain:      `Объяснить: ${inputText} — ${data.level}`,
-        summary:      `Конспект: "${inputText}" (${data.subject}, ${data.grade})`,
-        schema:       `Схема: "${inputText}" (${data.subject})`,
-        oral_exam:    `Устный опрос по "${data.examTopic}", ${data.examCount} вопросов`,
-        lit_analysis: `Анализ: "${data.litTitle}" — ${data.litAuthor}`,
-        essay:        `Сочинение: "${inputText}" — ${data.essayType}`,
-        chat:         inputText,
-        lesson:       `План урока: "${inputText}" (${data.subject}, ${data.grade}, ${data.lessonDuration})`,
-        tasks:        `Задания: "${inputText}" (${data.subject}, ${data.grade}, ${data.count} шт.)`,
-        variants:     `Контрольная: "${inputText}" (${data.subject}, ${data.grade})`,
-        differentiation: `Дифференциация: "${inputText}" (${data.subject}, ${data.grade})`,
-        lit_lesson:   `Урок лит.: "${data.litTitle}" ${data.litAuthor}`,
-        generate_quiz:`Вопросы по тексту (${data.quizCount} шт., ${data.quizType})`,
-        lesson_plan:  `Конспект занятия: "${inputText}" (${data.ageGroup}, ${data.lessonType})`,
-        parent_advice:`Консультация: ${data.adviceTopic}`,
-        planning:     `${data.planType}: "${inputText}" (${data.planAge})`,
-        games:        `Игры для ${data.gameAge}: "${inputText}" (${data.gameType})`,
-        holiday:      `Сценарий: ${data.holidayType} для ${data.holidayAge}`,
-        observation:  `Наблюдение (${data.ageGroup}): ${inputText}`
-    };
-    return map[actionId] || inputText;
+function formatMarkdown(text) {
+    let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    return html;
 }
 
-function buildPrompt(actionId, inputText, data) {
-    const isSolveOwnCT   = data.ctMode    === 'Разбор своего задания';
-    const isSolveOwn9    = data.exam9Mode === 'Разбор своего задания';
-
-    const solveOwnPrompt = (subject, level, task) => `Ты — опытный репетитор. Ученик прислал своё задание. Разбери его максимально подробно.
-
-Предмет: ${subject}
-Уровень: ${level}
-
-ЗАДАНИЕ УЧЕНИКА:
-${task}
-
-Сделай следующее:
-1. РАЗБОР ЗАДАНИЯ — объясни что требуется найти или сделать
-2. НЕОБХОДИМАЯ ТЕОРИЯ — какие формулы, правила, знания нужны
-3. ПОДРОБНОЕ РЕШЕНИЕ — каждый шаг с объяснением ПОЧЕМУ именно так
-4. ОТВЕТ — чётко и понятно
-5. ПРОВЕРКА — проверь ответ (если применимо)
-6. СОВЕТ — как запомнить этот тип задания
-
-Объясняй так, чтобы ученик не просто получил ответ, а понял метод решения.`;
-
-    const p = {
-        ct_prep: isSolveOwnCT
-            ? solveOwnPrompt(data.subjectCT, 'ЦТ/ЦЭ (11 класс)', inputText)
-            : `Ты — эксперт-репетитор по подготовке к ЦТ/ЦЭ в Беларуси.
-
-Предмет: ${data.subjectCT}
-Запрос: ${data.ctMode}
-${inputText ? 'Конкретная тема/задание: ' + inputText : ''}
-
-${data.ctMode.includes('Разбор типичных') ? `
-Дай 5-7 заданий в точном формате ЦТ по предмету "${data.subjectCT}".
-Для каждого задания:
-1. Условие (как на реальном ЦТ)
-2. Подробное решение с объяснением каждого шага
-3. Ответ
-4. Типичные ошибки при решении
-5. Совет как запомнить метод решения
-` : data.ctMode.includes('теория') ? `
-Дай исчерпывающую теорию по предмету "${data.subjectCT}" для ЦТ:
-— Все формулы и правила
-— Определения ключевых понятий
-— Структурируй по темам
-— Выдели самое часто спрашиваемое на ЦТ
-— В конце — список тем которые точно будут на ЦТ
-` : data.ctMode.includes('Пробный тест') ? `
-Создай пробный тест формата ЦТ по "${data.subjectCT}" — 20 заданий.
-Задания должны точно соответствовать формату белорусского ЦТ.
-Формат каждого: условие + варианты A/B/C/D.
-После всех 20 вопросов — правильные ответы с кратким объяснением.
-` : data.ctMode.includes('Стратегия') ? `
-Дай детальную стратегию успешной сдачи ЦТ по "${data.subjectCT}":
-1. КАК ГОТОВИТЬСЯ — план подготовки, что повторять в первую очередь
-2. ДЕНЬ ЦТ — что делать утром, как настроиться
-3. НА ЭКЗАМЕНЕ — как распределить время, с чего начать, что делать если не знаешь ответ
-4. ЧАСТЫЕ ОШИБКИ которые стоят баллов
-5. ПСИХОЛОГИЧЕСКИЙ НАСТРОЙ
-6. ПОСЛЕДНИЕ 3 ДНЯ ПЕРЕД ЦТ — что делать
-` : `
-Разбери тему или задание: "${inputText || data.subjectCT}" в контексте ЦТ/ЦЭ.
-Объясни подробно, покажи методы решения, дай похожие примеры.
-`}`,
-
-        exam9_prep: isSolveOwn9
-            ? solveOwnPrompt(data.subject9, 'экзамен после 9 класса', inputText)
-            : `Ты — эксперт по подготовке к переводным экзаменам после 9 класса в Беларуси.
-
-Предмет: ${data.subject9}
-Запрос: ${data.exam9Mode}
-${inputText ? 'Конкретная тема: ' + inputText : ''}
-
-${data.exam9Mode.includes('Разбор типичных') ? `
-Дай 5-7 типичных заданий экзамена после 9 класса по "${data.subject9}" с полным разбором каждого.
-Для каждого: условие → решение по шагам → ответ → типичные ошибки.
-${data.subject9.includes('язык') ? 'Учти специфику языкового экзамена (изложение, грамматика, орфография).' : ''}
-${data.subject9.includes('История') ? 'Учти специфику: даты, события, исторические личности, причинно-следственные связи.' : ''}
-` : data.exam9Mode.includes('теория') ? `
-Дай всю теорию за курс 9 класса по "${data.subject9}" нужную для экзамена.
-Структурируй по темам. Выдели самое важное.
-${data.subject9.includes('язык') ? 'Включи: орфограммы, пунктуационные правила, грамматику, план написания изложения.' : ''}
-${data.subject9.includes('История') ? 'Включи: ключевые даты, события, личности.' : ''}
-${data.subject9 === 'Математика' ? 'Включи: все формулы, теоремы, алгоритмы решения задач.' : ''}
-` : data.exam9Mode.includes('Пробный') ? `
-Составь полный пробный экзамен по "${data.subject9}" уровня 9 класса.
-Задания должны соответствовать реальному формату экзамена.
-После — ответы и критерии оценивания.
-` : data.exam9Mode.includes('Стратегия') ? `
-Дай стратегию успешной сдачи экзамена по "${data.subject9}" после 9 класса:
-— Как эффективно готовиться в оставшееся время
-— Что точно будет на экзамене
-— Как вести себя на экзамене
-— Типичные ошибки девятиклассников
-— Советы по конкретному предмету
-` : `
-Разбери тему: "${inputText || data.subject9}" для экзамена после 9 класса.
-Объясни подробно и понятно.`}`,
-
-        solve: `Реши задачу по "${data.subject}" для ${data.grade}:
-${inputText}
-
-ДАНО: (если применимо)
-НАЙТИ:
-РЕШЕНИЕ: (каждый шаг с объяснением ПОЧЕМУ именно так)
-ОТВЕТ:
-ПРОВЕРКА:
-После — объясни метод и дай 1 похожую задачу.`,
-
-        explain: `Объясни тему "${inputText}" по предмету "${data.subject}". Уровень: ${data.level}.
-
-ЧТО ЭТО — простое определение своими словами
-В ЖИЗНИ — реальная аналогия
-КАК РАБОТАЕТ — механизм, формулы, правила
-ПРИМЕР — конкретный разбор шаг за шагом
-ЧАСТЫЕ ОШИБКИ — что важно не перепутать
-ЗАПОМНИ — главная мысль одним предложением`,
-
-        summary: `Создай подробный конспект по теме "${inputText}" для ${data.grade} (${data.subject}).
-ТЕМА / ОСНОВНЫЕ ПОНЯТИЯ / ФОРМУЛЫ И ПРАВИЛА / ОСНОВНОЕ СОДЕРЖАНИЕ / ПРИМЕРЫ / ВАЖНО ПОМНИТЬ / ВОПРОСЫ ДЛЯ САМОПРОВЕРКИ (3-5)`,
-
-        schema: `Схема-шпаргалка по теме "${inputText}" (${data.subject}).
-ГЛАВНОЕ / ФОРМУЛЫ / ПРИМЕРЫ / НЕ ЗАБУДЬ / ВЫВОД. Максимально компактно.`,
-
-        oral_exam: `Устный опрос по "${data.examTopic}" для ${data.grade}. ${data.examCount} вопросов.
-Формат: Вопрос N (уровень) + Ожидаемый ответ. Повышай сложность.
-В конце: типичные ошибки + совет.`,
-
-        lit_analysis: `Полный анализ "${data.litTitle}" (${data.litAuthor}) для ${data.grade}.
-ОБ АВТОРЕ / ИСТОРИЯ СОЗДАНИЯ / ЖАНР / СЮЖЕТ / ГЕРОИ / ТЕМЫ И ИДЕИ / ПРОБЛЕМАТИКА / ХУДОЖЕСТВЕННЫЕ ПРИЁМЫ / 5 КЛЮЧЕВЫХ ЦИТАТ / ВЫВОД`,
-
-        essay: `Помощь с сочинением: "${inputText}" для ${data.grade}. Тип: ${data.essayType}.
-${data.essayType === 'Написать сочинение' ? 'Напиши полное сочинение: вступление, основная часть с аргументами из литературы, заключение.' :
-data.essayType === 'Составить план' ? 'Подробный план с тезисами.' :
-data.essayType === 'Написать вступление' ? '2-3 варианта вступления.' :
-data.essayType === 'Подобрать аргументы и цитаты' ? '3-5 аргументов с цитатами из произведений.' :
-data.essayType === 'Написать заключение' ? '2 варианта заключения.' : 'Полный разбор темы.'}`,
-
-        chat: inputText,
-
-        lesson: `План урока ${data.lessonDuration} по "${inputText}" (${data.subject}, ${data.grade}).
-Цель / Задачи / Оборудование / Тип урока
-ХОД: оргмомент → актуализация (3 вопроса) → объяснение → закрепление → самостоятельная → рефлексия → домашнее задание
-МЕТОДИЧЕСКИЕ СОВЕТЫ / ТИПИЧНЫЕ ЗАТРУДНЕНИЯ`,
-
-        tasks: `${data.count} разноуровневых заданий по "${inputText}" (${data.subject}, ${data.grade}).
-Базовый / Средний / Продвинутый. Каждое: условие + ответ + краткое решение.`,
-
-        variants: `${data.variantCount} варианта контрольной по "${inputText}" (${data.subject}, ${data.grade}).
-По ${data.taskCount} заданий. Равная сложность, разное содержание. ОТВЕТЫ И КРИТЕРИИ.`,
-
-        differentiation: `Разноуровневые задания по "${inputText}" (${data.subject}, ${data.grade}).
-УРОВЕНЬ А (слабые) / УРОВЕНЬ Б (средние) / УРОВЕНЬ В (сильные) / ОЛИМПИАДНЫЙ. ОТВЕТЫ.`,
-
-        lit_lesson: `Урок литературы "${data.litTitle}" (${data.litAuthor}), ${data.grade}, ${data.lessonDuration}.
-Цели → Актуализация → Анализ (сюжет, герои, темы) → Работа с текстом → Творческое задание → Рефлексия.
-10 вопросов для класса. Методические приёмы.`,
-
-        generate_quiz: `${data.quizCount} вопросов (${data.quizType}) по тексту:
-${inputText}
-${data.quizType.includes('Тест') ? 'Формат: вопрос + A/B/C/D + правильный ответ с объяснением.' : 'Формат: вопрос + примерный ответ.'}
-Проверяй понимание, не только память.`,
-
-        lesson_plan: `Конспект занятия для ${data.ageGroup}: "${inputText}". Тип: ${data.lessonType}.
-Цель / Задачи / Оборудование / Предварительная работа
-ХОД: вводная (мотивация) → основная → физкультминутка → закрепление → рефлексия. МЕТОДИЧЕСКИЕ СОВЕТЫ.`,
-
-        parent_advice: `Консультация родителям: ${data.adviceTopic}. ${inputText}
-ПОЧЕМУ ЭТО ПРОИСХОДИТ / КАК ЧУВСТВУЕТ РЕБЁНОК / ЧТО ДЕЛАТЬ / ЧЕГО НЕ ДЕЛАТЬ / КАК ГОВОРИТЬ С РЕБЁНКОМ / КОГДА К СПЕЦИАЛИСТУ`,
-
-        planning: `${data.planType} для ${data.planAge}: "${inputText}".
-${data.planType.includes('неделю') ? 'Пн/Вт/Ср/Чт/Пт — виды деятельности каждый день.' : '4 недели + виды деятельности + итоговое мероприятие.'}`,
-
-        games: `${data.count || 5} игр для ${data.gameAge} (${data.gameType}): "${inputText}".
-Для каждой: название / цель / кол-во детей / материалы / правила / усложнение.`,
-
-        holiday: `Сценарий "${data.holidayType}" для ${data.holidayAge}. ${inputText}
-Действующие лица / Оборудование / Музыка.
-Открытие → Выступления (тексты) → Игры (3-4 шт.) → Сюрприз → Финал. Тексты для персонажей.`,
-
-        observation: `Анализ поведения ребёнка ${data.ageGroup}: ${inputText}
-АНАЛИЗ (норма?) / ПРИЧИНЫ / РЕКОМЕНДАЦИИ ВОСПИТАТЕЛЮ / РЕКОМЕНДАЦИИ РОДИТЕЛЯМ / КОГДА К СПЕЦИАЛИСТУ`
-    };
-    return p[actionId] || inputText;
-}
-
-function addChatMessage(text, isUser) {
-    const container = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = 'message ' + (isUser ? 'user' : 'ai');
-    const label = document.createElement('div');
-    label.className = 'message-label'; label.textContent = isUser ? 'Вы' : 'NEVIO';
-    const bubble = document.createElement('div');
-    bubble.className = 'message-bubble' + (isUser ? '' : ' ai-content');
-    if (isUser) bubble.textContent = text; else bubble.innerHTML = formatAIResponse(text);
-    div.appendChild(label); div.appendChild(bubble);
-    container.appendChild(div);
-    container.scrollTop = 99999;
-}
-
-function addLoadingMessage() {
-    const id = 'loading_' + Date.now();
-    const div = document.createElement('div'); div.className = 'message ai'; div.id = id;
-    const label = document.createElement('div'); label.className = 'message-label'; label.textContent = 'NEVIO';
-    const bubble = document.createElement('div'); bubble.className = 'message-bubble';
-    bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span><span class="loading-text">Думаю...</span></div>';
-    div.appendChild(label); div.appendChild(bubble);
-    document.getElementById('chatMessages').appendChild(div);
-    document.getElementById('chatMessages').scrollTop = 99999;
-    return id;
-}
-
-function removeLoadingMessage(id) { document.getElementById(id)?.remove(); }
-
-function copyToClipboard(text, btn) {
+function copyText(text) {
     navigator.clipboard.writeText(text).then(() => {
-        btn.innerHTML = '<i class="fas fa-check"></i> Скопировано';
-        setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Скопировать'; }, 2000);
-    }).catch(() => showToast('Не удалось скопировать'));
+        showToast('Ответ скопирован в буфер обмена');
+    }).catch(() => {
+        showToast('Не удалось скопировать');
+    });
 }
 
-function saveToHistory(item) {
-    state.history.push(item);
-    if (state.history.length > 150) state.history.shift();
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function saveData() {
+    const dataToSave = { role: state.role, history: state.history };
+    localStorage.setItem('nevioData_v2', JSON.stringify(dataToSave));
+}
+
+function saveToHistory(query, response) {
+    const config = getAllItems().find(m => m.id === state.currentActionId);
+    const title = config ? config.title : 'Запрос';
+    
+    const historyItem = {
+        id: 'hist_' + Date.now(),
+        type: title,
+        date: new Date().toLocaleDateString('ru-RU'),
+        query: query,
+        response: response
+    };
+    
+    state.history.unshift(historyItem);
+    if (state.history.length > 30) state.history.pop();
     saveData();
 }
 
 function showHistory() {
-    const list = document.getElementById('historyList');
-    if (!state.history.length) {
-        list.innerHTML = '<div class="empty-state"><div class="icon"><i class="fas fa-folder-open"></i></div><h3>История пуста</h3><p>Запросы будут сохраняться здесь</p></div>';
-    } else {
-        list.innerHTML = [...state.history].reverse().map((item, idx) => `
-            <div class="history-item" onclick="viewHistoryItem(${state.history.length-1-idx})">
-                <div class="history-header">
-                    <span class="history-type">${getActionName(item.type)}</span>
-                    <span class="history-date">${formatDate(item.timestamp)}</span>
-                </div>
-                <div class="history-preview">${item.input}</div>
-            </div>`).join('');
-    }
     showPage('historyPage');
+    const listEl = document.getElementById('historyList');
+    if (state.history.length === 0) {
+        listEl.innerHTML = `
+            <div class="empty-state">
+                <div class="icon"><i class="fas fa-folder-open"></i></div>
+                <h3>История пуста</h3>
+                <p>Здесь будут отображаться ваши прошлые запросы к ИИ</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    state.history.forEach(item => {
+        html += `
+            <div class="history-item" onclick="viewHistoryItem('${item.id}')">
+                <div class="history-header">
+                    <span class="history-type">${item.type}</span>
+                    <span class="history-date">${item.date}</span>
+                </div>
+                <div class="history-preview"><strong>В:</strong> ${item.query}</div>
+            </div>
+        `;
+    });
+    listEl.innerHTML = html;
 }
 
-function viewHistoryItem(index) {
-    const item = state.history[index];
+function viewHistoryItem(id) {
+    const item = state.history.find(h => h.id === id);
     if (!item) return;
-    const config = getAllItems().find(m => m.id === item.type);
-    if (!config) return;
-    state.currentActionId = item.type;
-    state.conversationHistory = [{ role:'user', content:item.input }, { role:'assistant', content:item.result }];
-    document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
-    document.getElementById('actionDescription').textContent = 'Из истории';
-    document.getElementById('actionForm').innerHTML = '';
+    
+    state.conversationHistory = [
+        { role: 'user', content: item.query },
+        { role: 'assistant', content: item.response }
+    ];
+    
+    document.getElementById('actionTitle').innerHTML = `<i class="fas fa-history"></i> ${item.type}`;
+    document.getElementById('actionDescription').textContent = 'Просмотр запроса из истории';
+    
     document.getElementById('chatMessages').innerHTML = '';
-    document.getElementById('continueChatArea').style.display = 'none';
-    addChatMessage(item.input, true);
-    addChatMessage(item.result, false);
-    showContinueChat();
+    document.getElementById('actionForm').style.display = 'none';
+    document.getElementById('continueChatArea').style.display = 'block';
+    
+    appendMessage('user', item.query);
+    appendMessage('ai', item.response);
+    
     showPage('actionPage');
 }
 
 function clearHistory() {
-    if (confirm('Удалить всю историю запросов?')) {
-        state.history = []; saveData(); showToast('История очищена'); showHistory();
+    if (confirm('Вы уверены, что хотите полностью очистить историю запросов?')) {
+        state.history = [];
+        saveData();
+        showToast('История успешно очищена');
+        if (document.getElementById('historyPage').classList.contains('active')) {
+            showHistory();
+        }
     }
-}
-
-function updateProfile() {
-    const user = state.telegramUser;
-    if (user) {
-        document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '👤';
-        document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
-        document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
-    }
-    const r = { student:'Ученик', teacher:'Учитель', kindergarten:'Воспитатель' };
-    document.getElementById('profileRole').textContent = r[state.role] || '';
 }
 
 function toggleTheme() {
     const isLight = document.body.classList.toggle('light-theme');
     localStorage.setItem('nevioTheme', isLight ? 'light' : 'dark');
     updateThemeUI(isLight);
-    showToast(isLight ? 'Светлая тема' : 'Тёмная тема');
+    showToast(isLight ? 'Светлая тема включена' : 'Тёмная тема включена');
 }
 
 function updateThemeUI(isLight) {
-    document.getElementById('themeIcon').innerHTML = `<i class="fas fa-${isLight ? 'sun' : 'moon'}"></i>`;
-    document.getElementById('themeText').textContent = isLight ? 'Переключить на тёмную' : 'Переключить на светлую';
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    if (isLight) {
+        themeIcon.innerHTML = `<i class="fas fa-sun"></i>`;
+        themeText.textContent = 'Светлая тема';
+    } else {
+        themeIcon.innerHTML = `<i class="fas fa-moon"></i>`;
+        themeText.textContent = 'Тёмная тема';
+    }
 }
 
-function deleteAccount() {
-    if (confirm('Удалить все данные и сменить роль?')) {
-        localStorage.removeItem('nevioData_v2');
-        state.role = null; state.history = []; state.conversationHistory = [];
-        showPage('roleSelectionPage'); showToast('Аккаунт удалён');
+function updateProfile() {
+    if (state.telegramUser) {
+        document.getElementById('profileName').textContent = (state.telegramUser.first_name + ' ' + (state.telegramUser.last_name || '')).trim();
+        document.getElementById('profileUsername').textContent = state.telegramUser.username ? '@' + state.telegramUser.username : '';
+        if (state.telegramUser.photo_url) {
+            document.getElementById('profileAvatar').innerHTML = `<img src="${state.telegramUser.photo_url}" alt="Avatar">`;
+        }
     }
+    const rolesMap = { student: 'Ученик / Абитуриент', teacher: 'Учитель / Преподаватель', kindergarten: 'Воспитатель ДОУ' };
+    document.getElementById('profileRole').textContent = rolesMap[state.role] || 'Роль не выбрана';
 }
 
 function showPrivacy() { showPage('privacyPage'); }
 function showTerms() { showPage('termsPage'); }
 
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId)?.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
-    if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
-    if (pageId === 'settingsPage') document.getElementById('nav-settings')?.classList.add('active');
-    window.scrollTo(0, 0);
+function deleteAccount() {
+    if (confirm('Вы действительно хотите сбросить текущую роль и все данные приложения?')) {
+        localStorage.removeItem('nevioData_v2');
+        state.role = null;
+        state.history = [];
+        state.conversationHistory = [];
+        showPage('roleSelectionPage');
+        showToast('Данные успешно сброшены');
+    }
 }
 
-function goBack() { showPage('mainPage'); state.conversationHistory = []; }
-
-function getActionName(id) {
-    const n = {
-        ct_prep:'Подготовка к ЦТ/ЦЭ', exam9_prep:'Экзамен 9 класса',
-        solve:'Решение задачи', explain:'Объяснение темы', summary:'Конспект', schema:'Схема',
-        oral_exam:'Устный опрос', lit_analysis:'Анализ произведения', essay:'Сочинение',
-        chat:'Свободный чат', lesson:'План урока', tasks:'Задания', variants:'Контрольная',
-        differentiation:'Дифференциация', lit_lesson:'Урок литературы', generate_quiz:'Вопросы по тексту',
-        lesson_plan:'Конспект занятия', parent_advice:'Консультация', planning:'Планирование',
-        games:'Игры', holiday:'Праздник', observation:'Наблюдение'
-    };
-    return n[id] || 'Запрос';
-}
-
-function formatDate(ts) {
-    const d = new Date(ts), diff = Date.now() - d;
-    const m = Math.floor(diff/60000), h = Math.floor(diff/3600000), days = Math.floor(diff/86400000);
-    if (m < 1) return 'Только что';
-    if (m < 60) return m + ' мин назад';
-    if (h < 24) return h + ' ч назад';
-    if (days < 7) return days + ' дн назад';
-    return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
-}
-
-function saveData() {
-    try { localStorage.setItem('nevioData_v2', JSON.stringify({ role:state.role, history:state.history })); } catch(e) {}
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-document.addEventListener('DOMContentLoaded', init);
+window.onload = init;
 </script>
 </body>
 </html>
