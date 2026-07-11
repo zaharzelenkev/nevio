@@ -131,7 +131,7 @@
     .legal-content p { margin-bottom:10px; color:var(--text-secondary); }
     .legal-content strong { color:var(--text); }
 
-    /* ===== НОВЫЕ СТИЛИ ДЛЯ ТЕСТА ===== */
+    /* ===== ТЕСТ ===== */
     .test-question-card { background:var(--card); border:1.5px solid var(--border); border-radius:18px; padding:20px; margin-bottom:14px; }
     .test-question-num { font-size:11px; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
     .test-question-text { font-size:15px; font-weight:600; line-height:1.5; margin-bottom:16px; }
@@ -144,8 +144,6 @@
     .test-explanation { margin-top:14px; padding:12px 16px; background:rgba(232,177,62,0.07); border:1px solid rgba(232,177,62,0.2); border-radius:12px; font-size:13px; line-height:1.6; color:var(--text-secondary); display:none; }
     .test-explanation.show { display:block; }
     .test-progress { background:var(--surface); border-radius:12px; padding:14px 18px; margin-bottom:14px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-    .test-progress-bar { width:100%; height:6px; background:var(--border); border-radius:3px; margin-top:8px; }
-    .test-progress-fill { height:100%; background:linear-gradient(135deg,var(--gold-light),var(--gold)); border-radius:3px; transition:width 0.4s ease; }
     .test-score { font-size:13px; color:var(--text-secondary); }
     .test-score strong { color:var(--gold); }
     .test-result { text-align:center; padding:30px 20px; }
@@ -155,6 +153,7 @@
     .subject-chip.active { background:rgba(232,177,62,0.25); border-color:var(--gold); }
     .info-banner { background:linear-gradient(135deg,rgba(232,177,62,0.08),rgba(232,177,62,0.03)); border:1px solid rgba(232,177,62,0.2); border-radius:14px; padding:14px 16px; margin-bottom:14px; font-size:13px; color:var(--text-secondary); line-height:1.6; }
     .info-banner strong { color:var(--gold); }
+    .retry-banner { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:14px; padding:14px 16px; margin-bottom:14px; font-size:13px; color:#f87171; line-height:1.6; }
   </style>
 </head>
 <body>
@@ -275,7 +274,7 @@
         <h3>Хранение данных</h3>
         <p>Вся история запросов и настройки хранятся <strong>только на вашем устройстве</strong>. Разработчик не имеет к ним доступа.</p>
         <h3>Запросы к ИИ</h3>
-        <p>Ваши запросы передаются в ИИ по защищённому соединению исключительно для генерации ответов.</p>
+        <p>Ваши запросы передаются в ИИ по защищённому соединению через наш сервер исключительно для генерации ответов.</p>
         <h3>Telegram</h3>
         <p>Из Telegram используется только имя и фото профиля для отображения в интерфейсе. Эти данные никуда не передаются.</p>
         <h3>Ваши права</h3>
@@ -322,9 +321,15 @@
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
-const GROQ_API_KEY = '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';
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.3-70b-versatile';
+/**
+ * IMPORTANT: no API key here. Requests go to your own proxy (see
+ * worker.js), which holds the real Groq key server-side.
+ * Replace this with your deployed Worker URL before shipping.
+ */
+const API_PROXY_URL = 'https://nevio-proxy.YOUR-SUBDOMAIN.workers.dev';
+
+const REQUEST_TIMEOUT_MS = 30000;
+const MAX_RETRIES = 2;
 
 let state = { role:null, telegramUser:null, history:[], conversationHistory:[], currentActionId:null, isLoading:false };
 
@@ -669,7 +674,7 @@ IT И ТЕХНИКА:
 };
 
 // ================================================================
-// МЕНЮ КОНФИГУРАЦИЯ (ВСЁ ОРИГИНАЛЬНОЕ СОХРАНЕНО)
+// МЕНЮ КОНФИГУРАЦИЯ
 // ================================================================
 const menuConfigs = {
   student: {
@@ -745,7 +750,7 @@ const menuConfigs = {
 };
 
 // ================================================================
-// СИСТЕМНЫЕ ПРОМПТЫ — ЗНАЧИТЕЛЬНО УЛУЧШЕНЫ ДЛЯ ЦТ/ЦЭ
+// СИСТЕМНЫЕ ПРОМПТЫ
 // ================================================================
 const systemPrompts = {
   student: `Ты — NEVIO, лучший образовательный ИИ-ассистент для учеников и абитуриентов Беларуси.
@@ -789,7 +794,50 @@ const systemPrompts = {
 };
 
 // ================================================================
-// ИНТЕРАКТИВНЫЙ ТЕСТ — НОВЫЙ ФУНКЦИОНАЛ
+// СЕТЕВОЙ СЛОЙ — таймаут + повторные попытки + единая точка входа
+// ================================================================
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function callProxy(body, { retries = MAX_RETRIES } = {}) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await fetchWithTimeout(API_PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }, REQUEST_TIMEOUT_MS);
+      if (!response.ok) {
+        // 4xx won't fix itself on retry, only retry on 5xx/network issues
+        if (response.status < 500) throw new Error('Ошибка запроса (' + response.status + ')');
+        throw new Error('Сервер временно недоступен (' + response.status + ')');
+      }
+      return response;
+    } catch (e) {
+      lastError = e;
+      const isAbort = e.name === 'AbortError';
+      if (attempt < retries) {
+        await sleep(600 * (attempt + 1));
+        continue;
+      }
+      throw new Error(isAbort ? 'Превышено время ожидания ответа' : e.message);
+    }
+  }
+  throw lastError;
+}
+
+// ================================================================
+// ИНТЕРАКТИВНЫЙ ТЕСТ — теперь на строгом JSON вместо хрупкого парсинга текста
 // ================================================================
 let testState = {
   questions: [],
@@ -811,7 +859,7 @@ function renderTestSetup() {
   return `
     <div class="info-banner">
       <strong>🎯 Интерактивный тест в формате ЦТ</strong><br>
-      ИИ генерирует реальные вопросы формата ЦТ. После каждого ответа получишь объяснение.
+      ИИ генерирует вопросы формата ЦТ. Это тренировочные задания, а не официальные материалы РИКЗ — используй их для практики, а не как точный прогноз результата.
     </div>
     <div class="card">
       <div class="card-header">
@@ -865,11 +913,14 @@ async function startInteractiveTest() {
     </div>`;
 
   try {
-    const prompt = buildTestGenerationPrompt(subject, count, difficulty);
-    const response = await callGroqSimple(prompt);
-    const questions = parseTestQuestions(response);
+    const questions = await generateTestQuestions(subject, count, difficulty);
 
-    if (questions.length === 0) throw new Error('Не удалось создать вопросы');
+    if (questions.length === 0) {
+      throw new Error('ИИ не вернул ни одного корректного вопроса. Попробуй ещё раз или выбери другой предмет.');
+    }
+    if (questions.length < count) {
+      showToast(`Получено ${questions.length} из ${count} вопросов`);
+    }
 
     testState.questions = questions;
     renderCurrentQuestion();
@@ -877,37 +928,89 @@ async function startInteractiveTest() {
     document.getElementById('testContainer').innerHTML = `
       <div class="card" style="text-align:center;padding:30px;">
         <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
-        <h3>Ошибка генерации</h3>
-        <p style="color:var(--text-secondary);margin:10px 0;">${e.message}</p>
+        <h3>Не получилось создать тест</h3>
+        <p style="color:var(--text-secondary);margin:10px 0;">${escapeHtml(e.message)}</p>
         <button class="btn btn-primary" onclick="openCTTest()" style="margin-top:14px;"><i class="fas fa-redo"></i> Попробовать снова</button>
       </div>`;
   }
 }
 
-function buildTestGenerationPrompt(subject, count, difficulty) {
+// Asks the model for strict JSON and validates the shape before using it,
+// instead of parsing free-form "###ВОПРОС###" text blocks. If the model
+// returns malformed JSON once, we retry with a stricter reminder rather
+// than silently dropping questions.
+async function generateTestQuestions(subject, count, difficulty) {
   const knowledgeContext = getKnowledgeForSubject(subject);
-  return `Ты — эксперт по ЦТ в Беларуси. Создай ${count} тестовых вопросов по предмету "${subject}" в точном формате белорусского ЦТ. Сложность: ${difficulty}.
+  const basePrompt = `Ты — эксперт по ЦТ в Беларуси. Создай ${count} тестовых вопросов по предмету "${subject}" в формате белорусского ЦТ. Сложность: ${difficulty}.
 
 ${knowledgeContext}
 
-ТРЕБОВАНИЯ К ВОПРОСАМ:
-- Каждый вопрос должен быть реалистичным, как на настоящем ЦТ в Беларуси
-- 4 варианта ответа (А, Б, В, Г)
-- Только один правильный ответ
-- Краткое объяснение правильного ответа
+ТРЕБОВАНИЯ:
+- Каждый вопрос реалистичен, как на настоящем ЦТ
+- Ровно 4 варианта ответа
+- Только один правильный
+- Короткое объяснение (1-2 предложения)
+- Вопросы должны охватывать разные темы предмета
 
-ОБЯЗАТЕЛЬНЫЙ ФОРМАТ (строго соблюдай, без лишнего текста):
-###ВОПРОС###
-[текст вопроса]
-А) [вариант]
-Б) [вариант]
-В) [вариант]
-Г) [вариант]
-ОТВЕТ: [буква]
-ПОЯСНЕНИЕ: [краткое объяснение 1-2 предложения]
-###КОНЕЦ###
+Ответь СТРОГО валидным JSON без markdown-обрамления (без \`\`\`), в точности по такой схеме:
+{"questions":[{"question":"текст вопроса","options":["вариант А","вариант Б","вариант В","вариант Г"],"correctIndex":0,"explanation":"объяснение"}]}
+correctIndex — индекс правильного варианта (0-3). Никакого текста до или после JSON.`;
 
-Создай ${count} таких блоков подряд. Вопросы должны охватывать разные темы предмета.`;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const prompt = attempt === 0
+      ? basePrompt
+      : basePrompt + '\n\nВАЖНО: в прошлый раз ответ не был валидным JSON. Верни ТОЛЬКО JSON-объект, ничего больше.';
+
+    const response = await callProxy({
+      messages: [
+        { role:'system', content: systemPrompts[state.role] || systemPrompts.student },
+        { role:'user', content: prompt }
+      ],
+      temperature: 0.5,
+      max_tokens: 8000,
+      stream: false
+    });
+    const data = await response.json();
+    const raw = data.choices?.[0]?.message?.content || '';
+    const parsed = parseTestQuestionsJSON(raw);
+    if (parsed.length > 0) return parsed;
+  }
+  return [];
+}
+
+function parseTestQuestionsJSON(text) {
+  let cleaned = text.trim();
+  // Strip accidental markdown fences if the model adds them anyway
+  cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '');
+
+  let obj;
+  try {
+    obj = JSON.parse(cleaned);
+  } catch {
+    // last resort: try to grab the outermost {...}
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) return [];
+    try { obj = JSON.parse(match[0]); } catch { return []; }
+  }
+
+  const list = Array.isArray(obj?.questions) ? obj.questions : [];
+  const out = [];
+  for (const q of list) {
+    if (
+      typeof q.question === 'string' && q.question.trim() &&
+      Array.isArray(q.options) && q.options.length === 4 &&
+      q.options.every(o => typeof o === 'string' && o.trim()) &&
+      Number.isInteger(q.correctIndex) && q.correctIndex >= 0 && q.correctIndex <= 3
+    ) {
+      out.push({
+        question: q.question.trim(),
+        options: q.options.map(o => o.trim()),
+        correctIndex: q.correctIndex,
+        explanation: typeof q.explanation === 'string' ? q.explanation.trim() : ''
+      });
+    }
+  }
+  return out;
 }
 
 function getKnowledgeForSubject(subject) {
@@ -925,43 +1028,7 @@ function getKnowledgeForSubject(subject) {
   return map[subject] ? `БАЗА ЗНАНИЙ ПО ПРЕДМЕТУ:\n${map[subject]}` : '';
 }
 
-function parseTestQuestions(text) {
-  const questions = [];
-  const blocks = text.split('###ВОПРОС###').filter(b => b.includes('ОТВЕТ:'));
-
-  for (const block of blocks) {
-    try {
-      const endIdx = block.indexOf('###КОНЕЦ###');
-      const content = endIdx > -1 ? block.substring(0, endIdx) : block;
-      const lines = content.trim().split('\n').filter(l => l.trim());
-
-      let qText = '';
-      const options = [];
-      let correct = '';
-      let explanation = '';
-      let collectingQ = true;
-
-      for (const line of lines) {
-        const t = line.trim();
-        if (t.match(/^[АБВГ]\)/)) {
-          collectingQ = false;
-          options.push(t);
-        } else if (t.startsWith('ОТВЕТ:')) {
-          correct = t.replace('ОТВЕТ:', '').trim().charAt(0).toUpperCase();
-        } else if (t.startsWith('ПОЯСНЕНИЕ:')) {
-          explanation = t.replace('ПОЯСНЕНИЕ:', '').trim();
-        } else if (collectingQ && t) {
-          qText += (qText ? ' ' : '') + t;
-        }
-      }
-
-      if (qText && options.length >= 4 && correct && 'АБВГ'.includes(correct)) {
-        questions.push({ question: qText, options, correct, explanation });
-      }
-    } catch(e) { /* skip */ }
-  }
-  return questions;
-}
+const LETTERS = ['А', 'Б', 'В', 'Г'];
 
 function renderCurrentQuestion() {
   const total = testState.questions.length;
@@ -976,10 +1043,9 @@ function renderCurrentQuestion() {
   const progress = ((current / total) * 100).toFixed(0);
   testState.answered = false;
 
-  const optionsHTML = q.options.map((opt, i) => {
-    const letter = 'АБВГ'[i];
-    return `<button class="test-option" onclick="answerQuestion('${letter}', this)" data-letter="${letter}">${opt}</button>`;
-  }).join('');
+  const optionsHTML = q.options.map((opt, i) =>
+    `<button class="test-option" onclick="answerQuestion(${i}, this)" data-index="${i}">${LETTERS[i]}) ${escapeHtml(opt)}</button>`
+  ).join('');
 
   document.getElementById('testContainer').innerHTML = `
     <div class="test-progress">
@@ -994,41 +1060,38 @@ function renderCurrentQuestion() {
     </div>
     <div class="test-question-card">
       <div class="test-question-num">Вопрос ${current + 1} · ${testState.subject}</div>
-      <div class="test-question-text">${q.question}</div>
+      <div class="test-question-text">${escapeHtml(q.question)}</div>
       <div class="test-options" id="optionsContainer">${optionsHTML}</div>
       <div class="test-explanation" id="testExplanation">
-        💡 <strong>Объяснение:</strong> ${q.explanation}
+        💡 <strong>Объяснение:</strong> ${escapeHtml(q.explanation)}
       </div>
     </div>
     <div id="nextBtnContainer"></div>`;
 }
 
-function answerQuestion(selectedLetter, btn) {
+function answerQuestion(selectedIndex, btn) {
   if (testState.answered) return;
   testState.answered = true;
 
   const q = testState.questions[testState.currentQ];
-  const isCorrect = selectedLetter === q.correct;
+  const isCorrect = selectedIndex === q.correctIndex;
 
   if (isCorrect) testState.score++;
 
-  // Показываем правильный/неправильный
   document.querySelectorAll('.test-option').forEach(opt => {
-    const letter = opt.getAttribute('data-letter');
+    const idx = parseInt(opt.getAttribute('data-index'));
     opt.classList.add('disabled');
-    if (letter === q.correct) opt.classList.add('correct');
-    else if (letter === selectedLetter && !isCorrect) opt.classList.add('wrong');
+    if (idx === q.correctIndex) opt.classList.add('correct');
+    else if (idx === selectedIndex && !isCorrect) opt.classList.add('wrong');
   });
 
-  // Показываем объяснение
   document.getElementById('testExplanation').classList.add('show');
 
-  // Кнопка далее
   const isLast = testState.currentQ >= testState.questions.length - 1;
   document.getElementById('nextBtnContainer').innerHTML = `
     <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
       <div style="flex:1;font-size:14px;font-weight:600;color:${isCorrect ? '#4ade80' : '#f87171'}">
-        ${isCorrect ? '✅ Правильно!' : `❌ Неверно. Правильный ответ: ${q.correct}`}
+        ${isCorrect ? '✅ Правильно!' : `❌ Неверно. Правильный ответ: ${LETTERS[q.correctIndex]}`}
       </div>
       <button class="btn btn-primary" style="width:auto;padding:10px 20px;" onclick="nextQuestion()">
         ${isLast ? '<i class="fas fa-flag-checkered"></i> Завершить' : '<i class="fas fa-arrow-right"></i> Далее'}
@@ -1050,29 +1113,20 @@ function renderTestResult() {
   else if (pct >= 75) { emoji = '🎯'; label = 'Хороший результат!'; }
   else if (pct >= 50) { emoji = '📚'; label = 'Неплохо, но есть куда расти'; }
 
-  // Примерный балл ЦТ
-  const ctScore = Math.round(pct);
-
   document.getElementById('testContainer').innerHTML = `
     <div class="card">
       <div class="test-result">
         <div style="font-size:56px;margin-bottom:8px;">${emoji}</div>
         <div class="test-result-score">${score}/${total}</div>
         <div class="test-result-label">${label}</div>
-        <div style="display:flex;gap:16px;justify-content:center;margin:20px 0;">
-          <div style="text-align:center;">
-            <div style="font-size:28px;font-weight:700;color:var(--gold);">${pct}%</div>
-            <div style="font-size:12px;color:var(--text-muted);">Точность</div>
-          </div>
-          <div style="width:1px;background:var(--border);"></div>
-          <div style="text-align:center;">
-            <div style="font-size:28px;font-weight:700;color:var(--gold);">~${ctScore}</div>
-            <div style="font-size:12px;color:var(--text-muted);">Баллов ЦТ (≈)</div>
-          </div>
+        <div style="margin:20px 0;">
+          <div style="font-size:28px;font-weight:700;color:var(--gold);">${pct}%</div>
+          <div style="font-size:12px;color:var(--text-muted);">Точность на этом наборе вопросов</div>
         </div>
         <div style="background:rgba(232,177,62,0.08);border:1px solid rgba(232,177,62,0.2);border-radius:12px;padding:14px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);text-align:left;">
-          <strong style="color:var(--gold);">📊 Предмет: ${testState.subject}</strong><br>
-          ${pct >= 75 ? '✅ Хорошая подготовка по этому предмету!' : '⚠️ Рекомендуем повторить материал и пройти тест ещё раз.'}
+          <strong style="color:var(--gold);">📊 Предмет: ${escapeHtml(testState.subject)}</strong><br>
+          ${pct >= 75 ? '✅ Хорошая подготовка по этому предмету!' : '⚠️ Рекомендуем повторить материал и пройти тест ещё раз.'}<br>
+          <span style="color:var(--text-muted);">Это тренировочный тест, сгенерированный ИИ, а не официальная шкала ЦТ — реальный балл зависит от сложности конкретного варианта РИКЗ.</span>
         </div>
       </div>
       <button class="btn btn-primary" onclick="startInteractiveTest()">
@@ -1088,29 +1142,8 @@ function exitTest() {
   showPage('mainPage');
 }
 
-async function callGroqSimple(userPrompt) {
-  const body = {
-    model: MODEL,
-    messages: [
-      { role:'system', content: systemPrompts[state.role] || systemPrompts.student },
-      { role:'user', content: userPrompt }
-    ],
-    temperature: 0.5,
-    max_tokens: 8000,
-    stream: false
-  };
-  const response = await fetch(GROQ_API_URL, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}` },
-    body: JSON.stringify(body)
-  });
-  if (!response.ok) throw new Error('API ошибка ' + response.status);
-  const data = await response.json();
-  return data.choices[0].message.content;
-}
-
 // ================================================================
-// ОРИГИНАЛЬНЫЕ ФУНКЦИИ (ВСЁ СОХРАНЕНО)
+// ОСНОВНЫЕ ФУНКЦИИ
 // ================================================================
 function init() {
   state.telegramUser = tg?.initDataUnsafe?.user || null;
@@ -1155,7 +1188,6 @@ function loadMainMenu() {
 }
 
 function openAction(actionId) {
-  // Особый случай для интерактивного теста
   if (actionId === 'ct_test') {
     openCTTest();
     return;
@@ -1398,7 +1430,7 @@ async function processAction() {
     showContinueChat();
   } catch(error) {
     removeLoadingMessage(loadingId);
-    addChatMessage('Ошибка: ' + error.message + '\n\nПопробуйте ещё раз.', false);
+    addChatMessage('Не удалось получить ответ: ' + error.message + '\n\nПопробуйте ещё раз через немного времени.', false);
     showToast('Ошибка соединения');
   } finally {
     state.isLoading = false;
@@ -1430,7 +1462,7 @@ async function sendContinue() {
     state.conversationHistory.push({ role:'assistant', content:response });
   } catch(e) {
     removeLoadingMessage(loadingId);
-    addChatMessage('Ошибка: ' + e.message, false);
+    addChatMessage('Не удалось получить ответ: ' + e.message, false);
   } finally {
     state.isLoading = false;
     document.getElementById('sendContinueBtn').disabled = false;
@@ -1444,24 +1476,17 @@ function handleContinueKey(event) {
 }
 
 async function callGroqWithStream(messages, loadingId) {
-  // Добавляем базу знаний в системный промпт
   const enrichedSystemPrompt = systemPrompts[state.role] + '\n\n' +
     'СПРАВОЧНАЯ БАЗА ЗНАНИЙ ЦТ/ЦЭ БЕЛАРУСИ:\n' +
     CT_KNOWLEDGE_BASE.structure + '\n' +
     CT_KNOWLEDGE_BASE.ce_structure + '\n' +
     CT_KNOWLEDGE_BASE.popular_unis;
 
-  const body = {
-    model: MODEL,
+  const response = await callProxy({
     messages: [{ role:'system', content: enrichedSystemPrompt }, ...messages],
     temperature: 0.6, max_tokens: 4000, stream: true
-  };
-  const response = await fetch(GROQ_API_URL, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}` },
-    body: JSON.stringify(body)
-  });
-  if (!response.ok) throw new Error('API ошибка ' + response.status);
+  }, { retries: 0 }); // streaming responses can't be safely retried mid-stream
+
   removeLoadingMessage(loadingId);
   const messageDiv = document.createElement('div');
   messageDiv.className = 'message ai';
@@ -1492,6 +1517,7 @@ async function callGroqWithStream(messages, loadingId) {
       } catch(e) {}
     }
   }
+  if (!fullText) throw new Error('Пустой ответ от сервера');
   bubble.innerHTML = formatAIResponse(fullText);
   const copyBtn = document.createElement('button');
   copyBtn.className = 'copy-btn';
@@ -1502,8 +1528,14 @@ async function callGroqWithStream(messages, loadingId) {
   return fullText;
 }
 
+function escapeHtml(text) {
+  return String(text ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 function formatAIResponse(text) {
-  let f = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let f = escapeHtml(text);
   f = f.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
   f = f.replace(/\*(.+?)\*/g,'<em>$1</em>');
   f = f.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
@@ -1579,7 +1611,6 @@ function buildPrompt(actionId, inputText, data) {
   const isSolveOwnCT = data.ctMode === 'Разбор своего задания';
   const isSolveOwn9 = data.exam9Mode === 'Разбор своего задания';
 
-  // Получаем базу знаний для предмета
   const ctKnowledge = getKnowledgeForSubject(data.subjectCT || data.subject9 || data.subject || '');
 
   const solveOwnPrompt = (subject, level, task) => `Ты — опытный репетитор по ЦТ/ЦЭ в Беларуси. Ученик прислал своё задание. Разбери его максимально подробно.
@@ -1818,7 +1849,7 @@ function showHistory() {
           <span class="history-type">${getActionName(item.type)}</span>
           <span class="history-date">${formatDate(item.timestamp)}</span>
         </div>
-        <div class="history-preview">${item.input}</div>
+        <div class="history-preview">${escapeHtml(item.input)}</div>
       </div>`).join('');
   }
   showPage('historyPage');
