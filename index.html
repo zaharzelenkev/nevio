@@ -284,7 +284,7 @@
         <h3>Хранение данных</h3>
         <p>Вся история запросов и настройки хранятся <strong>только на вашем устройстве</strong>. Разработчик не имеет к ним доступа.</p>
         <h3>Запросы к ИИ</h3>
-        <p>Ваши запросы передаются в ИИ по защищённому соединению через наш сервер исключительно для генерации ответов.</p>
+        <p>Ваши запросы передаются в ИИ по защищённому соединению исключительно для генерации ответов.</p>
         <h3>Telegram</h3>
         <p>Из Telegram используется только имя и фото профиля для отображения в интерфейсе. Эти данные никуда не передаются.</p>
         <h3>Ваши права</h3>
@@ -332,11 +332,13 @@ const tg = window.Telegram?.WebApp;
 if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
 /**
- * IMPORTANT: no API key here. Requests go to your own proxy (see
- * worker.js), which holds the real Groq key server-side.
- * Replace this with your deployed Worker URL before shipping.
+ * ==========================================================
+ * ВПИШИ СЮДА СВОЙ API-КЛЮЧ GROQ (получить на console.groq.com)
+ * ==========================================================
  */
-const API_PROXY_URL = 'https://nevio-proxy.YOUR-SUBDOMAIN.workers.dev';
+const GROQ_API_KEY = "ВСТАВЬ_СЮДА_СВОЙ_API_КЛЮЧ_GROQ";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const REQUEST_TIMEOUT_MS = 30000;
 const MAX_RETRIES = 2;
@@ -822,10 +824,13 @@ async function callProxy(body, { retries = MAX_RETRIES } = {}) {
   let lastError;
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const response = await fetchWithTimeout(API_PROXY_URL, {
+      const response = await fetchWithTimeout(GROQ_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + GROQ_API_KEY
+        },
+        body: JSON.stringify({ model: GROQ_MODEL, ...body })
       }, REQUEST_TIMEOUT_MS);
       if (!response.ok) {
         // 4xx won't fix itself on retry, only retry on 5xx/network issues
@@ -1159,9 +1164,11 @@ function init() {
   state.telegramUser = tg?.initDataUnsafe?.user || null;
   const saved = localStorage.getItem('nevioData_v2');
   if (saved) { try { const p = JSON.parse(saved); state.role = p.role; state.history = p.history || []; } catch(e) {} }
+  // Светлая тема — по умолчанию. Тёмная включается только если пользователь сам её выбрал ранее.
   const savedTheme = localStorage.getItem('nevioTheme');
-  if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); }
-  updateThemeUI(savedTheme === 'dark');
+  const isDark = savedTheme === 'dark';
+  document.body.classList.toggle('dark-theme', isDark);
+  updateThemeUI(isDark);
   if (state.role) { loadMainMenu(); showPage('mainPage'); } else showPage('roleSelectionPage');
   updateProfile();
 }
