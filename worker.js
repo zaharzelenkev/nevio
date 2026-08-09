@@ -1,5 +1,5 @@
 /**
- * NEVIO — Groq proxy worker
+ * NEVIO — OpenRouter proxy worker
  *
  * WHY THIS EXISTS
  * ----------------
@@ -9,25 +9,24 @@
  * A key inside client-side code is a PUBLIC key, no matter how it's
  * formatted or hidden in a variable name.
  *
- * This worker sits between your app and Groq. The key lives here, on
- * Cloudflare's servers, and is never sent to the browser. The app now
- * calls YOUR worker URL instead of api.groq.com directly.
+ * This worker sits between your app and OpenRouter. The key lives here,
+ * on Cloudflare's servers, and is never sent to the browser. The app now
+ * calls YOUR worker URL instead of openrouter.ai directly.
  *
  * DEPLOY (5 minutes, free tier is enough for this):
  * 1. Go to https://dash.cloudflare.com -> Workers & Pages -> Create -> Worker
  * 2. Paste this file's contents in, replacing the default code
  * 3. Go to Settings -> Variables -> add an encrypted secret:
- *      name: GROQ_API_KEY
- *      value: <your Groq key>
- *    (Generate a NEW key in Groq's console first — the old one is
- *    compromised because it was posted in a chat and shipped in
- *    client code. Revoke it.)
+ *      name: OPENROUTER_API_KEY
+ *      value: <your OpenRouter key>
+ *    (Get a key at https://openrouter.ai/keys — free :free models
+ *    don't need a payment card; they have per-day request limits.)
  * 4. Deploy. You'll get a URL like https://nevio-proxy.<you>.workers.dev
  * 5. Put that URL into API_PROXY_URL in the app's script (see index.html)
  *
  * This also gives you a place to add rate-limiting per Telegram user
  * later, which you have none of right now — anyone can hammer this
- * endpoint and run up your Groq usage.
+ * endpoint and run up your OpenRouter usage.
  */
 
 const ALLOWED_ORIGIN = '*'; // tighten to your actual site/Mini App origin once deployed
@@ -49,27 +48,27 @@ export default {
     }
 
     // Only forward the fields we expect — don't let a client inject
-    // arbitrary Groq API parameters.
+    // arbitrary OpenRouter API parameters.
     const { messages, temperature, max_tokens, stream } = payload;
     if (!Array.isArray(messages)) {
       return json({ error: 'messages array required' }, 400);
     }
 
-    const groqBody = {
-      model: 'llama-3.3-70b-versatile',
+    const body = {
+      model: 'meta-llama/llama-3.3-70b-instruct:free', // бесплатная модель OpenRouter (суффикс :free)
       messages,
       temperature: typeof temperature === 'number' ? temperature : 0.6,
       max_tokens: Math.min(typeof max_tokens === 'number' ? max_tokens : 4000, 8000),
       stream: !!stream,
     };
 
-    const upstream = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${env.GROQ_API_KEY}`,
+        Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
       },
-      body: JSON.stringify(groqBody),
+      body: JSON.stringify(body),
     });
 
     // Stream straight through for stream:true requests, otherwise
