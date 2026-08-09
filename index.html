@@ -337,7 +337,14 @@ if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
  * ==========================================================
  */
 const OPENROUTER_API_KEY = "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";
-const OPENROUTER_MODEL = "openai/gpt-oss-120b:free"; // бесплатная модель OpenRouter (суффикс :free)
+// Бесплатные модели с резервом: если одна недоступна, пробуем следующую
+const OPENROUTER_MODELS = [
+  "openrouter/free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "openai/gpt-oss-120b:free",
+  "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "qwen/qwen3-next-80b-a3b-instruct:free"
+];
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const REQUEST_TIMEOUT_MS = 30000;
@@ -822,33 +829,56 @@ async function fetchWithTimeout(url, options, timeoutMs) {
 
 async function callProxy(body, { retries = MAX_RETRIES } = {}) {
   let lastError;
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const response = await fetchWithTimeout(OPENROUTER_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + OPENROUTER_API_KEY
-        },
-        body: JSON.stringify({ model: OPENROUTER_MODEL, ...body })
-      }, REQUEST_TIMEOUT_MS);
-      if (!response.ok) {
-        // 4xx won't fix itself on retry, only retry on 5xx/network issues
-        if (response.status < 500) throw new Error('Ошибка запроса (' + response.status + ')');
-        throw new Error('Сервер временно недоступен (' + response.status + ')');
+  for (let modelIndex = 0; modelIndex < OPENROUTER_MODELS.length; modelIndex++) {
+    const model = OPENROUTER_MODELS[modelIndex];
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await fetchWithTimeout(OPENROUTER_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + OPENROUTER_API_KEY
+          },
+          body: JSON.stringify({ model, ...body })
+        }, REQUEST_TIMEOUT_MS);
+        if (!response.ok) {
+          const status = response.status;
+          const msg = 'Модель ' + model + ': ошибка ' + status;
+          // 404/429 — модель недоступна или ограничена, сразу пробуем следующую модель
+          if (status === 404 || status === 429) {
+            lastError = new Error(msg);
+            break; // выходим из retry, переходим к следующей модели
+          }
+          // 5xx или другие ошибки — можно повторить на той же модели
+          if (status >= 500) throw new Error('Сервер временно недоступен (' + status + ')');
+          // Остальные 4xx — не исправятся повтором
+          throw new Error('Ошибка запроса (' + status + ')');
+        }
+        return response;
+      } catch (e) {
+        lastError = e;
+        const msg = e.message || '';
+        // Если это ошибка конкретной модели (404/429) — прерываем ретраи
+        if (msg.includes('ошибка 404') || msg.includes('ошибка 429')) {
+          break;
+        }
+        const isAbort = e.name === 'AbortError';
+        // Для сетевых ошибок и таймаутов делаем ретраи в пределах max
+        if (attempt < retries && (isAbort || msg.includes('недоступен') || msg.includes('ошибка 404') === false && msg.includes('ошибка 429') === false)) {
+          await sleep(600 * (attempt + 1));
+          continue;
+        }
+        // Если это не ошибка конкретной модели и не последний ретрай — повторяем для сетевых/таймаут
+        if (attempt < retries && !isAbort) {
+          await sleep(600 * (attempt + 1));
+          continue;
+        }
+        // Последняя попытка на этой модели — выходим и пробуем следующую
+        break;
       }
-      return response;
-    } catch (e) {
-      lastError = e;
-      const isAbort = e.name === 'AbortError';
-      if (attempt < retries) {
-        await sleep(600 * (attempt + 1));
-        continue;
-      }
-      throw new Error(isAbort ? 'Превышено время ожидания ответа' : e.message);
     }
   }
-  throw lastError;
+  throw new Error(lastError?.message || 'Все бесплатные модели временно недоступны. Попробуйте ещё раз через немного времени.');
 }
 
 // ================================================================

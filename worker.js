@@ -55,7 +55,7 @@ export default {
     }
 
     const body = {
-      model: 'meta-llama/llama-3.3-70b-instruct:free', // бесплатная модель OpenRouter (суффикс :free)
+      model: 'meta-llama/llama-3.3-70b-instruct:free', // стабильная бесплатная модель OpenRouter (суффикс :free)
       messages,
       temperature: typeof temperature === 'number' ? temperature : 0.6,
       max_tokens: Math.min(typeof max_tokens === 'number' ? max_tokens : 4000, 8000),
