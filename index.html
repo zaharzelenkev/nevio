@@ -333,12 +333,12 @@ if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
 /**
  * ==========================================================
- * ВПИШИ СЮДА СВОЙ API-КЛЮЧ GROQ (получить на console.groq.com)
+ * ВПИШИ СЮДА СВОЙ API-КЛЮЧ OPENROUTER (получить на openrouter.ai/keys)
  * ==========================================================
  */
-const GROQ_API_KEY = "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";
-const GROQ_MODEL = "llama-3.3-70b-versatile";
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const OPENROUTER_API_KEY = "sk-or-v1-ЗАМЕНИТЕ_НА_ВАШ_КЛЮЧ";
+const OPENROUTER_MODEL = "meta-llama/llama-3.3-70b-instruct:free"; // бесплатная модель OpenRouter (суффикс :free)
+const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const REQUEST_TIMEOUT_MS = 30000;
 const MAX_RETRIES = 2;
@@ -824,13 +824,13 @@ async function callProxy(body, { retries = MAX_RETRIES } = {}) {
   let lastError;
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const response = await fetchWithTimeout(GROQ_API_URL, {
+      const response = await fetchWithTimeout(OPENROUTER_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + GROQ_API_KEY
+          'Authorization': 'Bearer ' + OPENROUTER_API_KEY
         },
-        body: JSON.stringify({ model: GROQ_MODEL, ...body })
+        body: JSON.stringify({ model: OPENROUTER_MODEL, ...body })
       }, REQUEST_TIMEOUT_MS);
       if (!response.ok) {
         // 4xx won't fix itself on retry, only retry on 5xx/network issues
