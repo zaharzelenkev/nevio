@@ -333,19 +333,16 @@ if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
 /**
  * ==========================================================
- * НАСТРОЙКИ ПОДКЛЮЧЕНИЯ К ИИ (CLOUDFLARE WORKER / OPENROUTER)
+ * НАСТРОЙКИ ПОДКЛЮЧЕНИЯ К ИИ (OPENROUTER AI)
  * ==========================================================
  *
- * ВАРИАНТ 1 — РЕКОМЕНДУЕМЫЙ ДЛЯ КОНКУРСА (Cloudflare Worker — бесплатно и безопасно):
- * 1. Задеплойте файл worker.js в Cloudflare Workers (бесплатный тариф: 100 000 запросов в день).
- * 2. Вставьте полученный URL в API_PROXY_URL, например: "https://nevio.username.workers.dev"
- * 3. OPENROUTER_API_KEY можно оставить пустым ("") — ключ безопасно хранится в секретах Cloudflare!
+ * Приложение работает полностью автономно прямо в браузере / Telegram Mini App
+ * (0 серверов, 0 бэкенда, 0 зависимостей — можно открыть любой статический хостинг).
  *
- * ВАРИАНТ 2 — БЫСТРЫЙ ЗАПУСК БЕЗ СЕРВЕРА (Прямой вызов из браузера):
- * 1. Оставьте API_PROXY_URL = ""
- * 2. Вставьте свой ключ в OPENROUTER_API_KEY
+ * Для работы используются бесплатные модели OpenRouter с авто-резервированием:
+ * если одна модель временно занята или недоступна (404/429), приложение мгновенно
+ * переключается на следующую бесплатную модель из списка.
  */
-const API_PROXY_URL = ""; // Пример: "https://nevio.username.workers.dev"
 const OPENROUTER_API_KEY = "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";
 // Бесплатные модели с резервом: если одна недоступна, пробуем следующую
 const OPENROUTER_MODELS = [
@@ -838,20 +835,19 @@ async function fetchWithTimeout(url, options, timeoutMs) {
 }
 
 async function callProxy(body, { retries = MAX_RETRIES } = {}) {
-  const targetUrl = (typeof API_PROXY_URL === 'string' && API_PROXY_URL.trim())
-    ? API_PROXY_URL.trim()
-    : OPENROUTER_API_URL;
-  const headers = { 'Content-Type': 'application/json' };
-  if (OPENROUTER_API_KEY && OPENROUTER_API_KEY.trim()) {
-    headers['Authorization'] = 'Bearer ' + OPENROUTER_API_KEY.trim();
-  }
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + OPENROUTER_API_KEY.trim(),
+    'HTTP-Referer': 'https://nevio.app',
+    'X-Title': 'NEVIO App'
+  };
 
   let lastError;
   for (let modelIndex = 0; modelIndex < OPENROUTER_MODELS.length; modelIndex++) {
     const model = OPENROUTER_MODELS[modelIndex];
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
-        const response = await fetchWithTimeout(targetUrl, {
+        const response = await fetchWithTimeout(OPENROUTER_API_URL, {
           method: 'POST',
           headers,
           body: JSON.stringify({ model, ...body })
