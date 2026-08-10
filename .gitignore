@@ -1,0 +1,11 @@
+# Local secrets — never commit these files
+.env
+.env.*
+!.env.example
+
+# Vercel local project metadata
+.vercel/
+
+# Dependency and test output
+node_modules/
+coverage/
