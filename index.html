@@ -333,8 +333,15 @@ if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
 /**
  * ==========================================================
- * ВПИШИ СЮДА СВОЙ API-КЛЮЧ OPENROUTER (получить на openrouter.ai/keys)
+ * НАСТРОЙКИ ПОДКЛЮЧЕНИЯ К ИИ (OPENROUTER AI)
  * ==========================================================
+ *
+ * Приложение работает полностью автономно прямо в браузере / Telegram Mini App
+ * (0 серверов, 0 бэкенда, 0 зависимостей — можно открыть любой статический хостинг).
+ *
+ * Для работы используются бесплатные модели OpenRouter с авто-резервированием:
+ * если одна модель временно занята или недоступна (404/429), приложение мгновенно
+ * переключается на следующую бесплатную модель из списка.
  */
 const OPENROUTER_API_KEY = "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";
 // Бесплатные модели с резервом: если одна недоступна, пробуем следующую
@@ -828,6 +835,13 @@ async function fetchWithTimeout(url, options, timeoutMs) {
 }
 
 async function callProxy(body, { retries = MAX_RETRIES } = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + OPENROUTER_API_KEY.trim(),
+    'HTTP-Referer': 'https://nevio.app',
+    'X-Title': 'NEVIO App'
+  };
+
   let lastError;
   for (let modelIndex = 0; modelIndex < OPENROUTER_MODELS.length; modelIndex++) {
     const model = OPENROUTER_MODELS[modelIndex];
@@ -835,10 +849,7 @@ async function callProxy(body, { retries = MAX_RETRIES } = {}) {
       try {
         const response = await fetchWithTimeout(OPENROUTER_API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + OPENROUTER_API_KEY
-          },
+          headers,
           body: JSON.stringify({ model, ...body })
         }, REQUEST_TIMEOUT_MS);
         if (!response.ok) {
