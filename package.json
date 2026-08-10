@@ -1,0 +1,14 @@
+{
+  "name": "nevio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NEVIO educational AI assistant for Belarus",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check api/chat.js && node --check sse-parser.js",
+    "dev": "npx vercel dev"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

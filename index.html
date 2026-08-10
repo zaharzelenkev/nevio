@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NEVIO</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="./sse-parser.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
   <style>
@@ -86,10 +87,15 @@
     .streaming-cursor { display:inline-block; width:2px; height:15px; background:var(--gold); margin-left:2px; vertical-align:middle; animation:blink 0.7s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
     .loading-dots { display:flex; gap:5px; padding:12px 16px; align-items:center; }
-    .loading-dots span { width:7px; height:7px; background:var(--gold); border-radius:50%; animation:bounce 1.2s infinite; }
-    .loading-dots span:nth-child(2){animation-delay:0.2s} .loading-dots span:nth-child(3){animation-delay:0.4s}
+    .loading-dots > span:not(.loading-text) { width:7px; height:7px; background:var(--gold); border-radius:50%; animation:bounce 1.2s infinite; flex-shrink:0; }
+    .loading-dots > span:nth-child(2){animation-delay:0.2s} .loading-dots > span:nth-child(3){animation-delay:0.4s}
     @keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-7px);opacity:1} }
-    .loading-text { font-size:13px; color:var(--text-secondary); margin-left:6px; }
+    .loading-text { width:auto; height:auto; margin-left:6px; color:var(--text-secondary); background:none; border-radius:0; font-size:13px; animation:none; }
+    .stream-status { display:flex; align-items:center; gap:9px; color:var(--text-secondary); font-size:13px; white-space:nowrap; }
+    .stream-status i { color:var(--gold); animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .message.ai.error .message-bubble { border-color:rgba(205,73,73,0.4); background:rgba(205,73,73,0.06); }
+    .message.ai.error .message-label { color:#c94f4f; }
     .chat-input-area { display:flex; gap:8px; margin-top:14px; align-items:flex-end; }
     .chat-input-area textarea { flex:1; min-height:44px; max-height:120px; resize:none; padding:10px 14px; font-size:14px; border-radius:22px; }
     .send-btn { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--gold-light),var(--gold-dark)); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; color:#0a0a0a; flex-shrink:0; transition:all 0.2s; }
@@ -333,29 +339,19 @@ if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
 /**
  * ==========================================================
- * НАСТРОЙКИ ПОДКЛЮЧЕНИЯ К ИИ (OPENROUTER AI)
+ * ПОДКЛЮЧЕНИЕ К ИИ
  * ==========================================================
  *
- * Приложение работает полностью автономно прямо в браузере / Telegram Mini App
- * (0 серверов, 0 бэкенда, 0 зависимостей — можно открыть любой статический хостинг).
- *
- * Для работы используются бесплатные модели OpenRouter с авто-резервированием:
- * если одна модель временно занята или недоступна (404/429), приложение мгновенно
- * переключается на следующую бесплатную модель из списка.
+ * Браузер обращается только к same-origin Vercel Function. Секретный ключ
+ * OpenRouter хранится в переменной окружения OPENROUTER_API_KEY и никогда не
+ * попадает в HTML, DevTools или Telegram Mini App.
  */
-const OPENROUTER_API_KEY = "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";
-// Бесплатные модели с резервом: если одна недоступна, пробуем следующую
-const OPENROUTER_MODELS = [
-  "openrouter/free",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "openai/gpt-oss-120b:free",
-  "nvidia/nemotron-3-ultra-550b-a55b:free",
-  "qwen/qwen3-next-80b-a3b-instruct:free"
-];
-const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-
-const REQUEST_TIMEOUT_MS = 30000;
-const MAX_RETRIES = 2;
+const AI_API_URL = '/api/chat';
+const CONNECTION_TIMEOUT_MS = 25000;
+const RESPONSE_TIMEOUT_MS = 55000;
+const STREAM_IDLE_TIMEOUT_MS = 25000;
+const STREAM_TOTAL_TIMEOUT_MS = 55000;
+const MAX_RETRIES = 1;
 
 let state = { role:null, telegramUser:null, history:[], conversationHistory:[], currentActionId:null, isLoading:false };
 
@@ -820,76 +816,144 @@ const systemPrompts = {
 };
 
 // ================================================================
-// СЕТЕВОЙ СЛОЙ — таймаут + повторные попытки + единая точка входа
+// СЕТЕВОЙ СЛОЙ — понятные ошибки, ограниченные повторы и таймауты
 // ================================================================
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+class AIRequestError extends Error {
+  constructor(message, { code = 'AI_ERROR', status = 0, retryable = false } = {}) {
+    super(message);
+    this.name = 'AIRequestError';
+    this.code = code;
+    this.status = status;
+    this.retryable = retryable;
+  }
+}
 
 async function fetchWithTimeout(url, options, timeoutMs) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
+
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return { response, controller };
+  } catch (error) {
+    if (timedOut || error?.name === 'AbortError') {
+      throw new AIRequestError('Сервис ИИ слишком долго не отвечает. Попробуйте ещё раз.', {
+        code: 'CONNECTION_TIMEOUT', retryable: true
+      });
+    }
+    throw new AIRequestError('Не удалось подключиться к сервису ИИ. Проверьте интернет и попробуйте ещё раз.', {
+      code: 'NETWORK_ERROR', retryable: true
+    });
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function callProxy(body, { retries = MAX_RETRIES } = {}) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + OPENROUTER_API_KEY.trim(),
-    'HTTP-Referer': 'https://nevio.app',
-    'X-Title': 'NEVIO App'
-  };
+function friendlyApiMessage(status, code, serverMessage) {
+  if (code === 'AI_NOT_CONFIGURED') {
+    return 'Сервис ИИ пока не настроен. Администратору нужно добавить OPENROUTER_API_KEY в настройках Vercel.';
+  }
+  if (status === 401) return 'Ключ доступа к ИИ недействителен. Администратору нужно обновить OPENROUTER_API_KEY.';
+  if (status === 402) return 'На аккаунте ИИ закончился доступный лимит. Попробуйте позже.';
+  if (status === 403) return 'Сервис ИИ отклонил запрос. Попробуйте сформулировать его иначе.';
+  if (status === 404) return 'API сервиса ИИ не найден. Убедитесь, что приложение развёрнуто вместе с папкой api.';
+  if (status === 408 || status === 504) return 'Сервис ИИ не успел ответить. Попробуйте ещё раз.';
+  if (status === 429) return 'Бесплатные модели сейчас перегружены. Подождите немного и повторите запрос.';
+  if (status >= 500) return 'Сервис ИИ временно недоступен. Попробуйте ещё раз через минуту.';
+  if (serverMessage && status >= 400 && status < 500) return serverMessage;
+  return 'Не удалось получить ответ от сервиса ИИ.';
+}
 
+async function readResponseText(request, timeoutMs, timeoutMessage) {
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    request.controller.abort();
+  }, timeoutMs);
+
+  try {
+    return await request.response.text();
+  } catch (error) {
+    if (timedOut || error?.name === 'AbortError') {
+      throw new AIRequestError(timeoutMessage, { code: 'RESPONSE_TIMEOUT', retryable: true });
+    }
+    throw new AIRequestError('Соединение с сервисом ИИ прервалось.', {
+      code: 'CONNECTION_INTERRUPTED', retryable: true
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function apiErrorFromResponse(request) {
+  let payload = null;
+  try {
+    const text = await readResponseText(request, 8000, 'Сервис ИИ не прислал описание ошибки.');
+    if (text) payload = JSON.parse(text);
+  } catch (error) {
+    if (error instanceof AIRequestError) throw error;
+  }
+
+  const status = request.response.status;
+  const apiError = payload?.error;
+  const code = (typeof apiError === 'object' && apiError?.code) || payload?.code || 'HTTP_' + status;
+  const serverMessage = typeof apiError === 'string'
+    ? apiError
+    : (apiError?.message || payload?.message || '');
+  const retryable = status === 408 || status === 429 || status >= 500;
+
+  return new AIRequestError(friendlyApiMessage(status, code, serverMessage), {
+    code, status, retryable
+  });
+}
+
+async function callProxy(body, { retries = MAX_RETRIES, onRetry } = {}) {
   let lastError;
-  for (let modelIndex = 0; modelIndex < OPENROUTER_MODELS.length; modelIndex++) {
-    const model = OPENROUTER_MODELS[modelIndex];
-    for (let attempt = 0; attempt <= retries; attempt++) {
-      try {
-        const response = await fetchWithTimeout(OPENROUTER_API_URL, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ model, ...body })
-        }, REQUEST_TIMEOUT_MS);
-        if (!response.ok) {
-          const status = response.status;
-          const msg = 'Модель ' + model + ': ошибка ' + status;
-          // 404/429 — модель недоступна или ограничена, сразу пробуем следующую модель
-          if (status === 404 || status === 429) {
-            lastError = new Error(msg);
-            break; // выходим из retry, переходим к следующей модели
-          }
-          // 5xx или другие ошибки — можно повторить на той же модели
-          if (status >= 500) throw new Error('Сервер временно недоступен (' + status + ')');
-          // Остальные 4xx — не исправятся повтором
-          throw new Error('Ошибка запроса (' + status + ')');
-        }
-        return response;
-      } catch (e) {
-        lastError = e;
-        const msg = e.message || '';
-        // Если это ошибка конкретной модели (404/429) — прерываем ретраи
-        if (msg.includes('ошибка 404') || msg.includes('ошибка 429')) {
-          break;
-        }
-        const isAbort = e.name === 'AbortError';
-        // Для сетевых ошибок и таймаутов делаем ретраи в пределах max
-        if (attempt < retries && (isAbort || msg.includes('недоступен') || msg.includes('ошибка 404') === false && msg.includes('ошибка 429') === false)) {
-          await sleep(600 * (attempt + 1));
-          continue;
-        }
-        // Если это не ошибка конкретной модели и не последний ретрай — повторяем для сетевых/таймаут
-        if (attempt < retries && !isAbort) {
-          await sleep(600 * (attempt + 1));
-          continue;
-        }
-        // Последняя попытка на этой модели — выходим и пробуем следующую
-        break;
-      }
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const request = await fetchWithTimeout(AI_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': body.stream ? 'text/event-stream' : 'application/json' },
+        body: JSON.stringify(body)
+      }, CONNECTION_TIMEOUT_MS);
+
+      if (!request.response.ok) throw await apiErrorFromResponse(request);
+      return request;
+    } catch (error) {
+      lastError = error instanceof AIRequestError
+        ? error
+        : new AIRequestError('Не удалось выполнить запрос к ИИ.', { code: 'UNKNOWN_ERROR' });
+
+      if (!lastError.retryable || attempt >= retries) break;
+      if (typeof onRetry === 'function') onRetry(attempt + 1);
+      await sleep(700 * (attempt + 1));
     }
   }
-  throw new Error(lastError?.message || 'Все бесплатные модели временно недоступны. Попробуйте ещё раз через немного времени.');
+
+  throw lastError || new AIRequestError('Не удалось получить ответ от сервиса ИИ.');
+}
+
+async function readJsonResponse(request) {
+  const text = await readResponseText(
+    request,
+    RESPONSE_TIMEOUT_MS,
+    'ИИ слишком долго формирует ответ. Попробуйте сократить запрос.'
+  );
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new AIRequestError('Сервис ИИ вернул ответ в неизвестном формате.', {
+      code: 'INVALID_JSON_RESPONSE', retryable: true
+    });
+  }
 }
 
 // ================================================================
@@ -1017,7 +1081,7 @@ correctIndex — индекс правильного варианта (0-3). Н�
       ? basePrompt
       : basePrompt + '\n\nВАЖНО: в прошлый раз ответ не был валидным JSON. Верни ТОЛЬКО JSON-объект, ничего больше.';
 
-    const response = await callProxy({
+    const request = await callProxy({
       messages: [
         { role:'system', content: systemPrompts[state.role] || systemPrompts.student },
         { role:'user', content: prompt }
@@ -1025,8 +1089,8 @@ correctIndex — индекс правильного варианта (0-3). Н�
       temperature: 0.5,
       max_tokens: 8000,
       stream: false
-    });
-    const data = await response.json();
+    }, { onRetry: () => showToast('Сервис занят — повторяю запрос…') });
+    const data = await readJsonResponse(request);
     const raw = data.choices?.[0]?.message?.content || '';
     const parsed = parseTestQuestionsJSON(raw);
     if (parsed.length > 0) return parsed;
@@ -1475,27 +1539,33 @@ async function processAction() {
   const inputText = document.getElementById('inputText')?.value?.trim() || '';
   const data = collectFormData();
   if (!validateForm(data, inputText)) return;
+
   const prompt = buildPrompt(state.currentActionId, inputText, data);
   const userMsg = buildUserMessage(state.currentActionId, inputText, data);
   state.conversationHistory.push({ role:'user', content:prompt });
   addChatMessage(userMsg, true);
-  const loadingId = addLoadingMessage();
+
+  const loadingId = addLoadingMessage('Подключаюсь к ИИ…');
   state.isLoading = true;
   disableForm(true);
+  let completed = false;
+
   try {
-    const response = await callGroqWithStream(state.conversationHistory, loadingId);
+    const response = await callAIWithStream(state.conversationHistory, loadingId);
     state.conversationHistory.push({ role:'assistant', content:response });
     saveToHistory({ type:state.currentActionId, input:userMsg, result:response, timestamp:new Date().toISOString() });
     showContinueChat();
+    completed = true;
   } catch(error) {
     removeLoadingMessage(loadingId);
-    addChatMessage('Не удалось получить ответ: ' + error.message + '\n\nПопробуйте ещё раз через немного времени.', false);
-    showToast('Ошибка соединения');
+    rollbackLastUserMessage(prompt);
+    addChatMessage(error.message || 'Не удалось получить ответ от ИИ.', false, true);
+    showToast('Ответ не получен');
   } finally {
     state.isLoading = false;
     disableForm(false);
     const el = document.getElementById('inputText');
-    if (el) el.value = '';
+    if (completed && el) el.value = '';
   }
 }
 
@@ -1510,81 +1580,283 @@ async function sendContinue() {
   const input = document.getElementById('continueInput');
   const text = input?.value?.trim();
   if (!text) return;
-  input.value = ''; input.style.height = 'auto';
+
+  input.value = '';
+  input.style.height = 'auto';
   state.conversationHistory.push({ role:'user', content:text });
   addChatMessage(text, true);
-  const loadingId = addLoadingMessage();
+
+  const loadingId = addLoadingMessage('Подключаюсь к ИИ…');
   state.isLoading = true;
   document.getElementById('sendContinueBtn').disabled = true;
+
   try {
-    const response = await callGroqWithStream(state.conversationHistory, loadingId);
+    const response = await callAIWithStream(state.conversationHistory, loadingId);
     state.conversationHistory.push({ role:'assistant', content:response });
-  } catch(e) {
+  } catch(error) {
     removeLoadingMessage(loadingId);
-    addChatMessage('Не удалось получить ответ: ' + e.message, false);
+    rollbackLastUserMessage(text);
+    input.value = text;
+    addChatMessage(error.message || 'Не удалось получить ответ от ИИ.', false, true);
   } finally {
     state.isLoading = false;
     document.getElementById('sendContinueBtn').disabled = false;
   }
 }
 
+function rollbackLastUserMessage(expectedContent) {
+  const last = state.conversationHistory[state.conversationHistory.length - 1];
+  if (last?.role === 'user' && last.content === expectedContent) state.conversationHistory.pop();
+}
+
 function handleContinueKey(event) {
-  if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendContinue(); }
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendContinue();
+  }
   event.target.style.height = 'auto';
   event.target.style.height = Math.min(event.target.scrollHeight, 120) + 'px';
 }
 
-async function callGroqWithStream(messages, loadingId) {
+function createAIMessage(initialStatus) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'message ai';
+
+  const label = document.createElement('div');
+  label.className = 'message-label';
+  label.textContent = 'NEVIO';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble ai-content';
+  setStreamStatus(bubble, initialStatus);
+
+  messageDiv.appendChild(label);
+  messageDiv.appendChild(bubble);
+  document.getElementById('chatMessages').appendChild(messageDiv);
+  scrollChatToBottom();
+  return { messageDiv, bubble };
+}
+
+function setStreamStatus(bubble, text) {
+  bubble.innerHTML = `<span class="stream-status"><i class="fas fa-circle-notch"></i><span>${escapeHtml(text)}</span></span>`;
+}
+
+function scrollChatToBottom() {
+  const chat = document.getElementById('chatMessages');
+  chat.scrollTop = chat.scrollHeight || 99999;
+}
+
+function addCopyButton(messageDiv, text) {
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
+  copyBtn.onclick = () => copyToClipboard(text, copyBtn);
+  messageDiv.appendChild(copyBtn);
+}
+
+function streamErrorFromPayload(payload) {
+  const apiError = payload?.error || {};
+  const numericStatus = Number(apiError.code) || 0;
+  let message;
+
+  if (numericStatus === 429 || apiError.code === 'rate_limit_exceeded') {
+    message = 'Бесплатная модель перегружена. Подождите немного и повторите запрос.';
+  } else if (numericStatus >= 500 || ['server_error', 'provider_error'].includes(apiError.code)) {
+    message = 'Модель прервала ответ из-за временного сбоя. Попробуйте ещё раз.';
+  } else {
+    message = apiError.message || 'Модель прервала формирование ответа.';
+  }
+
+  return new AIRequestError(message, {
+    code: apiError.code || 'STREAM_ERROR',
+    status: numericStatus,
+    retryable: numericStatus === 429 || numericStatus >= 500
+  });
+}
+
+function extractDeltaText(delta) {
+  if (typeof delta?.content === 'string') return delta.content;
+  if (!Array.isArray(delta?.content)) return '';
+  return delta.content.map(part => {
+    if (typeof part === 'string') return part;
+    return typeof part?.text === 'string' ? part.text : '';
+  }).join('');
+}
+
+async function readStreamChunk(reader, controller, timeoutMs, totalTimeoutReached) {
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
+
+  try {
+    return await reader.read();
+  } catch (error) {
+    if (timedOut || error?.name === 'AbortError') {
+      const message = totalTimeoutReached()
+        ? 'ИИ не успел завершить ответ за отведённое время. Попробуйте более короткий запрос.'
+        : 'Поток ответа остановился. Проверьте соединение и попробуйте ещё раз.';
+      throw new AIRequestError(message, { code: 'STREAM_TIMEOUT', retryable: true });
+    }
+    throw new AIRequestError('Соединение прервалось во время ответа ИИ.', {
+      code: 'STREAM_INTERRUPTED', retryable: true
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function callAIWithStream(messages, loadingId) {
   const enrichedSystemPrompt = systemPrompts[state.role] + '\n\n' +
     'СПРАВОЧНАЯ БАЗА ЗНАНИЙ ЦТ/ЦЭ БЕЛАРУСИ:\n' +
     CT_KNOWLEDGE_BASE.structure + '\n' +
     CT_KNOWLEDGE_BASE.ce_structure + '\n' +
     CT_KNOWLEDGE_BASE.popular_unis;
 
-  const response = await callProxy({
+  updateLoadingMessage(loadingId, 'Жду свободную модель…');
+  const request = await callProxy({
     messages: [{ role:'system', content: enrichedSystemPrompt }, ...messages],
-    temperature: 0.6, max_tokens: 4000, stream: true
-  }, { retries: 0 }); // streaming responses can't be safely retried mid-stream
+    temperature: 0.6,
+    max_tokens: 4000,
+    stream: true
+  }, {
+    onRetry: () => updateLoadingMessage(loadingId, 'Сервис занят — повторяю запрос…')
+  });
+
+  const contentType = request.response.headers.get('content-type') || '';
+
+  // A proxy may deliberately return a regular completion even for stream:true.
+  // Supporting it here keeps the UI usable in older Telegram WebViews and mocks.
+  if (!contentType.includes('text/event-stream')) {
+    const data = await readJsonResponse(request);
+    if (data?.error) throw streamErrorFromPayload(data);
+    const fullText = data?.choices?.[0]?.message?.content || '';
+    if (typeof fullText !== 'string' || !fullText.trim()) {
+      throw new AIRequestError('Сервис ИИ вернул пустой ответ.', { code: 'EMPTY_RESPONSE', retryable: true });
+    }
+    removeLoadingMessage(loadingId);
+    addChatMessage(fullText, false);
+    return fullText;
+  }
+
+  if (!window.NevioSSE?.createParser) {
+    request.controller.abort();
+    throw new AIRequestError('Не загрузился модуль обработки ответа. Обновите страницу.', {
+      code: 'SSE_PARSER_MISSING'
+    });
+  }
+  if (!request.response.body?.getReader) {
+    request.controller.abort();
+    throw new AIRequestError('Эта версия браузера не поддерживает потоковые ответы. Обновите Telegram или браузер.', {
+      code: 'STREAM_UNSUPPORTED'
+    });
+  }
 
   removeLoadingMessage(loadingId);
-  const messageDiv = document.createElement('div');
-  messageDiv.className = 'message ai';
-  const label = document.createElement('div');
-  label.className = 'message-label'; label.textContent = 'NEVIO';
-  const bubble = document.createElement('div');
-  bubble.className = 'message-bubble ai-content';
-  bubble.innerHTML = '<span class="streaming-cursor"></span>';
-  messageDiv.appendChild(label); messageDiv.appendChild(bubble);
-  document.getElementById('chatMessages').appendChild(messageDiv);
-  const reader = response.body.getReader();
+  const { messageDiv, bubble } = createAIMessage('Модель готовит ответ…');
+  const reader = request.response.body.getReader();
   const decoder = new TextDecoder();
+  const startedAt = Date.now();
+  const deadline = startedAt + STREAM_TOTAL_TIMEOUT_MS;
   let fullText = '';
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    for (const line of decoder.decode(value).split('\n')) {
-      if (!line.startsWith('data: ')) continue;
-      const d = line.slice(6);
-      if (d === '[DONE]') continue;
+  let streamDone = false;
+  let finishSeen = false;
+  let reasoningSeen = false;
+
+  const parser = window.NevioSSE.createParser({
+    onComment() {
+      if (!fullText) setStreamStatus(bubble, reasoningSeen ? 'Анализирую задачу…' : 'Модель готовит ответ…');
+    },
+    onEvent(data) {
+      if (data === '[DONE]') {
+        streamDone = true;
+        return;
+      }
+
+      let payload;
       try {
-        const delta = JSON.parse(d).choices?.[0]?.delta?.content;
-        if (delta) {
-          fullText += delta;
-          bubble.innerHTML = formatAIResponse(fullText) + '<span class="streaming-cursor"></span>';
-          document.getElementById('chatMessages').scrollTop = 99999;
-        }
-      } catch(e) {}
+        payload = JSON.parse(data);
+      } catch {
+        throw new AIRequestError('Получен повреждённый фрагмент ответа. Попробуйте ещё раз.', {
+          code: 'INVALID_STREAM_EVENT', retryable: true
+        });
+      }
+
+      if (payload?.error) throw streamErrorFromPayload(payload);
+
+      const choice = payload?.choices?.[0];
+      if (choice?.finish_reason === 'error') throw streamErrorFromPayload(payload);
+      if (choice?.finish_reason) finishSeen = true;
+
+      const delta = choice?.delta;
+      if (delta?.reasoning || delta?.reasoning_details) {
+        reasoningSeen = true;
+        if (!fullText) setStreamStatus(bubble, 'Анализирую задачу…');
+      }
+
+      const text = extractDeltaText(delta);
+      if (!text) return;
+
+      fullText += text;
+      bubble.innerHTML = formatAIResponse(fullText) + '<span class="streaming-cursor"></span>';
+      scrollChatToBottom();
     }
+  });
+
+  try {
+    while (!streamDone) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        request.controller.abort();
+        throw new AIRequestError('ИИ не успел завершить ответ за отведённое время. Попробуйте более короткий запрос.', {
+          code: 'STREAM_TOTAL_TIMEOUT', retryable: true
+        });
+      }
+
+      const chunk = await readStreamChunk(
+        reader,
+        request.controller,
+        Math.min(STREAM_IDLE_TIMEOUT_MS, remaining),
+        () => Date.now() >= deadline
+      );
+      if (chunk.done) {
+        parser.end(decoder.decode());
+        break;
+      }
+      parser.feed(decoder.decode(chunk.value, { stream:true }));
+    }
+
+    if (streamDone) {
+      try { await reader.cancel(); } catch {}
+    }
+    if (!streamDone && !finishSeen) {
+      throw new AIRequestError('Соединение закрылось до завершения ответа. Повторите запрос.', {
+        code: 'INCOMPLETE_STREAM', retryable: true
+      });
+    }
+    if (!fullText.trim()) {
+      throw new AIRequestError('Сервис ИИ завершил запрос, но не прислал текст ответа. Попробуйте ещё раз.', {
+        code: 'EMPTY_STREAM', retryable: true
+      });
+    }
+
+    bubble.innerHTML = formatAIResponse(fullText);
+    addCopyButton(messageDiv, fullText);
+    scrollChatToBottom();
+    return fullText;
+  } catch (error) {
+    try { request.controller.abort(); } catch {}
+    if (!fullText) {
+      messageDiv.remove();
+    } else {
+      bubble.innerHTML = formatAIResponse(fullText) + '<p><em>Ответ прервался.</em></p>';
+      addCopyButton(messageDiv, fullText);
+    }
+    throw error instanceof AIRequestError
+      ? error
+      : new AIRequestError('Не удалось обработать ответ ИИ.', { code: 'STREAM_PROCESSING_ERROR' });
   }
-  if (!fullText) throw new Error('Пустой ответ от сервера');
-  bubble.innerHTML = formatAIResponse(fullText);
-  const copyBtn = document.createElement('button');
-  copyBtn.className = 'copy-btn';
-  copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
-  copyBtn.onclick = () => copyToClipboard(fullText, copyBtn);
-  messageDiv.appendChild(copyBtn);
-  document.getElementById('chatMessages').scrollTop = 99999;
-  return fullText;
 }
 
 function escapeHtml(text) {
@@ -1856,30 +2128,45 @@ ${data.planType.includes('неделю') ? 'Пн/Вт/Ср/Чт/Пт — вид�
   return p[actionId] || inputText;
 }
 
-function addChatMessage(text, isUser) {
+function addChatMessage(text, isUser, isError = false) {
   const container = document.getElementById('chatMessages');
   const div = document.createElement('div');
-  div.className = 'message ' + (isUser ? 'user' : 'ai');
+  div.className = 'message ' + (isUser ? 'user' : 'ai') + (isError ? ' error' : '');
   const label = document.createElement('div');
-  label.className = 'message-label'; label.textContent = isUser ? 'Вы' : 'NEVIO';
+  label.className = 'message-label';
+  label.textContent = isUser ? 'Вы' : (isError ? 'Не удалось ответить' : 'NEVIO');
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble' + (isUser ? '' : ' ai-content');
   if (isUser) bubble.textContent = text; else bubble.innerHTML = formatAIResponse(text);
-  div.appendChild(label); div.appendChild(bubble);
+  div.appendChild(label);
+  div.appendChild(bubble);
   container.appendChild(div);
-  container.scrollTop = 99999;
+  scrollChatToBottom();
+  return div;
 }
 
-function addLoadingMessage() {
-  const id = 'loading_' + Date.now();
-  const div = document.createElement('div'); div.className = 'message ai'; div.id = id;
-  const label = document.createElement('div'); label.className = 'message-label'; label.textContent = 'NEVIO';
-  const bubble = document.createElement('div'); bubble.className = 'message-bubble';
-  bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span><span class="loading-text">Думаю...</span></div>';
-  div.appendChild(label); div.appendChild(bubble);
+function addLoadingMessage(text = 'Думаю…') {
+  const id = 'loading_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  const div = document.createElement('div');
+  div.className = 'message ai';
+  div.id = id;
+  const label = document.createElement('div');
+  label.className = 'message-label';
+  label.textContent = 'NEVIO';
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span><span class="loading-text"></span></div>';
+  bubble.querySelector('.loading-text').textContent = text;
+  div.appendChild(label);
+  div.appendChild(bubble);
   document.getElementById('chatMessages').appendChild(div);
-  document.getElementById('chatMessages').scrollTop = 99999;
+  scrollChatToBottom();
   return id;
+}
+
+function updateLoadingMessage(id, text) {
+  const textNode = document.getElementById(id)?.querySelector('.loading-text');
+  if (textNode) textNode.textContent = text;
 }
 
 function removeLoadingMessage(id) { document.getElementById(id)?.remove(); }
