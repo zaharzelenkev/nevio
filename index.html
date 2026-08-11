@@ -51,7 +51,7 @@
       background:var(--bg);
       color:var(--text);
       font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-      padding:16px;
+      padding:14px;
       padding-bottom:90px;
       overflow-x:hidden;
       transition:background 0.4s,color 0.4s;
@@ -77,8 +77,8 @@
     .header {
       position:relative;
       text-align:center;
-      margin-bottom:24px;
-      padding:20px 0 8px;
+      margin-bottom:20px;
+      padding:16px 0 6px;
     }
     .header::before {
       content:'';
@@ -97,8 +97,8 @@
       position:relative;
       z-index:1;
       font-family:'Abril Fatface',cursive;
-      font-size:42px;
-      letter-spacing:3px;
+      font-size:36px;
+      letter-spacing:2.5px;
       margin-bottom:6px;
       background:var(--gradient-gold);
       -webkit-background-clip:text;
@@ -106,38 +106,38 @@
       background-clip:text;
       text-shadow:0 2px 20px rgba(232,177,62,0.3);
     }
-    .header p { position:relative; z-index:1; color:var(--text-secondary); font-size:13px; letter-spacing:0.5px; }
+    .header p { position:relative; z-index:1; color:var(--text-secondary); font-size:12px; letter-spacing:0.5px; }
     
     /* Карточки */
     .card {
       background:var(--card);
-      border-radius:24px;
-      padding:24px;
-      margin-bottom:16px;
+      border-radius:20px;
+      padding:20px;
+      margin-bottom:14px;
       border:1.5px solid var(--border);
       box-shadow:0 4px 20px var(--shadow-soft);
       transition:all 0.3s ease;
     }
     .card:hover { box-shadow:0 8px 40px var(--shadow-strong); transform:translateY(-2px); }
-    .card-header { margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border); }
-    .card h2 { font-size:20px; display:flex; align-items:center; gap:12px; margin-bottom:6px; font-weight:700; }
-    .card h2 i { color:var(--gold); font-size:20px; }
-    .card-desc { color:var(--text-secondary); font-size:14px; line-height:1.5; }
+    .card-header { margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .card h2 { font-size:18px; display:flex; align-items:center; gap:10px; margin-bottom:4px; font-weight:700; }
+    .card h2 i { color:var(--gold); font-size:17px; }
+    .card-desc { color:var(--text-secondary); font-size:13px; line-height:1.5; }
     
     /* Кнопки */
     .btn {
       width:100%;
-      padding:16px 24px;
+      padding:14px 20px;
       border:none;
-      border-radius:16px;
-      font-size:15px;
+      border-radius:14px;
+      font-size:14px;
       font-weight:600;
       cursor:pointer;
       transition:all 0.3s ease;
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
+      gap:8px;
       letter-spacing:0.3px;
       position:relative;
       overflow:hidden;
@@ -167,14 +167,14 @@
     .btn:disabled { opacity:0.45; cursor:not-allowed; transform:none!important; }
     
     /* Формы */
-    .form-group { margin-bottom:16px; }
-    .form-group label { display:block; font-size:14px; font-weight:600; margin-bottom:8px; color:var(--text-secondary); letter-spacing:0.3px; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text-secondary); letter-spacing:0.3px; }
     textarea, input[type="text"], select {
       width:100%;
-      padding:14px 16px;
+      padding:12px 14px;
       border:2px solid var(--border);
-      border-radius:14px;
-      font-size:15px;
+      border-radius:12px;
+      font-size:14px;
       font-family:inherit;
       resize:vertical;
       transition:all 0.3s ease;
@@ -192,13 +192,13 @@
     .menu-grid {
       display:grid;
       grid-template-columns:repeat(2,1fr);
-      gap:12px;
+      gap:10px;
       margin-bottom:8px;
     }
     .menu-card {
       background:var(--card);
-      border-radius:20px;
-      padding:20px 16px;
+      border-radius:16px;
+      padding:16px 14px;
       text-align:center;
       cursor:pointer;
       transition:all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -222,9 +222,9 @@
       box-shadow:0 15px 40px var(--shadow-strong);
     }
     .menu-card:active { transform:scale(0.96); }
-    .menu-card .icon { font-size:32px; margin-bottom:12px; display:block; color:var(--gold); position:relative; z-index:1; }
-    .menu-card h3 { font-size:14px; font-weight:700; position:relative; z-index:1; line-height:1.3; }
-    .menu-card p { font-size:11px; color:var(--text-secondary); margin-top:4px; line-height:1.4; position:relative; z-index:1; }
+    .menu-card .icon { font-size:27px; margin-bottom:10px; display:block; color:var(--gold); position:relative; z-index:1; }
+    .menu-card h3 { font-size:13px; font-weight:700; position:relative; z-index:1; line-height:1.3; }
+    .menu-card p { font-size:10px; color:var(--text-secondary); margin-top:3px; line-height:1.4; position:relative; z-index:1; }
     .menu-card.highlight { border-color:rgba(232,177,62,0.4); background:linear-gradient(135deg,rgba(232,177,62,0.05),var(--card)); }
     
     /* Badge */
@@ -239,21 +239,20 @@
       letter-spacing:0.5px;
       margin-left:6px;
       vertical-align:middle;
-      animation:pulse 2s infinite;
     }
     
     /* Section Label */
     .section-label {
-      font-size:11px;
+      font-size:10px;
       font-weight:800;
       letter-spacing:2px;
       text-transform:uppercase;
       color:var(--text-muted);
-      margin:24px 0 12px 4px;
+      margin:20px 0 10px 4px;
     }
     
     /* Chat Messages */
-    .chat-messages { margin-top:20px; display:flex; flex-direction:column; gap:16px; }
+    .chat-messages { margin-top:16px; display:flex; flex-direction:column; gap:14px; }
     .message { display:flex; flex-direction:column; animation:slideUp 0.4s ease; }
     .message.user { align-items:flex-end; }
     .message.ai { align-items:flex-start; }
@@ -332,7 +331,7 @@
     
     /* Loading dots */
     .loading-dots { display:flex; gap:6px; padding:16px; align-items:center; justify-content:center; }
-    .loading-dots span { width:8px; height:8px; background:var(--gold); border-radius:50%; animation:bounce 1.4s infinite; }
+    .loading-dots span { width:7px; height:7px; background:var(--gold); border-radius:50%; animation:bounce 1.4s infinite; }
     .loading-dots span:nth-child(2){animation-delay:0.15s} .loading-dots span:nth-child(3){animation-delay:0.3s}
     .loading-dots span:nth-child(4){animation-delay:0.45s} .loading-dots span:nth-child(5){animation-delay:0.6s}
     
@@ -340,15 +339,15 @@
     .chat-input-area { display:flex; gap:10px; margin-top:16px; align-items:flex-end; }
     .chat-input-area textarea {
       flex:1;
-      min-height:48px;
+      min-height:44px;
       max-height:140px;
       resize:none;
       padding:12px 18px;
-      font-size:15px;
+      font-size:14px;
       border-radius:24px;
     }
     .send-btn {
-      width:50px; height:50px;
+      width:46px; height:46px;
       border-radius:50%;
       background:var(--gradient-gold);
       border:none;
@@ -369,10 +368,10 @@
     .profile-section {
       background:linear-gradient(135deg,#FFFBF0,#FCF2D6);
       border:2px solid rgba(196,145,26,0.3);
-      border-radius:24px;
-      padding:28px;
+      border-radius:20px;
+      padding:24px;
       text-align:center;
-      margin-bottom:20px;
+      margin-bottom:16px;
       position:relative;
       overflow:hidden;
     }
@@ -390,31 +389,31 @@
       border-color:rgba(232,177,62,0.3);
     }
     .profile-avatar {
-      width:88px; height:88px;
+      width:78px; height:78px;
       border-radius:50%;
-      margin:0 auto 16px;
+      margin:0 auto 12px;
       background:rgba(232,177,62,0.15);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:38px;
+      font-size:32px;
       border:3px solid rgba(232,177,62,0.4);
       overflow:hidden;
       position:relative;
       z-index:1;
-      animation:float 3s ease-in-out infinite;
     }
     .profile-avatar img { width:100%; height:100%; object-fit:cover; }
-    .profile-name { font-size:22px; font-weight:800; margin-bottom:4px; position:relative; z-index:1; }
-    .profile-username { font-size:14px; color:var(--text-secondary); }
+    .profile-avatar i { color:var(--gold); }
+    .profile-name { font-size:19px; font-weight:800; margin-bottom:4px; position:relative; z-index:1; }
+    .profile-username { font-size:13px; color:var(--text-secondary); }
     .profile-role {
       display:inline-block;
-      margin-top:12px;
-      padding:8px 20px;
+      margin-top:10px;
+      padding:7px 18px;
       background:rgba(232,177,62,0.2);
       border:1px solid rgba(232,177,62,0.35);
       border-radius:24px;
-      font-size:13px;
+      font-size:12px;
       font-weight:700;
       color:var(--gold);
       letter-spacing:0.5px;
@@ -430,7 +429,7 @@
       border:2px solid var(--border);
     }
     .settings-item {
-      padding:16px 20px;
+      padding:14px 18px;
       border-bottom:1px solid var(--border);
       display:flex;
       align-items:center;
@@ -439,28 +438,28 @@
       transition:all 0.2s;
     }
     .settings-item:last-child { border-bottom:none; }
-    .settings-item:hover { background:rgba(232,177,62,0.05); padding-left:24px; }
+    .settings-item:hover { background:rgba(232,177,62,0.05); padding-left:22px; }
     .settings-item-left { display:flex; align-items:center; gap:14px; }
     .settings-item-icon {
-      width:44px; height:44px;
-      border-radius:12px;
+      width:38px; height:38px;
+      border-radius:10px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:18px;
+      font-size:16px;
       background:rgba(232,177,62,0.1);
       color:var(--gold);
       border:1px solid rgba(232,177,62,0.2);
     }
-    .settings-item-text h4 { font-size:15px; font-weight:600; margin-bottom:2px; }
-    .settings-item-text p { font-size:12px; color:var(--text-secondary); }
+    .settings-item-text h4 { font-size:14px; font-weight:600; margin-bottom:2px; }
+    .settings-item-text p { font-size:11px; color:var(--text-secondary); }
     .settings-item-right { color:var(--text-muted); font-size:14px; }
     
     /* History */
     .history-item {
       background:var(--surface);
-      border-radius:16px;
-      padding:16px 18px;
+      border-radius:14px;
+      padding:14px 16px;
       margin-bottom:10px;
       border:2px solid var(--border);
       cursor:pointer;
@@ -472,9 +471,9 @@
       box-shadow:0 8px 25px var(--shadow-strong);
     }
     .history-header { display:flex; justify-content:space-between; margin-bottom:6px; align-items:center; }
-    .history-type { font-size:13px; font-weight:700; color:var(--gold); }
+    .history-type { font-size:12px; font-weight:700; color:var(--gold); }
     .history-date { font-size:11px; color:var(--text-muted); }
-    .history-preview { font-size:14px; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.5; }
+    .history-preview { font-size:13px; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.5; }
     
     /* Bottom Nav */
     .bottom-nav {
@@ -484,7 +483,7 @@
       border-top:1px solid var(--border);
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      padding:10px 12px 16px;
+      padding:8px 12px 14px;
       z-index:100;
       box-shadow:0 -4px 20px var(--shadow-soft);
       backdrop-filter:blur(10px);
@@ -509,8 +508,8 @@
       border-radius:3px;
       background:var(--gradient-gold);
     }
-    .nav-item .icon { font-size:22px; margin-bottom:4px; }
-    .nav-item span { display:block; font-size:11px; font-weight:700; letter-spacing:0.3px; }
+    .nav-item .icon { font-size:20px; margin-bottom:4px; }
+    .nav-item span { display:block; font-size:10px; font-weight:700; letter-spacing:0.3px; }
     
     /* Toast */
     .toast {
@@ -521,9 +520,9 @@
       background:var(--card);
       border:2px solid rgba(232,177,62,0.5);
       color:var(--gold-dark);
-      padding:12px 24px;
+      padding:10px 20px;
       border-radius:24px;
-      font-size:14px;
+      font-size:13px;
       font-weight:600;
       opacity:0;
       transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -540,10 +539,10 @@
       align-items:center;
       gap:10px;
       color:var(--gold);
-      font-size:16px;
-      margin-bottom:20px;
+      font-size:15px;
+      margin-bottom:16px;
       cursor:pointer;
-      padding:10px 16px;
+      padding:8px 14px;
       border-radius:12px;
       transition:all 0.2s;
       font-weight:600;
@@ -564,22 +563,22 @@
       z-index:0;
     }
     .role-logo, .role-sub, .role-selection h2, .role-selection > p, .role-buttons { position:relative; z-index:1; }
-    .role-logo { font-family:'Abril Fatface',cursive; font-size:52px; letter-spacing:3px; margin-bottom:8px; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .role-sub { color:var(--text-secondary); font-size:14px; margin-bottom:36px; }
-    .role-selection h2 { font-size:22px; margin-bottom:10px; font-weight:800; }
-    .role-selection > p { color:var(--text-secondary); margin-bottom:28px; font-size:15px; }
-    .role-buttons { display:grid; gap:14px; max-width:440px; margin:0 auto; }
+    .role-logo { font-family:'Abril Fatface',cursive; font-size:46px; letter-spacing:3px; margin-bottom:8px; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .role-sub { color:var(--text-secondary); font-size:13px; margin-bottom:28px; }
+    .role-selection h2 { font-size:19px; margin-bottom:10px; font-weight:800; }
+    .role-selection > p { color:var(--text-secondary); margin-bottom:22px; font-size:13px; }
+    .role-buttons { display:grid; gap:12px; max-width:440px; margin:0 auto; }
     .role-btn {
       background:var(--card);
       border:2px solid var(--border);
-      border-radius:20px;
-      padding:22px 24px;
+      border-radius:16px;
+      padding:18px 20px;
       cursor:pointer;
       transition:all 0.35s ease;
       text-align:left;
       display:flex;
       align-items:center;
-      gap:18px;
+      gap:14px;
       box-shadow:0 2px 10px var(--shadow-soft);
     }
     .role-btn:hover {
@@ -589,34 +588,34 @@
     }
     .role-btn:active { transform:scale(0.98); }
     .role-icon {
-      width:56px; height:56px;
-      border-radius:16px;
+      width:48px; height:48px;
+      border-radius:14px;
       background:linear-gradient(135deg,rgba(232,177,62,0.2),rgba(232,177,62,0.05));
       border:2px solid rgba(232,177,62,0.25);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:24px;
+      font-size:20px;
       color:var(--gold);
       flex-shrink:0;
     }
-    .role-btn-text h3 { font-size:17px; font-weight:700; margin-bottom:4px; }
-    .role-btn-text p { color:var(--text-secondary); font-size:13px; line-height:1.4; }
+    .role-btn-text h3 { font-size:15px; font-weight:700; margin-bottom:4px; }
+    .role-btn-text p { color:var(--text-secondary); font-size:12px; line-height:1.4; }
     
     /* Empty state */
-    .empty-state { text-align:center; padding:60px 24px; }
-    .empty-state .icon { font-size:56px; margin-bottom:16px; opacity:0.15; color:var(--gold); }
-    .empty-state h3 { color:var(--text-secondary); margin-bottom:8px; font-size:18px; }
-    .empty-state p { color:var(--text-muted); font-size:14px; }
+    .empty-state { text-align:center; padding:48px 24px; }
+    .empty-state .icon { font-size:48px; margin-bottom:16px; opacity:0.15; color:var(--gold); }
+    .empty-state h3 { color:var(--text-secondary); margin-bottom:8px; font-size:16px; }
+    .empty-state p { color:var(--text-muted); font-size:13px; }
     
     /* Info banner */
     .info-banner {
       background:linear-gradient(135deg,rgba(232,177,62,0.1),rgba(232,177,62,0.03));
       border:2px solid rgba(232,177,62,0.25);
-      border-radius:16px;
-      padding:16px 18px;
-      margin-bottom:16px;
-      font-size:14px;
+      border-radius:14px;
+      padding:14px 16px;
+      margin-bottom:14px;
+      font-size:13px;
       color:var(--text-secondary);
       line-height:1.7;
     }
@@ -627,10 +626,10 @@
       display:inline-flex;
       align-items:center;
       gap:6px;
-      font-size:13px;
+      font-size:12px;
       color:var(--text-muted);
       cursor:pointer;
-      padding:8px 14px;
+      padding:7px 12px;
       border-radius:10px;
       border:1px solid var(--border);
       background:transparent;
@@ -641,22 +640,22 @@
     .copy-btn:hover { color:var(--gold); border-color:var(--gold); background:rgba(232,177,62,0.05); }
     
     /* Legal content */
-    .legal-content { line-height:1.9; color:var(--text); font-size:15px; }
-    .legal-content h3 { color:var(--gold); font-size:16px; margin:22px 0 10px; font-weight:700; }
+    .legal-content { line-height:1.9; color:var(--text); font-size:14px; }
+    .legal-content h3 { color:var(--gold); font-size:15px; margin:20px 0 8px; font-weight:700; }
     .legal-content p { margin-bottom:12px; color:var(--text-secondary); }
     .legal-content strong { color:var(--text); }
     
     /* Test styles */
-    .test-question-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:22px; margin-bottom:16px; }
-    .test-question-num { font-size:12px; color:var(--gold); font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
-    .test-question-text { font-size:16px; font-weight:600; line-height:1.6; margin-bottom:18px; }
+    .test-question-card { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:18px; margin-bottom:16px; }
+    .test-question-num { font-size:11px; color:var(--gold); font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
+    .test-question-text { font-size:15px; font-weight:600; line-height:1.6; margin-bottom:16px; }
     .test-options { display:flex; flex-direction:column; gap:10px; }
     .test-option {
-      padding:14px 18px;
+      padding:12px 16px;
       border:2px solid var(--border);
-      border-radius:14px;
+      border-radius:12px;
       cursor:pointer;
-      font-size:14px;
+      font-size:13px;
       transition:all 0.25s;
       background:var(--surface);
       text-align:left;
@@ -668,29 +667,29 @@
     .test-option.disabled { cursor:not-allowed; opacity:0.6; }
     .test-explanation {
       margin-top:16px;
-      padding:14px 18px;
+      padding:12px 16px;
       background:rgba(232,177,62,0.08);
       border:1px solid rgba(232,177,62,0.2);
       border-radius:14px;
-      font-size:14px;
+      font-size:13px;
       line-height:1.7;
       color:var(--text-secondary);
       display:none;
     }
     .test-explanation.show { display:block; animation:fadeIn 0.3s; }
-    .test-progress { background:var(--surface); border-radius:14px; padding:16px 20px; margin-bottom:16px; border:2px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+    .test-progress { background:var(--surface); border-radius:14px; padding:14px 18px; margin-bottom:16px; border:2px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
     .test-score { font-size:14px; color:var(--text-secondary); }
     .test-score strong { color:var(--gold); }
     .test-result { text-align:center; padding:36px 24px; }
-    .test-result-score { font-size:64px; font-weight:800; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:10px; }
-    .test-result-label { font-size:18px; color:var(--text-secondary); margin-bottom:24px; }
+    .test-result-score { font-size:56px; font-weight:800; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:10px; }
+    .test-result-label { font-size:16px; color:var(--text-secondary); margin-bottom:24px; }
     .subject-chip {
       display:inline-block;
-      padding:6px 14px;
+      padding:5px 12px;
       background:rgba(232,177,62,0.1);
       border:1px solid rgba(232,177,62,0.25);
       border-radius:20px;
-      font-size:12px;
+      font-size:11px;
       color:var(--gold);
       margin:4px;
       cursor:pointer;
@@ -703,7 +702,7 @@
     .action-container { max-width:640px; margin:0 auto; }
     
     /* Subject icons */
-    .subject-icon { font-size:48px; margin-bottom:16px; display:block; }
+    .subject-icon { font-size:42px; margin-bottom:16px; display:block; }
     
     /* Formula highlight box */
     .formula-highlight {
@@ -754,17 +753,17 @@
 <div class="page active" id="roleSelectionPage">
   <div class="role-selection">
     <div class="role-logo">NEVIO</div>
-    <div class="role-sub">Умный помощник в учёбе 🇧🇾</div>
+    <div class="role-sub">Умный помощник в учёбе</div>
     <h2>Добро пожаловать!</h2>
     <p>Выберите свою роль для персонализированного опыта</p>
     <div class="role-buttons">
       <div class="role-btn" onclick="selectRole('student')">
         <div class="role-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="role-btn-text"><h3>🎓 Ученик</h3><p>ЦТ/ЦЭ, задачи, конспекты, подготовка к экзаменам</p></div>
+        <div class="role-btn-text"><h3>Ученик</h3><p>ЦТ/ЦЭ, задачи, конспекты, подготовка к экзаменам</p></div>
       </div>
       <div class="role-btn" onclick="selectRole('teacher')">
         <div class="role-icon"><i class="fas fa-chalkboard-user"></i></div>
-        <div class="role-btn-text"><h3>👩‍🏫 Учитель</h3><p>Планы уроков, задания, контрольные работы</p></div>
+        <div class="role-btn-text"><h3>Учитель</h3><p>Планы уроков, задания, контрольные работы</p></div>
       </div>
     </div>
   </div>
@@ -772,7 +771,7 @@
 
 <!-- ГЛАВНАЯ -->
 <div class="page" id="mainPage">
-  <div class="header"><h1>NEVIO</h1><p>Твой умный помощник в учёбе 🇧🇾</p></div>
+  <div class="header"><h1>NEVIO</h1><p>Твой умный помощник в учёбе</p></div>
   <div id="menuContainer"></div>
 </div>
 
@@ -810,7 +809,7 @@
   <div class="action-container">
     <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
     <div class="profile-section">
-      <div class="profile-avatar" id="profileAvatar">👤</div>
+      <div class="profile-avatar" id="profileAvatar"><i class="fas fa-user"></i></div>
       <div class="profile-name" id="profileName">Пользователь</div>
       <div class="profile-username" id="profileUsername"></div>
       <div class="profile-role" id="profileRole">Роль</div>
@@ -1023,22 +1022,22 @@ const menuConfigs = {
   student: {
     sections: [
       {
-        label: '🎯 ЦТ / ЦЭ — Главное',
+        label: 'Подготовка к экзаменам',
         items: [
-          { id: 'ct_prep', icon: 'fas fa-trophy', title: 'Подготовка к ЦТ / ЦЭ', description: 'Все предметы, стратегия сдачи', badge: '11 КЛАСС', highlight: true },
-          { id: 'ct_test', icon: 'fas fa-check-circle', title: 'Интерактивный тест', description: 'Генерация тестов с ответами', badge: 'NEW', highlight: true },
-          { id: 'formula_book', icon: 'fas fa-square-root-alt', title: 'Книга формул', description: 'Все формулы с объяснениями', badge: 'БЕСПЛАТНО', highlight: true },
+          { id: 'ct_prep', icon: 'fas fa-trophy', title: 'Подготовка к ЦТ / ЦЭ', description: 'После 11 класса — все предметы', badge: '11 КЛАСС', highlight: true },
+          { id: 'exam9', icon: 'fas fa-graduation-cap', title: 'Экзамены после 9 класса', description: 'Математика, языки, история', badge: '9 КЛАСС', highlight: true },
+          { id: 'ct_test', icon: 'fas fa-check-circle', title: 'Интерактивный тест ЦТ', description: 'Вопросы в формате ЦТ с ответами', highlight: true },
         ]
       },
       {
-        label: '📚 Учёба',
+        label: 'Учёба',
         items: [
-          { id: 'solve', icon: 'fas fa-calculator', title: 'Решить задачу', description: 'С полным объяснением' },
-          { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' },
-          { id: 'summary', icon: 'fas fa-book', title: 'Конспект', description: 'Структурированный' },
-          { id: 'schema', icon: 'fas fa-project-diagram', title: 'Схема / Шпаргалка', description: 'Визуальная' },
+          { id: 'solve', icon: 'fas fa-calculator', title: 'Решить задачу', description: 'С полным объяснением шагов' },
+          { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами с примерами' },
+          { id: 'summary', icon: 'fas fa-book', title: 'Написать конспект', description: 'Структурированный конспект' },
+          { id: 'schema', icon: 'fas fa-project-diagram', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
+          { id: 'oral_exam', icon: 'fas fa-microphone-alt', title: 'Устный экзамен', description: 'Потренируйся отвечать устно' },
           { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Анализ произведения', description: 'Герои, темы, идеи' },
-          { id: 'chat', icon: 'fas fa-comments', title: 'Свободный чат', description: 'Спроси что угодно' },
         ]
       }
     ]
@@ -1046,21 +1045,23 @@ const menuConfigs = {
   teacher: {
     sections: [
       {
-        label: '📋 Планирование',
+        label: 'Планирование уроков',
         items: [
-          { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'План урока', description: 'Полный план за секунды' },
-          { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи' },
-          { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'A/B варианты' },
-          { id: 'generate_quiz', icon: 'fas fa-question-circle', title: 'Создать тест', description: 'По тексту или теме' },
+          { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'План урока', description: 'Полный план за 30 секунд' },
+          { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
+          { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'A/B варианты с ответами' },
+          { id: 'differentiation', icon: 'fas fa-layer-group', title: 'Дифференциация', description: 'Задания для разных уровней' },
         ]
       },
       {
-        label: '📖 Материалы',
+        label: 'Учебные материалы',
         items: [
-          { id: 'explain', icon: 'fas fa-lightbulb', title: 'Методика объяснения', description: 'Как объяснить тему' },
+          { id: 'explain', icon: 'fas fa-lightbulb', title: 'Методика объяснения', description: 'Как объяснить тему классу' },
+          { id: 'schema', icon: 'fas fa-project-diagram', title: 'Схема для класса', description: 'Визуальный материал' },
           { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' },
-          { id: 'differentiation', icon: 'fas fa-layer-group', title: 'Дифференциация', description: 'Разные уровни' },
-          { id: 'chat', icon: 'fas fa-comments', title: 'Консультация', description: 'Совет от ИИ' },
+          { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Урок литературы', description: 'Методика разбора произведения' },
+          { id: 'generate_quiz', icon: 'fas fa-question-circle', title: 'Создать тест', description: 'Для проверки знаний' },
+          { id: 'chat', icon: 'fas fa-comments', title: 'Педагогическая консультация', description: 'Совет от ИИ' },
         ]
       }
     ]
@@ -1475,7 +1476,7 @@ function selectRole(role) {
   loadMainMenu();
   showPage('mainPage');
   const names = { student: 'ученика', teacher: 'учителя' };
-  showToast('✅ Режим ' + names[role] + ' активирован');
+  showToast('Режим ' + names[role] + ' активирован');
 }
 
 function getAllItems() {
@@ -1652,6 +1653,22 @@ function generateForm(actionId) {
         + ta('inputText', 4)
         + btn('fas fa-trophy', 'Начать подготовку');
       break;
+    case 'exam9':
+      html = sel('subjectExam9', 'Предмет', ['Математика','Русский язык','Белорусский язык','История Беларуси','Английский язык'].map(s => `<option>${s}</option>`).join(''))
+        + sel('exam9Mode', 'Что нужно', `
+          <option>Разбор билета / вопроса</option>
+          <option>Вся теория по предмету</option>
+          <option>Типичные задания экзамена</option>
+          <option>Стратегия подготовки</option>`)
+        + ta('inputText', 4)
+        + btn('fas fa-graduation-cap', 'Начать подготовку');
+      break;
+    case 'oral_exam':
+      html = ta('inputText', 4)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + btn('fas fa-microphone-alt', 'Тренироваться');
+      break;
     case 'solve':
       html = ta('inputText', 4)
         + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
@@ -1733,7 +1750,7 @@ async function processAction() {
   const data = collectFormData();
   
   if (!inputText && !['ct_prep'].includes(state.currentActionId)) {
-    showToast('⚠️ Заполните поле запроса');
+    showToast('Заполните поле запроса');
     return;
   }
   
@@ -1906,6 +1923,8 @@ function collectFormData() {
     count: g('countSelect'),
     subjectCT: g('subjectCT'),
     ctMode: g('ctMode'),
+    subjectExam9: g('subjectExam9'),
+    exam9Mode: g('exam9Mode'),
     litTitle: g('litTitle'),
     litAuthor: g('litAuthor'),
     quizCount: g('quizCount'),
@@ -1929,6 +1948,20 @@ ${data.ctMode === 'Разобрать моё задание' ? 'Задание �
 data.ctMode === 'Вся теория для ЦТ' ? 'Дай всю теорию для ЦТ по ' + data.subjectCT + ' в формате LaTeX!' :
 data.ctMode === 'Стратегия сдачи ЦТ' ? 'Дай стратегию сдачи ЦТ по ' + data.subjectCT + '!' :
 'Разбери типичные задания ЦТ по ' + data.subjectCT}`,
+    
+    exam9: `Ты — эксперт по выпускным экзаменам после 9 класса в Беларуси. Предмет: ${data.subjectExam9}.
+${data.exam9Mode === 'Разбор билета / вопроса' ? 'Разбери подробно билет/вопрос:\n' + inputText + '\nДай план ответа, ключевые факты и формулировки для устного ответа!' :
+data.exam9Mode === 'Вся теория по предмету' ? 'Дай всю необходимую теорию для экзамена после 9 класса по ' + data.subjectExam9 + ' — структурированно, с примерами, в формате LaTeX для формул.' :
+data.exam9Mode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к экзамену после 9 класса по ' + data.subjectExam9 + ': план по неделям, приоритетные темы, типичные ошибки.' :
+'Дай типичные задания экзамена после 9 класса по ' + data.subjectExam9 + ' с разбором решений. Используй LaTeX для формул.'}`,
+    
+    oral_exam: `Проведи тренировку устного экзамена по теме "${inputText}" (${data.subject}, ${data.grade}).
+Дай:
+1) Примерные вопросы, которые могут спросить на экзамене
+2) План ответа на каждый вопрос — кратко, по пунктам
+3) Образец устного ответа — чётко и связно, как будто отвечаешь вслух
+4) Советы: как отвечать уверенно и что делать, если не знаешь точный ответ
+Формулы и определения выделяй, используй LaTeX.`,
     
     solve: `Реши задачу по ${data.subject} (${data.grade}):
 ${inputText}
@@ -1961,6 +1994,8 @@ ${inputText}
 function buildUserMessage(actionId, inputText, data) {
   const types = {
     ct_prep: `ЦТ: ${data.subjectCT} — ${data.ctMode}`,
+    exam9: `Экзамен 9 кл: ${data.subjectExam9} — ${data.exam9Mode}`,
+    oral_exam: `Устный экзамен: ${inputText.substring(0, 50)}...`,
     solve: `Задача: ${inputText.substring(0, 50)}...`,
     explain: `Объяснить: ${inputText.substring(0, 50)}...`,
     summary: `Конспект: ${inputText.substring(0, 50)}...`,
@@ -2074,7 +2109,7 @@ function clearHistory() {
   if (confirm('Удалить всю историю запросов?')) {
     state.history = [];
     saveData();
-    showToast('✅ История очищена');
+    showToast('История очищена');
     showHistory();
   }
 }
@@ -2082,11 +2117,11 @@ function clearHistory() {
 function updateProfile() {
   const user = state.telegramUser;
   if (user) {
-    document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '👤';
+    document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '<i class="fas fa-user"></i>';
     document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
     document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
   }
-  const r = { student: '🎓 Ученик', teacher: '👩‍🏫 Учитель' };
+  const r = { student: 'Ученик', teacher: 'Учитель' };
   document.getElementById('profileRole').textContent = r[state.role] || '';
 }
 
@@ -2094,7 +2129,7 @@ function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-theme');
   localStorage.setItem('nevioTheme', isDark ? 'dark' : 'light');
   updateThemeUI(isDark);
-  showToast(isDark ? '🌙 Тёмная тема' : '☀️ Светлая тема');
+  showToast(isDark ? 'Тёмная тема' : 'Светлая тема');
 }
 
 function updateThemeUI(isDark) {
@@ -2109,7 +2144,7 @@ function deleteAccount() {
     state.history = [];
     state.conversationHistory = [];
     showPage('roleSelectionPage');
-    showToast('✅ Аккаунт удалён');
+    showToast('Аккаунт удалён');
   }
 }
 
@@ -2135,22 +2170,24 @@ function goBack() {
 
 function getActionName(id) {
   const names = {
-    ct_prep: '🎯 ЦТ/ЦЭ',
-    ct_test: '📝 Тест',
-    formula_book: '📐 Формулы',
-    solve: '🧮 Задача',
-    explain: '💡 Объяснение',
-    summary: '📖 Конспект',
-    schema: '📊 Схема',
-    lit_analysis: '📚 Литература',
-    chat: '💬 Чат',
-    lesson: '📋 План урока',
-    tasks: '📝 Задания',
-    variants: '📄 Контрольная',
-    generate_quiz: '❓ Тест',
-    differentiation: '🎚️ Дифференциация'
+    ct_prep: 'ЦТ/ЦЭ',
+    ct_test: 'Тест',
+    formula_book: 'Формулы',
+    exam9: 'Экзамен 9 кл',
+    oral_exam: 'Устный экзамен',
+    solve: 'Задача',
+    explain: 'Объяснение',
+    summary: 'Конспект',
+    schema: 'Схема',
+    lit_analysis: 'Литература',
+    chat: 'Чат',
+    lesson: 'План урока',
+    tasks: 'Задания',
+    variants: 'Контрольная',
+    generate_quiz: 'Тест',
+    differentiation: 'Дифференциация'
   };
-  return names[id] || '📌 Запрос';
+  return names[id] || 'Запрос';
 }
 
 function formatDate(ts) {
