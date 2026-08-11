@@ -403,6 +403,7 @@
       z-index:1;
     }
     .profile-avatar img { width:100%; height:100%; object-fit:cover; }
+    .profile-avatar i { color:var(--gold); }
     .profile-name { font-size:19px; font-weight:800; margin-bottom:4px; position:relative; z-index:1; }
     .profile-username { font-size:13px; color:var(--text-secondary); }
     .profile-role {
@@ -808,7 +809,7 @@
   <div class="action-container">
     <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
     <div class="profile-section">
-      <div class="profile-avatar" id="profileAvatar">👤</div>
+      <div class="profile-avatar" id="profileAvatar"><i class="fas fa-user"></i></div>
       <div class="profile-name" id="profileName">Пользователь</div>
       <div class="profile-username" id="profileUsername"></div>
       <div class="profile-role" id="profileRole">Роль</div>
@@ -2116,7 +2117,7 @@ function clearHistory() {
 function updateProfile() {
   const user = state.telegramUser;
   if (user) {
-    document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '👤';
+    document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '<i class="fas fa-user"></i>';
     document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
     document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
   }
