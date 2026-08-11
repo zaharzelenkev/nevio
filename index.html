@@ -705,12 +705,6 @@
     /* Subject icons */
     .subject-icon { font-size:48px; margin-bottom:16px; display:block; }
     
-    /* Stats cards */
-    .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
-    .stat-card { background:var(--surface); border-radius:16px; padding:16px; text-align:center; border:2px solid var(--border); }
-    .stat-value { font-size:24px; font-weight:800; color:var(--gold); }
-    .stat-label { font-size:11px; color:var(--text-muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }
-    
     /* Formula highlight box */
     .formula-highlight {
       background:linear-gradient(135deg,#1a1a2e,#16213e);
@@ -833,10 +827,6 @@
         <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div><div class="settings-item-text"><h4>Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
-      <div class="settings-item" onclick="showAbout()">
-        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-info-circle"></i></div><div class="settings-item-text"><h4>О приложении</h4><p>Версия, разработчик</p></div></div>
-        <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
-      </div>
       <div class="settings-item" onclick="showPrivacy()">
         <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-item-text"><h4>Политика конфиденциальности</h4><p>Как мы обрабатываем данные</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
@@ -858,28 +848,6 @@
     <div class="card">
       <div class="card-header"><h2><i class="fas fa-history"></i> История запросов</h2><p class="card-desc">Все ваши предыдущие запросы сохранены здесь</p></div>
       <div id="historyList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- О ПРИЛОЖЕНИИ -->
-<div class="page" id="aboutPage">
-  <div class="action-container">
-    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
-    <div class="card" style="text-align:center;">
-      <div style="font-family:'Abril Fatface',cursive; font-size:36px; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px;">NEVIO</div>
-      <p style="color:var(--text-secondary); margin-bottom:20px;">Версия 2.0</p>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-value" id="statQueries">0</div><div class="stat-label">Запросов</div></div>
-        <div class="stat-card"><div class="stat-value" id="statTests">0</div><div class="stat-label">Тестов</div></div>
-        <div class="stat-card"><div class="stat-value" id="statDays">0</div><div class="stat-label">Дней</div></div>
-      </div>
-      <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">
-        <strong style="color:var(--gold);">NEVIO</strong> — образовательная ИИ-платформа для Беларуси.<br>
-        Использует бесплатные модели OpenRouter с авто-резервированием.<br>
-        Все данные хранятся локально на устройстве.<br><br>
-        Создано с ❤️ для белорусских школьников и учителей 🇧🇾
-      </p>
     </div>
   </div>
 </div>
@@ -938,8 +906,7 @@ let state = {
   history: [],
   conversationHistory: [],
   currentActionId: null,
-  isLoading: false,
-  stats: { queries: 0, tests: 0, firstUse: null }
+  isLoading: false
 };
 
 // БАЗА ЗНАНИЙ ЦТ/ЦЭ
@@ -1257,7 +1224,6 @@ async function startInteractiveTest() {
   const subject = testState.subject;
 
   testState = { questions: [], currentQ: 0, score: 0, subject, answered: false };
-  state.stats.tests++;
 
   document.getElementById('testContainer').innerHTML = `
     <div class="card" style="text-align:center;padding:50px;">
@@ -1485,7 +1451,6 @@ function init() {
       const p = JSON.parse(saved);
       state.role = p.role;
       state.history = p.history || [];
-      state.stats = p.stats || { queries: 0, tests: 0, firstUse: new Date().toISOString() };
     } catch(e) {}
   }
   
@@ -1502,12 +1467,10 @@ function init() {
     showPage('roleSelectionPage');
   }
   updateProfile();
-  updateStats();
 }
 
 function selectRole(role) {
   state.role = role;
-  if (!state.stats.firstUse) state.stats.firstUse = new Date().toISOString();
   saveData();
   loadMainMenu();
   showPage('mainPage');
@@ -1782,7 +1745,6 @@ async function processAction() {
   
   const loadingId = addLoadingMessage();
   state.isLoading = true;
-  state.stats.queries++;
   disableForm(true);
   
   try {
@@ -1790,7 +1752,6 @@ async function processAction() {
     state.conversationHistory.push({ role: 'assistant', content: response });
     saveToHistory({ type: state.currentActionId, input: userMsg, result: response, timestamp: new Date().toISOString() });
     showContinueChat();
-    updateStats();
   } catch(error) {
     removeLoadingMessage(loadingId);
     addChatMessage('❌ Не удалось получить ответ: ' + error.message + '\n\nПопробуйте ещё раз.', false);
@@ -1821,13 +1782,11 @@ async function sendContinue() {
   
   const loadingId = addLoadingMessage();
   state.isLoading = true;
-  state.stats.queries++;
   document.getElementById('sendContinueBtn').disabled = true;
   
   try {
     const response = await callGroqWithStream(state.conversationHistory, loadingId);
     state.conversationHistory.push({ role: 'assistant', content: response });
-    updateStats();
   } catch(e) {
     removeLoadingMessage(loadingId);
     addChatMessage('❌ Ошибка: ' + e.message, false);
@@ -2131,19 +2090,6 @@ function updateProfile() {
   document.getElementById('profileRole').textContent = r[state.role] || '';
 }
 
-function updateStats() {
-  const stats = state.stats;
-  document.getElementById('statQueries').textContent = stats.queries || 0;
-  document.getElementById('statTests').textContent = stats.tests || 0;
-  
-  if (stats.firstUse) {
-    const days = Math.floor((Date.now() - new Date(stats.firstUse)) / 86400000);
-    document.getElementById('statDays').textContent = days || 1;
-  } else {
-    document.getElementById('statDays').textContent = '0';
-  }
-}
-
 function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-theme');
   localStorage.setItem('nevioTheme', isDark ? 'dark' : 'light');
@@ -2162,13 +2108,11 @@ function deleteAccount() {
     state.role = null;
     state.history = [];
     state.conversationHistory = [];
-    state.stats = { queries: 0, tests: 0, firstUse: null };
     showPage('roleSelectionPage');
     showToast('✅ Аккаунт удалён');
   }
 }
 
-function showAbout() { showPage('aboutPage'); }
 function showPrivacy() { showPage('privacyPage'); }
 
 function showPage(pageId) {
@@ -2178,7 +2122,7 @@ function showPage(pageId) {
   
   if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
   if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
-  if (pageId === 'settingsPage' || pageId === 'aboutPage' || pageId === 'privacyPage') {
+  if (pageId === 'settingsPage' || pageId === 'privacyPage') {
     document.getElementById('nav-settings')?.classList.add('active');
   }
   window.scrollTo(0, 0);
@@ -2227,8 +2171,7 @@ function saveData() {
   try {
     localStorage.setItem('nevioData_v3', JSON.stringify({
       role: state.role,
-      history: state.history,
-      stats: state.stats
+      history: state.history
     }));
   } catch(e) {}
 }
