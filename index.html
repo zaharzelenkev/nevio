@@ -6,16 +6,40 @@
   <title>NEVIO</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- MATHJAX для красивых формул -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        packages: {'[+]': ['ams', 'noundefined', 'mhchem']}
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          window.mathJaxReady = true;
+        }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
-    /* Light is the default theme. Gold values are unchanged brand colors. */
+    * { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --bg:#F7F6F2; --surface:#FFFFFF; --card:#FFFFFF; --border:#EAE7DD;
       --gold:#e8b13e; --gold-dark:#c4911a; --gold-light:#f5cc6e;
       --text:#1C1B17; --text-secondary:#6E6A61; --text-muted:#A39E91;
       --shadow-soft:rgba(28,27,23,0.06); --shadow-strong:rgba(28,27,23,0.14);
       --glow-gold:rgba(232,177,62,0.22);
+      --gradient-gold:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));
+      --gradient-dark:linear-gradient(135deg,#2a2a2a,#1a1a1a);
     }
     body.dark-theme {
       --bg:#0a0a0a; --surface:#111111; --card:#161616; --border:#272727;
@@ -23,147 +47,711 @@
       --shadow-soft:rgba(0,0,0,0.25); --shadow-strong:rgba(0,0,0,0.45);
       --glow-gold:rgba(232,177,62,0.16);
     }
-    body { background:var(--bg); color:var(--text); padding:16px; padding-bottom:90px; overflow-x:hidden; transition:background 0.3s,color 0.3s; }
-    .page { display:none; animation:fadeIn 0.35s ease; }
+    body {
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      padding:16px;
+      padding-bottom:90px;
+      overflow-x:hidden;
+      transition:background 0.4s,color 0.4s;
+    }
+    
+    /* Анимации */
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    @keyframes ripple { to{transform:scale(4);opacity:0} }
+    @keyframes confetti { 0%{transform:translateY(0) rotate(0);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+    
+    .page { display:none; animation:fadeIn 0.4s ease; }
     .page.active { display:block; }
-    @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-    .header { position:relative; text-align:center; margin-bottom:28px; padding:24px 0 8px; }
-    .header::before { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:220px; height:120px; background:radial-gradient(closest-side, var(--glow-gold), transparent 70%); filter:blur(18px); pointer-events:none; z-index:0; }
-    .header h1 { position:relative; z-index:1; font-family:'Abril Fatface',cursive; font-size:38px; letter-spacing:2px; margin-bottom:6px; background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    
+    /* Header */
+    .header {
+      position:relative;
+      text-align:center;
+      margin-bottom:24px;
+      padding:20px 0 8px;
+    }
+    .header::before {
+      content:'';
+      position:absolute;
+      top:-20px;
+      left:50%;
+      transform:translateX(-50%);
+      width:300px;
+      height:150px;
+      background:radial-gradient(closest-side, var(--glow-gold), transparent 70%);
+      filter:blur(30px);
+      pointer-events:none;
+      z-index:0;
+    }
+    .header h1 {
+      position:relative;
+      z-index:1;
+      font-family:'Abril Fatface',cursive;
+      font-size:42px;
+      letter-spacing:3px;
+      margin-bottom:6px;
+      background:var(--gradient-gold);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      text-shadow:0 2px 20px rgba(232,177,62,0.3);
+    }
     .header p { position:relative; z-index:1; color:var(--text-secondary); font-size:13px; letter-spacing:0.5px; }
-    .role-selection { position:relative; text-align:center; padding:20px 16px; }
-    .role-selection::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:280px; height:190px; background:radial-gradient(closest-side, var(--glow-gold), transparent 70%); filter:blur(24px); pointer-events:none; z-index:0; }
-    .role-logo, .role-sub, .role-selection h2, .role-selection > p, .role-buttons { position:relative; z-index:1; }
-    .role-logo { font-family:'Abril Fatface',cursive; font-size:46px; letter-spacing:2px; margin-bottom:6px; background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .role-sub { color:var(--text-secondary); font-size:13px; margin-bottom:32px; }
-    .role-selection h2 { font-size:20px; margin-bottom:8px; font-weight:700; }
-    .role-selection > p { color:var(--text-secondary); margin-bottom:28px; font-size:14px; }
-    .role-buttons { display:grid; gap:12px; max-width:420px; margin:0 auto; }
-    .role-btn { background:var(--card); border:1.5px solid var(--border); border-radius:18px; padding:20px 22px; cursor:pointer; transition:all 0.3s ease; text-align:left; display:flex; align-items:center; gap:16px; box-shadow:0 1px 3px var(--shadow-soft); }
-    .role-btn:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 10px 28px var(--shadow-strong); }
-    .role-btn:active { transform:scale(0.98); }
-    .role-icon { width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg,rgba(232,177,62,0.15),rgba(232,177,62,0.05)); border:1px solid rgba(232,177,62,0.2); display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--gold); flex-shrink:0; }
-    .role-btn-text h3 { font-size:16px; font-weight:600; margin-bottom:3px; }
-    .role-btn-text p { color:var(--text-secondary); font-size:12px; line-height:1.4; }
-    .section-label { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); margin:20px 0 10px 4px; }
-    .menu-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:4px; }
-    .menu-card { background:var(--card); border-radius:18px; padding:18px 14px; text-align:center; cursor:pointer; transition:all 0.25s ease; border:1.5px solid var(--border); position:relative; overflow:hidden; box-shadow:0 1px 2px var(--shadow-soft); }
-    .menu-card.highlight { border-color:rgba(232,177,62,0.35); background:linear-gradient(135deg,rgba(232,177,62,0.06),var(--card)); }
-    .menu-card:hover { border-color:rgba(232,177,62,0.5); transform:translateY(-3px); box-shadow:0 10px 26px var(--shadow-strong); }
-    .menu-card:active { transform:scale(0.96); }
-    .menu-card .icon { font-size:28px; margin-bottom:10px; display:block; color:var(--gold); }
-    .menu-card h3 { font-size:13px; font-weight:600; color:var(--text); line-height:1.3; }
-    .menu-card p { font-size:11px; color:var(--text-secondary); margin-top:3px; line-height:1.3; }
-    .badge { display:inline-block; padding:2px 7px; background:linear-gradient(135deg,var(--gold-light),var(--gold)); color:#0a0a0a; border-radius:6px; font-size:10px; font-weight:700; letter-spacing:0.5px; margin-left:5px; vertical-align:middle; }
-    .action-container { max-width:600px; margin:0 auto; }
-    .back-btn { display:inline-flex; align-items:center; gap:8px; color:var(--gold); font-size:15px; margin-bottom:18px; cursor:pointer; padding:8px 12px; border-radius:10px; transition:all 0.2s; font-weight:500; }
-    .back-btn:hover { background:rgba(232,177,62,0.08); }
-    .card { background:var(--card); border-radius:20px; padding:22px; margin-bottom:14px; border:1.5px solid var(--border); box-shadow:0 1px 3px var(--shadow-soft); }
-    .card-header { margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--border); }
-    .card h2 { font-size:19px; color:var(--text); display:flex; align-items:center; gap:10px; margin-bottom:4px; }
-    .card h2 i { color:var(--gold); font-size:18px; }
-    .card-desc { color:var(--text-secondary); font-size:13px; }
-    .form-group { margin-bottom:14px; }
-    .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text-secondary); letter-spacing:0.3px; }
-    textarea, input[type="text"], select { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:12px; font-size:15px; font-family:inherit; resize:vertical; transition:all 0.25s ease; background:var(--surface); color:var(--text); }
-    textarea:focus, input:focus, select:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(232,177,62,0.1); }
-    select { cursor:pointer; }
-    .btn { width:100%; padding:14px 24px; border:none; border-radius:14px; font-size:15px; font-weight:600; cursor:pointer; transition:all 0.25s ease; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.3px; }
-    .btn-primary { background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark)); color:#0a0a0a; }
-    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(232,177,62,0.35); }
-    .btn-primary:active { transform:scale(0.98); }
-    .btn-secondary { background:var(--surface); color:var(--gold); border:1.5px solid rgba(232,177,62,0.3); margin-top:8px; }
+    
+    /* Карточки */
+    .card {
+      background:var(--card);
+      border-radius:24px;
+      padding:24px;
+      margin-bottom:16px;
+      border:1.5px solid var(--border);
+      box-shadow:0 4px 20px var(--shadow-soft);
+      transition:all 0.3s ease;
+    }
+    .card:hover { box-shadow:0 8px 40px var(--shadow-strong); transform:translateY(-2px); }
+    .card-header { margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+    .card h2 { font-size:20px; display:flex; align-items:center; gap:12px; margin-bottom:6px; font-weight:700; }
+    .card h2 i { color:var(--gold); font-size:20px; }
+    .card-desc { color:var(--text-secondary); font-size:14px; line-height:1.5; }
+    
+    /* Кнопки */
+    .btn {
+      width:100%;
+      padding:16px 24px;
+      border:none;
+      border-radius:16px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      letter-spacing:0.3px;
+      position:relative;
+      overflow:hidden;
+    }
+    .btn::before {
+      content:'';
+      position:absolute;
+      top:0; left:-100%; width:100%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+      transition:left 0.5s;
+    }
+    .btn:hover::before { left:100%; }
+    .btn-primary {
+      background:var(--gradient-gold);
+      color:#0a0a0a;
+      box-shadow:0 4px 15px rgba(232,177,62,0.3);
+    }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 8px 30px rgba(232,177,62,0.4); }
+    .btn-primary:active { transform:scale(0.97); }
+    .btn-secondary {
+      background:var(--surface);
+      color:var(--gold);
+      border:2px solid rgba(232,177,62,0.3);
+      margin-top:10px;
+    }
     .btn-secondary:hover { border-color:var(--gold); background:rgba(232,177,62,0.05); }
-    .btn:disabled { opacity:0.45; cursor:not-allowed; transform:none!important; box-shadow:none!important; }
-    .chat-messages { margin-top:18px; display:flex; flex-direction:column; gap:14px; }
-    .message { display:flex; flex-direction:column; }
+    .btn:disabled { opacity:0.45; cursor:not-allowed; transform:none!important; }
+    
+    /* Формы */
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:14px; font-weight:600; margin-bottom:8px; color:var(--text-secondary); letter-spacing:0.3px; }
+    textarea, input[type="text"], select {
+      width:100%;
+      padding:14px 16px;
+      border:2px solid var(--border);
+      border-radius:14px;
+      font-size:15px;
+      font-family:inherit;
+      resize:vertical;
+      transition:all 0.3s ease;
+      background:var(--surface);
+      color:var(--text);
+    }
+    textarea:focus, input:focus, select:focus {
+      outline:none;
+      border-color:var(--gold);
+      box-shadow:0 0 0 4px rgba(232,177,62,0.12);
+    }
+    select { cursor:pointer; }
+    
+    /* Меню сетка */
+    .menu-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .menu-card {
+      background:var(--card);
+      border-radius:20px;
+      padding:20px 16px;
+      text-align:center;
+      cursor:pointer;
+      transition:all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border:2px solid var(--border);
+      position:relative;
+      overflow:hidden;
+    }
+    .menu-card::before {
+      content:'';
+      position:absolute;
+      top:0; left:0; right:0; bottom:0;
+      background:var(--gradient-gold);
+      opacity:0;
+      transition:opacity 0.3s;
+      z-index:0;
+    }
+    .menu-card:hover::before { opacity:0.08; }
+    .menu-card:hover {
+      border-color:var(--gold);
+      transform:translateY(-6px) scale(1.02);
+      box-shadow:0 15px 40px var(--shadow-strong);
+    }
+    .menu-card:active { transform:scale(0.96); }
+    .menu-card .icon { font-size:32px; margin-bottom:12px; display:block; color:var(--gold); position:relative; z-index:1; }
+    .menu-card h3 { font-size:14px; font-weight:700; position:relative; z-index:1; line-height:1.3; }
+    .menu-card p { font-size:11px; color:var(--text-secondary); margin-top:4px; line-height:1.4; position:relative; z-index:1; }
+    .menu-card.highlight { border-color:rgba(232,177,62,0.4); background:linear-gradient(135deg,rgba(232,177,62,0.05),var(--card)); }
+    
+    /* Badge */
+    .badge {
+      display:inline-block;
+      padding:4px 10px;
+      background:var(--gradient-gold);
+      color:#0a0a0a;
+      border-radius:8px;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:0.5px;
+      margin-left:6px;
+      vertical-align:middle;
+      animation:pulse 2s infinite;
+    }
+    
+    /* Section Label */
+    .section-label {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--text-muted);
+      margin:24px 0 12px 4px;
+    }
+    
+    /* Chat Messages */
+    .chat-messages { margin-top:20px; display:flex; flex-direction:column; gap:16px; }
+    .message { display:flex; flex-direction:column; animation:slideUp 0.4s ease; }
     .message.user { align-items:flex-end; }
     .message.ai { align-items:flex-start; }
-    .message-bubble { max-width:90%; padding:12px 16px; border-radius:18px; font-size:14px; line-height:1.7; }
-    .message.user .message-bubble { background:linear-gradient(135deg,var(--gold-light),var(--gold)); color:#0a0a0a; border-bottom-right-radius:5px; font-weight:500; }
-    .message.ai .message-bubble { background:var(--surface); color:var(--text); border:1.5px solid var(--border); border-bottom-left-radius:5px; }
-    .message-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; padding:0 4px; font-weight:500; }
-    .streaming-cursor { display:inline-block; width:2px; height:15px; background:var(--gold); margin-left:2px; vertical-align:middle; animation:blink 0.7s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .loading-dots { display:flex; gap:5px; padding:12px 16px; align-items:center; }
-    .loading-dots span { width:7px; height:7px; background:var(--gold); border-radius:50%; animation:bounce 1.2s infinite; }
-    .loading-dots span:nth-child(2){animation-delay:0.2s} .loading-dots span:nth-child(3){animation-delay:0.4s}
-    @keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-7px);opacity:1} }
-    .loading-text { font-size:13px; color:var(--text-secondary); margin-left:6px; }
-    .chat-input-area { display:flex; gap:8px; margin-top:14px; align-items:flex-end; }
-    .chat-input-area textarea { flex:1; min-height:44px; max-height:120px; resize:none; padding:10px 14px; font-size:14px; border-radius:22px; }
-    .send-btn { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--gold-light),var(--gold-dark)); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; color:#0a0a0a; flex-shrink:0; transition:all 0.2s; }
-    .send-btn:hover { transform:scale(1.08); }
+    .message-bubble { max-width:92%; padding:16px 20px; border-radius:20px; font-size:15px; line-height:1.75; }
+    .message.user .message-bubble {
+      background:var(--gradient-gold);
+      color:#0a0a0a;
+      border-bottom-right-radius:6px;
+      font-weight:500;
+    }
+    .message.ai .message-bubble {
+      background:var(--surface);
+      color:var(--text);
+      border:2px solid var(--border);
+      border-bottom-left-radius:6px;
+    }
+    .message-label { font-size:12px; color:var(--text-muted); margin-bottom:6px; padding:0 6px; font-weight:600; }
+    
+    /* AI Content - стили для математических формул */
+    .ai-content { line-height:1.9; }
+    .ai-content p { margin-bottom:12px; }
+    .ai-content p:last-child { margin-bottom:0; }
+    .ai-content strong { color:var(--gold); font-weight:700; }
+    .ai-content em { font-style:italic; }
+    .ai-content h3 { color:var(--gold); font-size:17px; margin:20px 0 10px; font-weight:700; }
+    .ai-content h4 { color:var(--text); font-size:15px; margin:16px 0 8px; font-weight:600; }
+    .ai-content ul, .ai-content ol { margin:12px 0; padding-left:24px; }
+    .ai-content li { margin-bottom:8px; }
+    .ai-content code {
+      background:rgba(232,177,62,0.1);
+      padding:2px 8px;
+      border-radius:6px;
+      font-family:'Fira Code',monospace;
+      font-size:13px;
+      color:var(--gold-dark);
+    }
+    .ai-content pre {
+      background:#1a1a1a;
+      color:#f0f0f0;
+      padding:16px;
+      border-radius:12px;
+      overflow-x:auto;
+      margin:16px 0;
+      font-size:13px;
+    }
+    .ai-content blockquote {
+      border-left:4px solid var(--gold);
+      padding-left:16px;
+      margin:16px 0;
+      color:var(--text-secondary);
+      font-style:italic;
+    }
+    .ai-content .formula-box {
+      background:linear-gradient(135deg,rgba(232,177,62,0.08),rgba(232,177,62,0.03));
+      border:2px solid rgba(232,177,62,0.2);
+      border-radius:16px;
+      padding:20px;
+      margin:16px 0;
+      text-align:center;
+    }
+    .ai-content table { width:100%; border-collapse:collapse; margin:16px 0; }
+    .ai-content th, .ai-content td { border:1px solid var(--border); padding:12px; text-align:left; }
+    .ai-content th { background:rgba(232,177,62,0.1); font-weight:600; }
+    
+    /* Streaming cursor */
+    .streaming-cursor {
+      display:inline-block;
+      width:3px;
+      height:18px;
+      background:var(--gold);
+      margin-left:3px;
+      vertical-align:middle;
+      animation:blink 0.8s infinite;
+      border-radius:2px;
+    }
+    
+    /* Loading dots */
+    .loading-dots { display:flex; gap:6px; padding:16px; align-items:center; justify-content:center; }
+    .loading-dots span { width:8px; height:8px; background:var(--gold); border-radius:50%; animation:bounce 1.4s infinite; }
+    .loading-dots span:nth-child(2){animation-delay:0.15s} .loading-dots span:nth-child(3){animation-delay:0.3s}
+    .loading-dots span:nth-child(4){animation-delay:0.45s} .loading-dots span:nth-child(5){animation-delay:0.6s}
+    
+    /* Chat input */
+    .chat-input-area { display:flex; gap:10px; margin-top:16px; align-items:flex-end; }
+    .chat-input-area textarea {
+      flex:1;
+      min-height:48px;
+      max-height:140px;
+      resize:none;
+      padding:12px 18px;
+      font-size:15px;
+      border-radius:24px;
+    }
+    .send-btn {
+      width:50px; height:50px;
+      border-radius:50%;
+      background:var(--gradient-gold);
+      border:none;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      color:#0a0a0a;
+      flex-shrink:0;
+      transition:all 0.3s;
+      box-shadow:0 4px 15px rgba(232,177,62,0.3);
+    }
+    .send-btn:hover { transform:scale(1.1); }
     .send-btn:disabled { opacity:0.4; transform:none; cursor:not-allowed; }
-    .profile-section { background:linear-gradient(135deg,#FFFBF0,#FCF2D6); border:1.5px solid rgba(196,145,26,0.28); border-radius:20px; padding:24px; text-align:center; margin-bottom:18px; box-shadow:0 1px 3px var(--shadow-soft); }
-    body.dark-theme .profile-section { background:linear-gradient(135deg,#1a1400,#2a1f00); border-color:rgba(232,177,62,0.3); }
-    .profile-avatar { width:76px; height:76px; border-radius:50%; margin:0 auto 14px; background:rgba(232,177,62,0.1); display:flex; align-items:center; justify-content:center; font-size:32px; border:2px solid rgba(232,177,62,0.4); overflow:hidden; }
+    
+    /* Profile */
+    .profile-section {
+      background:linear-gradient(135deg,#FFFBF0,#FCF2D6);
+      border:2px solid rgba(196,145,26,0.3);
+      border-radius:24px;
+      padding:28px;
+      text-align:center;
+      margin-bottom:20px;
+      position:relative;
+      overflow:hidden;
+    }
+    .profile-section::before {
+      content:'';
+      position:absolute;
+      top:-50%; left:-50%;
+      width:200%;
+      height:200%;
+      background:radial-gradient(circle,rgba(232,177,62,0.1) 0%,transparent 50%);
+      animation:gradientShift 8s ease infinite;
+    }
+    body.dark-theme .profile-section {
+      background:linear-gradient(135deg,#1a1400,#2a1f00);
+      border-color:rgba(232,177,62,0.3);
+    }
+    .profile-avatar {
+      width:88px; height:88px;
+      border-radius:50%;
+      margin:0 auto 16px;
+      background:rgba(232,177,62,0.15);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:38px;
+      border:3px solid rgba(232,177,62,0.4);
+      overflow:hidden;
+      position:relative;
+      z-index:1;
+      animation:float 3s ease-in-out infinite;
+    }
     .profile-avatar img { width:100%; height:100%; object-fit:cover; }
-    .profile-name { font-size:20px; font-weight:700; margin-bottom:2px; }
-    .profile-username { font-size:13px; color:var(--text-secondary); }
-    .profile-role { display:inline-block; margin-top:10px; padding:5px 16px; background:rgba(232,177,62,0.15); border:1px solid rgba(232,177,62,0.3); border-radius:20px; font-size:12px; font-weight:600; color:var(--gold); letter-spacing:0.5px; }
-    .settings-list { background:var(--card); border-radius:18px; overflow:hidden; border:1.5px solid var(--border); box-shadow:0 1px 3px var(--shadow-soft); }
-    .settings-item { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:all 0.2s; }
+    .profile-name { font-size:22px; font-weight:800; margin-bottom:4px; position:relative; z-index:1; }
+    .profile-username { font-size:14px; color:var(--text-secondary); }
+    .profile-role {
+      display:inline-block;
+      margin-top:12px;
+      padding:8px 20px;
+      background:rgba(232,177,62,0.2);
+      border:1px solid rgba(232,177,62,0.35);
+      border-radius:24px;
+      font-size:13px;
+      font-weight:700;
+      color:var(--gold);
+      letter-spacing:0.5px;
+      position:relative;
+      z-index:1;
+    }
+    
+    /* Settings list */
+    .settings-list {
+      background:var(--card);
+      border-radius:20px;
+      overflow:hidden;
+      border:2px solid var(--border);
+    }
+    .settings-item {
+      padding:16px 20px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      cursor:pointer;
+      transition:all 0.2s;
+    }
     .settings-item:last-child { border-bottom:none; }
-    .settings-item:hover { background:rgba(232,177,62,0.05); }
-    .settings-item-left { display:flex; align-items:center; gap:12px; }
-    .settings-item-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; background:rgba(232,177,62,0.08); color:var(--gold); border:1px solid rgba(232,177,62,0.15); }
-    .settings-item-text h4 { font-size:14px; font-weight:600; margin-bottom:1px; }
+    .settings-item:hover { background:rgba(232,177,62,0.05); padding-left:24px; }
+    .settings-item-left { display:flex; align-items:center; gap:14px; }
+    .settings-item-icon {
+      width:44px; height:44px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      background:rgba(232,177,62,0.1);
+      color:var(--gold);
+      border:1px solid rgba(232,177,62,0.2);
+    }
+    .settings-item-text h4 { font-size:15px; font-weight:600; margin-bottom:2px; }
     .settings-item-text p { font-size:12px; color:var(--text-secondary); }
-    .settings-item-right { color:var(--text-muted); font-size:13px; }
-    .history-item { background:var(--surface); border-radius:14px; padding:14px 16px; margin-bottom:8px; border:1.5px solid var(--border); cursor:pointer; transition:all 0.2s; box-shadow:0 1px 2px var(--shadow-soft); }
-    .history-item:hover { border-color:rgba(232,177,62,0.4); transform:translateX(3px); box-shadow:0 4px 12px var(--shadow-strong); }
-    .history-header { display:flex; justify-content:space-between; margin-bottom:5px; align-items:center; }
-    .history-type { font-size:12px; font-weight:600; color:var(--gold); }
+    .settings-item-right { color:var(--text-muted); font-size:14px; }
+    
+    /* History */
+    .history-item {
+      background:var(--surface);
+      border-radius:16px;
+      padding:16px 18px;
+      margin-bottom:10px;
+      border:2px solid var(--border);
+      cursor:pointer;
+      transition:all 0.3s;
+    }
+    .history-item:hover {
+      border-color:var(--gold);
+      transform:translateX(6px);
+      box-shadow:0 8px 25px var(--shadow-strong);
+    }
+    .history-header { display:flex; justify-content:space-between; margin-bottom:6px; align-items:center; }
+    .history-type { font-size:13px; font-weight:700; color:var(--gold); }
     .history-date { font-size:11px; color:var(--text-muted); }
-    .history-preview { font-size:13px; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.4; }
-    .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(3,1fr); padding:8px 8px 12px; z-index:100; box-shadow:0 -2px 12px var(--shadow-soft); }
-    .nav-item { position:relative; padding:8px 4px; text-align:center; cursor:pointer; border-radius:12px; transition:all 0.2s; color:var(--text-muted); }
+    .history-preview { font-size:14px; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.5; }
+    
+    /* Bottom Nav */
+    .bottom-nav {
+      position:fixed;
+      bottom:0; left:0; right:0;
+      background:var(--surface);
+      border-top:1px solid var(--border);
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      padding:10px 12px 16px;
+      z-index:100;
+      box-shadow:0 -4px 20px var(--shadow-soft);
+      backdrop-filter:blur(10px);
+    }
+    .nav-item {
+      position:relative;
+      padding:10px 6px;
+      text-align:center;
+      cursor:pointer;
+      border-radius:14px;
+      transition:all 0.3s;
+      color:var(--text-muted);
+    }
     .nav-item:hover { background:rgba(232,177,62,0.08); color:var(--gold); }
     .nav-item.active { color:var(--gold); }
-    .nav-item.active::before { content:''; position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:16px; height:2px; border-radius:2px; background:linear-gradient(90deg,var(--gold-light),var(--gold-dark)); }
-    .nav-item .icon { font-size:20px; margin-bottom:3px; }
-    .nav-item span { display:block; font-size:10px; font-weight:600; letter-spacing:0.3px; }
-    .empty-state { text-align:center; padding:50px 20px; }
-    .empty-state .icon { font-size:48px; margin-bottom:14px; opacity:0.2; color:var(--gold); }
-    .empty-state h3 { color:var(--text-secondary); margin-bottom:6px; font-size:16px; }
-    .empty-state p { color:var(--text-muted); font-size:13px; }
-    .toast { position:fixed; bottom:95px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--card); border:1px solid rgba(232,177,62,0.4); color:var(--gold-dark); padding:10px 20px; border-radius:20px; font-size:13px; font-weight:500; opacity:0; transition:all 0.3s ease; z-index:200; white-space:nowrap; box-shadow:0 6px 22px var(--shadow-strong); }
+    .nav-item.active::before {
+      content:'';
+      position:absolute;
+      top:-10px; left:50%;
+      transform:translateX(-50%);
+      width:24px; height:3px;
+      border-radius:3px;
+      background:var(--gradient-gold);
+    }
+    .nav-item .icon { font-size:22px; margin-bottom:4px; }
+    .nav-item span { display:block; font-size:11px; font-weight:700; letter-spacing:0.3px; }
+    
+    /* Toast */
+    .toast {
+      position:fixed;
+      bottom:100px;
+      left:50%;
+      transform:translateX(-50%) translateY(30px);
+      background:var(--card);
+      border:2px solid rgba(232,177,62,0.5);
+      color:var(--gold-dark);
+      padding:12px 24px;
+      border-radius:24px;
+      font-size:14px;
+      font-weight:600;
+      opacity:0;
+      transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index:200;
+      white-space:nowrap;
+      box-shadow:0 8px 30px var(--shadow-strong);
+    }
     body.dark-theme .toast { color:var(--gold); }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-    .ai-content p { margin-bottom:8px; }
-    .ai-content strong { color:var(--gold); font-weight:600; }
-    .ai-content em { font-style:italic; }
-    .copy-btn { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:var(--text-muted); cursor:pointer; padding:5px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; margin-top:8px; transition:all 0.2s; font-weight:500; }
-    .copy-btn:hover { color:var(--gold); border-color:rgba(232,177,62,0.4); }
-    .legal-content { line-height:1.8; color:var(--text); font-size:14px; }
-    .legal-content h3 { color:var(--gold); font-size:15px; margin:18px 0 8px; }
-    .legal-content p { margin-bottom:10px; color:var(--text-secondary); }
-    .legal-content strong { color:var(--text); }
-
-    /* ===== ТЕСТ ===== */
-    .test-question-card { background:var(--card); border:1.5px solid var(--border); border-radius:18px; padding:20px; margin-bottom:14px; }
-    .test-question-num { font-size:11px; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
-    .test-question-text { font-size:15px; font-weight:600; line-height:1.5; margin-bottom:16px; }
-    .test-options { display:flex; flex-direction:column; gap:8px; }
-    .test-option { padding:12px 16px; border:1.5px solid var(--border); border-radius:12px; cursor:pointer; font-size:14px; transition:all 0.2s; background:var(--surface); text-align:left; color:var(--text); }
-    .test-option:hover { border-color:var(--gold); background:rgba(232,177,62,0.05); }
-    .test-option.correct { border-color:#4ade80; background:rgba(74,222,128,0.1); color:#4ade80; }
-    .test-option.wrong { border-color:#f87171; background:rgba(248,113,113,0.1); color:#f87171; }
-    .test-option.disabled { cursor:not-allowed; opacity:0.7; }
-    .test-explanation { margin-top:14px; padding:12px 16px; background:rgba(232,177,62,0.07); border:1px solid rgba(232,177,62,0.2); border-radius:12px; font-size:13px; line-height:1.6; color:var(--text-secondary); display:none; }
-    .test-explanation.show { display:block; }
-    .test-progress { background:var(--surface); border-radius:12px; padding:14px 18px; margin-bottom:14px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-    .test-score { font-size:13px; color:var(--text-secondary); }
-    .test-score strong { color:var(--gold); }
-    .test-result { text-align:center; padding:30px 20px; }
-    .test-result-score { font-size:56px; font-weight:700; background:linear-gradient(135deg,var(--gold-light),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
-    .test-result-label { font-size:16px; color:var(--text-secondary); margin-bottom:20px; }
-    .subject-chip { display:inline-block; padding:4px 12px; background:rgba(232,177,62,0.12); border:1px solid rgba(232,177,62,0.25); border-radius:20px; font-size:12px; color:var(--gold); margin:3px; cursor:pointer; transition:all 0.2s; }
-    .subject-chip.active { background:rgba(232,177,62,0.25); border-color:var(--gold); }
-    .info-banner { background:linear-gradient(135deg,rgba(232,177,62,0.08),rgba(232,177,62,0.03)); border:1px solid rgba(232,177,62,0.2); border-radius:14px; padding:14px 16px; margin-bottom:14px; font-size:13px; color:var(--text-secondary); line-height:1.6; }
+    
+    /* Back button */
+    .back-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      color:var(--gold);
+      font-size:16px;
+      margin-bottom:20px;
+      cursor:pointer;
+      padding:10px 16px;
+      border-radius:12px;
+      transition:all 0.2s;
+      font-weight:600;
+    }
+    .back-btn:hover { background:rgba(232,177,62,0.1); transform:translateX(-4px); }
+    
+    /* Role selection */
+    .role-selection { position:relative; text-align:center; padding:24px 20px; }
+    .role-selection::before {
+      content:'';
+      position:absolute;
+      top:0; left:50%;
+      transform:translateX(-50%);
+      width:350px; height:220px;
+      background:radial-gradient(closest-side, var(--glow-gold), transparent 70%);
+      filter:blur(35px);
+      pointer-events:none;
+      z-index:0;
+    }
+    .role-logo, .role-sub, .role-selection h2, .role-selection > p, .role-buttons { position:relative; z-index:1; }
+    .role-logo { font-family:'Abril Fatface',cursive; font-size:52px; letter-spacing:3px; margin-bottom:8px; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .role-sub { color:var(--text-secondary); font-size:14px; margin-bottom:36px; }
+    .role-selection h2 { font-size:22px; margin-bottom:10px; font-weight:800; }
+    .role-selection > p { color:var(--text-secondary); margin-bottom:28px; font-size:15px; }
+    .role-buttons { display:grid; gap:14px; max-width:440px; margin:0 auto; }
+    .role-btn {
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:20px;
+      padding:22px 24px;
+      cursor:pointer;
+      transition:all 0.35s ease;
+      text-align:left;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      box-shadow:0 2px 10px var(--shadow-soft);
+    }
+    .role-btn:hover {
+      border-color:var(--gold);
+      transform:translateY(-4px) scale(1.02);
+      box-shadow:0 15px 40px var(--shadow-strong);
+    }
+    .role-btn:active { transform:scale(0.98); }
+    .role-icon {
+      width:56px; height:56px;
+      border-radius:16px;
+      background:linear-gradient(135deg,rgba(232,177,62,0.2),rgba(232,177,62,0.05));
+      border:2px solid rgba(232,177,62,0.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      color:var(--gold);
+      flex-shrink:0;
+    }
+    .role-btn-text h3 { font-size:17px; font-weight:700; margin-bottom:4px; }
+    .role-btn-text p { color:var(--text-secondary); font-size:13px; line-height:1.4; }
+    
+    /* Empty state */
+    .empty-state { text-align:center; padding:60px 24px; }
+    .empty-state .icon { font-size:56px; margin-bottom:16px; opacity:0.15; color:var(--gold); }
+    .empty-state h3 { color:var(--text-secondary); margin-bottom:8px; font-size:18px; }
+    .empty-state p { color:var(--text-muted); font-size:14px; }
+    
+    /* Info banner */
+    .info-banner {
+      background:linear-gradient(135deg,rgba(232,177,62,0.1),rgba(232,177,62,0.03));
+      border:2px solid rgba(232,177,62,0.25);
+      border-radius:16px;
+      padding:16px 18px;
+      margin-bottom:16px;
+      font-size:14px;
+      color:var(--text-secondary);
+      line-height:1.7;
+    }
     .info-banner strong { color:var(--gold); }
-    .retry-banner { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:14px; padding:14px 16px; margin-bottom:14px; font-size:13px; color:#f87171; line-height:1.6; }
+    
+    /* Copy button */
+    .copy-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:13px;
+      color:var(--text-muted);
+      cursor:pointer;
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:transparent;
+      margin-top:12px;
+      transition:all 0.2s;
+      font-weight:600;
+    }
+    .copy-btn:hover { color:var(--gold); border-color:var(--gold); background:rgba(232,177,62,0.05); }
+    
+    /* Legal content */
+    .legal-content { line-height:1.9; color:var(--text); font-size:15px; }
+    .legal-content h3 { color:var(--gold); font-size:16px; margin:22px 0 10px; font-weight:700; }
+    .legal-content p { margin-bottom:12px; color:var(--text-secondary); }
+    .legal-content strong { color:var(--text); }
+    
+    /* Test styles */
+    .test-question-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:22px; margin-bottom:16px; }
+    .test-question-num { font-size:12px; color:var(--gold); font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
+    .test-question-text { font-size:16px; font-weight:600; line-height:1.6; margin-bottom:18px; }
+    .test-options { display:flex; flex-direction:column; gap:10px; }
+    .test-option {
+      padding:14px 18px;
+      border:2px solid var(--border);
+      border-radius:14px;
+      cursor:pointer;
+      font-size:14px;
+      transition:all 0.25s;
+      background:var(--surface);
+      text-align:left;
+      color:var(--text);
+    }
+    .test-option:hover { border-color:var(--gold); background:rgba(232,177,62,0.06); }
+    .test-option.correct { border-color:#4ade80; background:rgba(74,222,128,0.12); color:#4ade80; }
+    .test-option.wrong { border-color:#f87171; background:rgba(248,113,113,0.12); color:#f87171; }
+    .test-option.disabled { cursor:not-allowed; opacity:0.6; }
+    .test-explanation {
+      margin-top:16px;
+      padding:14px 18px;
+      background:rgba(232,177,62,0.08);
+      border:1px solid rgba(232,177,62,0.2);
+      border-radius:14px;
+      font-size:14px;
+      line-height:1.7;
+      color:var(--text-secondary);
+      display:none;
+    }
+    .test-explanation.show { display:block; animation:fadeIn 0.3s; }
+    .test-progress { background:var(--surface); border-radius:14px; padding:16px 20px; margin-bottom:16px; border:2px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+    .test-score { font-size:14px; color:var(--text-secondary); }
+    .test-score strong { color:var(--gold); }
+    .test-result { text-align:center; padding:36px 24px; }
+    .test-result-score { font-size:64px; font-weight:800; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:10px; }
+    .test-result-label { font-size:18px; color:var(--text-secondary); margin-bottom:24px; }
+    .subject-chip {
+      display:inline-block;
+      padding:6px 14px;
+      background:rgba(232,177,62,0.1);
+      border:1px solid rgba(232,177,62,0.25);
+      border-radius:20px;
+      font-size:12px;
+      color:var(--gold);
+      margin:4px;
+      cursor:pointer;
+      transition:all 0.2s;
+    }
+    .subject-chip:hover { background:rgba(232,177,62,0.2); }
+    .subject-chip.active { background:rgba(232,177,62,0.3); border-color:var(--gold); }
+    
+    /* Action container */
+    .action-container { max-width:640px; margin:0 auto; }
+    
+    /* Subject icons */
+    .subject-icon { font-size:48px; margin-bottom:16px; display:block; }
+    
+    /* Stats cards */
+    .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+    .stat-card { background:var(--surface); border-radius:16px; padding:16px; text-align:center; border:2px solid var(--border); }
+    .stat-value { font-size:24px; font-weight:800; color:var(--gold); }
+    .stat-label { font-size:11px; color:var(--text-muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }
+    
+    /* Formula highlight box */
+    .formula-highlight {
+      background:linear-gradient(135deg,#1a1a2e,#16213e);
+      color:#f0f0f0;
+      border-radius:16px;
+      padding:20px;
+      margin:16px 0;
+      font-family:'Fira Code',monospace;
+      font-size:14px;
+      overflow-x:auto;
+    }
+    .formula-highlight .MathJax { color:#f5cc6e !important; }
+    
+    /* Tip box */
+    .tip-box {
+      background:linear-gradient(135deg,rgba(74,222,128,0.08),rgba(74,222,128,0.03));
+      border:1px solid rgba(74,222,128,0.25);
+      border-radius:14px;
+      padding:14px 16px;
+      margin:12px 0;
+      font-size:13px;
+      color:var(--text-secondary);
+    }
+    .tip-box strong { color:#4ade80; }
+    .tip-box i { color:#4ade80; margin-right:6px; }
+    
+    /* Warning box */
+    .warning-box {
+      background:rgba(248,113,113,0.08);
+      border:1px solid rgba(248,113,113,0.25);
+      border-radius:14px;
+      padding:14px 16px;
+      margin:12px 0;
+      font-size:13px;
+      color:#f87171;
+    }
+    .warning-box i { margin-right:6px; }
+    
+    /* Confetti container */
+    #confetti-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1000; overflow:hidden; }
+    .confetti { position:absolute; width:10px; height:10px; animation:confetti 3s linear forwards; }
   </style>
 </head>
 <body>
@@ -172,17 +760,17 @@
 <div class="page active" id="roleSelectionPage">
   <div class="role-selection">
     <div class="role-logo">NEVIO</div>
-    <div class="role-sub">Умный помощник в учёбе</div>
-    <h2>Добро пожаловать</h2>
+    <div class="role-sub">Умный помощник в учёбе 🇧🇾</div>
+    <h2>Добро пожаловать!</h2>
     <p>Выберите свою роль для персонализированного опыта</p>
     <div class="role-buttons">
       <div class="role-btn" onclick="selectRole('student')">
         <div class="role-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="role-btn-text"><h3>Ученик</h3><p>Задачи, конспекты, подготовка к ЦТ, ЦЭ и экзаменам</p></div>
+        <div class="role-btn-text"><h3>🎓 Ученик</h3><p>ЦТ/ЦЭ, задачи, конспекты, подготовка к экзаменам</p></div>
       </div>
       <div class="role-btn" onclick="selectRole('teacher')">
         <div class="role-icon"><i class="fas fa-chalkboard-user"></i></div>
-        <div class="role-btn-text"><h3>Учитель</h3><p>Планы уроков, задания, контрольные работы</p></div>
+        <div class="role-btn-text"><h3>👩‍🏫 Учитель</h3><p>Планы уроков, задания, контрольные работы</p></div>
       </div>
     </div>
   </div>
@@ -190,7 +778,7 @@
 
 <!-- ГЛАВНАЯ -->
 <div class="page" id="mainPage">
-  <div class="header"><h1>NEVIO</h1><p>Твой умный помощник в учёбе</p></div>
+  <div class="header"><h1>NEVIO</h1><p>Твой умный помощник в учёбе 🇧🇾</p></div>
   <div id="menuContainer"></div>
 </div>
 
@@ -207,7 +795,7 @@
       <div id="chatMessages" class="chat-messages"></div>
       <div id="continueChatArea" style="display:none;">
         <div class="chat-input-area">
-          <textarea id="continueInput" placeholder="Написать сообщение..." rows="1" onkeydown="handleContinueKey(event)"></textarea>
+          <textarea id="continueInput" placeholder="Напишите сообщение..." rows="1" onkeydown="handleContinueKey(event)"></textarea>
           <button class="send-btn" id="sendContinueBtn" onclick="sendContinue()"><i class="fas fa-paper-plane"></i></button>
         </div>
       </div>
@@ -215,7 +803,7 @@
   </div>
 </div>
 
-<!-- ИНТЕРАКТИВНЫЙ ТЕСТ -->
+<!-- ТЕСТ -->
 <div class="page" id="testPage">
   <div class="action-container">
     <div class="back-btn" onclick="exitTest()"><i class="fas fa-arrow-left"></i><span>Выйти из теста</span></div>
@@ -245,17 +833,17 @@
         <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div><div class="settings-item-text"><h4>Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
+      <div class="settings-item" onclick="showAbout()">
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-info-circle"></i></div><div class="settings-item-text"><h4>О приложении</h4><p>Версия, разработчик</p></div></div>
+        <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+      </div>
       <div class="settings-item" onclick="showPrivacy()">
         <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-item-text"><h4>Политика конфиденциальности</h4><p>Как мы обрабатываем данные</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
-      <div class="settings-item" onclick="showTerms()">
-        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-file-contract"></i></div><div class="settings-item-text"><h4>Условия использования</h4><p>Правила сервиса</p></div></div>
-        <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
-      </div>
       <div class="settings-item" onclick="deleteAccount()">
         <div class="settings-item-left">
-          <div class="settings-item-icon" style="background:rgba(248,113,113,0.08);color:#f87171;border-color:rgba(248,113,113,0.2);"><i class="fas fa-user-slash"></i></div>
+          <div class="settings-item-icon" style="background:rgba(248,113,113,0.1);color:#f87171;border-color:rgba(248,113,113,0.2);"><i class="fas fa-user-slash"></i></div>
           <div class="settings-item-text"><h4 style="color:#f87171;">Удалить аккаунт</h4><p>Удалить все данные и сменить роль</p></div>
         </div>
       </div>
@@ -270,6 +858,28 @@
     <div class="card">
       <div class="card-header"><h2><i class="fas fa-history"></i> История запросов</h2><p class="card-desc">Все ваши предыдущие запросы сохранены здесь</p></div>
       <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- О ПРИЛОЖЕНИИ -->
+<div class="page" id="aboutPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="card" style="text-align:center;">
+      <div style="font-family:'Abril Fatface',cursive; font-size:36px; background:var(--gradient-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px;">NEVIO</div>
+      <p style="color:var(--text-secondary); margin-bottom:20px;">Версия 2.0</p>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value" id="statQueries">0</div><div class="stat-label">Запросов</div></div>
+        <div class="stat-card"><div class="stat-value" id="statTests">0</div><div class="stat-label">Тестов</div></div>
+        <div class="stat-card"><div class="stat-value" id="statDays">0</div><div class="stat-label">Дней</div></div>
+      </div>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">
+        <strong style="color:var(--gold);">NEVIO</strong> — образовательная ИИ-платформа для Беларуси.<br>
+        Использует бесплатные модели OpenRouter с авто-резервированием.<br>
+        Все данные хранятся локально на устройстве.<br><br>
+        Создано с ❤️ для белорусских школьников и учителей 🇧🇾
+      </p>
     </div>
   </div>
 </div>
@@ -289,30 +899,6 @@
         <p>Из Telegram используется только имя и фото профиля для отображения в интерфейсе. Эти данные никуда не передаются.</p>
         <h3>Ваши права</h3>
         <p>Вы можете в любой момент очистить историю или полностью удалить все данные через настройки.</p>
-        <h3>Контакты</h3>
-        <p>По вопросам конфиденциальности обращайтесь через поддержку в Telegram.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- УСЛОВИЯ -->
-<div class="page" id="termsPage">
-  <div class="action-container">
-    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
-    <div class="card">
-      <div class="card-header"><h2><i class="fas fa-file-contract"></i> Условия использования</h2></div>
-      <div class="legal-content">
-        <h3>Принятие условий</h3>
-        <p>Используя NEVIO, вы соглашаетесь с данными условиями.</p>
-        <h3>Ответственность за ответы ИИ</h3>
-        <p>Ответы генерируются искусственным интеллектом и могут содержать неточности. При подготовке к экзаменам проверяйте информацию по официальным источникам.</p>
-        <h3>Правила использования</h3>
-        <p>Запрещается использовать NEVIO для создания вредоносного или незаконного контента, а также для любых действий, нарушающих законодательство.</p>
-        <h3>Изменение условий</h3>
-        <p>Мы оставляем за собой право обновлять условия. Продолжение использования означает согласие с изменениями.</p>
-        <h3>Контакты</h3>
-        <p>По вопросам обращайтесь через поддержку в Telegram.</p>
       </div>
     </div>
   </div>
@@ -326,404 +912,166 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="confetti-container"></div>
 
 <script>
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
-/**
- * ==========================================================
- * НАСТРОЙКИ ПОДКЛЮЧЕНИЯ К ИИ (OPENROUTER AI)
- * ==========================================================
- *
- * Приложение работает полностью автономно прямо в браузере / Telegram Mini App
- * (0 серверов, 0 бэкенда, 0 зависимостей — можно открыть любой статический хостинг).
- *
- * Для работы используются бесплатные модели OpenRouter с авто-резервированием:
- * если одна модель временно занята или недоступна (404/429), приложение мгновенно
- * переключается на следующую бесплатную модель из списка.
- */
+// API КЛЮЧ И МОДЕЛИ (бесплатные)
 const OPENROUTER_API_KEY = "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";
-// Бесплатные модели с резервом: если одна недоступна, пробуем следующую
 const OPENROUTER_MODELS = [
-  "openrouter/free",
+  "openrouter/auto",
   "meta-llama/llama-3.3-70b-instruct:free",
-  "openai/gpt-oss-120b:free",
-  "nvidia/nemotron-3-ultra-550b-a55b:free",
-  "qwen/qwen3-next-80b-a3b-instruct:free"
+  "qwen/qwen3-30b-a3b:free",
+  "nvidia/nemotron-4-340b-instruct:free",
+  "deepseek/deepseek-prover-v2:free"
 ];
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-const REQUEST_TIMEOUT_MS = 30000;
+const REQUEST_TIMEOUT_MS = 45000;
 const MAX_RETRIES = 2;
 
-let state = { role:null, telegramUser:null, history:[], conversationHistory:[], currentActionId:null, isLoading:false };
-
-// ================================================================
-// БАЗА ЗНАНИЙ ЦТ/ЦЭ БЕЛАРУСИ — ВСТРОЕННАЯ В ИИ
-// ================================================================
-const CT_KNOWLEDGE_BASE = {
-  structure: `
-СТРУКТУРА ЦТ В БЕЛАРУСИ (актуально на 2024-2025 год):
-- Математика: 30 заданий (20 закрытых А-Д + 10 открытых), 180 минут
-- Физика: 40 заданий, 180 минут  
-- Химия: 40 заданий, 180 минут
-- Биология: 40 заданий, 180 минут
-- История Беларуси: 50 заданий, 120 минут
-- Обществоведение: 50 заданий, 120 минут
-- Русский язык: 50 заданий, 120 минут
-- Белорусский язык: 50 заданий, 120 минут
-- Английский язык: 60 заданий, 120 минут, Немецкий/Французский: 60 заданий
-- Информатика: 30 заданий, 120 минут
-- География: 50 заданий, 120 минут
-- Всемирная история: 50 заданий, 120 минут
-ШКАЛА: 100 баллов. Результаты действительны 2 года. Проводит РИКЗ.
-`,
-  ce_structure: `
-ЦЭ (Централизованный экзамен) — с 2023 года:
-- Для 11-классников, совмещает выпускной и вступительный экзамен
-- Русский или белорусский язык — обязательно для всех
-- Дополнительно 1-2 предмета по выбору
-- По языкам: тест + изложение (русский/белорусский) или письмо/эссе (иностранный)
-- Результат = оценка в аттестат + балл для поступления
-`,
-  math: `
-МАТЕМАТИКА ЦТ — КЛЮЧЕВЫЕ ТЕМЫ И ФОРМУЛЫ:
-
-АЛГЕБРА:
-- Квадратные уравнения: D = b²-4ac, x = (-b±√D)/(2a)
-- Теорема Виета: x₁+x₂ = -b/a, x₁·x₂ = c/a
-- Степени: aⁿ·aᵐ = aⁿ⁺ᵐ, aⁿ/aᵐ = aⁿ⁻ᵐ, (aⁿ)ᵐ = aⁿᵐ, a⁰=1, a⁻ⁿ=1/aⁿ
-- Логарифмы: log_a(xy)=log_a(x)+log_a(y), log_a(x/y)=log_a(x)-log_a(y), log_a(xⁿ)=n·log_a(x)
-  log_a(b)=log_c(b)/log_c(a), ln=log_e, lg=log₁₀
-- Прогрессии: арифм. Sn=n(a₁+aₙ)/2, aₙ=a₁+(n-1)d; геом. Sn=a₁(qⁿ-1)/(q-1), bₙ=b₁·qⁿ⁻¹
-- Неравенства: при умножении на отрицательное — знак меняется
-
-ТРИГОНОМЕТРИЯ:
-- sin²x+cos²x=1, tg x=sin x/cos x, ctg x=cos x/sin x
-- sin 2x=2sin x·cos x, cos 2x=cos²x-sin²x=1-2sin²x=2cos²x-1
-- sin(a±b)=sin a·cos b±cos a·sin b, cos(a±b)=cos a·cos b∓sin a·sin b
-- Значения: sin 0°=0, sin 30°=1/2, sin 45°=√2/2, sin 60°=√3/2, sin 90°=1
-- ОДЗ: tg x≠π/2+πn, ctg x≠πn, arcsin/arccos: x∈[-1;1]
-
-ПРОИЗВОДНАЯ:
-- (C)'=0, (xⁿ)'=nxⁿ⁻¹, (sin x)'=cos x, (cos x)'=-sin x
-- (eˣ)'=eˣ, (ln x)'=1/x, (tg x)'=1/cos²x
-- (uv)'=u'v+uv', (u/v)'=(u'v-uv')/v², (f(g(x)))'=f'(g(x))·g'(x)
-- Монотонность: f'(x)>0 — возрастает, f'(x)<0 — убывает
-- Экстремум: f'(x₀)=0 → проверить знак производной
-
-ГЕОМЕТРИЯ:
-- Площади: треугольник S=ah/2=ab·sinC/2, круг S=πr², трапеция S=(a+b)h/2
-- Теорема Пифагора: c²=a²+b²
-- Теорема косинусов: c²=a²+b²-2ab·cosC
-- Теорема синусов: a/sinA=b/sinB=c/sinC=2R
-- Объёмы: куб V=a³, параллелепипед V=abc, цилиндр V=πr²h, конус V=πr²h/3, шар V=4πr³/3
-
-ТИПИЧНЫЕ ОШИБКИ на ЦТ по математике:
-1. Забыть проверить ОДЗ (логарифмы, дроби, корни)
-2. Потерять корни при возведении в степень
-3. Ошибка знака при раскрытии скобок
-4. Неправильные единицы в геометрии (см² vs м²)
-5. Не проверить ответ подстановкой
-`,
-  physics: `
-ФИЗИКА ЦТ — КЛЮЧЕВЫЕ ФОРМУЛЫ:
-
-МЕХАНИКА:
-- v=v₀+at, s=v₀t+at²/2, v²=v₀²+2as
-- F=ma (2й закон Ньютона), Fтр=μN, Fупр=-kx (закон Гука)
-- Импульс: p=mv, F·Δt=Δp
-- Энергия: Eк=mv²/2, Eп=mgh, A=ΔEк=F·s·cos α
-- Мощность: P=A/t=Fv, КПД η=Aпол/Aзатр
-
-МОЛЕКУЛЯРНАЯ ФИЗИКА:
-- Давление газа: p=nkT=νRT/V (уравнение состояния)
-- Законы: изотерм. p₁V₁=p₂V₂, изохорн. p₁/T₁=p₂/T₂, изобарн. V₁/T₁=V₂/T₂
-- Внутренняя энергия: ΔU=Q-A (1й закон термодинамики)
-- КПД теплового двигателя: η=(T₁-T₂)/T₁
-
-ЭЛЕКТРИЧЕСТВО:
-- Закон Ома: I=U/R (для участка), I=ε/(R+r) (для цепи)
-- Сопротивление: R=ρl/S; последовательно R=R₁+R₂; параллельно 1/R=1/R₁+1/R₂
-- Мощность: P=UI=I²R=U²/R, A=Pt=UIt
-- Конденсатор: C=q/U, W=CU²/2=q²/(2C)
-- Магнитная сила: F=qvB·sinα, F=BIl·sinα
-
-ОПТИКА:
-- Закон преломления: n₁sinα=n₂sinβ, n=c/v
-- Формула линзы: 1/f=1/d+1/f', Γ=f'/d (увеличение)
-- Длина волны: λ=c/ν=vT
-`,
-  chemistry: `
-ХИМИЯ ЦТ — КЛЮЧЕВЫЕ ТЕМЫ:
-
-СТРОЕНИЕ АТОМА:
-- Протоны=Z (заряд ядра), нейтроны=A-Z, электроны=Z (нейтральный атом)
-- Периоды=число электронных оболочек, группы=число внешних электронов (для А-групп)
-- Электроотрицательность растёт → в периоде (слева направо), в группе (снизу вверх)
-
-ХИМИЧЕСКАЯ СВЯЗЬ:
-- Ковалентная: общие электронные пары (H₂, HCl, H₂O)
-- Ионная: полная отдача/принятие e⁻ (NaCl, KOH)
-- Металлическая: в металлах; Водородная: N-H, O-H, F-H
-
-РЕАКЦИИ:
-- Степени окисления: сумма=0 для нейтральной молекулы
-- ОВР: окислитель принимает e⁻ (восстанавливается), восстановитель отдаёт e⁻ (окисляется)
-- Гидролиз: соль сильной к-ты + слабого основания → кислая среда
-  соль слабой к-ты + сильного основания → щелочная среда
-
-ОРГАНИЧЕСКАЯ ХИМИЯ:
-- Алканы CₙH₂ₙ₊₂: метан CH₄, этан C₂H₆, пропан C₃H₈ — реакции замещения
-- Алкены CₙH₂ₙ: двойная связь, реакции присоединения, правило Марковникова
-- Алкины CₙH₂ₙ₋₂: тройная связь; Арены: бензол C₆H₆
-- Спирты R-OH: горение, дегидратация, с Na; Карбоновые кислоты, сложные эфиры
-- Белки: пептидная связь -CO-NH-; ДНК/РНК: нуклеотиды
-
-РАСЧЁТЫ:
-- Молярная масса M (г/моль), количество вещества ν=m/M=V/22,4(н.у.)
-- Массовая доля: ω=m(вещ)/m(смеси)×100%
-- По уравнению: пропорция по коэффициентам
-`,
-  biology: `
-БИОЛОГИЯ ЦТ — КЛЮЧЕВЫЕ ТЕМЫ:
-
-КЛЕТКА:
-- Прокариоты (бактерии): нет ядра, нет мембранных органоидов
-- Эукариоты: ядро, митохондрии, ЭПС, аппарат Гольджи, лизосомы, рибосомы
-- Хлоропласты: фотосинтез. Митохондрии: дыхание (АТФ)
-- Клеточная стенка: у растений (целлюлоза), грибов (хитин), бактерий (муреин)
-
-ОБМЕН ВЕЩЕСТВ:
-- Фотосинтез: 6CO₂+6H₂O → C₆H₁₂O₆+6O₂ (световая фаза в тилакоидах, тёмная в строме)
-- Дыхание: C₆H₁₂O₆+6O₂ → 6CO₂+6H₂O+38АТФ
-- Биосинтез белка: транскрипция (ДНК→иРНК в ядре) → трансляция (иРНК→белок на рибосоме)
-- Генетический код: триплет ДНК → кодон иРНК → антикодон тРНК → аминокислота
-
-ГЕНЕТИКА (ЗАДАЧИ):
-- Аутосомное наследование: А>a (А-доминантный), 9:3:3:1 при дигибридном
-- Сцепленное с полом: X-хромосома (гемофилия, дальтонизм — чаще у мальчиков XY)
-- Законы Менделя: расщепление 3:1 (моногибридное), независимое наследование
-- Группы крови: 0(I)-ii, A(II)-IAi или IAIA, B(III)-IBi или IBIB, AB(IV)-IAIB
-
-ЭВОЛЮЦИЯ:
-- Движущие силы по Дарвину: наследственная изменчивость + борьба за существование + естественный отбор
-- Виды: биологический вид = совокупность особей схожих по морфологии, физиологии, репродуктивно изолированных
-
-АНАТОМИЯ ЧЕЛОВЕКА:
-- Кровь: эритроциты (гемоглобин, O₂), лейкоциты (иммунитет), тромбоциты (свёртывание)
-- Нервная система: ЦНС (мозг+спинной) + ПНС; рефлекторная дуга: рецептор→афферент→центр→эфферент→орган
-- Пищеварение: рот(амилаза)→желудок(пепсин,HCl)→12-перстная(поджелуд.+желчь)→тонкий кишечник(всасывание)
-`,
-  history_by: `
-ИСТОРИЯ БЕЛАРУСИ ЦТ — ВАЖНЕЙШИЕ ДАТЫ И СОБЫТИЯ:
-
-ДРЕВНОСТЬ И СРЕДНЕВЕКОВЬЕ:
-- 862 — первое упоминание Полоцка в летописях
-- 980 — Рогволод, первый известный полоцкий князь
-- 992 — образование Полоцкой епархии
-- 1067 — Битва на реке Немиге
-- XI-XII вв. — Евфросиния Полоцкая, Кирилл Туровский, Климент Смолятич
-- 1240-е — включение белорусских земель в ВКЛ
-
-ВЕЛИКОЕ КНЯЖЕСТВО ЛИТОВСКОЕ:
-- 1385 — Кревская уния ВКЛ с Польшей
-- 1410 — Грюнвальдская битва (победа над Тевтонским орденом)
-- 1468 — Судебник Казимира (первый кодекс законов)
-- 1517 — Франциск Скорина издаёт первую белорусскую книгу (Прага)
-- 1529, 1566, 1588 — Статуты ВКЛ (1588 — на белорусском языке!)
-- 1569 — Люблинская уния → Речь Посполитая
-
-РЕЧЬ ПОСПОЛИТАЯ:
-- 1569-1795 — период Речи Посполитой
-- 1596 — Брестская церковная уния (создание греко-католической церкви)
-- 1648-1651 — война с казаками Хмельницкого
-- 1700-1721 — Северная война, разорение Беларуси
-
-РОССИЙСКАЯ ИМПЕРИЯ:
-- 1772, 1793, 1795 — разделы Речи Посполитой, вхождение в Россию
-- 1812 — война с Наполеоном, Бородино рядом — бои на территории Беларуси
-- 1863-1864 — восстание Кастуся Калиновского (против российского владычества)
-- 1861 — отмена крепостного права в России (затронуло Беларусь)
-
-XX ВЕК:
-- 25 марта 1918 — провозглашение БНР (Белорусской Народной Республики)
-- 1 января 1919 — провозглашение ССРБ
-- 1919-1920 — советско-польская война
-- 1921 — Рижский мирный договор (западная Беларусь → Польша)
-- 30 декабря 1922 — БССР входит в состав СССР
-- 17 сентября 1939 — воссоединение западной Беларуси с БССР
-- 22 июня 1941 — начало ВОВ, оккупация Беларуси за 2 месяца
-- Партизанское движение: более 370 000 партизан
-- 3 июля 1944 — освобождение Минска (операция «Багратион»)
-- 1945 — БССР стала одним из основателей ООН (как отдельный член!)
-- 27 июля 1990 — Декларация о суверенитете БССР
-- 25 августа 1991 — провозглашение независимости Республики Беларусь
-- 8 декабря 1991 — Беловежские соглашения, распад СССР
-- 15 марта 1994 — Конституция Республики Беларусь
-- 1994 — первые президентские выборы (Лукашенко)
-
-КУЛЬТУРА:
-- Франциск Скорина — первопечатник, просветитель
-- Симон Будный — реформатор, основал типографию в Несвиже
-- Николай Гусовский — «Песнь о зубре»
-- Янка Купала, Якуб Колас — классики белорусской литературы
-`,
-  social: `
-ОБЩЕСТВОВЕДЕНИЕ ЦТ — КЛЮЧЕВЫЕ ТЕМЫ:
-
-КОНСТИТУЦИЯ РБ (1994, изменения 1996, 2004, 2022):
-- Статья 1: РБ — унитарное демократическое социальное правовое государство
-- Статья 2: Человек, его права — высшая ценность государства
-- Статья 3: Единственный источник власти — народ
-- Статья 6: Разделение властей (законодательная, исполнительная, судебная)
-- Статья 15: Государство ответственно за сохранение культуры
-- Возраст: Президент с 40 лет, депутат с 21 года, член Совета Республики с 30 лет
-- Президент избирается на 5 лет
-
-ВЕТВИ ВЛАСТИ РБ:
-- Законодательная: Национальное собрание (Палата представителей 110 чел. + Совет Республики 64 чел.)
-- Исполнительная: Президент + Правительство (Совет Министров)
-- Судебная: Конституционный суд, Верховный суд
-
-ЭКОНОМИКА:
-- ВВП, ВНП, инфляция, безработица
-- Рыночная экономика: спрос и предложение, конкуренция
-- Налоги: прямые (подоходный, на прибыль) и косвенные (НДС, акцизы)
-- Типы безработицы: фрикционная, структурная, циклическая
-
-ПРАВО:
-- Отрасли: конституционное, административное, гражданское, уголовное, трудовое, семейное
-- Уголовная ответственность в РБ с 16 лет (за тяжкие преступления — с 14)
-- Гражданская дееспособность: полная с 18 лет, частичная с 14-18 лет
-`,
-  russian_lang: `
-РУССКИЙ ЯЗЫК ЦТ/ЦЭ — КЛЮЧЕВЫЕ ПРАВИЛА:
-
-ОРФОГРАФИЯ:
-НЕ с разными частями речи:
-- Существительные/прилагательные/наречия: слитно (без НЕ не употр., замена синонимом), раздельно (противопоставление с А, слова: далеко не, вовсе не, отнюдь не, ничуть не)
-- Глаголы/деепричастия: раздельно (кроме слов без НЕ: ненавидеть, недоумевать, нездоровиться)
-- Причастия: слитно (нет зависимых слов, нет противопоставления), раздельно (есть зависимые слова или А)
-
--Н- и -НН-:
-- Прилагательные от сущ.: -АН-, -ЯН-, -ИН- → -Н- (кожАНый, серебрЯНый), искл: стеклянный, оловянный, деревянный
-- -ОНН-, -ЕНН- → -НН- (революциОННый, торжествЕННый), искл: ветреный
-- Краткие прилаг.: сколько в полном → столько в кратком (длинный→длинна)
-- Причастия полные: -НН- если есть суффикс -ОВА-, -ЕВА-, зависимое слово, приставка (кроме НЕ-)
-- Краткие причастия: всегда -Н- (прочитаНа, написаНо)
-
-ПУНКТУАЦИЯ:
-- Однородные члены с союзами: [О, и О] — нет зпт; [О, а О], [О, но О] — зпт; [и О, и О, и О] — нет зпт перед первым И
-- Причастный оборот: выделяется зпт если ПОСЛЕ определяемого слова [сущ., ПО,]
-- Деепричастный оборот: ВСЕГДА выделяется зпт [ДО,] или [, ДО,]
-- Вводные слова (однако, кстати, во-первых, итак, следовательно): зпт с двух сторон
-- Придаточные предложения: отделяются зпт
-- Сложносочинённые: зпт перед И, А, НО, ИЛИ (между простыми предложениями)
-
-МОРФОЛОГИЯ:
-- Причастие: отвечает на какой? какая?, имеет признаки глагола и прилагательного
-- Деепричастие: отвечает на как? каким образом?, неизменяемо, доп.действие
-- Наречие: неизменяемо, отвечает на как? где? когда? почему?
-`,
-  belarusian_lang: `
-БЕЛАРУСКАЯ МОВА ЦТ/ЦЭ — КЛЮЧАВЫЯ ПРАВІЛЫ:
-
-АРФАГРАФІЯ:
-- Аканне: ненаціскное О → А (вадА, трАвА, малАко)
-- Яканне: ненаціскное Е → Я пасля мяккіх (зямлЯ, сяло, вясна)
-- Дзеканне: Д→ДЗ перад Е,Ё,І,Ю,Я (дзень, дзіця, дзесяць)
-- Цеканне: Т→Ц перад Е,Ё,І,Ю,Я (ціхі, цень, цётка)
-- Пісьмо У і Ў: У — пасля паўзы або зычнага (У лесе), Ў — пасля галоснага (у лесе→ўлесе → НЕ, але: дарогаЎ лесе)
-- Падоўжаныя зычныя: жыццё, калоссе, галлё, суддзя
-- Апостраф замест Ъ: аб'ява, з'езд, сям'я
-
-МАРФАЛОГІЯ:
-- Назоўнікі: 1скл.(жан./-а,-я), 2скл.(муж./нулявое), 3скл.(жан./нулявое)
-- Прыметнікі: цвёрды(сіні), мяккі(-скі,-цкі,-зкі)
-- Дзеяслоў: 1спраж.(е/у/юць), 2спраж.(і/ыш/яць)
-
-СІНТАКСІС І ПУНКТУАЦЫЯ:
-- Аналагічна рускай мове з беларускай спецыфікай
-- Звароткі, уводныя словы выдзяляюцца коскамі
-`,
-  english: `
-ENGLISH ЦТ/ЦЭ — KEY GRAMMAR:
-
-TENSES:
-- Present Simple: V/Vs — facts, habits (He reads every day)
-- Present Continuous: am/is/are+Ving — now, temporary (I am reading now)
-- Present Perfect: have/has+V3 — experience, result (I have read this book)
-- Past Simple: V2/ed — completed past action (She read yesterday)
-- Past Continuous: was/were+Ving — action in progress in past
-- Future Simple: will+V — predictions, decisions
-- Conditionals: Type 0(if+V,V), Type 1(if+V,will+V), Type 2(if+V2,would+V), Type 3(if+had+V3,would+have+V3)
-
-GRAMMAR:
-- Articles: a/an (first mention, countable), the (specific, known), no article (uncountable/plural in general)
-- Modal verbs: can(ability), must(obligation), should(advice), may(permission), might(possibility)
-- Passive: am/is/are+V3(present), was/were+V3(past), will be+V3(future)
-- Relative clauses: who(people), which(things), that(people/things), whose(possession)
-- Reported speech: say→said, will→would, can→could, am→was, go→went
-
-PREPOSITIONS:
-- Time: at(time/night), on(day/date), in(month/year/season)
-- Place: at(point), on(surface), in(enclosed space)
-`,
-  popular_unis: `
-ПОПУЛЯРНЫЕ СПЕЦИАЛЬНОСТИ И НУЖНЫЕ ПРЕДМЕТЫ ЦТ:
-
-МЕДИЦИНА:
-- БГМУ (мед.университет): биология + химия + русский/белорусский
-- Проходной балл: 350-380+ (из 400)
-
-IT И ТЕХНИКА:
-- БГУИР: математика + физика + русский/белорусский
-- БНТУ: математика + физика или химия
-- Проходной: 250-320+
-
-ПРАВО И СОЦИАЛЬНЫЕ НАУКИ:
-- БГУ (юрфак): история Беларуси + обществоведение + русский/белорусский
-- Проходной: 320-360+
-
-ЭКОНОМИКА:
-- БГЭУ: математика + история Беларуси/обществоведение + русский/белорусский
-
-ИНОСТРАННЫЕ ЯЗЫКИ:
-- МГЛУ: иностранный язык + русский/белорусский + история Беларуси/обществоведение
-- Проходной: 340-380+
-
-ПЕДАГОГИКА:
-- БГПУ: профильный предмет + русский/белорусский + история Беларуси
-`
+let state = {
+  role: null,
+  telegramUser: null,
+  history: [],
+  conversationHistory: [],
+  currentActionId: null,
+  isLoading: false,
+  stats: { queries: 0, tests: 0, firstUse: null }
 };
 
-// ================================================================
-// МЕНЮ КОНФИГУРАЦИЯ
-// ================================================================
+// БАЗА ЗНАНИЙ ЦТ/ЦЭ
+const CT_KNOWLEDGE_BASE = {
+  structure: `СТРУКТУРА ЦТ В БЕЛАРУСИ:
+• Математика: 30 заданий, 180 минут
+• Физика: 40 заданий, 180 минут  
+• Химия: 40 заданий, 180 минут
+• Биология: 40 заданий, 180 минут
+• История Беларуси: 50 заданий, 120 минут
+• Обществоведение: 50 заданий, 120 минут
+• Русский/Белорусский язык: 50 заданий, 120 минут
+• Английский язык: 60 заданий, 120 минут
+• Информатика: 30 заданий, 120 минут
+ШКАЛА: 100 баллов. Результаты действительны 2 года.`,
+
+  ce_structure: `ЦЭ (Централизованный экзамен):
+• Для 11-классников, совмещает выпускной и вступительный
+• Русский/белорусский язык — обязательно
+• Дополнительно 1-2 предмета по выбору
+• Результат = оценка в аттестат + балл для поступления`,
+
+  math: `МАТЕМАТИКА ЦТ — ФОРМУЛЫ:
+
+АЛГЕБРА:
+• Квадратные уравнения: $D = b^2 - 4ac$, $x = \\frac{-b \\pm \\sqrt{D}}{2a}$
+• Теорема Виета: $x_1 + x_2 = -\\frac{b}{a}$, $x_1 \\cdot x_2 = \\frac{c}{a}$
+• Степени: $a^n \\cdot a^m = a^{n+m}$, $\\frac{a^n}{a^m} = a^{n-m}$, $a^0 = 1$, $a^{-n} = \\frac{1}{a^n}$
+• Логарифмы: $\\log_a(xy) = \\log_a x + \\log_a y$, $\\log_a\\frac{x}{y} = \\log_a x - \\log_a y$, $\\log_a x^n = n\\log_a x$, $\\log_a b = \\frac{\\log_c b}{\\log_c a}$
+
+ТРИГОНОМЕТРИЯ:
+• $\\sin^2 x + \\cos^2 x = 1$, $\\tan x = \\frac{\\sin x}{\\cos x}$, $\\cot x = \\frac{\\cos x}{\\sin x}$
+• $\\sin 2x = 2\\sin x \\cos x$, $\\cos 2x = \\cos^2 x - \\sin^2 x$
+• $\\sin(a \\pm b) = \\sin a \\cos b \\pm \\cos a \\sin b$
+• $\\cos(a \\pm b) = \\cos a \\cos b \\mp \\sin a \\sin b$
+• Значения: $\\sin 30° = \\frac{1}{2}$, $\\sin 45° = \\frac{\\sqrt{2}}{2}$, $\\sin 60° = \\frac{\\sqrt{3}}{2}$
+
+ПРОИЗВОДНАЯ:
+• $(x^n)' = nx^{n-1}$, $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$
+• $(e^x)' = e^x$, $(\\ln x)' = \\frac{1}{x}$, $(\\tan x)' = \\frac{1}{\\cos^2 x}$
+
+ГЕОМЕТРИЯ:
+• Теорема Пифагора: $c^2 = a^2 + b^2$
+• Теорема косинусов: $c^2 = a^2 + b^2 - 2ab\\cos C$
+• Площадь треугольника: $S = \\frac{1}{2}ab\\sin C$
+• Площадь круга: $S = \\pi r^2$`,
+
+  physics: `ФИЗИКА ЦТ — ФОРМУЛЫ:
+
+МЕХАНИКА:
+• $v = v_0 + at$, $s = v_0 t + \\frac{at^2}{2}$, $v^2 = v_0^2 + 2as$
+• $F = ma$, Закон Гука: $F = -kx$
+• Импульс: $p = mv$
+• Кинетическая энергия: $E_k = \\frac{mv^2}{2}$, Потенциальная: $E_p = mgh$
+• Мощность: $P = \\frac{A}{t} = Fv$, КПД: $\\eta = \\frac{A_{пол}}{A_{затр}}$
+
+МОЛЕКУЛЯРНАЯ ФИЗИКА:
+• Уравнение состояния: $pV = \\nu RT$
+• 1-й закон термодинамики: $\\Delta U = Q - A$
+• КПД теплового двигателя: $\\eta = \\frac{T_1 - T_2}{T_1}$
+
+ЭЛЕКТРИЧЕСТВО:
+• Закон Ома: $I = \\frac{U}{R}$
+• $R = \\rho \\frac{l}{S}$; последовательно: $R = R_1 + R_2$; параллельно: $\\frac{1}{R} = \\frac{1}{R_1} + \\frac{1}{R_2}$
+• Мощность: $P = UI = I^2R = \\frac{U^2}{R}$`,
+
+  chemistry: `ХИМИЯ ЦТ — КЛЮЧЕВОЕ:
+
+СТРОЕНИЕ АТОМА:
+• Протоны = Z, нейтроны = A - Z, электроны = Z (нейтральный атом)
+• Периоды = число оболочек, группы = число валентных электронов
+
+РЕАКЦИИ:
+• Степени окисления: сумма = 0 для нейтральной молекулы
+• ОВР: окислитель восстанавливается, восстановитель окисляется
+• Гидролиз: соль слабой кислоты + сильного основания → щелочная среда
+
+ОРГАНИЧЕСКАЯ ХИМИЯ:
+• Алканы $C_nH_{2n+2}$ — реакции замещения
+• Алкены $C_nH_{2n}$ — реакции присоединения
+• Спирты: $R-OH$; Карбоновые кислоты: $R-COOH$
+
+РАСЧЁТЫ:
+• $\\nu = \\frac{m}{M}$, $\\nu = \\frac{V}{22.4}$ (н.у.)`,
+
+  history_by: `ИСТОРИЯ БЕЛАРУСИ — ВАЖНЫЕ ДАТЫ:
+
+ДРЕВНОСТЬ:
+• 862 — первое упоминание Полоцка
+• 980 — Рогволод, первый князь Полоцкий
+• 1067 — Битва на реке Немиге
+
+ВКЛ:
+• 1385 — Кревская уния
+• 1410 — Грюнвальдская битва
+• 1517 — Франциск Скорина издаёт первую белорусскую книгу
+• 1588 — Статут ВКЛ на белорусском языке
+• 1569 — Люблинская уния
+
+РЕЧЬ ПОСПОЛИТАЯ:
+• 1596 — Брестская церковная уния
+• 1772, 1793, 1795 — разделы Речи Посполитой
+
+XX ВЕК:
+• 25 марта 1918 — провозглашение БНР
+• 1 января 1919 — провозглашение ССРБ
+• 3 июля 1944 — освобождение Минска
+• 25 августа 1991 — независимость Беларуси
+• 1994 — принятие Конституции`
+};
+
+// КОНФИГУРАЦИЯ МЕНЮ
 const menuConfigs = {
   student: {
     sections: [
       {
-        label: 'Подготовка к экзаменам',
+        label: '🎯 ЦТ / ЦЭ — Главное',
         items: [
-          { id:'ct_prep', icon:'fas fa-trophy', title:'Подготовка к ЦТ / ЦЭ', description:'После 11 класса — все предметы', badge:'11 кл', highlight:true },
-          { id:'exam9_prep', icon:'fas fa-star', title:'Экзамены после 9 класса', description:'Математика, языки, история', badge:'9 кл', highlight:true },
-          { id:'ct_test', icon:'fas fa-check-circle', title:'Интерактивный тест ЦТ', description:'Вопросы в формате ЦТ с ответами', badge:'НОВОЕ', highlight:true },
+          { id: 'ct_prep', icon: 'fas fa-trophy', title: 'Подготовка к ЦТ / ЦЭ', description: 'Все предметы, стратегия сдачи', badge: '11 КЛАСС', highlight: true },
+          { id: 'ct_test', icon: 'fas fa-check-circle', title: 'Интерактивный тест', description: 'Генерация тестов с ответами', badge: 'NEW', highlight: true },
+          { id: 'formula_book', icon: 'fas fa-square-root-alt', title: 'Книга формул', description: 'Все формулы с объяснениями', badge: 'БЕСПЛАТНО', highlight: true },
         ]
       },
       {
-        label: 'Учёба',
+        label: '📚 Учёба',
         items: [
-          { id:'solve', icon:'fas fa-calculator', title:'Решить задачу', description:'С полным объяснением шагов' },
-          { id:'explain', icon:'fas fa-lightbulb', title:'Объяснить тему', description:'Простыми словами с примерами' },
-          { id:'summary', icon:'fas fa-book', title:'Написать конспект', description:'Структурированный конспект' },
-          { id:'schema', icon:'fas fa-diagram-project', title:'Сделать схему', description:'Визуальная шпаргалка' },
-          { id:'oral_exam', icon:'fas fa-microphone-alt', title:'Устный экзамен', description:'Потренируйся отвечать устно' },
-          { id:'lit_analysis', icon:'fas fa-book-open', title:'Анализ произведения', description:'Герои, темы, идеи' },
-          { id:'essay', icon:'fas fa-pen-fancy', title:'Помощь с сочинением', description:'Написать, план, аргументы' },
-          { id:'chat', icon:'fas fa-comments', title:'Свободный чат', description:'Спроси что угодно' },
+          { id: 'solve', icon: 'fas fa-calculator', title: 'Решить задачу', description: 'С полным объяснением' },
+          { id: 'explain', icon: 'fas fa-lightbulb', title: 'Объяснить тему', description: 'Простыми словами' },
+          { id: 'summary', icon: 'fas fa-book', title: 'Конспект', description: 'Структурированный' },
+          { id: 'schema', icon: 'fas fa-project-diagram', title: 'Схема / Шпаргалка', description: 'Визуальная' },
+          { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Анализ произведения', description: 'Герои, темы, идеи' },
+          { id: 'chat', icon: 'fas fa-comments', title: 'Свободный чат', description: 'Спроси что угодно' },
         ]
       }
     ]
@@ -731,97 +1079,69 @@ const menuConfigs = {
   teacher: {
     sections: [
       {
-        label: 'Планирование уроков',
+        label: '📋 Планирование',
         items: [
-          { id:'lesson', icon:'fas fa-chalkboard-user', title:'План урока', description:'Полный план за 30 секунд' },
-          { id:'tasks', icon:'fas fa-tasks', title:'Генератор заданий', description:'Уникальные задачи по теме' },
-          { id:'variants', icon:'fas fa-copy', title:'Варианты контрольной', description:'A/B варианты с ответами' },
-          { id:'differentiation', icon:'fas fa-layer-group', title:'Дифференциация', description:'Задания для разных уровней' },
+          { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'План урока', description: 'Полный план за секунды' },
+          { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи' },
+          { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'A/B варианты' },
+          { id: 'generate_quiz', icon: 'fas fa-question-circle', title: 'Создать тест', description: 'По тексту или теме' },
         ]
       },
       {
-        label: 'Учебные материалы',
+        label: '📖 Материалы',
         items: [
-          { id:'explain', icon:'fas fa-lightbulb', title:'Методика объяснения', description:'Как объяснить тему классу' },
-          { id:'schema', icon:'fas fa-diagram-project', title:'Схема для класса', description:'Визуальный материал' },
-          { id:'summary', icon:'fas fa-book', title:'Конспект урока', description:'Структура материала' },
-          { id:'lit_lesson', icon:'fas fa-chalkboard', title:'Урок литературы', description:'Методика разбора произведения' },
-          { id:'generate_quiz', icon:'fas fa-question-circle', title:'Создать тест', description:'Для проверки знаний' },
-          { id:'chat', icon:'fas fa-comments', title:'Педагогическая консультация', description:'Совет от ИИ' },
-        ]
-      }
-    ]
-  },
-  kindergarten: {
-    sections: [
-      {
-        label: 'Занятия и планирование',
-        items: [
-          { id:'lesson_plan', icon:'fas fa-child', title:'Конспект занятия', description:'Для любой возрастной группы' },
-          { id:'planning', icon:'fas fa-calendar-alt', title:'Планирование', description:'Перспективное и календарное' },
-          { id:'games', icon:'fas fa-puzzle-piece', title:'Игры и развитие', description:'Развивающие игры по возрасту' },
-          { id:'holiday', icon:'fas fa-birthday-cake', title:'Сценарии праздников', description:'Утренники и мероприятия' },
-        ]
-      },
-      {
-        label: 'Работа с детьми и родителями',
-        items: [
-          { id:'parent_advice', icon:'fas fa-heart', title:'Консультация для родителей', description:'Кризисы, развитие, поведение' },
-          { id:'observation', icon:'fas fa-eye', title:'Наблюдение за ребёнком', description:'Анализ развития и поведения' },
-          { id:'chat', icon:'fas fa-comments', title:'Свободный вопрос', description:'Спросить совет у ИИ' },
+          { id: 'explain', icon: 'fas fa-lightbulb', title: 'Методика объяснения', description: 'Как объяснить тему' },
+          { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' },
+          { id: 'differentiation', icon: 'fas fa-layer-group', title: 'Дифференциация', description: 'Разные уровни' },
+          { id: 'chat', icon: 'fas fa-comments', title: 'Консультация', description: 'Совет от ИИ' },
         ]
       }
     ]
   }
 };
 
-// ================================================================
 // СИСТЕМНЫЕ ПРОМПТЫ
-// ================================================================
 const systemPrompts = {
-  student: `Ты — NEVIO, лучший образовательный ИИ-ассистент для учеников и абитуриентов Беларуси.
+  student: `Ты — NEVIO, лучший ИИ-репетитор для белорусских школьников и абитуриентов.
 
-СПЕЦИАЛИЗАЦИЯ: Ты эксперт по белорусской системе образования, ЦТ (Централизованное тестирование) и ЦЭ (Централизованный экзамен). Ты знаешь:
-- Точный формат и структуру ЦТ/ЦЭ по всем предметам
-- Программу РИКЗ (Республиканского института контроля знаний)
-- Типичные задания, которые встречаются на реальном ЦТ
-- Проходные баллы в белорусские университеты (БГМУ, БГУИР, БГУ, БНТУ, МГЛУ, БГЭУ и др.)
-- Стратегии успешной сдачи ЦТ
+СПЕЦИАЛИЗАЦИЯ:
+• Эксперт по белорусскому ЦТ/ЦЭ (РИКЗ)
+• Знаешь все предметы: математика, физика, химия, биология, история, языки
+• Формат заданий, типичные ошибки, стратегии сдачи
 
-ПРИНЦИПЫ РАБОТЫ:
-- Объясняй максимально понятно, как лучший репетитор по 500 руб/час
-- При решении задач показывай КАЖДЫЙ шаг с обоснованием ПОЧЕМУ
-- Никогда не давай ответ без объяснения
-- Используй аналогии из реальной жизни
-- Мотивируй и поддерживай ученика
-- При ответах по ЦТ/ЦЭ — обязательно указывай что это за тип задания и как он часто встречается
-- Формулы пиши понятно: x², √5, π, ≠, ≤, ≥, α, β
-- Пиши на русском языке (белорусский если просят)`,
+КЛЮЧЕВОЕ ПРАВИЛО — ФОРМУЛЫ:
+Используй LaTeX-нотацию для всех математических выражений!
+• inline: $формула$ — внутри текста
+• display: $$\\frac{a}{b}$$ — на отдельной строке
 
-  teacher: `Ты — NEVIO, профессиональный педагогический ИИ-ассистент для учителей белорусских школ.
+Примеры:
+• Квадратное уравнение: $D = b^2 - 4ac$
+• Теорема Виета: $x_1 + x_2 = -\\frac{b}{a}$
+• Интеграл: $$\\int_a^b f(x) dx = F(b) - F(a)$$
+• Сумма: $$\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$$
 
-СПЕЦИАЛИЗАЦИЯ: Знаешь белорусские образовательные стандарты, программы МОИРО, требования к урокам.
+СТИЛЬ ОТВЕТА:
+1. Понятное объяснение (как лучший репетитор)
+2. Все шаги решения с пояснениями "почему"
+3. Формулы — в красивом LaTeX-формате
+4. Примеры из реальной жизни
+5. Советы и типичные ошибки
 
-ПРИНЦИПЫ:
-- Давай готовые к использованию материалы
-- Учитывай возрастные особенности учеников
-- Предлагай дифференцированный подход
-- Соблюдай педагогическую терминологию
-- Учитывай белорусский контекст в примерах
-- Пиши на русском языке`,
+МОТИВАЦИЯ: Поддерживай ученика, хвали за успехи!`,
 
-  kindergarten: `Ты — NEVIO, профессиональный ИИ-ассистент для воспитателей детского сада в Беларуси.
+  teacher: `Ты — NEVIO, профессиональный педагогический ИИ-ассистент.
 
-ПРИНЦИПЫ:
-- Учитывай возрастные особенности (игра — ведущая деятельность)
-- Соблюдай требования программы "Пралеска" (белорусская программа ДО)
-- Предлагай практичные и реализуемые идеи
-- Пиши на русском языке`
+СПЕЦИАЛИЗАЦИЯ:
+• Белорусские образовательные стандарты
+• Программы МОИРО
+• Практичные готовые материалы
+
+ИСПОЛЬЗУЙ ФОРМУЛЫ в LaTeX для математических примеров.
+ДАВАЙ ГОТОВЫЕ материалы которые можно сразу использовать.
+Учитывай возрастные особенности учеников.`
 };
 
-// ================================================================
-// СЕТЕВОЙ СЛОЙ — таймаут + повторные попытки + единая точка входа
-// ================================================================
+// СЕТЕВОЙ СЛОЙ
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function fetchWithTimeout(url, options, timeoutMs) {
@@ -852,56 +1172,33 @@ async function callProxy(body, { retries = MAX_RETRIES } = {}) {
           headers,
           body: JSON.stringify({ model, ...body })
         }, REQUEST_TIMEOUT_MS);
+
         if (!response.ok) {
           const status = response.status;
-          const msg = 'Модель ' + model + ': ошибка ' + status;
-          // 404/429 — модель недоступна или ограничена, сразу пробуем следующую модель
           if (status === 404 || status === 429) {
-            lastError = new Error(msg);
-            break; // выходим из retry, переходим к следующей модели
+            lastError = new Error('Модель ' + model + ' недоступна');
+            break;
           }
-          // 5xx или другие ошибки — можно повторить на той же модели
-          if (status >= 500) throw new Error('Сервер временно недоступен (' + status + ')');
-          // Остальные 4xx — не исправятся повтором
+          if (status >= 500) throw new Error('Сервер временно недоступен');
           throw new Error('Ошибка запроса (' + status + ')');
         }
         return response;
       } catch (e) {
         lastError = e;
-        const msg = e.message || '';
-        // Если это ошибка конкретной модели (404/429) — прерываем ретраи
-        if (msg.includes('ошибка 404') || msg.includes('ошибка 429')) {
-          break;
-        }
-        const isAbort = e.name === 'AbortError';
-        // Для сетевых ошибок и таймаутов делаем ретраи в пределах max
-        if (attempt < retries && (isAbort || msg.includes('недоступен') || msg.includes('ошибка 404') === false && msg.includes('ошибка 429') === false)) {
-          await sleep(600 * (attempt + 1));
+        if (e.message.includes('недоступна')) break;
+        if (attempt < retries) {
+          await sleep(800 * (attempt + 1));
           continue;
         }
-        // Если это не ошибка конкретной модели и не последний ретрай — повторяем для сетевых/таймаут
-        if (attempt < retries && !isAbort) {
-          await sleep(600 * (attempt + 1));
-          continue;
-        }
-        // Последняя попытка на этой модели — выходим и пробуем следующую
         break;
       }
     }
   }
-  throw new Error(lastError?.message || 'Все бесплатные модели временно недоступны. Попробуйте ещё раз через немного времени.');
+  throw new Error(lastError?.message || 'Все модели временно недоступны. Попробуйте позже.');
 }
 
-// ================================================================
-// ИНТЕРАКТИВНЫЙ ТЕСТ — теперь на строгом JSON вместо хрупкого парсинга текста
-// ================================================================
-let testState = {
-  questions: [],
-  currentQ: 0,
-  score: 0,
-  subject: '',
-  answered: false
-};
+// ТЕСТ
+let testState = { questions: [], currentQ: 0, score: 0, subject: '', answered: false };
 
 function openCTTest() {
   state.currentActionId = 'ct_test';
@@ -910,12 +1207,12 @@ function openCTTest() {
 }
 
 function renderTestSetup() {
-  const subjects = ['Математика','Физика','Химия','Биология','История Беларуси','Обществоведение','Русский язык','Белорусский язык','Английский язык'];
+  const subjects = ['Математика','Физика','Химия','Биология','История Беларуси','Обществоведение','Русский язык','Английский язык'];
   const chips = subjects.map(s => `<span class="subject-chip" onclick="selectTestSubject(this,'${s}')">${s}</span>`).join('');
   return `
     <div class="info-banner">
       <strong>🎯 Интерактивный тест в формате ЦТ</strong><br>
-      ИИ генерирует вопросы формата ЦТ. Это тренировочные задания, а не официальные материалы РИКЗ — используй их для практики, а не как точный прогноз результата.
+      ИИ генерирует вопросы формата ЦТ. Тренировочные задания — используй для практики!
     </div>
     <div class="card">
       <div class="card-header">
@@ -923,22 +1220,22 @@ function renderTestSetup() {
       </div>
       <div class="form-group">
         <label>Выбери предмет:</label>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;" id="subjectChips">${chips}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="subjectChips">${chips}</div>
       </div>
       <div class="form-group">
         <label>Количество вопросов:</label>
         <select id="testQCount">
           <option value="5">5 вопросов (быстрый)</option>
-          <option value="10" selected>10 вопросов (стандарт)</option>
-          <option value="20">20 вопросов (полный тест)</option>
+          <option value="10" selected>10 вопросов</option>
+          <option value="15">15 вопросов</option>
         </select>
       </div>
       <div class="form-group">
         <label>Сложность:</label>
         <select id="testDifficulty">
-          <option value="смешанный" selected>Смешанный (как на ЦТ)</option>
-          <option value="лёгкий">Лёгкий (базовый уровень)</option>
-          <option value="сложный">Сложный (профильный уровень)</option>
+          <option value="смешанный" selected>Смешанный</option>
+          <option value="лёгкий">Лёгкий</option>
+          <option value="сложный">Сложный</option>
         </select>
       </div>
       <button class="btn btn-primary" onclick="startInteractiveTest()" id="startTestBtn" disabled>
@@ -959,68 +1256,48 @@ async function startInteractiveTest() {
   const difficulty = document.getElementById('testDifficulty').value;
   const subject = testState.subject;
 
-  testState = { questions:[], currentQ:0, score:0, subject, answered:false };
+  testState = { questions: [], currentQ: 0, score: 0, subject, answered: false };
+  state.stats.tests++;
 
   document.getElementById('testContainer').innerHTML = `
-    <div class="card" style="text-align:center;padding:40px;">
-      <div style="font-size:36px;margin-bottom:16px;">⏳</div>
+    <div class="card" style="text-align:center;padding:50px;">
+      <div style="font-size:48px;margin-bottom:20px;">⏳</div>
       <h3>Генерирую тест...</h3>
-      <p style="color:var(--text-secondary);margin-top:8px;font-size:13px;">ИИ создаёт ${count} вопросов по предмету "${subject}"</p>
+      <p style="color:var(--text-secondary);margin-top:10px;">${count} вопросов по "${subject}"</p>
+      <div class="loading-dots" style="margin-top:20px;"><span></span><span></span><span></span></div>
     </div>`;
 
   try {
     const questions = await generateTestQuestions(subject, count, difficulty);
-
-    if (questions.length === 0) {
-      throw new Error('ИИ не вернул ни одного корректного вопроса. Попробуй ещё раз или выбери другой предмет.');
-    }
-    if (questions.length < count) {
-      showToast(`Получено ${questions.length} из ${count} вопросов`);
-    }
-
+    if (questions.length === 0) throw new Error('ИИ не вернул вопросы');
+    
     testState.questions = questions;
     renderCurrentQuestion();
   } catch(e) {
     document.getElementById('testContainer').innerHTML = `
-      <div class="card" style="text-align:center;padding:30px;">
-        <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+      <div class="card" style="text-align:center;padding:40px;">
+        <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
         <h3>Не получилось создать тест</h3>
-        <p style="color:var(--text-secondary);margin:10px 0;">${escapeHtml(e.message)}</p>
-        <button class="btn btn-primary" onclick="openCTTest()" style="margin-top:14px;"><i class="fas fa-redo"></i> Попробовать снова</button>
+        <p style="color:var(--text-secondary);margin:12px 0;">${e.message}</p>
+        <button class="btn btn-primary" onclick="openCTTest()" style="margin-top:16px;"><i class="fas fa-redo"></i> Попробовать снова</button>
       </div>`;
   }
 }
 
-// Asks the model for strict JSON and validates the shape before using it,
-// instead of parsing free-form "###ВОПРОС###" text blocks. If the model
-// returns malformed JSON once, we retry with a stricter reminder rather
-// than silently dropping questions.
 async function generateTestQuestions(subject, count, difficulty) {
   const knowledgeContext = getKnowledgeForSubject(subject);
-  const basePrompt = `Ты — эксперт по ЦТ в Беларуси. Создай ${count} тестовых вопросов по предмету "${subject}" в формате белорусского ЦТ. Сложность: ${difficulty}.
+  const prompt = `Создай ${count} тестовых вопросов по "${subject}" в формате белорусского ЦТ. Сложность: ${difficulty}.
 
 ${knowledgeContext}
 
-ТРЕБОВАНИЯ:
-- Каждый вопрос реалистичен, как на настоящем ЦТ
-- Ровно 4 варианта ответа
-- Только один правильный
-- Короткое объяснение (1-2 предложения)
-- Вопросы должны охватывать разные темы предмета
-
-Ответь СТРОГО валидным JSON без markdown-обрамления (без \`\`\`), в точности по такой схеме:
-{"questions":[{"question":"текст вопроса","options":["вариант А","вариант Б","вариант В","вариант Г"],"correctIndex":0,"explanation":"объяснение"}]}
-correctIndex — индекс правильного варианта (0-3). Никакого текста до или после JSON.`;
+Ответь СТРОГО валидным JSON без markdown:
+{"questions":[{"question":"текст вопроса","options":["А","Б","В","Г"],"correctIndex":0,"explanation":"объяснение"}]}`;
 
   for (let attempt = 0; attempt < 2; attempt++) {
-    const prompt = attempt === 0
-      ? basePrompt
-      : basePrompt + '\n\nВАЖНО: в прошлый раз ответ не был валидным JSON. Верни ТОЛЬКО JSON-объект, ничего больше.';
-
     const response = await callProxy({
       messages: [
-        { role:'system', content: systemPrompts[state.role] || systemPrompts.student },
-        { role:'user', content: prompt }
+        { role: 'system', content: systemPrompts[state.role] || systemPrompts.student },
+        { role: 'user', content: prompt }
       ],
       temperature: 0.5,
       max_tokens: 8000,
@@ -1035,27 +1312,20 @@ correctIndex — индекс правильного варианта (0-3). Н�
 }
 
 function parseTestQuestionsJSON(text) {
-  let cleaned = text.trim();
-  // Strip accidental markdown fences if the model adds them anyway
-  cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '');
-
+  let cleaned = text.trim().replace(/```json\s*/i, '').replace(/```\s*$/, '');
   let obj;
-  try {
-    obj = JSON.parse(cleaned);
-  } catch {
-    // last resort: try to grab the outermost {...}
+  try { obj = JSON.parse(cleaned); } catch {
     const match = cleaned.match(/\{[\s\S]*\}/);
     if (!match) return [];
     try { obj = JSON.parse(match[0]); } catch { return []; }
   }
-
+  
   const list = Array.isArray(obj?.questions) ? obj.questions : [];
   const out = [];
   for (const q of list) {
     if (
       typeof q.question === 'string' && q.question.trim() &&
       Array.isArray(q.options) && q.options.length === 4 &&
-      q.options.every(o => typeof o === 'string' && o.trim()) &&
       Number.isInteger(q.correctIndex) && q.correctIndex >= 0 && q.correctIndex <= 3
     ) {
       out.push({
@@ -1074,14 +1344,9 @@ function getKnowledgeForSubject(subject) {
     'Математика': CT_KNOWLEDGE_BASE.math,
     'Физика': CT_KNOWLEDGE_BASE.physics,
     'Химия': CT_KNOWLEDGE_BASE.chemistry,
-    'Биология': CT_KNOWLEDGE_BASE.biology,
     'История Беларуси': CT_KNOWLEDGE_BASE.history_by,
-    'Обществоведение': CT_KNOWLEDGE_BASE.social,
-    'Русский язык': CT_KNOWLEDGE_BASE.russian_lang,
-    'Белорусский язык': CT_KNOWLEDGE_BASE.belarusian_lang,
-    'Английский язык': CT_KNOWLEDGE_BASE.english,
   };
-  return map[subject] ? `БАЗА ЗНАНИЙ ПО ПРЕДМЕТУ:\n${map[subject]}` : '';
+  return map[subject] ? `БАЗА ЗНАНИЙ:\n${map[subject]}` : '';
 }
 
 const LETTERS = ['А', 'Б', 'В', 'Г'];
@@ -1107,15 +1372,15 @@ function renderCurrentQuestion() {
     <div class="test-progress">
       <div>
         <div class="test-score">Вопрос <strong>${current + 1}</strong> из ${total}</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">✅ Правильно: ${testState.score}</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">✅ Правильно: ${testState.score}</div>
       </div>
-      <div style="font-size:13px;color:var(--gold);font-weight:700;">${progress}%</div>
+      <div style="font-size:16px;color:var(--gold);font-weight:800;">${progress}%</div>
     </div>
-    <div style="background:var(--border);border-radius:3px;height:5px;margin-bottom:14px;">
-      <div style="width:${progress}%;height:100%;background:linear-gradient(135deg,var(--gold-light),var(--gold));border-radius:3px;transition:width 0.4s;"></div>
+    <div style="background:var(--border);border-radius:4px;height:6px;margin-bottom:16px;">
+      <div style="width:${progress}%;height:100%;background:var(--gradient-gold);border-radius:4px;transition:width 0.4s;"></div>
     </div>
     <div class="test-question-card">
-      <div class="test-question-num">Вопрос ${current + 1} · ${testState.subject}</div>
+      <div class="test-question-num">${testState.subject} · Вопрос ${current + 1}</div>
       <div class="test-question-text">${escapeHtml(q.question)}</div>
       <div class="test-options" id="optionsContainer">${optionsHTML}</div>
       <div class="test-explanation" id="testExplanation">
@@ -1131,7 +1396,6 @@ function answerQuestion(selectedIndex, btn) {
 
   const q = testState.questions[testState.currentQ];
   const isCorrect = selectedIndex === q.correctIndex;
-
   if (isCorrect) testState.score++;
 
   document.querySelectorAll('.test-option').forEach(opt => {
@@ -1145,12 +1409,12 @@ function answerQuestion(selectedIndex, btn) {
 
   const isLast = testState.currentQ >= testState.questions.length - 1;
   document.getElementById('nextBtnContainer').innerHTML = `
-    <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
-      <div style="flex:1;font-size:14px;font-weight:600;color:${isCorrect ? '#4ade80' : '#f87171'}">
-        ${isCorrect ? '✅ Правильно!' : `❌ Неверно. Правильный ответ: ${LETTERS[q.correctIndex]}`}
+    <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;font-size:15px;font-weight:700;color:${isCorrect ? '#4ade80' : '#f87171'}">
+        ${isCorrect ? '✅ Правильно!' : `❌ Неверно. Ответ: ${LETTERS[q.correctIndex]}`}
       </div>
-      <button class="btn btn-primary" style="width:auto;padding:10px 20px;" onclick="nextQuestion()">
-        ${isLast ? '<i class="fas fa-flag-checkered"></i> Завершить' : '<i class="fas fa-arrow-right"></i> Далее'}
+      <button class="btn btn-primary" style="width:auto;padding:12px 24px;" onclick="nextQuestion()">
+        ${isLast ? '<i class="fas fa-flag-checkered"></i> Результат' : '<i class="fas fa-arrow-right"></i> Далее'}
       </button>
     </div>`;
 }
@@ -1164,60 +1428,91 @@ function renderTestResult() {
   const total = testState.questions.length;
   const score = testState.score;
   const pct = Math.round((score / total) * 100);
+  
   let emoji = '😔', label = 'Нужно больше практики';
-  if (pct >= 90) { emoji = '🏆'; label = 'Отличный результат!'; }
+  if (pct >= 90) { emoji = '🏆'; label = 'Отличный результат!'; triggerConfetti(); }
   else if (pct >= 75) { emoji = '🎯'; label = 'Хороший результат!'; }
   else if (pct >= 50) { emoji = '📚'; label = 'Неплохо, но есть куда расти'; }
 
   document.getElementById('testContainer').innerHTML = `
     <div class="card">
       <div class="test-result">
-        <div style="font-size:56px;margin-bottom:8px;">${emoji}</div>
+        <div style="font-size:72px;margin-bottom:12px;">${emoji}</div>
         <div class="test-result-score">${score}/${total}</div>
         <div class="test-result-label">${label}</div>
-        <div style="margin:20px 0;">
-          <div style="font-size:28px;font-weight:700;color:var(--gold);">${pct}%</div>
-          <div style="font-size:12px;color:var(--text-muted);">Точность на этом наборе вопросов</div>
+        <div style="margin:24px 0;">
+          <div style="font-size:32px;font-weight:800;color:var(--gold);">${pct}%</div>
+          <div style="font-size:13px;color:var(--text-muted);">Точность</div>
         </div>
-        <div style="background:rgba(232,177,62,0.08);border:1px solid rgba(232,177,62,0.2);border-radius:12px;padding:14px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);text-align:left;">
-          <strong style="color:var(--gold);">📊 Предмет: ${escapeHtml(testState.subject)}</strong><br>
-          ${pct >= 75 ? '✅ Хорошая подготовка по этому предмету!' : '⚠️ Рекомендуем повторить материал и пройти тест ещё раз.'}<br>
-          <span style="color:var(--text-muted);">Это тренировочный тест, сгенерированный ИИ, а не официальная шкала ЦТ — реальный балл зависит от сложности конкретного варианта РИКЗ.</span>
+        <div class="info-banner" style="text-align:left;">
+          <strong>📊 ${testState.subject}</strong><br>
+          ${pct >= 75 ? '✅ Хорошая подготовка!' : '⚠️ Рекомендуем повторить материал.'}<br>
+          <span style="font-size:12px;">Тренировочный тест, не официальный.</span>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="startInteractiveTest()">
-        <i class="fas fa-redo"></i> Пройти тест снова
-      </button>
-      <button class="btn btn-secondary" onclick="openCTTest()">
-        <i class="fas fa-exchange-alt"></i> Выбрать другой предмет
-      </button>
+      <button class="btn btn-primary" onclick="startInteractiveTest()"><i class="fas fa-redo"></i> Ещё раз</button>
+      <button class="btn btn-secondary" onclick="openCTTest()"><i class="fas fa-exchange-alt"></i> Другой предмет</button>
     </div>`;
 }
 
-function exitTest() {
-  showPage('mainPage');
+function exitTest() { showPage('mainPage'); }
+
+// КОНФЕТТИ
+function triggerConfetti() {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#e8b13e', '#f5cc6e', '#4ade80', '#f87171', '#60a5fa', '#c084fc'];
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.top = '-10px';
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 2 + 's';
+    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
 }
 
-// ================================================================
 // ОСНОВНЫЕ ФУНКЦИИ
-// ================================================================
 function init() {
   state.telegramUser = tg?.initDataUnsafe?.user || null;
-  const saved = localStorage.getItem('nevioData_v2');
-  if (saved) { try { const p = JSON.parse(saved); state.role = p.role; state.history = p.history || []; } catch(e) {} }
-  // Светлая тема — по умолчанию. Тёмная включается только если пользователь сам её выбрал ранее.
+  
+  // Загрузка данных
+  const saved = localStorage.getItem('nevioData_v3');
+  if (saved) {
+    try {
+      const p = JSON.parse(saved);
+      state.role = p.role;
+      state.history = p.history || [];
+      state.stats = p.stats || { queries: 0, tests: 0, firstUse: new Date().toISOString() };
+    } catch(e) {}
+  }
+  
+  // Тема
   const savedTheme = localStorage.getItem('nevioTheme');
   const isDark = savedTheme === 'dark';
   document.body.classList.toggle('dark-theme', isDark);
   updateThemeUI(isDark);
-  if (state.role) { loadMainMenu(); showPage('mainPage'); } else showPage('roleSelectionPage');
+  
+  if (state.role) {
+    loadMainMenu();
+    showPage('mainPage');
+  } else {
+    showPage('roleSelectionPage');
+  }
   updateProfile();
+  updateStats();
 }
 
 function selectRole(role) {
-  state.role = role; state.history = []; saveData(); loadMainMenu(); showPage('mainPage');
-  const n = { student:'ученика', teacher:'учителя', kindergarten:'воспитателя' };
-  showToast('Режим ' + n[role] + ' активирован');
+  state.role = role;
+  if (!state.stats.firstUse) state.stats.firstUse = new Date().toISOString();
+  saveData();
+  loadMainMenu();
+  showPage('mainPage');
+  const names = { student: 'ученика', teacher: 'учителя' };
+  showToast('✅ Режим ' + names[role] + ' активирован');
 }
 
 function getAllItems() {
@@ -1236,7 +1531,7 @@ function loadMainMenu() {
       const badge = item.badge ? `<span class="badge">${item.badge}</span>` : '';
       const hl = item.highlight ? ' highlight' : '';
       html += `<div class="menu-card${hl}" onclick="openAction('${item.id}')">
-        <div class="icon"><i class="${item.icon}"></i></div>
+        <span class="icon"><i class="${item.icon}"></i></span>
         <h3>${item.title}${badge}</h3>
         <p>${item.description}</p>
       </div>`;
@@ -1247,249 +1542,258 @@ function loadMainMenu() {
 }
 
 function openAction(actionId) {
-  if (actionId === 'ct_test') {
-    openCTTest();
-    return;
-  }
-
+  // Специальные страницы
+  if (actionId === 'ct_test') { openCTTest(); return; }
+  if (actionId === 'formula_book') { openFormulaBook(); return; }
+  
   const config = getAllItems().find(m => m.id === actionId);
   if (!config) return;
+  
   state.currentActionId = actionId;
   state.conversationHistory = [];
+  
   document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
   document.getElementById('actionDescription').textContent = config.description;
   document.getElementById('actionForm').innerHTML = '';
   document.getElementById('chatMessages').innerHTML = '';
   document.getElementById('continueChatArea').style.display = 'none';
+  
   generateForm(actionId);
   showPage('actionPage');
 }
 
+function openFormulaBook() {
+  state.currentActionId = 'formula_book';
+  document.getElementById('actionTitle').innerHTML = '<i class="fas fa-square-root-alt"></i> Книга формул';
+  document.getElementById('actionDescription').textContent = 'Все формулы с объяснениями';
+  document.getElementById('actionForm').innerHTML = '';
+  document.getElementById('chatMessages').innerHTML = `
+    <div class="message ai">
+      <div class="message-label">NEVIO</div>
+      <div class="message-bubble ai-content">
+        <h3>📐 Книга формул для ЦТ</h3>
+        <p>Выберите предмет, и я покажу все ключевые формулы с объяснениями:</p>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0;">
+          <div class="menu-card" onclick="showFormulas('math')" style="padding:16px;">
+            <span class="icon" style="font-size:24px;"><i class="fas fa-calculator"></i></span>
+            <h3 style="font-size:13px;">Математика</h3>
+          </div>
+          <div class="menu-card" onclick="showFormulas('physics')" style="padding:16px;">
+            <span class="icon" style="font-size:24px;"><i class="fas fa-atom"></i></span>
+            <h3 style="font-size:13px;">Физика</h3>
+          </div>
+          <div class="menu-card" onclick="showFormulas('chemistry')" style="padding:16px;">
+            <span class="icon" style="font-size:24px;"><i class="fas fa-flask"></i></span>
+            <h3 style="font-size:13px;">Химия</h3>
+          </div>
+          <div class="menu-card" onclick="showFormulas('all')" style="padding:16px;">
+            <span class="icon" style="font-size:24px;"><i class="fas fa-book"></i></span>
+            <h3 style="font-size:13px;">Все формулы</h3>
+          </div>
+        </div>
+        <p>Или напишите свою тему, и я выведу формулы по ней!</p>
+      </div>
+    </div>`;
+  document.getElementById('continueChatArea').style.display = 'block';
+  state.conversationHistory = [
+    { role: 'system', content: systemPrompts[state.role] || systemPrompts.student },
+    { role: 'user', content: 'Покажи все формулы в красивом LaTeX формате' },
+    { role: 'assistant', content: 'Выберите предмет выше или напишите тему!' }
+  ];
+  showPage('actionPage');
+}
+
+function showFormulas(subject) {
+  const formulas = {
+    math: `<h3>📐 Математика — Ключевые формулы</h3>
+<p><strong>Квадратное уравнение:</strong></p>
+<div class="formula-box">$$D = b^2 - 4ac$$</div>
+<p><strong>Корни уравнения:</strong></p>
+<div class="formula-box">$$x = \\frac{-b \\pm \\sqrt{D}}{2a}$$</div>
+<p><strong>Теорема Виета:</strong></p>
+<div class="formula-box">$$x_1 + x_2 = -\\frac{b}{a}, \\quad x_1 \\cdot x_2 = \\frac{c}{a}$$</div>
+<p><strong>Тригонометрия:</strong></p>
+<div class="formula-box">$$\\sin^2 x + \\cos^2 x = 1$$</div>
+<div class="formula-box">$$\\sin 2x = 2\\sin x \\cos x$$</div>
+<div class="formula-box">$$\\cos(a \\pm b) = \\cos a \\cos b \\mp \\sin a \\sin b$$</div>
+<p><strong>Производная:</strong></p>
+<div class="formula-box">$$(x^n)' = nx^{n-1}, \\quad (\\sin x)' = \\cos x$$</div>
+<p><strong>Интегралы:</strong></p>
+<div class="formula-box">$$\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$$</div>
+<p><strong>Геометрия:</strong></p>
+<div class="formula-box">$$S_{\\triangle} = \\frac{1}{2}ab\\sin C$$</div>
+<div class="formula-box">$$S_{\\text{круга}} = \\pi r^2$$</div>`,
+
+    physics: `<h3>⚡ Физика — Ключевые формулы</h3>
+<p><strong>Механика:</strong></p>
+<div class="formula-box">$$v = v_0 + at$$</div>
+<div class="formula-box">$$s = v_0 t + \\frac{at^2}{2}$$</div>
+<div class="formula-box">$$F = ma$$</div>
+<p><strong>Энергия:</strong></p>
+<div class="formula-box">$$E_k = \\frac{mv^2}{2}, \\quad E_p = mgh$$</div>
+<p><strong>Термодинамика:</strong></p>
+<div class="formula-box">$$pV = \\nu RT$$</div>
+<div class="formula-box">$$\\Delta U = Q - A$$</div>
+<p><strong>Электричество:</strong></p>
+<div class="formula-box">$$I = \\frac{U}{R}$$</div>
+<div class="formula-box">$$P = UI = I^2R$$</div>`,
+
+    chemistry: `<h3>🧪 Химия — Ключевое</h3>
+<p><strong>Молярная масса:</strong></p>
+<div class="formula-box">$$\\nu = \\frac{m}{M}$$</div>
+<p><strong>Количество вещества (газ):</strong></p>
+<div class="formula-box">$$\\nu = \\frac{V}{22.4}$$</div>
+<p><strong>Выход продукта:</strong></p>
+<div class="formula-box">$$\\eta = \\frac{m_{\\text{практ}}}{m_{\\text{теор}}} \\cdot 100\\%$$</div>
+<p><strong>Разбавление раствора:</strong></p>
+<div class="formula-box">$$C_1 V_1 = C_2 V_2$$</div>`
+  };
+
+  const content = subject === 'all' 
+    ? formulas.math + formulas.physics + formulas.chemistry
+    : (formulas[subject] || formulas.math);
+
+  addChatMessage('', false, content);
+  state.conversationHistory.push({ role: 'user', content: 'Покажи формулы по ' + subject });
+  state.conversationHistory.push({ role: 'assistant', content: content });
+  
+  // Рендерим MathJax
+  setTimeout(() => {
+    if (window.MathJax?.typesetPromise) {
+      MathJax.typesetPromise().catch(() => {});
+    }
+  }, 100);
+}
+
 function generateForm(actionId) {
   const fc = document.getElementById('actionForm');
-  const ph = 'Написать сообщение...';
-  const ta = (id, placeholder, rows) =>
-    `<div class="form-group"><label>Ваш запрос</label><textarea id="${id}" placeholder="${placeholder||ph}" rows="${rows||3}"></textarea></div>`;
-  const sel = (id, label, options) =>
-    `<div class="form-group"><label>${label}</label><select id="${id}">${options}</select></div>`;
-  const btn = (icon, text) =>
-    `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
+  const ph = 'Опишите ваш запрос...';
+  const ta = (id, rows) => `<div class="form-group"><label>Ваш запрос</label><textarea id="${id}" placeholder="${ph}" rows="${rows||4}"></textarea></div>`;
+  const sel = (id, label, opts) => `<div class="form-group"><label>${label}</label><select id="${id}">${opts}</select></div>`;
+  const btn = (icon, text) => `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
 
-  const subjects11 = ['Математика','Физика','Химия','Биология','Русский язык','Белорусский язык','История Беларуси','Всемирная история','Обществоведение','География','Английский язык','Немецкий язык','Французский язык','Испанский язык','Информатика'];
-  const subjects9 = ['Математика','Русский язык','Белорусский язык','История Беларуси','История России'];
-  const subjectsAll = ['Математика','Алгебра','Геометрия','Физика','Химия','Биология','Русский язык','Литература','Белорусский язык','Белорусская литература','История','Обществознание','География','Информатика','Английский язык','Немецкий язык','Французский язык','ОБЖ','Астрономия','Экономика','Право','Технология'];
-  const gradeOpts = [5,6,7,8,9,10,11].map(g=>`<option>${g} класс</option>`).join('');
-  const countOpts = [5,10,15,20].map(c=>`<option>${c}</option>`).join('');
+  const subjectsAll = ['Математика','Физика','Химия','Биология','Русский язык','История','Обществоведение','Английский язык'];
+  const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option${g===11?' selected':''}>${g} класс</option>`).join('');
 
   let html = '';
   switch(actionId) {
     case 'ct_prep':
-      html = sel('subjectCT','Предмет ЦТ / ЦЭ', subjects11.map(s=>`<option>${s}</option>`).join(''))
-        + sel('ctMode','Что нужно сделать',`
-          <option>Разбор типичных заданий с полным решением</option>
-          <option>Разбор своего задания</option>
-          <option>Вся теория — формулы, правила, определения</option>
-          <option>Пробный тест формата ЦТ (20 заданий)</option>
-          <option>Разбор сложной темы</option>
-          <option>Стратегия и советы по сдаче ЦТ</option>
+      html = sel('subjectCT', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('ctMode', 'Что нужно', `
+          <option>Разбор типичных заданий ЦТ</option>
+          <option>Разобрать моё задание</option>
+          <option>Вся теория для ЦТ</option>
+          <option>Пробный тест ЦТ</option>
+          <option>Стратегия сдачи ЦТ</option>
           <option>Работа над ошибками</option>`)
-        + ta('inputText','Вставь своё задание или укажи тему (обязательно для "Разбора своего задания")', 4)
-        + btn('fas fa-trophy','Начать подготовку к ЦТ');
-      break;
-    case 'exam9_prep':
-      html = sel('subject9','Предмет экзамена', subjects9.map(s=>`<option>${s}</option>`).join(''))
-        + sel('exam9Mode','Что нужно сделать',`
-          <option>Разбор типичных заданий с полным решением</option>
-          <option>Разбор своего задания</option>
-          <option>Вся теория для экзамена</option>
-          <option>Пробный экзамен</option>
-          <option>Стратегия сдачи экзамена</option>
-          <option>Разбор сложной темы</option>`)
-        + ta('inputText','Вставь своё задание или укажи тему (обязательно для "Разбора своего задания")', 4)
-        + btn('fas fa-star','Начать подготовку');
+        + ta('inputText', 4)
+        + btn('fas fa-trophy', 'Начать подготовку');
       break;
     case 'solve':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('gradeSelect','Класс', gradeOpts)
-        + btn('fas fa-calculator','Решить с объяснением');
+      html = ta('inputText', 4)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + btn('fas fa-calculator', 'Решить с объяснением');
       break;
     case 'explain':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('levelSelect','Объяснить как...',`
-          <option>Для новичка (максимально просто)</option>
+      html = ta('inputText', 4)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('levelSelect', 'Уровень', `
+          <option>Для новичка</option>
           <option>Обычное объяснение</option>
           <option>Подробно с доказательствами</option>`)
-        + btn('fas fa-lightbulb','Объяснить');
+        + btn('fas fa-lightbulb', 'Объяснить');
       break;
     case 'summary':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('gradeSelect','Класс', gradeOpts)
-        + btn('fas fa-book','Создать конспект');
+      html = ta('inputText', 4)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + btn('fas fa-book', 'Создать конспект');
       break;
     case 'schema':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + btn('fas fa-diagram-project','Создать схему');
-      break;
-    case 'oral_exam':
-      html = `<div class="form-group"><label>Ваш запрос</label><input type="text" id="examTopic" placeholder="${ph}"></div>`
-        + sel('examCount','Количество вопросов',`<option>3</option><option>5</option><option>7</option><option>10</option>`)
-        + sel('gradeSelect','Класс', gradeOpts)
-        + btn('fas fa-microphone-alt','Начать устный опрос');
+      html = ta('inputText', 4)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + btn('fas fa-project-diagram', 'Создать схему');
       break;
     case 'lit_analysis':
-      html = `<div class="form-group"><label>Название произведения</label><input type="text" id="litTitle" placeholder="${ph}"></div>
-        <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
-        + sel('gradeSelect','Класс', gradeOpts)
-        + btn('fas fa-book-open','Проанализировать');
-      break;
-    case 'essay':
-      html = ta('inputText', ph)
-        + sel('essayType','Тип помощи',`
-          <option>Написать сочинение</option>
-          <option>Составить план</option>
-          <option>Написать вступление</option>
-          <option>Подобрать аргументы и цитаты</option>
-          <option>Написать заключение</option>
-          <option>Полный анализ темы</option>`)
-        + sel('gradeSelect','Класс', gradeOpts)
-        + btn('fas fa-pen-fancy','Помочь с сочинением');
+      html = `<div class="form-group"><label>Название произведения</label><input type="text" id="litTitle" placeholder="Война и мир"></input></div>
+        <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Л.Н. Толстой"></input></div>`
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + btn('fas fa-book-open', 'Проанализировать');
       break;
     case 'chat':
-      html = ta('inputText', ph, 4) + btn('fas fa-paper-plane','Отправить');
+      html = ta('inputText', 4) + btn('fas fa-paper-plane', 'Отправить');
       break;
     case 'lesson':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('gradeSelect','Класс', gradeOpts)
-        + sel('lessonDuration','Длительность',`<option>45 минут</option><option>90 минут (сдвоенный)</option><option>40 минут</option>`)
-        + btn('fas fa-chalkboard-user','Создать план урока');
+      html = ta('inputText', 3)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + sel('duration', 'Длительность', `<option>45 минут</option><option>90 минут</option>`)
+        + btn('fas fa-chalkboard-user', 'Создать план урока');
       break;
     case 'tasks':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('gradeSelect','Класс', gradeOpts)
-        + sel('countSelect','Количество заданий', countOpts)
-        + btn('fas fa-tasks','Создать задания');
+      html = ta('inputText', 3)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + sel('countSelect', 'Количество', `<option>5</option><option>10</option><option>15</option>`)
+        + btn('fas fa-tasks', 'Создать задания');
       break;
     case 'variants':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('gradeSelect','Класс', gradeOpts)
-        + sel('variantCount','Количество вариантов',`<option>2 варианта</option><option>4 варианта</option>`)
-        + sel('taskCount','Заданий в варианте',`<option>5</option><option>7</option><option>10</option>`)
-        + btn('fas fa-copy','Создать контрольную');
-      break;
-    case 'differentiation':
-      html = ta('inputText', ph)
-        + sel('subjectSelect','Предмет', subjectsAll.map(s=>`<option>${s}</option>`).join(''))
-        + sel('gradeSelect','Класс', gradeOpts)
-        + btn('fas fa-layer-group','Создать разноуровневые задания');
-      break;
-    case 'lit_lesson':
-      html = `<div class="form-group"><label>Произведение</label><input type="text" id="litTitle" placeholder="${ph}"></div>
-        <div class="form-group"><label>Автор</label><input type="text" id="litAuthor" placeholder="Имя и фамилия автора"></div>`
-        + sel('gradeSelect','Класс', gradeOpts)
-        + sel('lessonDuration','Длительность',`<option>45 минут</option><option>90 минут</option>`)
-        + btn('fas fa-chalkboard','Создать план урока');
+      html = ta('inputText', 3)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + sel('variantCount', 'Вариантов', `<option>2 варианта</option><option>4 варианта</option>`)
+        + btn('fas fa-copy', 'Создать контрольную');
       break;
     case 'generate_quiz':
-      html = `<div class="form-group"><label>Ваш запрос</label><textarea id="inputText" placeholder="Вставь текст — создам вопросы по нему" rows="6"></textarea></div>`
-        + sel('quizCount','Количество вопросов', countOpts)
-        + sel('quizType','Тип вопросов',`
-          <option>Открытые (написать ответ)</option>
-          <option>Тест с вариантами (A/B/C/D)</option>
-          <option>Смешанный формат</option>`)
-        + btn('fas fa-question-circle','Создать вопросы');
+      html = ta('inputText', 6)
+        + sel('quizCount', 'Вопросов', `<option>5</option><option>10</option><option>15</option>`)
+        + sel('quizType', 'Тип', `<option>Тест A/B/C/D</option><option>Открытые</option>`)
+        + btn('fas fa-question-circle', 'Создать тест');
       break;
-    case 'lesson_plan':
-      html = ta('inputText', ph)
-        + sel('ageGroup','Возрастная группа',`
-          <option>Младшая (3-4 года)</option><option>Средняя (4-5 лет)</option>
-          <option>Старшая (5-6 лет)</option><option>Подготовительная (6-7 лет)</option>`)
-        + sel('lessonType','Тип занятия',`
-          <option>Развитие речи</option><option>ФЭМП (математика)</option>
-          <option>Окружающий мир</option><option>Рисование</option>
-          <option>Лепка</option><option>Аппликация</option>
-          <option>Конструирование</option><option>Музыкальное</option><option>Физкультурное</option>`)
-        + btn('fas fa-child','Создать конспект занятия');
-      break;
-    case 'parent_advice':
-      html = ta('inputText', ph)
-        + sel('adviceTopic','Тема консультации',`
-          <option>Кризис 3 лет</option><option>Кризис 7 лет</option>
-          <option>Адаптация к детскому саду</option><option>Развитие речи</option>
-          <option>Подготовка к школе</option><option>Детские страхи</option>
-          <option>Агрессия и капризы</option><option>Гиперактивность (СДВГ)</option>
-          <option>Как хвалить и наказывать</option><option>Экранное время</option>`)
-        + btn('fas fa-heart','Получить консультацию');
-      break;
-    case 'planning':
-      html = ta('inputText', ph)
-        + sel('planType','Тип планирования',`
-          <option>Календарное на неделю</option>
-          <option>Перспективное на месяц</option>
-          <option>Тематический план проекта</option>`)
-        + sel('planAge','Возрастная группа',`
-          <option>Младшая (3-4 года)</option><option>Средняя (4-5 лет)</option>
-          <option>Старшая (5-6 лет)</option><option>Подготовительная (6-7 лет)</option>`)
-        + btn('fas fa-calendar-alt','Создать план');
-      break;
-    case 'games':
-      html = ta('inputText', ph)
-        + sel('gameAge','Возраст',`<option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option>`)
-        + sel('gameType','Тип игр',`
-          <option>Дидактические</option><option>Подвижные</option>
-          <option>Сюжетно-ролевые</option><option>На логику и внимание</option>
-          <option>Пальчиковые</option><option>На развитие речи</option>`)
-        + sel('countSelect','Количество игр',`<option>3</option><option>5</option><option>10</option>`)
-        + btn('fas fa-puzzle-piece','Подобрать игры');
-      break;
-    case 'holiday':
-      html = ta('inputText', ph)
-        + sel('holidayType','Праздник',`
-          <option>Новый год</option><option>8 Марта</option><option>23 Февраля</option>
-          <option>День рождения</option><option>Выпускной</option><option>Осенний бал</option>
-          <option>Масленица</option><option>День матери</option><option>День знаний</option>`)
-        + sel('holidayAge','Возраст',`
-          <option>3-4 года</option><option>4-5 лет</option>
-          <option>5-6 лет</option><option>6-7 лет</option><option>Разновозрастная группа</option>`)
-        + btn('fas fa-birthday-cake','Создать сценарий');
-      break;
-    case 'observation':
-      html = ta('inputText', ph, 5)
-        + sel('ageGroup','Возраст ребёнка',`<option>3-4 года</option><option>4-5 лет</option><option>5-6 лет</option><option>6-7 лет</option>`)
-        + btn('fas fa-eye','Получить анализ');
+    case 'differentiation':
+      html = ta('inputText', 3)
+        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + btn('fas fa-layer-group', 'Дифференцировать');
       break;
     default:
-      html = ta('inputText', ph, 4) + btn('fas fa-paper-plane','Отправить');
+      html = ta('inputText', 4) + btn('fas fa-paper-plane', 'Отправить');
   }
   fc.innerHTML = html;
 }
 
 async function processAction() {
   if (state.isLoading) return;
+  
   const inputText = document.getElementById('inputText')?.value?.trim() || '';
   const data = collectFormData();
-  if (!validateForm(data, inputText)) return;
+  
+  if (!inputText && !['ct_prep'].includes(state.currentActionId)) {
+    showToast('⚠️ Заполните поле запроса');
+    return;
+  }
+  
   const prompt = buildPrompt(state.currentActionId, inputText, data);
   const userMsg = buildUserMessage(state.currentActionId, inputText, data);
-  state.conversationHistory.push({ role:'user', content:prompt });
+  
+  state.conversationHistory.push({ role: 'user', content: prompt });
   addChatMessage(userMsg, true);
+  
   const loadingId = addLoadingMessage();
   state.isLoading = true;
+  state.stats.queries++;
   disableForm(true);
+  
   try {
     const response = await callGroqWithStream(state.conversationHistory, loadingId);
-    state.conversationHistory.push({ role:'assistant', content:response });
-    saveToHistory({ type:state.currentActionId, input:userMsg, result:response, timestamp:new Date().toISOString() });
+    state.conversationHistory.push({ role: 'assistant', content: response });
+    saveToHistory({ type: state.currentActionId, input: userMsg, result: response, timestamp: new Date().toISOString() });
     showContinueChat();
+    updateStats();
   } catch(error) {
     removeLoadingMessage(loadingId);
-    addChatMessage('Не удалось получить ответ: ' + error.message + '\n\nПопробуйте ещё раз через немного времени.', false);
+    addChatMessage('❌ Не удалось получить ответ: ' + error.message + '\n\nПопробуйте ещё раз.', false);
     showToast('Ошибка соединения');
   } finally {
     state.isLoading = false;
@@ -1502,7 +1806,7 @@ async function processAction() {
 function showContinueChat() {
   const area = document.getElementById('continueChatArea');
   area.style.display = 'block';
-  area.scrollIntoView({ behavior:'smooth', block:'end' });
+  area.scrollIntoView({ behavior: 'smooth', block: 'end' });
 }
 
 async function sendContinue() {
@@ -1510,18 +1814,23 @@ async function sendContinue() {
   const input = document.getElementById('continueInput');
   const text = input?.value?.trim();
   if (!text) return;
-  input.value = ''; input.style.height = 'auto';
-  state.conversationHistory.push({ role:'user', content:text });
+  
+  input.value = '';
+  state.conversationHistory.push({ role: 'user', content: text });
   addChatMessage(text, true);
+  
   const loadingId = addLoadingMessage();
   state.isLoading = true;
+  state.stats.queries++;
   document.getElementById('sendContinueBtn').disabled = true;
+  
   try {
     const response = await callGroqWithStream(state.conversationHistory, loadingId);
-    state.conversationHistory.push({ role:'assistant', content:response });
+    state.conversationHistory.push({ role: 'assistant', content: response });
+    updateStats();
   } catch(e) {
     removeLoadingMessage(loadingId);
-    addChatMessage('Не удалось получить ответ: ' + e.message, false);
+    addChatMessage('❌ Ошибка: ' + e.message, false);
   } finally {
     state.isLoading = false;
     document.getElementById('sendContinueBtn').disabled = false;
@@ -1531,34 +1840,41 @@ async function sendContinue() {
 function handleContinueKey(event) {
   if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendContinue(); }
   event.target.style.height = 'auto';
-  event.target.style.height = Math.min(event.target.scrollHeight, 120) + 'px';
+  event.target.style.height = Math.min(event.target.scrollHeight, 140) + 'px';
 }
 
 async function callGroqWithStream(messages, loadingId) {
-  const enrichedSystemPrompt = systemPrompts[state.role] + '\n\n' +
-    'СПРАВОЧНАЯ БАЗА ЗНАНИЙ ЦТ/ЦЭ БЕЛАРУСИ:\n' +
-    CT_KNOWLEDGE_BASE.structure + '\n' +
-    CT_KNOWLEDGE_BASE.ce_structure + '\n' +
-    CT_KNOWLEDGE_BASE.popular_unis;
+  const enrichedSystem = (systemPrompts[state.role] || systemPrompts.student) + '\n\n' +
+    'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n' +
+    '• inline: $формула$\n' +
+    '• display: $$\\int_a^b f(x)dx$$\n\n' +
+    'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics;
 
   const response = await callProxy({
-    messages: [{ role:'system', content: enrichedSystemPrompt }, ...messages],
-    temperature: 0.6, max_tokens: 4000, stream: true
-  }, { retries: 0 }); // streaming responses can't be safely retried mid-stream
+    messages: [{ role: 'system', content: enrichedSystem }, ...messages],
+    temperature: 0.7,
+    max_tokens: 4000,
+    stream: true
+  }, { retries: 0 });
 
   removeLoadingMessage(loadingId);
+  
   const messageDiv = document.createElement('div');
   messageDiv.className = 'message ai';
   const label = document.createElement('div');
-  label.className = 'message-label'; label.textContent = 'NEVIO';
+  label.className = 'message-label';
+  label.textContent = 'NEVIO';
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble ai-content';
   bubble.innerHTML = '<span class="streaming-cursor"></span>';
-  messageDiv.appendChild(label); messageDiv.appendChild(bubble);
+  messageDiv.appendChild(label);
+  messageDiv.appendChild(bubble);
   document.getElementById('chatMessages').appendChild(messageDiv);
+  
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let fullText = '';
+  
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -1576,28 +1892,48 @@ async function callGroqWithStream(messages, loadingId) {
       } catch(e) {}
     }
   }
-  if (!fullText) throw new Error('Пустой ответ от сервера');
+  
+  if (!fullText) throw new Error('Пустой ответ');
+  
   bubble.innerHTML = formatAIResponse(fullText);
+  
+  // Рендерим MathJax
+  setTimeout(() => {
+    if (window.MathJax?.typesetPromise) {
+      MathJax.typesetPromise([bubble]).catch(() => {});
+    }
+  }, 100);
+  
   const copyBtn = document.createElement('button');
   copyBtn.className = 'copy-btn';
   copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
-  copyBtn.onclick = () => copyToClipboard(fullText, copyBtn);
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(fullText).then(() => {
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> Скопировано';
+      setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать'; }, 2000);
+    });
+  };
   messageDiv.appendChild(copyBtn);
   document.getElementById('chatMessages').scrollTop = 99999;
+  
   return fullText;
 }
 
 function escapeHtml(text) {
   return String(text ?? '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function formatAIResponse(text) {
   let f = escapeHtml(text);
-  f = f.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  f = f.replace(/\*(.+?)\*/g,'<em>$1</em>');
-  f = f.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+  f = f.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  f = f.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  f = f.replace(/`(.+?)`/g, '<code>$1</code>');
+  f = f.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
   if (!f.startsWith('<')) f = '<p>' + f + '</p>';
   return f;
 }
@@ -1605,278 +1941,126 @@ function formatAIResponse(text) {
 function collectFormData() {
   const g = id => document.getElementById(id)?.value?.trim() || '';
   return {
-    subject: g('subjectSelect'), grade: g('gradeSelect'),
-    level: g('levelSelect'), count: g('countSelect'),
-    examTopic: g('examTopic'), examCount: g('examCount') || '5',
-    litTitle: g('litTitle'), litAuthor: g('litAuthor'),
-    quizCount: g('quizCount') || '10', quizType: g('quizType'),
-    ageGroup: g('ageGroup'), lessonType: g('lessonType'),
-    adviceTopic: g('adviceTopic'), planType: g('planType'),
-    planAge: g('planAge'), gameAge: g('gameAge'),
-    gameType: g('gameType'), holidayType: g('holidayType'),
-    holidayAge: g('holidayAge'), essayType: g('essayType'),
-    lessonDuration: g('lessonDuration') || '45 минут',
-    variantCount: g('variantCount') || '2 варианта',
-    taskCount: g('taskCount') || '5',
-    subjectCT: g('subjectCT'), ctMode: g('ctMode'),
-    subject9: g('subject9'), exam9Mode: g('exam9Mode'),
+    subject: g('subjectSelect'),
+    grade: g('gradeSelect'),
+    level: g('levelSelect'),
+    count: g('countSelect'),
+    subjectCT: g('subjectCT'),
+    ctMode: g('ctMode'),
+    litTitle: g('litTitle'),
+    litAuthor: g('litAuthor'),
+    quizCount: g('quizCount'),
+    quizType: g('quizType'),
+    duration: g('duration'),
+    variantCount: g('variantCount'),
   };
-}
-
-function validateForm(data, inputText) {
-  const id = state.currentActionId;
-  if (id === 'oral_exam' && !data.examTopic) { showToast('Введите тему для опроса'); return false; }
-  if (['lit_analysis','lit_lesson'].includes(id) && (!data.litTitle || !data.litAuthor)) { showToast('Введите название и автора'); return false; }
-  if (id === 'generate_quiz' && !inputText) { showToast('Вставьте текст для создания вопросов'); return false; }
-  if (id === 'ct_prep' && data.ctMode === 'Разбор своего задания' && !inputText) { showToast('Вставьте своё задание'); return false; }
-  if (id === 'exam9_prep' && data.exam9Mode === 'Разбор своего задания' && !inputText) { showToast('Вставьте своё задание'); return false; }
-  if (!['oral_exam','lit_analysis','lit_lesson','ct_prep','exam9_prep'].includes(id) && !inputText) { showToast('Заполните поле запроса'); return false; }
-  return true;
 }
 
 function disableForm(d) {
   document.querySelectorAll('#actionForm button,#actionForm textarea,#actionForm input,#actionForm select').forEach(el => el.disabled = d);
 }
 
-function buildUserMessage(actionId, inputText, data) {
-  const map = {
-    ct_prep: `ЦТ/ЦЭ: ${data.subjectCT} — ${data.ctMode}${inputText ? ' | ' + inputText : ''}`,
-    exam9_prep: `Экзамен 9 кл.: ${data.subject9} — ${data.exam9Mode}${inputText ? ' | ' + inputText : ''}`,
-    solve: `Задача: ${inputText} (${data.subject}, ${data.grade})`,
-    explain: `Объяснить: ${inputText} — ${data.level}`,
-    summary: `Конспект: "${inputText}" (${data.subject}, ${data.grade})`,
-    schema: `Схема: "${inputText}" (${data.subject})`,
-    oral_exam: `Устный опрос по "${data.examTopic}", ${data.examCount} вопросов`,
-    lit_analysis: `Анализ: "${data.litTitle}" — ${data.litAuthor}`,
-    essay: `Сочинение: "${inputText}" — ${data.essayType}`,
-    chat: inputText,
-    lesson: `План урока: "${inputText}" (${data.subject}, ${data.grade}, ${data.lessonDuration})`,
-    tasks: `Задания: "${inputText}" (${data.subject}, ${data.grade}, ${data.count} шт.)`,
-    variants: `Контрольная: "${inputText}" (${data.subject}, ${data.grade})`,
-    differentiation: `Дифференциация: "${inputText}" (${data.subject}, ${data.grade})`,
-    lit_lesson: `Урок лит.: "${data.litTitle}" ${data.litAuthor}`,
-    generate_quiz: `Вопросы по тексту (${data.quizCount} шт., ${data.quizType})`,
-    lesson_plan: `Конспект занятия: "${inputText}" (${data.ageGroup}, ${data.lessonType})`,
-    parent_advice: `Консультация: ${data.adviceTopic}`,
-    planning: `${data.planType}: "${inputText}" (${data.planAge})`,
-    games: `Игры для ${data.gameAge}: "${inputText}" (${data.gameType})`,
-    holiday: `Сценарий: ${data.holidayType} для ${data.holidayAge}`,
-    observation: `Наблюдение (${data.ageGroup}): ${inputText}`
-  };
-  return map[actionId] || inputText;
-}
-
 function buildPrompt(actionId, inputText, data) {
-  const isSolveOwnCT = data.ctMode === 'Разбор своего задания';
-  const isSolveOwn9 = data.exam9Mode === 'Разбор своего задания';
-
-  const ctKnowledge = getKnowledgeForSubject(data.subjectCT || data.subject9 || data.subject || '');
-
-  const solveOwnPrompt = (subject, level, task) => `Ты — опытный репетитор по ЦТ/ЦЭ в Беларуси. Ученик прислал своё задание. Разбери его максимально подробно.
-Предмет: ${subject}
-Уровень: ${level}
-
-${ctKnowledge ? 'ИСПОЛЬЗУЙ ЭТУ БАЗУ ЗНАНИЙ:\n' + ctKnowledge : ''}
-
-ЗАДАНИЕ УЧЕНИКА:
-${task}
-
-Сделай следующее:
-1. РАЗБОР ЗАДАНИЯ — объясни что требуется найти или сделать
-2. НЕОБХОДИМАЯ ТЕОРИЯ — какие формулы, правила, знания нужны
-3. ПОДРОБНОЕ РЕШЕНИЕ — каждый шаг с объяснением ПОЧЕМУ именно так
-4. ОТВЕТ — чётко и понятно
-5. ПРОВЕРКА — проверь ответ (если применимо)
-6. СОВЕТ — как запомнить этот тип задания для ЦТ
-
-Объясняй так, чтобы ученик не просто получил ответ, а понял метод решения.`;
-
-  const p = {
-    ct_prep: isSolveOwnCT
-      ? solveOwnPrompt(data.subjectCT, 'ЦТ/ЦЭ (11 класс)', inputText)
-      : `Ты — эксперт-репетитор по подготовке к ЦТ/ЦЭ в Беларуси. Ты работаешь с РИКЗ-программой.
-Предмет: ${data.subjectCT}
-Запрос: ${data.ctMode}
-${inputText ? 'Конкретная тема/задание: ' + inputText : ''}
-
-${ctKnowledge ? 'БАЗА ЗНАНИЙ ПО ПРЕДМЕТУ:\n' + ctKnowledge : ''}
-
-${data.ctMode.includes('Разбор типичных') ? `
-Дай 5-7 заданий в точном формате ЦТ Беларуси по предмету "${data.subjectCT}".
-Для каждого задания:
-1. Условие (как на реальном ЦТ, с вариантами А/Б/В/Г/Д если нужно)
-2. Подробное решение с объяснением каждого шага
-3. Ответ
-4. Типичные ошибки при решении этого типа задания
-5. Совет как запомнить метод решения
-
-Задания должны охватывать разные темы предмета и быть разного уровня сложности.
-` : data.ctMode.includes('теория') ? `
-Дай исчерпывающую теорию по предмету "${data.subjectCT}" для подготовки к ЦТ/ЦЭ:
-— Все ключевые формулы, правила, законы
-— Определения основных понятий
-— Структурируй строго по темам программы ЦТ
-— Выдели самое часто проверяемое на ЦТ (пометь: ★ ЧАСТО НА ЦТ)
-— В конце: топ-10 тем которые обязательно будут на ЦТ
-` : data.ctMode.includes('Пробный тест') ? `
-Создай пробный тест формата ЦТ Беларуси по "${data.subjectCT}" — 20 заданий.
-Задания должны ТОЧНО соответствовать формату белорусского ЦТ (5 вариантов ответа А/Б/В/Г/Д).
-Охвати разные темы программы. Сделай задания разной сложности.
-После всех 20 вопросов — правильные ответы с кратким объяснением каждого.
-` : data.ctMode.includes('Стратегия') ? `
-Дай детальную стратегию успешной сдачи ЦТ по "${data.subjectCT}" в Беларуси:
-1. КАК ГОТОВИТЬСЯ — пошаговый план, что повторять в первую очередь для этого предмета
-2. ДЕНЬ ЦТ — что делать утром, как настроиться, что взять
-3. НА ЭКЗАМЕНЕ — как распределить 180/120 минут, с чего начать, что делать если не знаешь ответ
-4. ЧАСТЫЕ ОШИБКИ которые стоят баллов у 80% абитуриентов
-5. ПСИХОЛОГИЧЕСКИЙ НАСТРОЙ — как справиться с волнением
-6. ПОСЛЕДНИЕ 3 ДНЯ ПЕРЕД ЦТ — что делать и чего НЕ делать
-` : `
-Разбери тему или задание: "${inputText || data.subjectCT}" в контексте ЦТ/ЦЭ по предмету "${data.subjectCT}".
-Объясни подробно, покажи методы решения, дай похожие примеры в формате ЦТ.
-`}`,
-
-    exam9_prep: isSolveOwn9
-      ? solveOwnPrompt(data.subject9, 'экзамен после 9 класса в Беларуси', inputText)
-      : `Ты — эксперт по подготовке к переводным экзаменам после 9 класса в Беларуси.
-Предмет: ${data.subject9}
-Запрос: ${data.exam9Mode}
-${inputText ? 'Конкретная тема: ' + inputText : ''}
-
-${ctKnowledge ? 'БАЗА ЗНАНИЙ:\n' + ctKnowledge : ''}
-
-${data.exam9Mode.includes('Разбор типичных') ? `
-Дай 5-7 типичных заданий экзамена после 9 класса по "${data.subject9}" с полным разбором каждого.
-Для каждого: условие → решение по шагам → ответ → типичные ошибки.
-${data.subject9.includes('язык') ? 'Учти специфику языкового экзамена (изложение, грамматика, орфография).' : ''}
-${data.subject9.includes('История') ? 'Учти специфику: даты, события, исторические личности, причинно-следственные связи.' : ''}
-` : data.exam9Mode.includes('теория') ? `
-Дай всю теорию за курс 9 класса по "${data.subject9}" нужную для экзамена.
-Структурируй по темам. Выдели самое важное.
-${data.subject9.includes('язык') ? 'Включи: орфограммы, пунктуационные правила, грамматику.' : ''}
-${data.subject9.includes('История') ? 'Включи: ключевые даты, события, личности.' : ''}
-${data.subject9 === 'Математика' ? 'Включи: все формулы, теоремы, алгоритмы решения задач.' : ''}
-` : data.exam9Mode.includes('Пробный') ? `
-Составь полный пробный экзамен по "${data.subject9}" уровня 9 класса Беларуси.
-Задания должны соответствовать реальному формату экзамена.
-После — ответы и критерии оценивания.
-` : data.exam9Mode.includes('Стратегия') ? `
-Дай стратегию успешной сдачи экзамена по "${data.subject9}" после 9 класса в Беларуси:
-— Как эффективно готовиться в оставшееся время
-— Что точно будет на экзамене (по программе белорусской школы)
-— Как вести себя на экзамене
-— Типичные ошибки девятиклассников
-— Советы по конкретному предмету
-` : `
-Разбери тему: "${inputText || data.subject9}" для экзамена после 9 класса в Беларуси.
-Объясни подробно и понятно.`}`,
-
-    solve: `Реши задачу по "${data.subject}" для ${data.grade}:
+  const ctKnowledge = getKnowledgeForSubject(data.subjectCT || data.subject || '');
+  
+  const prompts = {
+    ct_prep: `Ты — эксперт по ЦТ в Беларуси. Предмет: ${data.subjectCT}.
+${ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : ''}
+${data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' : 
+data.ctMode === 'Вся теория для ЦТ' ? 'Дай всю теорию для ЦТ по ' + data.subjectCT + ' в формате LaTeX!' :
+data.ctMode === 'Стратегия сдачи ЦТ' ? 'Дай стратегию сдачи ЦТ по ' + data.subjectCT + '!' :
+'Разбери типичные задания ЦТ по ' + data.subjectCT}`,
+    
+    solve: `Реши задачу по ${data.subject} (${data.grade}):
 ${inputText}
-ДАНО: (если применимо)
-НАЙТИ:
-РЕШЕНИЕ: (каждый шаг с объяснением ПОЧЕМУ именно так)
-ОТВЕТ:
-ПРОВЕРКА:
-После — объясни метод и дай 1 похожую задачу.`,
-
-    explain: `Объясни тему "${inputText}" по предмету "${data.subject}". Уровень: ${data.level}.
-ЧТО ЭТО — простое определение своими словами
-В ЖИЗНИ — реальная аналогия
-КАК РАБОТАЕТ — механизм, формулы, правила
-ПРИМЕР — конкретный разбор шаг за шагом
-ЧАСТЫЕ ОШИБКИ — что важно не перепутать
-ЗАПОМНИ — главная мысль одним предложением`,
-
-    summary: `Создай подробный конспект по теме "${inputText}" для ${data.grade} (${data.subject}).
-ТЕМА / ОСНОВНЫЕ ПОНЯТИЯ / ФОРМУЛЫ И ПРАВИЛА / ОСНОВНОЕ СОДЕРЖАНИЕ / ПРИМЕРЫ / ВАЖНО ПОМНИТЬ / ВОПРОСЫ ДЛЯ САМОПРОВЕРКИ (3-5)`,
-
-    schema: `Схема-шпаргалка по теме "${inputText}" (${data.subject}).
-ГЛАВНОЕ / ФОРМУЛЫ / ПРИМЕРЫ / НЕ ЗАБУДЬ / ВЫВОД. Максимально компактно.`,
-
-    oral_exam: `Устный опрос по "${data.examTopic}" для ${data.grade}. ${data.examCount} вопросов.
-Формат: Вопрос N (уровень) + Ожидаемый ответ. Повышай сложность.
-В конце: типичные ошибки + совет.`,
-
-    lit_analysis: `Полный анализ "${data.litTitle}" (${data.litAuthor}) для ${data.grade}.
-ОБ АВТОРЕ / ИСТОРИЯ СОЗДАНИЯ / ЖАНР / СЮЖЕТ / ГЕРОИ / ТЕМЫ И ИДЕИ / ПРОБЛЕМАТИКА / ХУДОЖЕСТВЕННЫЕ ПРИЁМЫ / 5 КЛЮЧЕВЫХ ЦИТАТ / ВЫВОД`,
-
-    essay: `Помощь с сочинением: "${inputText}" для ${data.grade}. Тип: ${data.essayType}.
-${data.essayType === 'Написать сочинение' ? 'Напиши полное сочинение: вступление, основная часть с аргументами из литературы, заключение.' :
-data.essayType === 'Составить план' ? 'Подробный план с тезисами.' :
-data.essayType === 'Написать вступление' ? '2-3 варианта вступления.' :
-data.essayType === 'Подобрать аргументы и цитаты' ? '3-5 аргументов с цитатами из произведений.' :
-data.essayType === 'Написать заключение' ? '2 варианта заключения.' : 'Полный разбор темы.'}`,
-
+ДАЙ: условие → решение по шагам → ответ → проверка. Используй LaTeX для формул!`,
+    
+    explain: `Объясни тему "${inputText}" по ${data.subject}. Уровень: ${data.level}. Используй примеры и LaTeX для формул!`,
+    
+    summary: `Создай конспект по "${inputText}" (${data.subject}, ${data.grade}).`,
+    
+    schema: `Сделай схему-шпаргалку по "${inputText}" (${data.subject}). Компактно и визуально!`,
+    
+    lit_analysis: `Проанализируй "${data.litTitle}" (${data.litAuthor}), ${data.grade}.`,
+    
     chat: inputText,
-
-    lesson: `План урока ${data.lessonDuration} по "${inputText}" (${data.subject}, ${data.grade}).
-Цель / Задачи / Оборудование / Тип урока
-ХОД: оргмомент → актуализация (3 вопроса) → объяснение → закрепление → самостоятельная → рефлексия → домашнее задание
-МЕТОДИЧЕСКИЕ СОВЕТЫ / ТИПИЧНЫЕ ЗАТРУДНЕНИЯ`,
-
-    tasks: `${data.count} разноуровневых заданий по "${inputText}" (${data.subject}, ${data.grade}).
-Базовый / Средний / Продвинутый. Каждое: условие + ответ + краткое решение.`,
-
-    variants: `${data.variantCount} варианта контрольной по "${inputText}" (${data.subject}, ${data.grade}).
-По ${data.taskCount} заданий. Равная сложность, разное содержание. ОТВЕТЫ И КРИТЕРИИ.`,
-
-    differentiation: `Разноуровневые задания по "${inputText}" (${data.subject}, ${data.grade}).
-УРОВЕНЬ А (слабые) / УРОВЕНЬ Б (средние) / УРОВЕНЬ В (сильные) / ОЛИМПИАДНЫЙ. ОТВЕТЫ.`,
-
-    lit_lesson: `Урок литературы "${data.litTitle}" (${data.litAuthor}), ${data.grade}, ${data.lessonDuration}.
-Цели → Актуализация → Анализ (сюжет, герои, темы) → Работа с текстом → Творческое задание → Рефлексия.
-10 вопросов для класса. Методические приёмы.`,
-
-    generate_quiz: `${data.quizCount} вопросов (${data.quizType}) по тексту:
-${inputText}
-${data.quizType.includes('Тест') ? 'Формат: вопрос + A/B/C/D + правильный ответ с объяснением.' : 'Формат: вопрос + примерный ответ.'}
-Проверяй понимание, не только память.`,
-
-    lesson_plan: `Конспект занятия для ${data.ageGroup}: "${inputText}". Тип: ${data.lessonType}.
-Цель / Задачи / Оборудование / Предварительная работа
-ХОД: вводная (мотивация) → основная → физкультминутка → закрепление → рефлексия. МЕТОДИЧЕСКИЕ СОВЕТЫ.`,
-
-    parent_advice: `Консультация родителям: ${data.adviceTopic}. ${inputText}
-ПОЧЕМУ ЭТО ПРОИСХОДИТ / КАК ЧУВСТВУЕТ РЕБЁНОК / ЧТО ДЕЛАТЬ / ЧЕГО НЕ ДЕЛАТЬ / КАК ГОВОРИТЬ С РЕБЁНКОМ / КОГДА К СПЕЦИАЛИСТУ`,
-
-    planning: `${data.planType} для ${data.planAge}: "${inputText}".
-${data.planType.includes('неделю') ? 'Пн/Вт/Ср/Чт/Пт — виды деятельности каждый день.' : '4 недели + виды деятельности + итоговое мероприятие.'}`,
-
-    games: `${data.count || 5} игр для ${data.gameAge} (${data.gameType}): "${inputText}".
-Для каждой: название / цель / кол-во детей / материалы / правила / усложнение.`,
-
-    holiday: `Сценарий "${data.holidayType}" для ${data.holidayAge}. ${inputText}
-Действующие лица / Оборудование / Музыка.
-Открытие → Выступления (тексты) → Игры (3-4 шт.) → Сюрприз → Финал. Тексты для персонажей.`,
-
-    observation: `Анализ поведения ребёнка ${data.ageGroup}: ${inputText}
-АНАЛИЗ (норма?) / ПРИЧИНЫ / РЕКОМЕНДАЦИИ ВОСПИТАТЕЛЮ / РЕКОМЕНДАЦИИ РОДИТЕЛЯМ / КОГДА К СПЕЦИАЛИСТУ`
+    
+    lesson: `План урока ${data.duration} по "${inputText}" (${data.subject}, ${data.grade}).`,
+    
+    tasks: `${data.count} заданий по "${inputText}" (${data.subject}, ${data.grade}).`,
+    
+    variants: `${data.variantCount} варианта контрольной по "${inputText}" (${data.subject}, ${data.grade}).`,
+    
+    generate_quiz: `${data.quizCount} вопросов (${data.quizType}) по тексту:\n${inputText}`,
+    
+    differentiation: `Разноуровневые задания по "${inputText}" (${data.subject}, ${data.grade}).`
   };
-  return p[actionId] || inputText;
+  
+  return prompts[actionId] || inputText;
 }
 
-function addChatMessage(text, isUser) {
+function buildUserMessage(actionId, inputText, data) {
+  const types = {
+    ct_prep: `ЦТ: ${data.subjectCT} — ${data.ctMode}`,
+    solve: `Задача: ${inputText.substring(0, 50)}...`,
+    explain: `Объяснить: ${inputText.substring(0, 50)}...`,
+    summary: `Конспект: ${inputText.substring(0, 50)}...`,
+    schema: `Схема: ${inputText.substring(0, 50)}...`,
+    lit_analysis: `Анализ: ${data.litTitle}`,
+    chat: inputText.substring(0, 100),
+    lesson: `Урок: ${inputText.substring(0, 50)}...`,
+    tasks: `Задания: ${inputText.substring(0, 50)}...`,
+    variants: `Контрольная: ${inputText.substring(0, 50)}...`,
+    generate_quiz: `Вопросы по тексту`,
+    differentiation: `Дифференциация: ${inputText.substring(0, 50)}...`
+  };
+  return types[actionId] || inputText;
+}
+
+function addChatMessage(text, isUser, htmlContent = null) {
   const container = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'message ' + (isUser ? 'user' : 'ai');
   const label = document.createElement('div');
-  label.className = 'message-label'; label.textContent = isUser ? 'Вы' : 'NEVIO';
+  label.className = 'message-label';
+  label.textContent = isUser ? 'Вы' : 'NEVIO';
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble' + (isUser ? '' : ' ai-content');
-  if (isUser) bubble.textContent = text; else bubble.innerHTML = formatAIResponse(text);
-  div.appendChild(label); div.appendChild(bubble);
+  if (htmlContent) {
+    bubble.innerHTML = htmlContent;
+  } else if (isUser) {
+    bubble.textContent = text;
+  } else {
+    bubble.innerHTML = formatAIResponse(text);
+  }
+  div.appendChild(label);
+  div.appendChild(bubble);
   container.appendChild(div);
   container.scrollTop = 99999;
+  
+  // Рендерим MathJax
+  if (!isUser && htmlContent) {
+    setTimeout(() => {
+      if (window.MathJax?.typesetPromise) {
+        MathJax.typesetPromise([bubble]).catch(() => {});
+      }
+    }, 100);
+  }
 }
 
 function addLoadingMessage() {
   const id = 'loading_' + Date.now();
-  const div = document.createElement('div'); div.className = 'message ai'; div.id = id;
-  const label = document.createElement('div'); label.className = 'message-label'; label.textContent = 'NEVIO';
-  const bubble = document.createElement('div'); bubble.className = 'message-bubble';
-  bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span><span class="loading-text">Думаю...</span></div>';
-  div.appendChild(label); div.appendChild(bubble);
+  const div = document.createElement('div');
+  div.className = 'message ai';
+  div.id = id;
+  const label = document.createElement('div');
+  label.className = 'message-label';
+  label.textContent = 'NEVIO';
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span><span></span><span></span></div>';
+  div.appendChild(label);
+  div.appendChild(bubble);
   document.getElementById('chatMessages').appendChild(div);
   document.getElementById('chatMessages').scrollTop = 99999;
   return id;
@@ -1884,16 +2068,9 @@ function addLoadingMessage() {
 
 function removeLoadingMessage(id) { document.getElementById(id)?.remove(); }
 
-function copyToClipboard(text, btn) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.innerHTML = '<i class="fas fa-check"></i> Скопировано';
-    setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Скопировать'; }, 2000);
-  }).catch(() => showToast('Не удалось скопировать'));
-}
-
 function saveToHistory(item) {
   state.history.push(item);
-  if (state.history.length > 150) state.history.shift();
+  if (state.history.length > 200) state.history.shift();
   saveData();
 }
 
@@ -1918,14 +2095,16 @@ function viewHistoryItem(index) {
   const item = state.history[index];
   if (!item) return;
   const config = getAllItems().find(m => m.id === item.type);
-  if (!config) return;
+  
   state.currentActionId = item.type;
-  state.conversationHistory = [{ role:'user', content:item.input }, { role:'assistant', content:item.result }];
-  document.getElementById('actionTitle').innerHTML = `<i class="${config.icon}"></i> ${config.title}`;
+  state.conversationHistory = [{ role: 'user', content: item.input }, { role: 'assistant', content: item.result }];
+  
+  document.getElementById('actionTitle').innerHTML = `<i class="${config?.icon || 'fas fa-comment'}"></i> ${config?.title || 'Запрос'}`;
   document.getElementById('actionDescription').textContent = 'Из истории';
   document.getElementById('actionForm').innerHTML = '';
   document.getElementById('chatMessages').innerHTML = '';
   document.getElementById('continueChatArea').style.display = 'none';
+  
   addChatMessage(item.input, true);
   addChatMessage(item.result, false);
   showContinueChat();
@@ -1934,7 +2113,10 @@ function viewHistoryItem(index) {
 
 function clearHistory() {
   if (confirm('Удалить всю историю запросов?')) {
-    state.history = []; saveData(); showToast('История очищена'); showHistory();
+    state.history = [];
+    saveData();
+    showToast('✅ История очищена');
+    showHistory();
   }
 }
 
@@ -1945,15 +2127,28 @@ function updateProfile() {
     document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
     document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
   }
-  const r = { student:'Ученик', teacher:'Учитель', kindergarten:'Воспитатель' };
+  const r = { student: '🎓 Ученик', teacher: '👩‍🏫 Учитель' };
   document.getElementById('profileRole').textContent = r[state.role] || '';
+}
+
+function updateStats() {
+  const stats = state.stats;
+  document.getElementById('statQueries').textContent = stats.queries || 0;
+  document.getElementById('statTests').textContent = stats.tests || 0;
+  
+  if (stats.firstUse) {
+    const days = Math.floor((Date.now() - new Date(stats.firstUse)) / 86400000);
+    document.getElementById('statDays').textContent = days || 1;
+  } else {
+    document.getElementById('statDays').textContent = '0';
+  }
 }
 
 function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-theme');
   localStorage.setItem('nevioTheme', isDark ? 'dark' : 'light');
   updateThemeUI(isDark);
-  showToast(isDark ? 'Тёмная тема' : 'Светлая тема');
+  showToast(isDark ? '🌙 Тёмная тема' : '☀️ Светлая тема');
 }
 
 function updateThemeUI(isDark) {
@@ -1963,57 +2158,85 @@ function updateThemeUI(isDark) {
 
 function deleteAccount() {
   if (confirm('Удалить все данные и сменить роль?')) {
-    localStorage.removeItem('nevioData_v2');
-    state.role = null; state.history = []; state.conversationHistory = [];
-    showPage('roleSelectionPage'); showToast('Аккаунт удалён');
+    localStorage.removeItem('nevioData_v3');
+    state.role = null;
+    state.history = [];
+    state.conversationHistory = [];
+    state.stats = { queries: 0, tests: 0, firstUse: null };
+    showPage('roleSelectionPage');
+    showToast('✅ Аккаунт удалён');
   }
 }
 
+function showAbout() { showPage('aboutPage'); }
 function showPrivacy() { showPage('privacyPage'); }
-function showTerms() { showPage('termsPage'); }
 
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId)?.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  
   if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
   if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
-  if (pageId === 'settingsPage') document.getElementById('nav-settings')?.classList.add('active');
+  if (pageId === 'settingsPage' || pageId === 'aboutPage' || pageId === 'privacyPage') {
+    document.getElementById('nav-settings')?.classList.add('active');
+  }
   window.scrollTo(0, 0);
 }
 
-function goBack() { showPage('mainPage'); state.conversationHistory = []; }
+function goBack() {
+  showPage('mainPage');
+  state.conversationHistory = [];
+}
 
 function getActionName(id) {
-  const n = {
-    ct_prep:'Подготовка к ЦТ/ЦЭ', exam9_prep:'Экзамен 9 класса', ct_test:'Тест ЦТ',
-    solve:'Решение задачи', explain:'Объяснение темы', summary:'Конспект', schema:'Схема',
-    oral_exam:'Устный опрос', lit_analysis:'Анализ произведения', essay:'Сочинение',
-    chat:'Свободный чат', lesson:'План урока', tasks:'Задания', variants:'Контрольная',
-    differentiation:'Дифференциация', lit_lesson:'Урок литературы', generate_quiz:'Вопросы по тексту',
-    lesson_plan:'Конспект занятия', parent_advice:'Консультация', planning:'Планирование',
-    games:'Игры', holiday:'Праздник', observation:'Наблюдение'
+  const names = {
+    ct_prep: '🎯 ЦТ/ЦЭ',
+    ct_test: '📝 Тест',
+    formula_book: '📐 Формулы',
+    solve: '🧮 Задача',
+    explain: '💡 Объяснение',
+    summary: '📖 Конспект',
+    schema: '📊 Схема',
+    lit_analysis: '📚 Литература',
+    chat: '💬 Чат',
+    lesson: '📋 План урока',
+    tasks: '📝 Задания',
+    variants: '📄 Контрольная',
+    generate_quiz: '❓ Тест',
+    differentiation: '🎚️ Дифференциация'
   };
-  return n[id] || 'Запрос';
+  return names[id] || '📌 Запрос';
 }
 
 function formatDate(ts) {
-  const d = new Date(ts), diff = Date.now() - d;
-  const m = Math.floor(diff/60000), h = Math.floor(diff/3600000), days = Math.floor(diff/86400000);
+  const d = new Date(ts);
+  const diff = Date.now() - d;
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  
   if (m < 1) return 'Только что';
-  if (m < 60) return m + ' мин назад';
-  if (h < 24) return h + ' ч назад';
-  if (days < 7) return days + ' дн назад';
-  return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+  if (m < 60) return m + ' мин';
+  if (h < 24) return h + ' ч';
+  if (days < 7) return days + ' дн';
+  return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
 }
 
 function saveData() {
-  try { localStorage.setItem('nevioData_v2', JSON.stringify({ role:state.role, history:state.history })); } catch(e) {}
+  try {
+    localStorage.setItem('nevioData_v3', JSON.stringify({
+      role: state.role,
+      history: state.history,
+      stats: state.stats
+    }));
+  } catch(e) {}
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  t.textContent = msg;
+  t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
