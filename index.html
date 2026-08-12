@@ -867,11 +867,41 @@
     .stat-pill { background:var(--card); border:1.5px solid var(--border); border-radius:14px; padding:10px 12px; }
     .stat-pill b { display:block; font-size:18px; color:var(--gold); }
     .stat-pill span { font-size:11px; color:var(--text-secondary); }
-    .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; }
+    .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; display:block; }
+    .off-video-wrap { position:relative; border-radius:16px; overflow:hidden; margin:0 0 12px; background:#111; }
+    .off-video-wrap .off-video { margin:0; max-height:240px; }
     .off-frame {
       width:100%; height:68vh; min-height:420px; border:0; border-radius:16px; margin:0 0 12px;
       background:var(--surface); box-shadow:inset 0 0 0 1.5px var(--border);
     }
+    .adu-hero-mini {
+      position:relative; border-radius:20px; padding:18px 16px 16px; margin-bottom:12px; overflow:hidden;
+      background:linear-gradient(145deg,#FFF8E6,#F7E7B8 55%,#EED7A0);
+      border:1.5px solid rgba(196,145,26,0.28);
+    }
+    body.dark-theme .adu-hero-mini {
+      background:linear-gradient(145deg,#1b1608,#241c0a 60%,#16120a);
+      border-color:rgba(232,177,62,0.28);
+    }
+    .adu-hero-mini h2 { font-size:20px; font-weight:800; line-height:1.25; margin-bottom:6px; }
+    .adu-hero-mini p { font-size:13px; color:var(--text-secondary); line-height:1.55; }
+    .adu-cal { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:4px 0 12px; }
+    .adu-cal .stat-pill b { font-size:12px; line-height:1.4; color:var(--text); font-weight:700; }
+    .adu-cal .stat-pill span { color:var(--gold); font-weight:800; font-size:10px; letter-spacing:0.4px; text-transform:uppercase; }
+    .mat-item {
+      display:flex; gap:10px; align-items:flex-start; background:var(--card); border:1.5px solid var(--border);
+      border-radius:14px; padding:12px 14px; margin-bottom:6px; cursor:pointer; transition:all 0.2s;
+      text-align:left; width:100%; color:inherit; font:inherit;
+    }
+    .mat-item:hover { border-color:var(--gold); transform:translateX(3px); }
+    .mat-item > i { color:var(--gold); margin-top:3px; width:16px; text-align:center; flex-shrink:0; }
+    .mat-item h4 { font-size:13px; font-weight:700; line-height:1.4; }
+    .mat-item p { font-size:11px; color:var(--text-secondary); margin-top:3px; line-height:1.4; }
+    .adu-note {
+      background:rgba(232,177,62,0.08); border:1px solid rgba(232,177,62,0.2);
+      border-radius:14px; padding:12px 14px; margin-bottom:10px; font-size:13px; line-height:1.55; color:var(--text-secondary);
+    }
+    .adu-note strong { color:var(--gold); }
   </style>
 </head>
 <body>
@@ -2435,9 +2465,9 @@ const EIOR_CATALOG = 'https://eior.by/obrazovanie/obshchee-srednee/index.php';
 const EIOR_CT = 'https://eior.by/podgotovka-k-tst/';
 const ADU_HOME = 'https://adu.by/ru/';
 const ADU_BASE = 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/obshchee-srednee-obrazovanie';
-const LIVE_TTL = 15 * 60 * 1000;
+const LIVE_TTL = 6 * 60 * 60 * 1000;
 
-let officialState = { view: 'hub', grade: 9, subject: null, topicN: null, query: '', url: '', page: null };
+let officialState = { view: 'hub', grade: 9, subject: null, topicN: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
 let officialProgress = { done: {}, fav: [], grade: 9 };
 const liveMem = {};
 
@@ -2587,22 +2617,21 @@ function writeCache(url, data) {
   try { localStorage.setItem(cacheKey(url), JSON.stringify(obj)); } catch (e) {}
 }
 
-// Прокси-цепочка для живых страниц ЕИОР/Аду.бай.
-// Ступень 1 — Jina Reader: единственный стабильный источник для eior.by.
-// Ступень 2 — запасные CORS-прокси и архив (могут быть недоступны).
-// Если всё упало — отдаём встроенную карточку раздела, а не ошибку.
+// Прокси-цепочка: гонка быстрых источников, короткий таймаут.
+// Если сеть молчит — встроенная карточка раздела, без текста про ошибку сайта.
+const liveInflight = {};
 const LIVE_PROXY_GROUPS = [
   {
-    timeout: 25000,
+    timeout: 9000,
     proxies: [
-      { kind: 'md', make: u => 'https://r.jina.ai/' + u }
+      { kind: 'md', make: u => 'https://r.jina.ai/' + u },
+      { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+      { kind: 'json', make: u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u) }
     ]
   },
   {
-    timeout: 12000,
+    timeout: 7000,
     proxies: [
-      { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
-      { kind: 'json', make: u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u) },
       { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
       { kind: 'html', make: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
       { kind: 'html', make: u => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
@@ -2610,7 +2639,7 @@ const LIVE_PROXY_GROUPS = [
     ]
   }
 ];
-const LIVE_PROXY_QUICK_TIMEOUT = 20000;
+const LIVE_PROXY_QUICK_TIMEOUT = 7000;
 
 function firstSuccess(promises) {
   return new Promise(function (resolve, reject) {
@@ -2655,11 +2684,37 @@ function readStaleCache(url) {
   try { return JSON.parse(localStorage.getItem(cacheKey(url)) || 'null'); } catch (e) { return null; }
 }
 
+function refreshLiveInBackground(url) {
+  if (!url || liveInflight[url] || refreshLiveInBackground.busy[url]) return;
+  refreshLiveInBackground.busy[url] = true;
+  fetchLive(url, true, false).catch(function () {}).then(function () {
+    delete refreshLiveInBackground.busy[url];
+  });
+}
+refreshLiveInBackground.busy = {};
+
 async function fetchLive(url, force, quick) {
   if (!force) {
     const hit = readCache(url);
     if (hit && !hit.data.offline) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
+    const stale = readStaleCache(url);
+    if (stale && stale.data && !stale.data.offline) {
+      refreshLiveInBackground(url);
+      return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts, archived: !!stale.data.archived }, stale.data);
+    }
   }
+  if (liveInflight[url]) return liveInflight[url];
+  liveInflight[url] = fetchLiveNetwork(url, quick).then(function (data) {
+    delete liveInflight[url];
+    return data;
+  }, function (err) {
+    delete liveInflight[url];
+    throw err;
+  });
+  return liveInflight[url];
+}
+
+async function fetchLiveNetwork(url, quick) {
   let lastErr = 'нет ответа';
   for (let gi = 0; gi < LIVE_PROXY_GROUPS.length; gi++) {
     const grp = LIVE_PROXY_GROUPS[gi];
@@ -2680,6 +2735,7 @@ async function fetchLive(url, force, quick) {
       parsed.source = url;
       if (winner.proxy.kind === 'arch') parsed.archived = true;
       writeCache(url, parsed);
+      if (/eior\.by\/obrazovanie\/obshchee-srednee/i.test(url)) ingestEiorCatalog(parsed);
       return Object.assign({ cached: false, age: 0, archived: !!parsed.archived }, parsed);
     } catch (e) {
       lastErr = e.message || 'нет ответа';
@@ -2692,11 +2748,41 @@ async function fetchLive(url, force, quick) {
   return Object.assign({ cached: false, age: 0, offline: true }, syntheticOfficialPage(url));
 }
 
+function ingestEiorCatalog(page) {
+  if (!page || !page.links || !page.links.length) return;
+  const buckets = {};
+  page.links.forEach(function (l) {
+    const m = (l.href || '').match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
+    if (!m) return;
+    const key = m[1] + '\t' + m[2];
+    if (!buckets[key]) buckets[key] = [];
+    const n = parseInt(m[3], 10);
+    if (buckets[key].some(function (t) { return t.n === n; })) return;
+    buckets[key].push({ n: n, title: (l.title || '').replace(/^Тема\s*\d+\.?\s*/i, '') || ('Тема ' + n) });
+  });
+  EIOR_SUBJECTS.forEach(function (subj) {
+    const aliases = EIOR_SLUG_ALIASES[subj.id] || [subj.slug];
+    subj.grades.forEach(function (g) {
+      const classSlug = eiorClassSlug(g);
+      for (let i = 0; i < aliases.length; i++) {
+        const pack = buckets[classSlug + '\t' + aliases[i]];
+        if (!pack || !pack.length) continue;
+        pack.sort(function (a, b) { return a.n - b.n; });
+        rememberSlug(g, subj.id, aliases[i]);
+        writeCache('list:' + g + ':' + subj.id, pack);
+        break;
+      }
+    });
+  });
+}
+
 function knownOfficialMeta(url) {
   const all = EIOR_SECTIONS.concat(ADU_SECTIONS);
   for (let i = 0; i < all.length; i++) {
     if (all[i].url === url) return all[i];
   }
+  const item = findAduItemByUrl(url);
+  if (item) return { title: item.title, desc: item.desc, url: item.url, icon: item.icon };
   return null;
 }
 
@@ -2745,7 +2831,7 @@ function absUrl(href, base) {
   try { return new URL(href, base).href; } catch (e) { return ''; }
 }
 function sameOfficial(u) {
-  return /eior\.by|adu\.by|olimp\.adu\.by|e-padruchnik/i.test(u || '');
+  return /eior\.by|adu\.by|olimp\.adu\.by|e-padruchnik|profil\.adu\.by|vospitanie\.adu\.by/i.test(u || '');
 }
 function cleanText(s) {
   return String(s || '').replace(/\s+/g, ' ').trim();
@@ -2908,23 +2994,696 @@ const EIOR_SECTIONS = [
   { id: 'contacts', title: 'Контакты ЕИОР', desc: 'ГИАЦ Министерства образования', url: 'https://eior.by/kontakty/', icon: 'fas fa-phone' }
 ];
 
-const ADU_SECTIONS = [
-  { id: 'home', title: 'Новости портала', desc: 'Свежие материалы Национального образовательного портала', url: ADU_HOME, icon: 'fas fa-newspaper' },
-  { id: 'year', title: 'Учебный год 2025/2026', desc: 'Организация образовательного процесса', url: ADU_HOME, icon: 'fas fa-calendar-alt' },
-  { id: 'p1', title: 'Программы I–IV классы', desc: 'Письма и УМО начальной школы', url: ADU_BASE + '/uchebnye-predmety-i-iv-klassy/i-klass.html', icon: 'fas fa-child' },
-  { id: 'math', title: 'Программа: математика', desc: 'V–XI классы, базовый и повышенный уровень', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/matematika.html', icon: 'fas fa-calculator' },
-  { id: 'fiz', title: 'Программа: физика', desc: 'Учебная программа и рекомендации', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/fizika.html', icon: 'fas fa-atom' },
-  { id: 'him', title: 'Программа: химия', desc: 'Учебная программа и рекомендации', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/himiya.html', icon: 'fas fa-flask' },
-  { id: 'bio', title: 'Программа: биология', desc: 'Учебная программа', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/biologiya.html', icon: 'fas fa-dna' },
-  { id: 'geo', title: 'Программа: география', desc: 'V–XI, в том числе повышенный уровень', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/geografiya.html', icon: 'fas fa-map' },
-  { id: 'inf', title: 'Программа: информатика', desc: 'Учебная программа и ЭОР', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/informatika.html', icon: 'fas fa-code' },
-  { id: 'exams', title: 'Итоговые и вступительные', desc: 'Билеты, ЦТ/ЦЭ, методика', url: 'https://adu.by/ru/pedagogam/ekzameny.html', icon: 'fas fa-file-signature' },
-  { id: 'olymp', title: 'Республиканская олимпиада', desc: 'Задания и бланки по предметам', url: 'https://adu.by/ru/uchenikam/respublikanskaya-olimpiada-po-uchebnym-predmetam.html', icon: 'fas fa-trophy' },
-  { id: 'olimp', title: 'olimp.adu.by', desc: 'Олимпиады, турниры, конкурсы', url: 'https://olimp.adu.by/', icon: 'fas fa-medal' },
-  { id: 'docs', title: 'Нормативные документы', desc: 'Документы Министерства образования', url: 'https://adu.by/ru/component/content/category/pedagogam/normativnye-pravovye-dokumenty.html?Itemid=101', icon: 'fas fa-gavel' },
-  { id: 'books', title: 'Электронные учебники Аду.бай', desc: 'e-padruchnik.adu.by', url: 'http://e-padruchnik.adu.by/', icon: 'fas fa-book-reader' },
-  { id: 'about', title: 'О портале', desc: 'Национальный образовательный портал', url: 'https://adu.by/ru/o-portale.html', icon: 'fas fa-info-circle' }
+const ADU_PRIM = ADU_BASE + '/uchebnye-predmety-i-iv-klassy';
+const ADU_SEC = ADU_BASE + '/uchebnye-predmety-v-xi-klassy';
+function aduM(t, d) { return { t: t, d: d || '' }; }
+
+const ADU_CATS = [
+  {
+    id: 'year', title: 'Учебный год 2025/2026', desc: 'Четверти, каникулы, первый урок, сроки экзаменов', icon: 'fas fa-calendar-alt',
+    url: 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/',
+    items: ['year', 'imp', 'finish']
+  },
+  {
+    id: 'primary', title: 'I–IV классы', desc: 'Программы и УМО начальной школы', icon: 'fas fa-child',
+    url: ADU_PRIM + '.html',
+    items: ['p1', 'p2', 'p3', 'p4']
+  },
+  {
+    id: 'secondary', title: 'V–XI классы', desc: 'Все учебные предметы, программы и факультативы', icon: 'fas fa-book-open',
+    url: ADU_SEC + '.html',
+    items: ['belmova', 'bellit', 'rusyaz', 'ruslit', 'lang', 'math', 'inf', 'histby', 'histw', 'histctx', 'obsh', 'geo', 'bio', 'fiz', 'astr', 'him', 'trud', 'cherch', 'isk', 'fizkult']
+  },
+  {
+    id: 'exams', title: 'Экзамены и ЦТ/ЦЭ', desc: 'Итоговые испытания, билеты, видеоуроки РИКЗ', icon: 'fas fa-file-signature',
+    url: 'https://adu.by/ru/pedagogam/ekzameny.html',
+    items: ['exams']
+  },
+  {
+    id: 'olymp', title: 'Олимпиады', desc: 'Республиканская олимпиада, olimp.adu.by, задания', icon: 'fas fa-trophy',
+    url: 'https://adu.by/ru/uchenikam/respublikanskaya-olimpiada-po-uchebnym-predmetam.html',
+    items: ['olymp', 'olimp']
+  },
+  {
+    id: 'books', title: 'Учебники и пособия', desc: 'Электронная библиотека e-padruchnik и УМК', icon: 'fas fa-book-reader',
+    url: 'http://e-padruchnik.adu.by/',
+    items: ['books', 'facult']
+  },
+  {
+    id: 'process', title: 'Образовательный процесс', desc: 'Дошкольное, специальное, профильное, воспитание', icon: 'fas fa-sitemap',
+    url: 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/',
+    items: ['preschool', 'special', 'profile', 'vospitanie']
+  },
+  {
+    id: 'docs', title: 'Документы и портал', desc: 'Нормативные акты, контакты НИО', icon: 'fas fa-gavel',
+    url: 'https://adu.by/ru/component/content/category/pedagogam/normativnye-pravovye-dokumenty.html?Itemid=101',
+    items: ['docs', 'about']
+  }
 ];
+
+const ADU_ITEMS = {
+  year: {
+    id: 'year', cat: 'year', title: 'Календарь 2025/2026', icon: 'fas fa-calendar-alt',
+    desc: 'Официальные сроки четвертей, каникул и первого урока с Аду.бай',
+    url: 'https://adu.by/ru/homeru/news/novostnaya-lenta/novyj-uchebnyj-god-v-tsifrakh-3.html',
+    kind: 'year',
+    notes: [
+      { t: 'Первый урок', d: 'Тема 1 сентября 2025: «Эстафета поколений: сохраняя прошлое, создаем будущее». Матрица и презентация — на vospitanie.adu.by в «Библиотеке единых уроков».' },
+      { t: 'Новые пособия', d: 'К году подготовлены 28 обновлённых и новых учебников. Среди новых — «Основы безопасности жизнедеятельности» для 3 класса и «История Беларуси в контексте всемирной истории» для 11 класса.' }
+    ],
+    groups: [
+      { name: 'Четверти', items: [
+        aduM('I четверть', '1 сентября — 1 ноября 2025'),
+        aduM('II четверть', '10 ноября — 24 декабря 2025'),
+        aduM('III четверть', '8 января — 21 марта 2026'),
+        aduM('IV четверть', '30 марта — 31 мая 2026; для IX (X) и XI (XII) классов — до 25 мая 2026')
+      ]},
+      { name: 'Каникулы', items: [
+        aduM('Осенние', '8 дней: 2–9 ноября 2025'),
+        aduM('Зимние', '14 дней: 25 декабря 2025 — 7 января 2026'),
+        aduM('Дополнительные зимние · I–II классы', '7 дней: 16–22 февраля 2026'),
+        aduM('Весенние', '8 дней: 22–29 марта 2026'),
+        aduM('Летние', '1 июня — 31 августа 2026 (92 дня); после 9 класса — с 11 июня')
+      ]}
+    ]
+  },
+  imp: {
+    id: 'imp', cat: 'year', title: 'Организация процесса 2025/2026', icon: 'fas fa-envelope-open-text',
+    desc: 'Инструктивно-методическое письмо Министерства образования',
+    url: 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/',
+    groups: [
+      { name: 'Что лежит на портале', items: [
+        aduM('ИМП «Об организации в 2025/2026 учебном году образовательного процесса»', 'Общая часть и приложения по каждому предмету'),
+        aduM('Приложения по предметам', 'Особенности изучения белорусского и русского языков, литератур, истории, математики, физики и остальных предметов'),
+        aduM('Учебные программы', 'Утверждены постановлениями Министерства образования и выложены в предметных разделах I–IV и V–XI'),
+        aduM('УМК факультативов по функциональной грамотности', 'Программа, дидактические материалы и рекомендации учителю')
+      ]}
+    ]
+  },
+  finish: {
+    id: 'finish', cat: 'year', title: 'Окончание 2025/2026 года', icon: 'fas fa-flag-checkered',
+    desc: 'Последний звонок, выпускной и сроки итоговых испытаний',
+    url: 'https://www.adu.by/ru/homeru/news/novostnaya-lenta/o-zavershenii-uchebnykh-zanyatij-i-okonchanii-2025-2026-uchebnogo-goda.html',
+    groups: [
+      { name: 'Даты с портала', items: [
+        aduM('Конец занятий', '29 мая 2026; для IX (X) и XI (XII) классов — 25 мая 2026'),
+        aduM('Последний звонок', '23 мая 2026 — линейки для выпускников 9 и 11 классов'),
+        aduM('Выпускной вечер XI (XII)', 'Рекомендуется 12 июня 2026'),
+        aduM('Экзамены после 9 класса', 'Основные сроки 1–10 июня 2026, дополнительные 17–24 августа 2026'),
+        aduM('ЦЭ по выбору', '26 мая 2026; резерв 20 июня; иные сроки 17 августа'),
+        aduM('ЦЭ по языку', 'Белорусский или русский — 29 мая 2026; резерв 22 июня; иные сроки 19 августа'),
+        aduM('Письмо Министерства образования', 'О завершении учебных занятий и окончании 2025/2026 учебного года — на Аду.бай')
+      ]}
+    ]
+  },
+  p1: {
+    id: 'p1', cat: 'primary', title: 'I класс', icon: 'fas fa-star',
+    desc: 'Программы, диагностика и УМК первого класса',
+    url: ADU_PRIM + '/i-klass.html',
+    groups: [
+      { name: 'Учебные программы', items: [
+        aduM('Обучение грамоте', 'I класс, русский язык обучения'),
+        aduM('Беларуская мова', 'I класс, русскоязычная школа'),
+        aduM('Уводзіны ў школьнае жыццё / Введение в школьную жизнь', 'I класс'),
+        aduM('Навучанне грамаце', 'I класс, белорусский язык обучения'),
+        aduM('Математика', 'I–IV классы'),
+        aduM('Выяўленчае мастацтва', 'I–IV классы'),
+        aduM('Физическая культура и здоровье', 'I–IV классы и спецмедгруппы I–XI')
+      ]},
+      { name: 'Диагностика и УМК', items: [
+        aduM('Стартовая диагностика', 'Индивидуальная и коллективная, навык чтения, бланки фиксации'),
+        aduM('Факультатив «К олимпийским вершинам»', 'I класс'),
+        aduM('«Играем в хоккей» / «Играем в футбол»', 'I–III / I–IV классы'),
+        aduM('Фитодизайн и Музыка', 'Пособия для учителей I–IV')
+      ]}
+    ]
+  },
+  p2: {
+    id: 'p2', cat: 'primary', title: 'II класс', icon: 'fas fa-star',
+    desc: 'Программы и факультативы второго класса',
+    url: ADU_PRIM + '/ii-klass.html',
+    groups: [
+      { name: 'На странице II класса', items: [
+        aduM('Предметные программы II класса', 'Белорусский и русский языки, литературное чтение, математика, человек и мир, искусство, труд, физкультура'),
+        aduM('Иностранный язык', 'Со II класса — английский и другие языки'),
+        aduM('Факультатив «Язык родной, дружи со мной»', 'II–IV классы'),
+        aduM('Математическая радуга, решение текстовых задач, элементы логики', 'I–IV классы')
+      ]}
+    ]
+  },
+  p3: {
+    id: 'p3', cat: 'primary', title: 'III класс', icon: 'fas fa-star',
+    desc: 'Программы третьего класса, новый ОБЖ',
+    url: ADU_PRIM + '/iii-klass.html',
+    groups: [
+      { name: 'На странице III класса', items: [
+        aduM('Предметные программы III класса', 'Языки, литературное чтение, математика, человек и мир'),
+        aduM('Основы безопасности жизнедеятельности', 'Новое пособие для 3 класса к 2025/2026 году'),
+        aduM('Факультативы', '«Речевой этикет», «Путешествие в мир сказки», китайский язык III–XI')
+      ]}
+    ]
+  },
+  p4: {
+    id: 'p4', cat: 'primary', title: 'IV класс', icon: 'fas fa-star',
+    desc: 'Программы четвёртого класса и пособия',
+    url: ADU_PRIM + '/iv-klass.html',
+    groups: [
+      { name: 'Учебные программы и УМК', items: [
+        aduM('Працоўнае навучанне / Трудовое обучение', 'I–IV классы'),
+        aduM('Литературное чтение. Путешествие в мир сказки', 'III–IV, пособие для учителей'),
+        aduM('Традиционные художественные техники', 'IV класс — для учителя и учащихся'),
+        aduM('Фитодизайн', 'I–IV учитель, IV учащиеся'),
+        aduM('Музыка', 'I–IV, пособие для учителей')
+      ]}
+    ]
+  },
+  belmova: {
+    id: 'belmova', cat: 'secondary', title: 'Беларуская мова', icon: 'fas fa-language',
+    desc: 'Программы V–XI, факультативы, нормы оценки',
+    url: ADU_SEC + '/belaruskaya-mova.html',
+    groups: [
+      { name: 'Учебные программы', items: [
+        aduM('Беларуская мова V–IX', 'Белорусский и русский языки обучения'),
+        aduM('Беларуская мова X–XI, повышенный уровень', '')
+      ]},
+      { name: 'Факультативы и методика', items: [
+        aduM('Рыхтуемся да вывучэння на павышаным узроўні', 'IX класс'),
+        aduM('Практыкум па арфаграфіі беларускай мовы', 'X класс'),
+        aduM('Методические указания по контролю и нормам оценки', 'Общее среднее образование')
+      ]}
+    ]
+  },
+  bellit: {
+    id: 'bellit', cat: 'secondary', title: 'Беларуская літаратура', icon: 'fas fa-feather',
+    desc: 'Программы, хрестоматии и списки для чтения',
+    url: ADU_SEC + '/belaruskaya-litaratura.html',
+    groups: [
+      { name: 'Программы и материалы', items: [
+        aduM('Беларуская літаратура VI–VIII', ''),
+        aduM('Беларуская літаратура X–XI, повышенный уровень', ''),
+        aduM('Факультатив «Шукаем шэдэўры!»', 'XI класс'),
+        aduM('Ссылки на тексты программы', 'X класс, базовый и повышенный уровни'),
+        aduM('Список дополнительного чтения V–XI', ''),
+        aduM('Электронная хрестоматия IX класса', ''),
+        aduM('Аудиокнига А. Стельмах «Дуб і крумкач»', 'Дополнительное чтение, IX класс')
+      ]}
+    ]
+  },
+  rusyaz: {
+    id: 'rusyaz', cat: 'secondary', title: 'Русский язык', icon: 'fas fa-font',
+    desc: 'Программы V–XI, стилистика, риторика, УМО 2025/2026',
+    url: ADU_SEC + '/russkij-yazyk.html',
+    groups: [
+      { name: 'Учебные программы', items: [
+        aduM('Русский язык V–IX', 'Белорусский и русский языки обучения'),
+        aduM('Русский язык X–XI, базовый уровень', ''),
+        aduM('Приложение 3 ИМП', 'Особенности изучения «Русского языка» и «Русской литературы»')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Функциональная стилистика русского языка', 'X класс'),
+        aduM('Культура речи', 'X класс'),
+        aduM('Обобщающий курс', 'X и XI классы'),
+        aduM('Готовимся к олимпиаде', 'X–XI, повышенный уровень'),
+        aduM('Правильность речи: языковые и речевые нормы', 'XI класс'),
+        aduM('Современная риторика', 'XI класс')
+      ]},
+      { name: 'УМО 2025/2026', items: [
+        aduM('Методические рекомендации по пособию XI класса', ''),
+        aduM('Изучение на повышенном уровне', 'VIII–IX и X–XI'),
+        aduM('Кладовая слов русского языка', 'V класс, учитель и учащиеся'),
+        aduM('Секреты синтаксиса и пунктуации', 'IX класс')
+      ]}
+    ]
+  },
+  ruslit: {
+    id: 'ruslit', cat: 'secondary', title: 'Русская литература', icon: 'fas fa-book-open',
+    desc: 'Программы, факультативы и электронные хрестоматии',
+    url: ADU_SEC + '/russkaya-literatura.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Русская литература V–IX', ''),
+        aduM('Русская литература X–XI, базовый уровень', '')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Увлекательное путешествие в мир литературы', 'V класс'),
+        aduM('Содружество литературы и других видов искусства', 'VI класс'),
+        aduM('Многообразие тем и жанров', 'VII класс'),
+        aduM('Русская литература как художественная летопись Человека', 'VIII класс'),
+        aduM('Обобщающий курс / Художественный образ', 'IX класс'),
+        aduM('Познание мира и человека в литературе русского реализма', 'X класс')
+      ]},
+      { name: 'Хрестоматии', items: [
+        aduM('Электронные хрестоматии IX и X классов', 'В том числе версии для смартфонов и планшетов'),
+        aduM('Список дополнительного чтения V–XI', '')
+      ]}
+    ]
+  },
+  lang: {
+    id: 'lang', cat: 'secondary', title: 'Иностранные языки', icon: 'fas fa-comments',
+    desc: 'Английский, немецкий, французский, испанский, китайский',
+    url: ADU_SEC + '/frantsuzskij-yazyk.html',
+    groups: [
+      { name: 'Общая программа', items: [
+        aduM('Иностранный язык X–XI', 'Английский, немецкий, французский, испанский, китайский — базовый и повышенный уровни'),
+        aduM('Второй иностранный язык', 'Факультатив VII–XI')
+      ]},
+      { name: 'Французский язык', items: [
+        aduM('Практикум по речевому общению', 'IX класс'),
+        aduM('Лексико-грамматический практикум', 'X–XI классы'),
+        aduM('КТП V–IX', 'По пособиям Д. С. Вадюшиной'),
+        aduM('Практикум по чтению', 'V–VI, пособие для учителей')
+      ]}
+    ]
+  },
+  math: {
+    id: 'math', cat: 'secondary', title: 'Математика', icon: 'fas fa-calculator',
+    desc: 'V–XI, базовый и повышенный уровни, факультативы, КИМ',
+    url: ADU_SEC + '/matematika.html',
+    groups: [
+      { name: 'Учебные программы', items: [
+        aduM('Математика V–IX', 'Русский язык обучения'),
+        aduM('Математика X–XI, базовый уровень', ''),
+        aduM('Математика X–XI, повышенный уровень', ''),
+        aduM('Матэматыка V–IX / X–XI', 'Белорусский язык обучения')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Школа юных математиков', 'VII–IX'),
+        aduM('Алгебра учит рассуждать', 'VII–XI'),
+        aduM('Повторяем математику', 'VIII–XI'),
+        aduM('Межпредметные грани математики', 'VIII–XI'),
+        aduM('Угадай и докажи', 'IX класс'),
+        aduM('Математические основы теории алгоритмов / Применение теории алгоритмов', 'X класс'),
+        aduM('Обобщающий факультативный курс', 'IX–XI'),
+        aduM('Векторы', 'IX (X) класс'),
+        aduM('Элементы эстетики в математике', 'X (XI) класс')
+      ]},
+      { name: 'Пособия и КИМ', items: [
+        aduM('Геометрия. Многообразие идей и методов', 'X–XI, для учащихся и учителей'),
+        aduM('Контрольные и самостоятельные работы', 'V–IX классы')
+      ]}
+    ]
+  },
+  inf: {
+    id: 'inf', cat: 'secondary', title: 'Информатика', icon: 'fas fa-laptop-code',
+    desc: 'VI–XI, Python, C#, Java, робототехника',
+    url: ADU_SEC + '/informatika.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Информатика VI–IX', ''),
+        aduM('Информатика X–XI, базовый уровень', '')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Основы программирования на Python', 'VIII–XI'),
+        aduM('Информатика / Исследовательская робототехника', 'IX класс'),
+        aduM('Методы алгоритмизации', 'IX–XI'),
+        aduM('Основы программирования нейронных сетей на Python', 'IX–XI'),
+        aduM('Программирование на C#, Java, Си++', 'X–XI'),
+        aduM('Избранные главы информатики / Математические основы информатики', 'X–XI'),
+        aduM('Информационно-образовательные ресурсы сети Интернет', 'X класс')
+      ]},
+      { name: 'Дополнительно', items: [
+        aduM('Аппаратное и программное обеспечение', 'X класс, уроки 2 и 4'),
+        aduM('Информационные модели', 'X класс, уроки 28–31'),
+        aduM('Основы веб-конструирования', 'XI класс, урок 27')
+      ]}
+    ]
+  },
+  histby: {
+    id: 'histby', cat: 'secondary', title: 'История Беларуси', icon: 'fas fa-landmark',
+    desc: 'VI–IX, синхронное КТП, хрестоматии',
+    url: ADU_SEC + '/istoriya-belarusi.html',
+    groups: [
+      { name: 'Программы и планирование', items: [
+        aduM('История Беларуси VI–IX', 'Русский и белорусский языки обучения'),
+        aduM('Приложение 8 ИМП', 'Особенности изучения истории Беларуси, всемирной истории и интегрированного курса'),
+        aduM('Синхронное КТП с всемирной историей', 'VII, VIII и IX классы')
+      ]},
+      { name: 'Хрестоматии', items: [
+        aduM('Гісторыя Беларусі са старажытных часоў да сярэдзіны XIII ст.', '6 класс, С. М. Темушев'),
+        aduM('Гісторыя Беларусі, другая палова XVI – канец XVIII ст.', '8 класс, В. А. Белозорович')
+      ]}
+    ]
+  },
+  histw: {
+    id: 'histw', cat: 'secondary', title: 'Всемирная история', icon: 'fas fa-globe-europe',
+    desc: 'V–IX, повышенный уровень VIII–IX',
+    url: ADU_SEC + '/vsemirnaya-istoriya.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Всемирная история V–IX', 'Русский язык обучения'),
+        aduM('Сусветная гісторыя V–IX', 'Белорусский язык обучения'),
+        aduM('Рекомендации по повышенному уровню', 'VIII–IX классы')
+      ]}
+    ]
+  },
+  histctx: {
+    id: 'histctx', cat: 'secondary', title: 'История Беларуси в контексте всемирной', icon: 'fas fa-landmark',
+    desc: 'X–XI, новый интегрированный курс',
+    url: ADU_SEC + '/istoriya-belarusi-v-kontekste-vsemirnoj-istorii.html',
+    groups: [
+      { name: 'Программы X–XI', items: [
+        aduM('X класс, повышенный уровень', ''),
+        aduM('XI класс, повышенный уровень', ''),
+        aduM('Гісторыя Беларусі ў кантэксце сусветнай гісторыі', 'X класс, белорусский язык обучения')
+      ]},
+      { name: 'Методика 2025/2026', items: [
+        aduM('Методические рекомендации для X класса', ''),
+        aduM('УМО 2025/2026', ''),
+        aduM('Примерное КТП XI класса', 'Базовый и повышенный уровни'),
+        aduM('Факультатив «Всемирная история в тестах и задачах»', 'X класс')
+      ]}
+    ]
+  },
+  obsh: {
+    id: 'obsh', cat: 'secondary', title: 'Обществоведение', icon: 'fas fa-balance-scale',
+    desc: 'IX–XI, базовый и повышенный уровни',
+    url: ADU_SEC + '/obshchestvovedenie.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Обществоведение IX–XI, базовый уровень', ''),
+        aduM('Обществоведение X–XI, повышенный уровень', ''),
+        aduM('Грамадазнаўства', 'Базовый и повышенный, белорусский язык обучения')
+      ]},
+      { name: 'Факультативы XI класса', items: [
+        aduM('Основы идеологии белорусского государства', ''),
+        aduM('Основы культурологии', ''),
+        aduM('Глобальные проблемы современности', '')
+      ]}
+    ]
+  },
+  geo: {
+    id: 'geo', cat: 'secondary', title: 'География', icon: 'fas fa-map-marked-alt',
+    desc: 'VI–XI, базовый и повышенный, геоэкология',
+    url: ADU_SEC + '/geografiya.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('География VI–IX', ''),
+        aduM('География X–XI, базовый уровень', ''),
+        aduM('Геаграфія', 'VI–IX и X–XI повышенный, белорусский язык обучения')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Путешествия по географической карте', 'VI–VII'),
+        aduM('Решение задач по географии материков и океанов', 'VII'),
+        aduM('По странам и континентам', 'VIII'),
+        aduM('Географические исследования Беларуси', 'IX'),
+        aduM('Обобщающие занятия / Устойчивое развитие', 'X–XI'),
+        aduM('География народонаселения / Геоэкология Беларуси / Обобщающее повторение', 'XI')
+      ]},
+      { name: 'Рекомендации', items: [
+        aduM('Пособие «Социально-экономическая география мира»', 'X класс'),
+        aduM('«Глобальные проблемы человечества»', 'XI класс, с электронным приложением')
+      ]}
+    ]
+  },
+  bio: {
+    id: 'bio', cat: 'secondary', title: 'Биология', icon: 'fas fa-dna',
+    desc: 'VI–XI, базовый и повышенный уровни',
+    url: ADU_SEC + '/biologiya.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Биология VI–IX', ''),
+        aduM('Биология X–XI, базовый и повышенный уровни', ''),
+        aduM('Біялогія', 'VI–IX и X–XI, белорусский язык обучения')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Разговор о культуре здорового питания', 'V–IX'),
+        aduM('Основы исследовательской деятельности', 'VIII–XI'),
+        aduM('Физиологические и гигиенические аспекты здоровья человека', 'IX'),
+        aduM('Биологические знания в жизни человека', 'IX'),
+        aduM('Биология: обобщающее повторение', 'X–XI')
+      ]}
+    ]
+  },
+  fiz: {
+    id: 'fiz', cat: 'secondary', title: 'Физика', icon: 'fas fa-atom',
+    desc: 'VII–XI, олимпиады, рабочие тетради, КИМ',
+    url: ADU_SEC + '/fizika.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Физика VII–IX', ''),
+        aduM('Физика X–XI, базовый уровень', ''),
+        aduM('Фізіка', 'VII–IX и X–XI, белорусский язык обучения')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Подготовка к олимпиадам по физике', 'VII–VIII'),
+        aduM('Физика вокруг нас', 'VIII'),
+        aduM('Обобщающий курс физики', 'IX–XI'),
+        aduM('Повторяя физику, проверяю себя', 'XI')
+      ]},
+      { name: 'Тетради и КИМ', items: [
+        aduM('Измерять — значит познавать', 'VI класс'),
+        aduM('Наблюдай и исследуй сам', 'VII'),
+        aduM('Физика вокруг нас / Простые решения сложных задач', 'VIII / IX'),
+        aduM('Решение творческих задач / Повторяю физику', 'X / XI'),
+        aduM('Контрольные и самостоятельные работы', 'VI–IX и X–XI')
+      ]}
+    ]
+  },
+  astr: {
+    id: 'astr', cat: 'secondary', title: 'Астрономия', icon: 'fas fa-moon',
+    desc: 'XI класс и факультативы с VI класса',
+    url: ADU_SEC + '/astronomiya.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Астрономия XI класс', 'Русский и белорусский языки обучения'),
+        aduM('Юный астроном', 'VI–VII'),
+        aduM('Введение в астрономию', 'VIII–X'),
+        aduM('Основы астрофизики', 'XI'),
+        aduM('Контрольные и самостоятельные работы', 'XI класс')
+      ]}
+    ]
+  },
+  him: {
+    id: 'him', cat: 'secondary', title: 'Химия', icon: 'fas fa-flask',
+    desc: 'VII–XI, количественные соотношения, органика',
+    url: ADU_SEC + '/khimiya.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Химия VII–IX', ''),
+        aduM('Химия X–XI, базовый уровень', ''),
+        aduM('Хімія', 'VII–IX и X–XI повышенный')
+      ]},
+      { name: 'Факультативы', items: [
+        aduM('Количественные соотношения в химии', 'IX'),
+        aduM('Готовимся к изучению на повышенном уровне', 'IX'),
+        aduM('Химические врата в мир естествознания / Продолжаем открывать тайны вещества', 'IX'),
+        aduM('Химия неметаллов и жизнь', 'IX'),
+        aduM('Механизмы органических реакций / Удивительный мир органических веществ', 'X (XI)'),
+        aduM('Электричество и химия / Химия Земли', 'X (XI)'),
+        aduM('Обобщающий курс по химии', 'X–XI')
+      ]}
+    ]
+  },
+  trud: {
+    id: 'trud', cat: 'secondary', title: 'Трудовое обучение', icon: 'fas fa-hammer',
+    desc: 'Обслуживающий и технический труд, квалификация',
+    url: ADU_SEC + '/trudovoe-obuchenie.html',
+    groups: [
+      { name: 'Программы V–IX', items: [
+        aduM('Обслуживающий труд', 'V–IX'),
+        aduM('Технический труд', 'V–IX')
+      ]},
+      { name: 'Факультативы и экзамен', items: [
+        aduM('Основы садоводства', 'VIII'),
+        aduM('Имитация витража', 'VIII–IX'),
+        aduM('Проектирование объектов труда с помощью компьютерного моделирования', 'VIII–IX'),
+        aduM('Квалификационный экзамен X–XI', 'Методические рекомендации Минобразования'),
+        aduM('Разъяснение об организации трудового обучения в X классах', '')
+      ]}
+    ]
+  },
+  cherch: {
+    id: 'cherch', cat: 'secondary', title: 'Черчение', icon: 'fas fa-drafting-compass',
+    desc: 'X класс, базовый и повышенный уровни',
+    url: ADU_SEC + '/cherchenie.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Черчение X, базовый уровень', ''),
+        aduM('Черчение X, повышенный уровень', ''),
+        aduM('Чарчэнне', 'X класс, повышенный'),
+        aduM('Занимательное графическое моделирование на компьютере', 'IX (X)'),
+        aduM('Черчение / Техническое макетирование', 'X–XI')
+      ]}
+    ]
+  },
+  isk: {
+    id: 'isk', cat: 'secondary', title: 'Искусство (ОМХК)', icon: 'fas fa-palette',
+    desc: 'Отечественная и мировая художественная культура',
+    url: ADU_SEC + '/iskusstvo-otechestvennaya-i-mirovaya-khudozhestvennaya-kultura.html',
+    groups: [
+      { name: 'На странице предмета', items: [
+        aduM('Учебная программа по искусству (ОМХК)', 'V–XI, базовый уровень'),
+        aduM('Методические рекомендации и УМО 2025/2026', '')
+      ]}
+    ]
+  },
+  fizkult: {
+    id: 'fizkult', cat: 'secondary', title: 'Физическая культура и здоровье', icon: 'fas fa-running',
+    desc: 'V–XI, спецмедгруппы, повышенный уровень',
+    url: ADU_SEC + '/fizicheskaya-kultura-i-zdorove.html',
+    groups: [
+      { name: 'Программы', items: [
+        aduM('Физическая культура и здоровье V–IX', ''),
+        aduM('X–XI, базовый и повышенный уровни', ''),
+        aduM('Специальные медицинские группы I–XI', ''),
+        aduM('Фізічная культура і здароўе', 'V–IX и X–XI')
+      ]}
+    ]
+  },
+  exams: {
+    id: 'exams', cat: 'exams', title: 'Итоговые и вступительные испытания', icon: 'fas fa-file-signature',
+    desc: 'ЦТ/ЦЭ, выпускные экзамены, билеты и видеоуроки',
+    url: 'https://adu.by/ru/pedagogam/ekzameny.html',
+    kind: 'exams',
+    groups: [
+      { name: 'Нормативка 2025/2026', items: [
+        aduM('Постановление Минобразования № 147 от 21.08.2025', 'Перечень предметов, виды, формы и сроки итоговых испытаний'),
+        aduM('Выпускные экзамены после 9 класса', '1–10 июня 2026, дополнительные 17–24 августа 2026'),
+        aduM('ЦЭ по предмету по выбору', '26 мая 2026; резерв 20 июня; иные сроки 17 августа'),
+        aduM('ЦЭ по белорусскому или русскому языку', '29 мая 2026; резерв 22 июня; иные сроки 19 августа')
+      ]},
+      { name: 'Методика и подготовка', items: [
+        aduM('Методические рекомендации: История Беларуси, 9 класс', 'Выпускной экзамен после II ступени'),
+        aduM('Экзаменационные билеты', 'Итоговые испытания и экстернат'),
+        aduM('Вступительные испытания', 'В учреждения высшего и среднего специального образования'),
+        aduM('Видеоуроки к ЦТ', 'Белорусский язык: обособленные члены, тире, ССП и СПП; английский: неличные формы, артикли, местоимения')
+      ]}
+    ]
+  },
+  olymp: {
+    id: 'olymp', cat: 'olymp', title: 'Республиканская олимпиада', icon: 'fas fa-trophy',
+    desc: 'Задания III и заключительного этапов, бланки, критерии',
+    url: 'https://adu.by/ru/uchenikam/respublikanskaya-olimpiada-po-uchebnym-predmetam.html',
+    groups: [
+      { name: 'На странице олимпиады', items: [
+        aduM('Задания третьего и заключительного этапов', '18 учебных предметов, с 2020/2021 по 2024/2025'),
+        aduM('Бланки ответов и справки для жюри', ''),
+        aduM('Критерии оценки', 'В том числе 9 класс'),
+        aduM('Нормативные документы олимпиады', '')
+      ]}
+    ]
+  },
+  olimp: {
+    id: 'olimp', cat: 'olymp', title: 'olimp.adu.by', icon: 'fas fa-medal',
+    desc: 'Олимпиады, турниры, конкурсы и очно-дистанционная школа',
+    url: 'https://olimp.adu.by/',
+    groups: [
+      { name: 'Площадки', items: [
+        aduM('Олимпиады, турниры, конкурсы', 'Отдельный портал olimp.adu.by'),
+        aduM('Очно-дистанционная школа олимпиадного движения', 'Астрономия, биология, география, информатика, математика, физика, химия — банк заданий и видеоразборы')
+      ]}
+    ]
+  },
+  books: {
+    id: 'books', cat: 'books', title: 'Электронные учебники', icon: 'fas fa-book-reader',
+    desc: 'Библиотека e-padruchnik.adu.by',
+    url: 'http://e-padruchnik.adu.by/',
+    groups: [
+      { name: 'Что открывается', items: [
+        aduM('Электронные версии учебных пособий', 'Национальный образовательный портал, e-padruchnik.adu.by'),
+        aduM('Пособия по классам и предметам', 'Для учащихся и педагогов')
+      ]}
+    ]
+  },
+  facult: {
+    id: 'facult', cat: 'books', title: 'Факультативные занятия', icon: 'fas fa-list',
+    desc: 'Перечень программ факультативов на Аду.бай',
+    url: ADU_BASE + '/perechen-uchebnykh-programm-fakultativnykh-zanyatij.html',
+    groups: [
+      { name: 'Перечень', items: [
+        aduM('Реестр учебных программ факультативных занятий', 'Публикуются после регистрации в НРПА и на pravo.by'),
+        aduM('Программы музыкальной, театральной, хореографической и художественной направленности', '')
+      ]}
+    ]
+  },
+  preschool: {
+    id: 'preschool', cat: 'process', title: 'Дошкольное образование', icon: 'fas fa-shapes',
+    desc: 'Программа ДО, проектная деятельность, функциональная грамотность',
+    url: 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/doshkolnoe-obrazovanie.html',
+    groups: [
+      { name: 'На странице', items: [
+        aduM('Учебная программа дошкольного образования', 'Русский и белорусский языки обучения'),
+        aduM('Свет, у якім я жыву', 'Учебно-методическое пособие'),
+        aduM('Организация проектной деятельности в учреждении ДО', 'Пособие в 3 частях, под ред. Р. Р. Косенюк'),
+        aduM('Формирование основ функциональной грамотности воспитанников', '')
+      ]}
+    ]
+  },
+  special: {
+    id: 'special', cat: 'process', title: 'Специальное образование', icon: 'fas fa-hands-helping',
+    desc: 'Программы специальных школ и коррекционные занятия',
+    url: 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/spetsialnoe-obrazovanie.html',
+    groups: [
+      { name: 'Разделы портала', items: [
+        aduM('Специальная школа для учащихся с интеллектуальной недостаточностью', 'Программы 2025: литературное чтение, математика, биология, СБО, труд, компьютерная грамота'),
+        aduM('Второе отделение', 'Элементы арифметики, элементы грамоты, адаптивная физкультура, изобразительная деятельность'),
+        aduM('Нарушение слуха, ТНР, трудности в обучении', 'Сборники программ и предметные курсы'),
+        aduM('ЦКРОиР', 'Коммуникация, сенсомоторное обучение'),
+        aduM('Интегрированное обучение и «ясный язык»', 'Методические рекомендации')
+      ]}
+    ]
+  },
+  profile: {
+    id: 'profile', cat: 'process', title: 'Профильное обучение', icon: 'fas fa-user-graduate',
+    desc: 'profil.adu.by — повышенный уровень X–XI',
+    url: 'https://profil.adu.by/',
+    groups: [
+      { name: 'На profil.adu.by', items: [
+        aduM('Комплексы заданий X–XI', 'Физика, химия, математика, биология, география'),
+        aduM('Дополнительная подготовка на основе ИКТ', 'VIII–XI классы'),
+        aduM('Педагогические, аграрные, спортивно-педагогические и военно-патриотические классы', '')
+      ]}
+    ]
+  },
+  vospitanie: {
+    id: 'vospitanie', cat: 'process', title: 'Организация воспитания', icon: 'fas fa-heart',
+    desc: 'vospitanie.adu.by — единые уроки, символика, ШАГ',
+    url: 'https://vospitanie.adu.by/',
+    groups: [
+      { name: 'На vospitanie.adu.by', items: [
+        aduM('Библиотека единых уроков', 'В том числе первый урок 2025/2026'),
+        aduM('Государственная символика в учреждениях образования', ''),
+        aduM('ШАГ — Школа активного гражданина', 'VIII–XI классы'),
+        aduM('Программы факультативов воспитательной направленности', '')
+      ]}
+    ]
+  },
+  docs: {
+    id: 'docs', cat: 'docs', title: 'Нормативные документы', icon: 'fas fa-gavel',
+    desc: 'Документы Министерства образования на Аду.бай',
+    url: 'https://adu.by/ru/component/content/category/pedagogam/normativnye-pravovye-dokumenty.html?Itemid=101',
+    groups: [
+      { name: 'В разделе', items: [
+        aduM('Нормативные правовые акты Минобразования', 'Постановления, инструкции, письма'),
+        aduM('Организация образовательного процесса', 'Актуальный учебный год'),
+        aduM('Итоговая аттестация', 'Перечни предметов и сроки испытаний')
+      ]}
+    ]
+  },
+  about: {
+    id: 'about', cat: 'docs', title: 'О портале и контакты', icon: 'fas fa-info-circle',
+    desc: 'Национальный институт образования, магазин «Адукацыя»',
+    url: 'https://adu.by/ru/o-portale.html',
+    kind: 'about',
+    groups: [
+      { name: 'Национальный образовательный портал', items: [
+        aduM('Учредитель', 'Национальный институт образования Министерства образования Республики Беларусь'),
+        aduM('Адрес', 'ул. Короля, 16, 220004, г. Минск'),
+        aduM('Приёмная', '+375 17 200-59-09'),
+        aduM('Факс', '+375 17 200-56-35'),
+        aduM('Почта', 'info@adu.by'),
+        aduM('Магазин учебной книги «Адукацыя»', 'На портале Аду.бай')
+      ]}
+    ]
+  }
+};
+
+const ADU_SECTIONS = ADU_CATS.map(function (c) {
+  return { id: c.id, title: c.title, desc: c.desc, url: c.url, icon: c.icon, action: 'adu' };
+}).concat(Object.keys(ADU_ITEMS).map(function (id) {
+  const it = ADU_ITEMS[id];
+  return { id: 'item-' + id, title: it.title, desc: it.desc, url: it.url, icon: it.icon, action: 'aduItem', itemId: id };
+}));
 
 function getSubject(id) { return EIOR_SUBJECTS.find(function (s) { return s.id === id; }); }
 function subjectsForGrade(g) { return EIOR_SUBJECTS.filter(function (s) { return s.grades.indexOf(g) >= 0; }); }
@@ -2955,15 +3714,36 @@ function loadingBox(text) {
     '<p style="margin-top:12px;color:var(--text-secondary);font-size:13px;">' + escapeHtml(text || 'Загружаю с официального сайта…') + '</p></div>';
 }
 function errorBox(msg) {
-  return '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-wifi"></i></div>' +
-    '<h3>Не удалось открыть сайт</h3><p>' + escapeHtml(msg) + '</p></div>' +
-    '<button class="btn btn-primary" onclick="refreshOfficial()"><i class="fas fa-rotate"></i> Повторить</button></div>';
+  return '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-landmark"></i></div>' +
+    '<h3>Откройте материал на портале</h3><p>' + escapeHtml(msg || 'Полный документ лежит на официальном сайте.') + '</p></div>' +
+    (officialState.url ? '<button class="btn btn-primary" onclick="openExternal(\'' + officialState.url + '\')"><i class="fas fa-external-link-alt"></i> Открыть оригинал</button>' : '') +
+    '</div>';
+}
+
+function getAduCat(id) { return ADU_CATS.find(function (c) { return c.id === id; }); }
+function getAduItem(id) { return ADU_ITEMS[id] || null; }
+function findAduItemByUrl(url) {
+  if (!url) return null;
+  const keys = Object.keys(ADU_ITEMS);
+  for (let i = 0; i < keys.length; i++) {
+    if (ADU_ITEMS[keys[i]].url === url) return ADU_ITEMS[keys[i]];
+  }
+  return null;
+}
+function findAduCatByUrl(url) {
+  return ADU_CATS.find(function (c) { return c.url === url; }) || null;
 }
 
 function openOfficial(reset) {
-  if (reset) officialState = { view: 'hub', grade: officialProgress.grade || 9, subject: null, topicN: null, query: '', url: '', page: null };
+  if (reset) officialState = { view: 'hub', grade: officialProgress.grade || 9, subject: null, topicN: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
   renderOfficial();
   showPage('officialPage');
+  warmupOfficial();
+}
+function warmupOfficial() {
+  if (warmupOfficial.done) return;
+  warmupOfficial.done = true;
+  fetchLive(EIOR_CATALOG, false).catch(function () {});
 }
 
 function renderOfficial() {
@@ -2980,13 +3760,17 @@ function renderOfficial() {
     subjects: renderEiorSubjects,
     topics: renderEiorTopicsShell,
     topic: renderEiorTopicShell,
-    browse: renderBrowseShell
+    browse: renderBrowseShell,
+    adu: renderAduHome,
+    adu_cat: renderAduCat,
+    adu_item: renderAduItem
   };
   root.innerHTML = (map[officialState.view] || renderOfficialHub)();
   focusOfficialSearch();
   if (officialState.view === 'topics') loadEiorTopicsLive();
   if (officialState.view === 'topic') loadEiorTopicLive();
   if (officialState.view === 'browse') loadBrowseLive();
+  if (officialState.view === 'adu_item') enhanceAduItemLive();
 }
 function focusOfficialSearch() {
   const el = document.getElementById('officialSearch');
@@ -3016,8 +3800,8 @@ function renderOfficialHub() {
     const click = s.action === 'eior' ? 'officialGo(\'eior\')' : 'openOfficialBrowse(\'' + s.url + '\')';
     return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
   }).join('');
-  const aduCards = ADU_SECTIONS.slice(0, 4).map(function (s) {
-    return '<button type="button" class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  const aduCards = ADU_CATS.slice(0, 4).map(function (s) {
+    return '<button type="button" class="adu-item" onclick="openAduCat(\'' + s.id + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
   }).join('');
   return officialSearchHtml() +
     '<div class="official-hero">' +
@@ -3027,7 +3811,7 @@ function renderOfficialHub() {
     '</div>' +
     '<div class="source-grid">' +
       '<div class="source-card eior" onclick="officialGo(\'eior\')"><div class="src-ico"><i class="fas fa-play-circle"></i></div><h3>ЕИОР</h3><p>Живой каталог: класс → предмет → видео и тест с сайта</p><span class="src-tag">eior.by</span></div>' +
-      '<div class="source-card adu" onclick="openOfficialBrowse(\'' + ADU_HOME + '\')"><div class="src-ico"><i class="fas fa-university"></i></div><h3>Аду.бай</h3><p>Новости, программы, экзамены, олимпиады — страница с портала</p><span class="src-tag">adu.by</span></div>' +
+      '<div class="source-card adu" onclick="officialGo(\'adu\')"><div class="src-ico"><i class="fas fa-university"></i></div><h3>Аду.бай</h3><p>Календарь, программы, экзамены и олимпиады — сразу в NEVIO</p><span class="src-tag">adu.by</span></div>' +
     '</div>' +
     '<div class="section-label">ЕИОР сейчас</div>' + eiorCards +
     '<div class="section-label">Аду.бай сейчас</div>' + aduCards +
@@ -3036,16 +3820,142 @@ function renderOfficialHub() {
       '<div class="quick-chip" onclick="openOfficialGrade(9)">9 класс</div>' +
       '<div class="quick-chip" onclick="openOfficialGrade(11)">11 класс</div>' +
       '<div class="quick-chip" onclick="openOfficialBrowse(\'' + EIOR_CT + '\')">ЦТ на ЕИОР</div>' +
-      '<div class="quick-chip" onclick="openOfficialBrowse(\'https://adu.by/ru/pedagogam/ekzameny.html\')">Экзамены</div>' +
-      '<div class="quick-chip" onclick="openOfficialBrowse(\'https://olimp.adu.by/\')">Олимпиады</div>' +
+      '<div class="quick-chip" onclick="openAduItem(\'exams\')">Экзамены</div>' +
+      '<div class="quick-chip" onclick="openAduItem(\'year\')">Календарь</div>' +
+      '<div class="quick-chip" onclick="openAduItem(\'olymp\')">Олимпиады</div>' +
     '</div>';
 }
 
 function officialGo(view) {
   officialState.view = view;
   officialState.query = '';
-  officialState.url = view === 'eior' ? EIOR_CATALOG : officialState.url;
+  officialState.aduCat = null;
+  officialState.aduItem = null;
+  if (view === 'eior') officialState.url = EIOR_CATALOG;
+  if (view === 'adu') officialState.url = ADU_HOME;
   renderOfficial();
+}
+
+function openAduCat(id) {
+  officialState.view = 'adu_cat';
+  officialState.aduCat = id;
+  officialState.aduItem = null;
+  officialState.query = '';
+  const cat = getAduCat(id);
+  officialState.url = cat ? cat.url : ADU_HOME;
+  renderOfficial();
+}
+function openAduItem(id) {
+  officialState.view = 'adu_item';
+  officialState.aduItem = id;
+  officialState.query = '';
+  const it = getAduItem(id);
+  officialState.aduCat = it ? it.cat : officialState.aduCat;
+  officialState.url = it ? it.url : officialState.url;
+  officialState.page = it ? { title: it.title, bodyText: it.desc, know: [], can: [], links: [], videos: [], images: [] } : officialState.page;
+  renderOfficial();
+}
+
+function renderAduHome() {
+  const cards = ADU_CATS.map(function (c) {
+    return '<button type="button" class="adu-item" onclick="openAduCat(\'' + c.id + '\')"><div class="adu-ico"><i class="' + c.icon + '"></i></div><div><h3>' + escapeHtml(c.title) + '</h3><p>' + escapeHtml(c.desc) + '</p></div></button>';
+  }).join('');
+  return officialSearchHtml() +
+    crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: 'Аду.бай' }]) +
+    '<div class="adu-hero-mini"><div class="official-kicker">Национальный образовательный портал</div>' +
+    '<h2>Аду.бай</h2><p>Программы, письма, календарь учебного года, экзамены и олимпиады — собраны по разделам портала.</p></div>' +
+    '<div class="quick-row">' +
+      '<div class="quick-chip" onclick="openAduItem(\'year\')">Календарь 2025/2026</div>' +
+      '<div class="quick-chip" onclick="openAduCat(\'secondary\')">V–XI классы</div>' +
+      '<div class="quick-chip" onclick="openAduItem(\'exams\')">ЦТ / ЦЭ</div>' +
+      '<div class="quick-chip" onclick="openAduItem(\'math\')">Математика</div>' +
+      '<div class="quick-chip" onclick="openAduItem(\'olymp\')">Олимпиада</div>' +
+    '</div>' +
+    '<div class="section-label">Разделы портала</div>' + cards +
+    '<div class="official-actions" style="margin-top:8px">' +
+      '<button class="btn btn-secondary" onclick="openExternal(\'' + ADU_HOME + '\')"><i class="fas fa-external-link-alt"></i> Открыть adu.by</button>' +
+    '</div>';
+}
+
+function renderAduCat() {
+  const cat = getAduCat(officialState.aduCat);
+  if (!cat) return renderAduHome();
+  const cards = (cat.items || []).map(function (id) {
+    const it = getAduItem(id);
+    if (!it) return '';
+    return '<button type="button" class="adu-item" onclick="openAduItem(\'' + it.id + '\')"><div class="adu-ico"><i class="' + it.icon + '"></i></div><div><h3>' + escapeHtml(it.title) + '</h3><p>' + escapeHtml(it.desc) + '</p></div></button>';
+  }).join('');
+  return officialSearchHtml() +
+    crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: 'Аду.бай', fn: 'officialGo(\'adu\')' }, { label: cat.title }]) +
+    '<div class="adu-hero-mini"><h2>' + escapeHtml(cat.title) + '</h2><p>' + escapeHtml(cat.desc) + '</p></div>' +
+    cards +
+    '<div class="official-actions">' +
+      '<button class="btn btn-secondary" onclick="openExternal(\'' + cat.url + '\')"><i class="fas fa-external-link-alt"></i> Раздел на Аду.бай</button>' +
+    '</div>';
+}
+
+function renderAduItem() {
+  const it = getAduItem(officialState.aduItem);
+  if (!it) return renderAduHome();
+  const cat = getAduCat(it.cat);
+  let body = officialSearchHtml() +
+    crumb([
+      { label: 'Ресурсы', fn: 'officialGo(\'hub\')' },
+      { label: 'Аду.бай', fn: 'officialGo(\'adu\')' },
+      cat ? { label: cat.title, fn: 'openAduCat(\'' + cat.id + '\')' } : null,
+      { label: it.title }
+    ].filter(Boolean)) +
+    '<div class="adu-hero-mini"><div class="official-kicker">adu.by</div><h2>' + escapeHtml(it.title) + '</h2><p>' + escapeHtml(it.desc) + '</p></div>';
+  if (it.kind === 'year') {
+    body += '<div class="adu-cal">' +
+      '<div class="stat-pill"><span>I четверть</span><b>1 сен — 1 ноя 2025</b></div>' +
+      '<div class="stat-pill"><span>II четверть</span><b>10 ноя — 24 дек 2025</b></div>' +
+      '<div class="stat-pill"><span>III четверть</span><b>8 янв — 21 мар 2026</b></div>' +
+      '<div class="stat-pill"><span>IV четверть</span><b>30 мар — 31 мая 2026</b></div>' +
+      '</div>';
+  }
+  (it.notes || []).forEach(function (n) {
+    body += '<div class="adu-note"><strong>' + escapeHtml(n.t) + '.</strong> ' + escapeHtml(n.d) + '</div>';
+  });
+  (it.groups || []).forEach(function (g) {
+    body += '<div class="section-label">' + escapeHtml(g.name) + '</div>';
+    (g.items || []).forEach(function (m) {
+      body += '<button type="button" class="mat-item" onclick="openExternal(\'' + it.url + '\')"><i class="fas fa-file-lines"></i><div><h4>' + escapeHtml(m.t) + '</h4>' +
+        (m.d ? '<p>' + escapeHtml(m.d) + '</p>' : '') + '</div></button>';
+    });
+  });
+  body += '<div id="aduLiveExtras"></div><div class="official-actions">' +
+    '<button class="btn btn-primary" onclick="explainLivePage()"><i class="fas fa-lightbulb"></i> Разбери через NEVIO</button>' +
+    '<button class="btn btn-secondary" onclick="summaryLivePage()"><i class="fas fa-book"></i> Конспект</button>' +
+    '<button class="btn btn-secondary" onclick="openExternal(\'' + it.url + '\')"><i class="fas fa-external-link-alt"></i> Открыть на Аду.бай</button>' +
+    '</div>';
+  return body;
+}
+
+async function enhanceAduItemLive() {
+  const it = getAduItem(officialState.aduItem);
+  const box = document.getElementById('aduLiveExtras');
+  if (!it || !box) return;
+  try {
+    const page = await fetchLive(it.url, false);
+    if (!page || page.offline) return;
+    officialState.page = {
+      title: page.title || it.title,
+      bodyText: page.bodyText || it.desc,
+      know: page.know || [],
+      can: page.can || [],
+      links: page.links || [],
+      videos: page.videos || [],
+      images: page.images || []
+    };
+    const extras = (page.links || []).filter(function (l) {
+      return l.title && l.title.length > 10 && /pdf|doc|программ|факультат|рекомендац|пособи/i.test(l.title + ' ' + l.href);
+    }).slice(0, 12);
+    if (!extras.length) return;
+    box.innerHTML = '<div class="section-label">Документы со страницы</div>' + extras.map(function (l) {
+      return '<button type="button" class="mat-item" onclick="openExternal(\'' + l.href + '\')"><i class="fas fa-file-arrow-down"></i><div><h4>' + escapeHtml(l.title) + '</h4><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 56)) + '</p></div></button>';
+    }).join('');
+  } catch (e) {}
 }
 
 function renderEiorHome() {
@@ -3072,6 +3982,8 @@ function openOfficialGrade(g) {
   officialState.topicN = null;
   officialState.view = 'subjects';
   officialState.query = '';
+  officialState.aduItem = null;
+  officialState.aduCat = null;
   saveOfficialProgress();
   renderOfficial();
 }
@@ -3095,6 +4007,7 @@ function openOfficialSubject(grade, subjectId) {
   officialState.topicN = null;
   officialState.view = 'topics';
   officialState.query = '';
+  officialState.aduItem = null;
   renderOfficial();
 }
 
@@ -3118,12 +4031,17 @@ async function loadEiorTopicsLive() {
   const subj = getSubject(officialState.subject);
   if (!subj) return;
   const listUrl = 'list:' + g + ':' + subj.id;
+  const instant = readCache(listUrl) || readStaleCache(listUrl);
+  if (instant && Array.isArray(instant.data) && instant.data.length) {
+    box.innerHTML = renderTopicList(g, subj, instant.data, instant);
+  }
   try {
     const topics = await listEiorTopics(g, subj.id, false);
-    const cached = readCache(listUrl);
-    box.innerHTML = renderTopicList(g, subj, topics, cached);
+    if (document.getElementById('officialLiveBody') !== box) return;
+    box.innerHTML = renderTopicList(g, subj, topics, readCache(listUrl));
   } catch (e) {
-    box.innerHTML = renderTopicList(g, subj, [], null);
+    if (document.getElementById('officialLiveBody') !== box) return;
+    if (!instant || !instant.data || !instant.data.length) box.innerHTML = renderTopicList(g, subj, [], null);
   }
 }
 
@@ -3146,8 +4064,9 @@ function renderTopicList(g, subj, topics, cached) {
 async function listEiorTopics(grade, subjectId, force) {
   const listUrl = 'list:' + grade + ':' + subjectId;
   if (!force) {
-    const hit = readCache(listUrl);
+    const hit = readCache(listUrl) || readStaleCache(listUrl);
     if (hit && Array.isArray(hit.data) && hit.data.length && hit.data.some(function (t) { return t.title && !/^Тема\s+\d+$/.test(t.title); })) {
+      if (hit.ts && Date.now() - hit.ts > LIVE_TTL) refreshLiveInBackground(EIOR_CATALOG);
       return hit.data;
     }
   }
@@ -3235,6 +4154,7 @@ function openOfficialTopicN(grade, subjectId, n) {
   officialState.topicN = n;
   officialState.view = 'topic';
   officialState.query = '';
+  officialState.aduItem = null;
   const subj = getSubject(subjectId);
   officialState.url = subj ? eiorTopicUrl(grade, slugFor(grade, subjectId), n) : '';
   renderOfficial();
@@ -3254,6 +4174,24 @@ function renderEiorTopicShell() {
     '<div id="officialLiveBody">' + loadingBox('Открываю урок на eior.by…') + '</div>';
 }
 
+function prefetchOfficialMedia(url) {
+  if (!url || prefetchOfficialMedia.seen[url]) return;
+  prefetchOfficialMedia.seen[url] = true;
+  const l = document.createElement('link');
+  l.rel = 'preload';
+  l.as = 'video';
+  l.href = url;
+  l.setAttribute('fetchpriority', 'high');
+  document.head.appendChild(l);
+}
+prefetchOfficialMedia.seen = {};
+
+function officialVideoHtml(src, poster) {
+  prefetchOfficialMedia(src);
+  const posterAttr = poster ? ' poster="' + poster + '"' : '';
+  return '<div class="off-video-wrap"><video class="off-video" controls preload="auto" playsinline webkit-playsinline' + posterAttr + ' src="' + src + '"></video></div>';
+}
+
 async function loadEiorTopicLive() {
   const box = document.getElementById('officialLiveBody');
   if (!box) return;
@@ -3263,6 +4201,12 @@ async function loadEiorTopicLive() {
   if (!subj || !n) return;
   let url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   officialState.url = url;
+  const instant = readCache(url) || readStaleCache(url);
+  if (instant && instant.data && !instant.data.offline) {
+    officialState.page = instant.data;
+    box.innerHTML = renderTopicPage(g, subj, n, instant.data);
+    if (instant.data.videos && instant.data.videos[0]) prefetchOfficialMedia(instant.data.videos[0]);
+  }
   try {
     let page = await fetchLive(url, false);
     const bad = !page || page.offline || !page.title || /^(404|not found|ошибка 404|страница не найдена|ЕИОР)$/i.test(page.title);
@@ -3281,23 +4225,34 @@ async function loadEiorTopicLive() {
         }
       }
     }
+    if (document.getElementById('officialLiveBody') !== box) return;
     officialState.page = page;
     box.innerHTML = renderTopicPage(g, subj, n, page);
+    if (page.videos && page.videos[0]) prefetchOfficialMedia(page.videos[0]);
+    prefetchEiorNeighbor(g, subj.id, n + 1);
   } catch (e) {
-    const page = Object.assign(syntheticOfficialPage(url), { embed: url });
+    if (document.getElementById('officialLiveBody') !== box) return;
+    if (instant && instant.data && !instant.data.offline) return;
+    const page = Object.assign(syntheticOfficialPage(url), {});
     officialState.page = page;
     box.innerHTML = renderTopicPage(g, subj, n, page);
   }
+}
+function prefetchEiorNeighbor(grade, subjectId, n) {
+  try {
+    const url = eiorTopicUrl(grade, slugFor(grade, subjectId), n);
+    fetchLive(url, false, true).then(function (page) {
+      if (page && page.videos && page.videos[0]) prefetchOfficialMedia(page.videos[0]);
+    }).catch(function () {});
+  } catch (e) {}
 }
 
 function renderTopicPage(g, subj, n, page) {
   const key = topicKey(g, subj.id, n);
   const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   let media = '';
-  if (page.embed) {
-    media += '<iframe class="off-frame" src="' + page.embed + '" title="' + escapeHtml(page.title || '') + '" referrerpolicy="no-referrer-when-downgrade"></iframe>';
-  } else if (page.videos && page.videos[0]) {
-    media += '<video class="off-video" controls preload="metadata" src="' + page.videos[0] + '"></video>';
+  if (page.videos && page.videos[0]) {
+    media += officialVideoHtml(page.videos[0], page.images && page.images[0]);
   } else if (page.images && page.images[0]) {
     media += '<img class="off-video" alt="" src="' + page.images[0] + '">';
   }
@@ -3339,6 +4294,14 @@ function toggleOfficialDone(key) {
 }
 
 function openOfficialBrowse(url) {
+  const item = findAduItemByUrl(url);
+  if (item) { openAduItem(item.id); return; }
+  const cat = findAduCatByUrl(url);
+  if (cat) { openAduCat(cat.id); return; }
+  if (/adu\.by|olimp\.adu\.by|e-padruchnik|profil\.adu|vospitanie\.adu/i.test(url || '')) {
+    officialGo('adu');
+    return;
+  }
   officialState.view = 'browse';
   officialState.url = url;
   officialState.query = '';
@@ -3355,34 +4318,32 @@ function renderBrowseShell() {
 async function loadBrowseLive() {
   const box = document.getElementById('officialLiveBody');
   if (!box || !officialState.url) return;
+  const instant = readCache(officialState.url) || readStaleCache(officialState.url);
+  if (instant && instant.data && !instant.data.offline) {
+    officialState.page = instant.data;
+    box.innerHTML = renderBrowsePage(instant.data);
+  }
   try {
-    if (/adu\.by|olimp\.adu\.by|e-padruchnik/i.test(officialState.url)) {
-      const page = Object.assign(syntheticOfficialPage(officialState.url), {
-        embed: officialState.url,
-        offline: false,
-        bodyText: ''
-      });
-      officialState.page = page;
-      box.innerHTML = renderBrowsePage(page);
-      return;
-    }
     const page = await fetchLive(officialState.url, false);
-    if (page.offline) page.embed = officialState.url;
+    if (document.getElementById('officialLiveBody') !== box) return;
     officialState.page = page;
     box.innerHTML = renderBrowsePage(page);
+    (page.videos || []).slice(0, 2).forEach(prefetchOfficialMedia);
   } catch (e) {
-    const page = Object.assign(syntheticOfficialPage(officialState.url), { embed: officialState.url });
-    officialState.page = page;
-    box.innerHTML = renderBrowsePage(page);
+    if (document.getElementById('officialLiveBody') !== box) return;
+    if (instant && instant.data) return;
+    officialState.page = syntheticOfficialPage(officialState.url);
+    box.innerHTML = renderBrowsePage(officialState.page);
   }
 }
 
 function renderBrowsePage(page) {
-  const moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_SECTIONS;
+  const moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_CATS;
   let nav = '';
   if (!/catalog_lecture/i.test(officialState.url)) {
     nav = moreSections.map(function (s) {
-      return '<button type="button" class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+      const click = s.action === 'eior' ? 'officialGo(\'eior\')' : (s.items ? 'openAduCat(\'' + s.id + '\')' : 'openOfficialBrowse(\'' + s.url + '\')');
+      return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
     }).join('');
   }
   const contentLinks = (page.links || []).filter(function (l) {
@@ -3394,11 +4355,8 @@ function renderBrowsePage(page) {
     return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="fas fa-file-lines"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 60)) + '</p></div></button>';
   }).join('');
   let media = '';
-  if (page.embed) {
-    media += '<iframe class="off-frame" src="' + page.embed + '" title="' + escapeHtml(page.title || '') + '" referrerpolicy="no-referrer-when-downgrade"></iframe>';
-  }
   (page.videos || []).slice(0, 2).forEach(function (v) {
-    media += '<video class="off-video" controls preload="metadata" src="' + v + '"></video>';
+    media += officialVideoHtml(v, page.images && page.images[0]);
   });
   return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + '</div>' +
     '<h2>' + escapeHtml(page.title) + '</h2>' +
@@ -3414,10 +4372,17 @@ function renderBrowsePage(page) {
 
 function liveContextPrompt(mode) {
   const page = officialState.page || {};
-  const title = page.title || 'официальный материал';
-  const extra = (page.know && page.know.length ? 'Знать: ' + page.know.join('; ') + '\n' : '') +
+  const adu = getAduItem(officialState.aduItem);
+  const title = page.title || (adu && adu.title) || 'официальный материал';
+  let extra = (page.know && page.know.length ? 'Знать: ' + page.know.join('; ') + '\n' : '') +
     (page.can && page.can.length ? 'Уметь: ' + page.can.join('; ') + '\n' : '') +
     (page.bodyText ? page.bodyText.slice(0, 1600) : '');
+  if (officialState.view === 'adu_item' && adu && adu.groups) {
+    extra += '\nМатериалы Аду.бай по разделу «' + adu.title + '»:\n';
+    adu.groups.forEach(function (g) {
+      extra += g.name + ': ' + g.items.map(function (m) { return m.t + (m.d ? ' (' + m.d + ')' : ''); }).join('; ') + '\n';
+    });
+  }
   if (mode === 'summary') {
     return 'Составь конспект по официальному материалу системы образования Беларуси.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nОпирайся только на школьную программу РБ. Формулы — LaTeX.';
   }
@@ -3472,18 +4437,29 @@ async function practiceLivePage() {
   }
 }
 
+function aduItemHaystack(it) {
+  let t = it.title + ' ' + it.desc;
+  (it.notes || []).forEach(function (n) { t += ' ' + n.t + ' ' + n.d; });
+  (it.groups || []).forEach(function (g) {
+    t += ' ' + g.name;
+    (g.items || []).forEach(function (m) { t += ' ' + m.t + ' ' + m.d; });
+  });
+  return t.toLowerCase();
+}
 function renderOfficialSearch() {
   const q = officialState.query.trim().toLowerCase();
   const pool = EIOR_SECTIONS.concat(ADU_SECTIONS);
   const hits = pool.filter(function (s) {
-    return (s.title + ' ' + s.desc).toLowerCase().indexOf(q) !== -1;
+    if ((s.title + ' ' + s.desc).toLowerCase().indexOf(q) !== -1) return true;
+    if (s.action === 'aduItem' && ADU_ITEMS[s.itemId] && aduItemHaystack(ADU_ITEMS[s.itemId]).indexOf(q) !== -1) return true;
+    return false;
   });
   const subjHits = EIOR_SUBJECTS.filter(function (s) { return s.name.toLowerCase().indexOf(q) !== -1; });
   let html = officialSearchHtml() + crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: 'Поиск' }]);
   if (!hits.length && !subjHits.length) {
     html += '<div class="empty-state"><div class="icon"><i class="fas fa-search"></i></div><h3>Нет раздела с таким названием</h3><p>Откройте ЕИОР или Аду.бай и ищите уже внутри живой страницы</p></div>';
     html += '<button class="btn btn-eior" onclick="officialGo(\'eior\')">Каталог ЕИОР</button>';
-    html += '<button class="btn btn-secondary" onclick="openOfficialBrowse(\'' + ADU_HOME + '\')">Портал Аду.бай</button>';
+    html += '<button class="btn btn-secondary" onclick="officialGo(\'adu\')">Портал Аду.бай</button>';
     return html;
   }
   if (subjHits.length) {
@@ -3495,7 +4471,10 @@ function renderOfficialSearch() {
   if (hits.length) {
     html += '<div class="section-label">Разделы сайтов</div>';
     hits.forEach(function (s) {
-      const click = s.action === 'eior' ? 'officialGo(\'eior\')' : 'openOfficialBrowse(\'' + s.url + '\')';
+      let click = 'openOfficialBrowse(\'' + s.url + '\')';
+      if (s.action === 'eior') click = 'officialGo(\'eior\')';
+      else if (s.action === 'adu') click = 'openAduCat(\'' + s.id + '\')';
+      else if (s.action === 'aduItem') click = 'openAduItem(\'' + s.itemId + '\')';
       html += '<button class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
     });
   }
