@@ -482,15 +482,15 @@
       background:var(--surface);
       border-top:1px solid var(--border);
       display:grid;
-      grid-template-columns:repeat(3,1fr);
-      padding:8px 12px 14px;
+      grid-template-columns:repeat(4,1fr);
+      padding:6px 4px 12px;
       z-index:100;
       box-shadow:0 -4px 20px var(--shadow-soft);
       backdrop-filter:blur(10px);
     }
     .nav-item {
       position:relative;
-      padding:10px 6px;
+      padding:8px 2px;
       text-align:center;
       cursor:pointer;
       border-radius:14px;
@@ -508,8 +508,8 @@
       border-radius:3px;
       background:var(--gradient-gold);
     }
-    .nav-item .icon { font-size:20px; margin-bottom:4px; }
-    .nav-item span { display:block; font-size:10px; font-weight:700; letter-spacing:0.3px; }
+    .nav-item .icon { font-size:18px; margin-bottom:3px; }
+    .nav-item span { display:block; font-size:9px; font-weight:700; letter-spacing:0.2px; line-height:1.2; }
     
     /* Toast */
     .toast {
@@ -745,6 +745,122 @@
     /* Confetti container */
     #confetti-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1000; overflow:hidden; }
     .confetti { position:absolute; width:10px; height:10px; animation:confetti 3s linear forwards; }
+
+    /* Official resources */
+    .official-wrap { max-width:640px; margin:0 auto; padding-bottom:8px; }
+    .official-hero {
+      position:relative; border-radius:22px; padding:22px 20px 18px; margin-bottom:14px; overflow:hidden;
+      background:linear-gradient(145deg,#FFF8E6,#F7E7B8 55%,#EED7A0);
+      border:1.5px solid rgba(196,145,26,0.28);
+    }
+    body.dark-theme .official-hero {
+      background:linear-gradient(145deg,#1b1608,#241c0a 60%,#16120a);
+      border-color:rgba(232,177,62,0.28);
+    }
+    .official-hero::after {
+      content:''; position:absolute; right:-30px; top:-40px; width:160px; height:160px; border-radius:50%;
+      background:radial-gradient(circle,rgba(232,177,62,0.35),transparent 70%); pointer-events:none;
+    }
+    .official-kicker { font-size:10px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:6px; }
+    body.dark-theme .official-kicker { color:var(--gold); }
+    .official-hero h1 { font-size:22px; font-weight:800; letter-spacing:-0.3px; margin-bottom:6px; position:relative; z-index:1; }
+    .official-hero p { font-size:13px; color:var(--text-secondary); line-height:1.55; position:relative; z-index:1; }
+    .official-search {
+      display:flex; align-items:center; gap:10px; background:var(--surface); border:2px solid var(--border);
+      border-radius:16px; padding:4px 6px 4px 14px; margin-bottom:14px;
+    }
+    .official-search i { color:var(--gold); }
+    .official-search input { border:none; background:transparent; padding:10px 4px; box-shadow:none; }
+    .official-search input:focus { box-shadow:none; border:none; }
+    .official-search button { border:none; background:transparent; color:var(--text-muted); padding:8px 10px; cursor:pointer; }
+    .source-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
+    .source-card {
+      position:relative; border-radius:18px; padding:16px 14px 14px; border:2px solid var(--border);
+      background:var(--card); cursor:pointer; transition:all 0.3s; min-height:148px; overflow:hidden;
+    }
+    .source-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px var(--shadow-strong); }
+    .source-card.eior { border-color:rgba(42,157,143,0.35); }
+    .source-card.adu { border-color:rgba(232,177,62,0.4); }
+    .source-card .src-ico {
+      width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+      font-size:18px; margin-bottom:12px;
+    }
+    .source-card.eior .src-ico { background:rgba(42,157,143,0.12); color:#2a9d8f; }
+    .source-card.adu .src-ico { background:rgba(232,177,62,0.14); color:var(--gold); }
+    .source-card h3 { font-size:15px; font-weight:800; margin-bottom:4px; }
+    .source-card p { font-size:11px; color:var(--text-secondary); line-height:1.45; }
+    .source-card .src-tag {
+      display:inline-block; margin-top:10px; font-size:10px; font-weight:800; letter-spacing:0.4px;
+      padding:3px 8px; border-radius:999px;
+    }
+    .source-card.eior .src-tag { background:rgba(42,157,143,0.12); color:#2a9d8f; }
+    .source-card.adu .src-tag { background:rgba(232,177,62,0.14); color:var(--gold-dark); }
+    body.dark-theme .source-card.adu .src-tag { color:var(--gold); }
+    .quick-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin:4px 0 8px; -webkit-overflow-scrolling:touch; }
+    .quick-chip {
+      flex:0 0 auto; padding:8px 12px; border-radius:999px; border:1.5px solid var(--border);
+      background:var(--card); font-size:12px; font-weight:700; cursor:pointer; color:var(--text);
+    }
+    .quick-chip:hover, .quick-chip.active { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.08); }
+    .grade-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
+    .grade-btn {
+      border:2px solid var(--border); background:var(--card); border-radius:14px; padding:12px 4px;
+      text-align:center; cursor:pointer; font-weight:800; font-size:14px; transition:all 0.2s; color:var(--text);
+    }
+    .grade-btn small { display:block; font-size:9px; font-weight:600; color:var(--text-muted); margin-top:2px; }
+    .grade-btn.active, .grade-btn:hover { border-color:var(--gold); background:rgba(232,177,62,0.1); color:var(--gold); }
+    .subj-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .subj-card { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:14px; cursor:pointer; transition:all 0.25s; }
+    .subj-card:hover { border-color:var(--gold); transform:translateY(-3px); box-shadow:0 10px 24px var(--shadow-strong); }
+    .subj-card .ico { color:var(--gold); font-size:18px; margin-bottom:8px; }
+    .subj-card h3 { font-size:14px; font-weight:800; }
+    .subj-card p { font-size:11px; color:var(--text-secondary); margin-top:3px; }
+    .topic-group { margin:16px 0 8px; }
+    .topic-group-title { font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-muted); margin:0 2px 8px; }
+    .topic-item { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:13px 14px; margin-bottom:8px; cursor:pointer; transition:all 0.2s; }
+    .topic-item:hover { border-color:var(--gold); transform:translateX(3px); }
+    .topic-item.done { border-color:rgba(74,222,128,0.35); }
+    .topic-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .topic-item h3 { font-size:14px; font-weight:700; line-height:1.35; }
+    .topic-meta { font-size:11px; color:var(--text-muted); margin-top:5px; }
+    .done-dot { width:10px; height:10px; border-radius:50%; background:#4ade80; flex-shrink:0; margin-top:4px; }
+    .topic-hero { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:18px; margin-bottom:12px; }
+    .topic-hero .meta { font-size:12px; color:var(--gold); font-weight:700; margin-bottom:8px; }
+    .topic-hero h2 { font-size:20px; font-weight:800; line-height:1.3; margin-bottom:8px; }
+    .know-box, .can-box { border-radius:14px; padding:12px 14px; margin-bottom:10px; font-size:13px; line-height:1.55; }
+    .know-box { background:rgba(232,177,62,0.08); border:1px solid rgba(232,177,62,0.2); }
+    .can-box { background:rgba(42,157,143,0.08); border:1px solid rgba(42,157,143,0.2); }
+    .know-box strong { color:var(--gold); }
+    .can-box strong { color:#2a9d8f; }
+    .know-box li, .can-box li { margin:4px 0 4px 16px; color:var(--text-secondary); }
+    .official-actions { display:grid; gap:8px; }
+    .btn-eior { background:linear-gradient(135deg,#3cb8a9,#2a9d8f); color:#fff; box-shadow:0 4px 14px rgba(42,157,143,0.28); }
+    .btn-eior:hover { transform:translateY(-2px); }
+    .crumb { display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12px; color:var(--text-muted); margin:-4px 0 12px; font-weight:600; }
+    .crumb span { cursor:pointer; color:var(--gold); }
+    .crumb i { font-size:9px; opacity:0.6; }
+    .adu-item {
+      display:flex; gap:12px; align-items:flex-start; background:var(--card); border:2px solid var(--border);
+      border-radius:16px; padding:14px; margin-bottom:8px; cursor:pointer; transition:all 0.2s;
+      text-align:left; width:100%; color:inherit; font:inherit;
+    }
+    .adu-item:hover { border-color:var(--gold); transform:translateX(3px); }
+    .adu-ico {
+      width:40px; height:40px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(232,177,62,0.12); color:var(--gold); font-size:16px;
+    }
+    .adu-item h3 { font-size:14px; font-weight:700; margin-bottom:3px; }
+    .adu-item p { font-size:12px; color:var(--text-secondary); line-height:1.4; }
+    .progress-mini { height:6px; background:var(--border); border-radius:99px; overflow:hidden; margin-top:8px; }
+    .progress-mini > i { display:block; height:100%; background:var(--gradient-gold); border-radius:99px; }
+    .fav-btn { border:none; background:transparent; color:var(--text-muted); font-size:18px; cursor:pointer; padding:4px; }
+    .fav-btn.on { color:var(--gold); }
+    .result-hit { font-size:11px; color:var(--gold); font-weight:700; margin-bottom:3px; }
+    .stat-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0 4px; }
+    .stat-pill { background:var(--card); border:1.5px solid var(--border); border-radius:14px; padding:10px 12px; }
+    .stat-pill b { display:block; font-size:18px; color:var(--gold); }
+    .stat-pill span { font-size:11px; color:var(--text-secondary); }
+    .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; }
   </style>
 </head>
 <body>
@@ -871,9 +987,15 @@
   </div>
 </div>
 
+<!-- ОФИЦИАЛЬНЫЕ РЕСУРСЫ -->
+<div class="page" id="officialPage">
+  <div class="official-wrap" id="officialRoot"></div>
+</div>
+
 <!-- НАВИГАЦИЯ -->
 <div class="bottom-nav">
   <div class="nav-item active" id="nav-main" onclick="showPage('mainPage')"><div class="icon"><i class="fas fa-home"></i></div><span>Главная</span></div>
+  <div class="nav-item" id="nav-official" onclick="openOfficial()"><div class="icon"><i class="fas fa-landmark"></i></div><span>Ресурсы</span></div>
   <div class="nav-item" id="nav-history" onclick="showHistory()"><div class="icon"><i class="fas fa-history"></i></div><span>История</span></div>
   <div class="nav-item" id="nav-settings" onclick="showPage('settingsPage')"><div class="icon"><i class="fas fa-gear"></i></div><span>Настройки</span></div>
 </div>
@@ -1422,7 +1544,14 @@ function renderTestResult() {
     </div>`;
 }
 
-function exitTest() { showPage('mainPage'); }
+function exitTest() {
+  if (testState.fromOfficial) {
+    testState.fromOfficial = false;
+    openOfficial();
+    return;
+  }
+  showPage('mainPage');
+}
 
 // КОНФЕТТИ
 function triggerConfetti() {
@@ -1461,6 +1590,7 @@ function init() {
   document.body.classList.toggle('dark-theme', isDark);
   updateThemeUI(isDark);
   
+  loadOfficialProgress();
   if (state.role) {
     loadMainMenu();
     showPage('mainPage');
@@ -2156,6 +2286,7 @@ function showPage(pageId) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   
   if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
+  if (pageId === 'officialPage') document.getElementById('nav-official')?.classList.add('active');
   if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
   if (pageId === 'settingsPage' || pageId === 'privacyPage') {
     document.getElementById('nav-settings')?.classList.add('active');
@@ -2164,6 +2295,11 @@ function showPage(pageId) {
 }
 
 function goBack() {
+  if (['eior_explain', 'eior_summary'].includes(state.currentActionId)) {
+    state.conversationHistory = [];
+    openOfficial();
+    return;
+  }
   showPage('mainPage');
   state.conversationHistory = [];
 }
@@ -2185,7 +2321,9 @@ function getActionName(id) {
     tasks: 'Задания',
     variants: 'Контрольная',
     generate_quiz: 'Тест',
-    differentiation: 'Дифференциация'
+    differentiation: 'Дифференциация',
+    eior_explain: 'ЕИОР · объяснение',
+    eior_summary: 'ЕИОР · конспект'
   };
   return names[id] || 'Запрос';
 }
@@ -2219,6 +2357,822 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// ===== ОФИЦИАЛЬНЫЕ РЕСУРСЫ: живое зеркало ЕИОР + Аду.бай =====
+const EIOR_HOME = 'https://eior.by/';
+const EIOR_CATALOG = 'https://eior.by/obrazovanie/obshchee-srednee/index.php';
+const EIOR_CT = 'https://eior.by/podgotovka-k-tst/';
+const ADU_HOME = 'https://adu.by/ru/';
+const ADU_BASE = 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/obshchee-srednee-obrazovanie';
+const LIVE_TTL = 15 * 60 * 1000;
+
+let officialState = { view: 'hub', grade: 9, subject: null, topicN: null, query: '', url: '', page: null };
+let officialProgress = { done: {}, fav: [], grade: 9 };
+const liveMem = {};
+
+function loadOfficialProgress() {
+  try {
+    const p = JSON.parse(localStorage.getItem('nevioOfficial_v2') || '{}');
+    officialProgress.done = p.done || {};
+    officialProgress.fav = p.fav || [];
+    officialProgress.grade = p.grade || 9;
+    officialState.grade = officialProgress.grade;
+  } catch (e) {}
+}
+function saveOfficialProgress() {
+  try {
+    localStorage.setItem('nevioOfficial_v2', JSON.stringify({
+      done: officialProgress.done, fav: officialProgress.fav,
+      grade: officialState.grade || officialProgress.grade
+    }));
+  } catch (e) {}
+}
+
+function eiorClassSlug(g) { return g === 1 ? '1class' : (g + '-klass'); }
+function eiorTopicUrl(grade, slug, n) {
+  return 'https://eior.by/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/' + n + '.php';
+}
+function openExternal(url) {
+  if (!url) return;
+  if (window.Telegram?.WebApp?.openLink) Telegram.WebApp.openLink(url);
+  else window.open(url, '_blank', 'noopener');
+}
+function cacheKey(url) { return 'nevioLive:' + url; }
+
+function readCache(url) {
+  if (liveMem[url] && Date.now() - liveMem[url].ts < LIVE_TTL) return liveMem[url];
+  try {
+    const raw = localStorage.getItem(cacheKey(url));
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (Date.now() - obj.ts < LIVE_TTL) { liveMem[url] = obj; return obj; }
+  } catch (e) {}
+  return null;
+}
+function writeCache(url, data) {
+  const obj = { ts: Date.now(), data: data };
+  liveMem[url] = obj;
+  try { localStorage.setItem(cacheKey(url), JSON.stringify(obj)); } catch (e) {}
+}
+
+async function fetchLive(url, force) {
+  if (!force) {
+    const hit = readCache(url);
+    if (hit) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
+  }
+  const proxies = [
+    { kind: 'html', make: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
+    { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+    { kind: 'md', make: u => 'https://r.jina.ai/' + u }
+  ];
+  let lastErr = 'нет ответа';
+  for (let i = 0; i < proxies.length; i++) {
+    try {
+      const res = await fetchWithTimeout(proxies[i].make(url), { headers: { 'Accept': 'text/html,text/plain,*/*' } }, 18000);
+      if (!res.ok) { lastErr = 'HTTP ' + res.status; continue; }
+      const text = await res.text();
+      if (!text || text.length < 40) { lastErr = 'пустой ответ'; continue; }
+      if (/522: Connection timed out|Just a moment|cf-browser-verification/i.test(text) && text.length < 2500) {
+        lastErr = 'прокси недоступен'; continue;
+      }
+      const parsed = proxies[i].kind === 'md' ? parseMarkdownPage(url, text) : parseHtmlPage(url, text);
+      if (!parsed || (!parsed.title && !parsed.links.length && !parsed.bodyText)) {
+        lastErr = 'не удалось разобрать страницу'; continue;
+      }
+      parsed.source = url;
+      writeCache(url, parsed);
+      return Object.assign({ cached: false, age: 0 }, parsed);
+    } catch (e) {
+      lastErr = e.message || 'сеть';
+    }
+  }
+  const stale = (function () {
+    try { return JSON.parse(localStorage.getItem(cacheKey(url)) || 'null'); } catch (e) { return null; }
+  })();
+  if (stale && stale.data) return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts }, stale.data);
+  throw new Error('Сайт временно не открывается. Попробуйте ещё раз.');
+}
+
+function absUrl(href, base) {
+  if (!href) return '';
+  href = href.trim();
+  if (/^(javascript:|mailto:|tel:|#)/i.test(href)) return '';
+  try { return new URL(href, base).href; } catch (e) { return ''; }
+}
+function sameOfficial(u) {
+  return /eior\.by|adu\.by|olimp\.adu\.by|e-padruchnik/i.test(u || '');
+}
+function cleanText(s) {
+  return String(s || '').replace(/\s+/g, ' ').trim();
+}
+
+function parseHtmlPage(url, html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  ['script', 'style', 'noscript', 'iframe'].forEach(function (tag) {
+    doc.querySelectorAll(tag).forEach(function (n) { n.remove(); });
+  });
+  const title = cleanText(doc.querySelector('h1, .pagetitle, title')?.textContent || '');
+  const links = [];
+  const seen = {};
+  doc.querySelectorAll('a[href]').forEach(function (a) {
+    const href = absUrl(a.getAttribute('href'), url);
+    if (!href || !sameOfficial(href) || seen[href]) return;
+    const label = cleanText(a.getAttribute('title') || a.textContent);
+    if (!label || label.length < 2 || label.length > 220) return;
+    if (/^(бел|рус|меню|главная|контакты|twitter|facebook|instagram|youtube)$/i.test(label)) return;
+    seen[href] = true;
+    links.push({ href: href, title: label });
+  });
+  const videos = [];
+  doc.querySelectorAll('video source, video[src], a[href$=".mp4"]').forEach(function (el) {
+    const src = absUrl(el.getAttribute('src') || el.getAttribute('href'), url);
+    if (src && videos.indexOf(src) < 0) videos.push(src);
+  });
+  const images = [];
+  doc.querySelectorAll('img[src]').forEach(function (img) {
+    const src = absUrl(img.getAttribute('src'), url);
+    if (src && /upload|info-oso|\.jpg|\.jpeg|\.png|\.webp/i.test(src) && images.length < 6) images.push(src);
+  });
+  const pdfs = links.filter(function (l) { return /\.pdf(\?|$)/i.test(l.href); });
+  const know = extractListAfter(doc, /знать|ведаць/i);
+  const can = extractListAfter(doc, /уметь|умець/i);
+  let bodyText = '';
+  const main = doc.querySelector('.content, #content, article, .item-page, .blog, .workarea, main') || doc.body;
+  if (main) bodyText = cleanText(main.textContent).slice(0, 4000);
+  return {
+    title: title || hostLabel(url),
+    links: links.slice(0, 80),
+    videos: videos,
+    images: images,
+    pdfs: pdfs,
+    know: know,
+    can: can,
+    bodyText: bodyText,
+    kind: detectKind(url)
+  };
+}
+
+function extractListAfter(doc, re) {
+  const out = [];
+  const nodes = doc.querySelectorAll('h2,h3,h4,strong,b,p,div');
+  for (let i = 0; i < nodes.length; i++) {
+    if (!re.test(nodes[i].textContent || '')) continue;
+    let n = nodes[i].parentElement;
+    const lis = (n && n.querySelectorAll('li')) || nodes[i].parentElement?.querySelectorAll('li');
+    if (lis && lis.length) {
+      lis.forEach(function (li) {
+        const t = cleanText(li.textContent);
+        if (t && out.indexOf(t) < 0) out.push(t);
+      });
+      if (out.length) break;
+    }
+  }
+  return out.slice(0, 12);
+}
+
+function parseMarkdownPage(url, md) {
+  const titleM = md.match(/^Title:\s*(.+)$/m);
+  const title = cleanText(titleM ? titleM[1] : '');
+  const links = [];
+  const seen = {};
+  const re = /\[([^\]]+)\]\((https?:[^)\s]+)\)/g;
+  let m;
+  while ((m = re.exec(md))) {
+    const href = m[2].replace(/\\/g, '');
+    if (!sameOfficial(href) || seen[href]) continue;
+    const label = cleanText(m[1]);
+    if (!label || label.length < 2) continue;
+    seen[href] = true;
+    links.push({ href: href, title: label });
+  }
+  const videos = [];
+  const vre = /(https?:\/\/eior\.by\/[^\s)]+\.mp4)/gi;
+  while ((m = vre.exec(md))) if (videos.indexOf(m[1]) < 0) videos.push(m[1]);
+  const images = [];
+  const ire = /(https?:\/\/eior\.by\/upload\/[^\s)]+\.(?:jpg|jpeg|png|JPG))/g;
+  while ((m = ire.exec(md))) if (images.length < 6 && images.indexOf(m[1]) < 0) images.push(m[1]);
+  const know = [];
+  const can = [];
+  const lines = md.split('\n');
+  let mode = '';
+  lines.forEach(function (line) {
+    if (/^\s*знать\s*:?\s*$/i.test(line) || /\*\*Знать\*\*/i.test(line)) { mode = 'k'; return; }
+    if (/^\s*уметь\s*:?\s*$/i.test(line) || /\*\*Уметь\*\*/i.test(line)) { mode = 'c'; return; }
+    if (/^\s*#{1,3}\s/.test(line) || /^[A-ZА-ЯЁ]/.test(line) && line.length < 40 && !/^-/.test(line)) {
+      if (!/знать|уметь/i.test(line)) mode = '';
+    }
+    const item = cleanText(line.replace(/^[-*•]\s*/, ''));
+    if (mode === 'k' && item && item.length > 2) know.push(item);
+    if (mode === 'c' && item && item.length > 2) can.push(item);
+  });
+  return {
+    title: title || hostLabel(url),
+    links: links.slice(0, 80),
+    videos: videos,
+    images: images,
+    pdfs: links.filter(function (l) { return /\.pdf/i.test(l.href); }),
+    know: know.slice(0, 12),
+    can: can.slice(0, 12),
+    bodyText: cleanText(md.replace(/\[.*?\]\(.*?\)/g, ' ')).slice(0, 4000),
+    kind: detectKind(url)
+  };
+}
+
+function detectKind(url) {
+  if (/catalog_lecture\/.+\/\d+\.php/i.test(url)) return 'topic';
+  if (/podgotovka-k-tst/i.test(url)) return 'ct';
+  if (/obrazovanie/i.test(url)) return 'catalog';
+  if (/adu\.by/i.test(url)) return 'adu';
+  return 'page';
+}
+function hostLabel(url) {
+  if (/eior\.by/i.test(url)) return 'ЕИОР';
+  if (/adu\.by/i.test(url)) return 'Аду.бай';
+  return 'Материал';
+}
+function ageLabel(ms, cached, stale) {
+  if (stale) return 'кэш, сайт не ответил';
+  if (!cached || !ms) return 'только что с сайта';
+  const m = Math.max(1, Math.round(ms / 60000));
+  return 'обновлено ' + m + ' мин назад';
+}
+
+const EIOR_SUBJECTS = [
+  { id: 'math', name: 'Математика', slug: 'math', icon: 'fas fa-calculator', grades: [1,2,3,4,5,6,7,8,9,10,11] },
+  { id: 'rusyaz', name: 'Русский язык', slug: 'rusyaz', icon: 'fas fa-font', grades: [2,3,4,5,6,7,8,9,10,11] },
+  { id: 'belmova', name: 'Беларуская мова', slug: 'belmova', icon: 'fas fa-language', grades: [2,3,4,5,6,7,8,9,10,11] },
+  { id: 'bellit', name: 'Беларуская літаратура', slug: 'bellit', icon: 'fas fa-feather', grades: [5,6,7,8,9,10,11] },
+  { id: 'ruslit', name: 'Русская литература', slug: 'ruslit', icon: 'fas fa-book-open', grades: [5,6,7,8,9,10,11] },
+  { id: 'phisics', name: 'Физика', slug: 'phisics', icon: 'fas fa-atom', grades: [7,8,9,10,11] },
+  { id: 'himiya', name: 'Химия', slug: 'himiya', icon: 'fas fa-flask', grades: [7,8,9,10,11] },
+  { id: 'biology', name: 'Биология', slug: 'biology', icon: 'fas fa-dna', grades: [6,7,8,9,10,11] },
+  { id: 'history_by', name: 'История Беларуси', slug: 'history_of_belarus', icon: 'fas fa-landmark', grades: [5,6,7,8,9,10,11] },
+  { id: 'vsem_istoriya', name: 'Всемирная история', slug: 'vsem_istoriya', icon: 'fas fa-globe-europe', grades: [5,6,7,8,9,10,11] },
+  { id: 'obschestvo', name: 'Обществоведение', slug: 'obschestvo', icon: 'fas fa-balance-scale', grades: [9,10,11] },
+  { id: 'geografia', name: 'География', slug: 'geografia', icon: 'fas fa-map-marked-alt', grades: [6,7,8,9,10,11] },
+  { id: 'informatika', name: 'Информатика', slug: 'informatika', icon: 'fas fa-laptop-code', grades: [6,7,8,9,10,11] },
+  { id: 'english', name: 'Английский язык', slug: 'english', icon: 'fas fa-comments', grades: [3,4,5,6,7,8,9,10,11] },
+  { id: 'chelovek', name: 'Человек и мир', slug: 'chelovek', icon: 'fas fa-leaf', grades: [1,2,3,4] },
+  { id: 'doprpodg', name: 'Допризывная подготовка', slug: 'doprpodg', icon: 'fas fa-shield-alt', grades: [10,11] }
+];
+
+const EIOR_SECTIONS = [
+  { id: 'catalog', title: 'Общее среднее · темы', desc: 'Все классы, предметы, видео и тесты — с eior.by', url: EIOR_CATALOG, icon: 'fas fa-play-circle', action: 'eior' },
+  { id: 'ct', title: 'Подготовка к ЦТ', desc: 'Официальные видео и материалы РИКЗ на ЕИОР', url: EIOR_CT, icon: 'fas fa-trophy' },
+  { id: 'books', title: 'Электронные учебники', desc: 'Версии пособий и библиотека e-padruchnik', url: 'https://eior.by/material/books.php', icon: 'fas fa-book' },
+  { id: 'extra', title: 'Дополнительные материалы', desc: 'Образовательные ресурсы республики и регионов', url: 'https://eior.by/material/edu_source.php', icon: 'fas fa-link' },
+  { id: 'eor', title: 'ЭОР', desc: 'Электронные образовательные ресурсы', url: 'https://eior.by/material/eor.php', icon: 'fas fa-laptop' },
+  { id: 'blogs', title: 'Учитель — ученику', desc: 'Каталог интернет-ресурсов', url: 'https://eior.by/material/blogs.php', icon: 'fas fa-chalkboard' },
+  { id: 'courses', title: 'Курсы', desc: 'Мероприятия и курсы на ЕИОР', url: 'https://eior.by/events/cources.php', icon: 'fas fa-graduation-cap' },
+  { id: 'contacts', title: 'Контакты ЕИОР', desc: 'ГИАЦ Министерства образования', url: 'https://eior.by/kontakty/', icon: 'fas fa-phone' }
+];
+
+const ADU_SECTIONS = [
+  { id: 'home', title: 'Новости портала', desc: 'Свежие материалы Национального образовательного портала', url: ADU_HOME, icon: 'fas fa-newspaper' },
+  { id: 'year', title: 'Учебный год 2025/2026', desc: 'Организация образовательного процесса', url: ADU_HOME, icon: 'fas fa-calendar-alt' },
+  { id: 'p1', title: 'Программы I–IV классы', desc: 'Письма и УМО начальной школы', url: ADU_BASE + '/uchebnye-predmety-i-iv-klassy/i-klass.html', icon: 'fas fa-child' },
+  { id: 'math', title: 'Программа: математика', desc: 'V–XI классы, базовый и повышенный уровень', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/matematika.html', icon: 'fas fa-calculator' },
+  { id: 'fiz', title: 'Программа: физика', desc: 'Учебная программа и рекомендации', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/fizika.html', icon: 'fas fa-atom' },
+  { id: 'him', title: 'Программа: химия', desc: 'Учебная программа и рекомендации', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/himiya.html', icon: 'fas fa-flask' },
+  { id: 'bio', title: 'Программа: биология', desc: 'Учебная программа', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/biologiya.html', icon: 'fas fa-dna' },
+  { id: 'geo', title: 'Программа: география', desc: 'V–XI, в том числе повышенный уровень', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/geografiya.html', icon: 'fas fa-map' },
+  { id: 'inf', title: 'Программа: информатика', desc: 'Учебная программа и ЭОР', url: ADU_BASE + '/uchebnye-predmety-v-xi-klassy/informatika.html', icon: 'fas fa-code' },
+  { id: 'exams', title: 'Итоговые и вступительные', desc: 'Билеты, ЦТ/ЦЭ, методика', url: 'https://adu.by/ru/pedagogam/ekzameny.html', icon: 'fas fa-file-signature' },
+  { id: 'olymp', title: 'Республиканская олимпиада', desc: 'Задания и бланки по предметам', url: 'https://adu.by/ru/uchenikam/respublikanskaya-olimpiada-po-uchebnym-predmetam.html', icon: 'fas fa-trophy' },
+  { id: 'olimp', title: 'olimp.adu.by', desc: 'Олимпиады, турниры, конкурсы', url: 'https://olimp.adu.by/', icon: 'fas fa-medal' },
+  { id: 'docs', title: 'Нормативные документы', desc: 'Документы Министерства образования', url: 'https://adu.by/ru/component/content/category/pedagogam/normativnye-pravovye-dokumenty.html?Itemid=101', icon: 'fas fa-gavel' },
+  { id: 'books', title: 'Электронные учебники Аду.бай', desc: 'e-padruchnik.adu.by', url: 'http://e-padruchnik.adu.by/', icon: 'fas fa-book-reader' },
+  { id: 'about', title: 'О портале', desc: 'Национальный образовательный портал', url: 'https://adu.by/ru/o-portale.html', icon: 'fas fa-info-circle' }
+];
+
+function getSubject(id) { return EIOR_SUBJECTS.find(function (s) { return s.id === id; }); }
+function subjectsForGrade(g) { return EIOR_SUBJECTS.filter(function (s) { return s.grades.indexOf(g) >= 0; }); }
+function topicKey(grade, slug, n) { return grade + ':' + slug + ':' + n; }
+function isDone(key) { return !!officialProgress.done[key]; }
+function isFav(key) { return officialProgress.fav.indexOf(key) >= 0; }
+
+function officialSearchHtml() {
+  const q = officialState.query || '';
+  return '<div class="official-search">' +
+    '<i class="fas fa-search"></i>' +
+    '<input type="text" id="officialSearch" placeholder="Найти на ЕИОР и Аду.бай…" value="' + escapeHtml(q) + '" oninput="onOfficialSearch(this.value)" />' +
+    (q ? '<button type="button" onclick="onOfficialSearch(\'\')"><i class="fas fa-times"></i></button>' : '') +
+    '</div>';
+}
+function crumb(parts) {
+  return '<div class="crumb">' + parts.map(function (p, i) {
+    if (p.fn) return '<span onclick="' + p.fn + '">' + p.label + '</span>' + (i < parts.length - 1 ? ' <i class="fas fa-chevron-right"></i> ' : '');
+    return '<em style="font-style:normal">' + p.label + '</em>';
+  }).join('') + '</div>';
+}
+function listHtml(items) {
+  return items.map(function (x) { return '<li>' + escapeHtml(x) + '</li>'; }).join('');
+}
+function loadingBox(text) {
+  return '<div class="card" style="text-align:center;padding:36px 18px;">' +
+    '<div class="loading-dots"><span></span><span></span><span></span></div>' +
+    '<p style="margin-top:12px;color:var(--text-secondary);font-size:13px;">' + escapeHtml(text || 'Загружаю с официального сайта…') + '</p></div>';
+}
+function errorBox(msg) {
+  return '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-wifi"></i></div>' +
+    '<h3>Не удалось открыть сайт</h3><p>' + escapeHtml(msg) + '</p></div>' +
+    '<button class="btn btn-primary" onclick="refreshOfficial()"><i class="fas fa-rotate"></i> Повторить</button></div>';
+}
+
+function openOfficial(reset) {
+  if (reset) officialState = { view: 'hub', grade: officialProgress.grade || 9, subject: null, topicN: null, query: '', url: '', page: null };
+  renderOfficial();
+  showPage('officialPage');
+}
+
+function renderOfficial() {
+  const root = document.getElementById('officialRoot');
+  if (!root) return;
+  if (officialState.query && officialState.query.trim().length >= 2) {
+    root.innerHTML = renderOfficialSearch();
+    focusOfficialSearch();
+    return;
+  }
+  const map = {
+    hub: renderOfficialHub,
+    eior: renderEiorHome,
+    subjects: renderEiorSubjects,
+    topics: renderEiorTopicsShell,
+    topic: renderEiorTopicShell,
+    browse: renderBrowseShell
+  };
+  root.innerHTML = (map[officialState.view] || renderOfficialHub)();
+  focusOfficialSearch();
+  if (officialState.view === 'topics') loadEiorTopicsLive();
+  if (officialState.view === 'topic') loadEiorTopicLive();
+  if (officialState.view === 'browse') loadBrowseLive();
+}
+function focusOfficialSearch() {
+  const el = document.getElementById('officialSearch');
+  if (!el || !officialState.query) return;
+  el.focus();
+  const v = el.value; el.value = ''; el.value = v;
+}
+function onOfficialSearch(v) { officialState.query = v; renderOfficial(); }
+
+function refreshOfficial() {
+  const url = officialState.url;
+  if (url) {
+    try { localStorage.removeItem(cacheKey(url)); } catch (e) {}
+    delete liveMem[url];
+  }
+  if (officialState.view === 'topics' && officialState.subject) {
+    const subj = getSubject(officialState.subject);
+    const listUrl = 'list:' + officialState.grade + ':' + (subj ? subj.slug : '');
+    try { localStorage.removeItem(cacheKey(listUrl)); } catch (e) {}
+    delete liveMem[listUrl];
+  }
+  renderOfficial();
+  showToast('Повторяю загрузку');
+}
+
+function renderOfficialHub() {
+  const eiorCards = EIOR_SECTIONS.slice(0, 4).map(function (s) {
+    const click = s.action === 'eior' ? 'officialGo(\'eior\')' : 'openOfficialBrowse(\'' + s.url + '\')';
+    return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  }).join('');
+  const aduCards = ADU_SECTIONS.slice(0, 4).map(function (s) {
+    return '<button type="button" class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  }).join('');
+  return officialSearchHtml() +
+    '<div class="official-hero">' +
+      '<div class="official-kicker">ЕИОР и Аду.бай</div>' +
+      '<h1>Официальные ресурсы</h1>' +
+      '<p>Темы, видео, программы и документы — в удобном виде, без лишних переходов по сайтам.</p>' +
+    '</div>' +
+    '<div class="source-grid">' +
+      '<div class="source-card eior" onclick="officialGo(\'eior\')"><div class="src-ico"><i class="fas fa-play-circle"></i></div><h3>ЕИОР</h3><p>Живой каталог: класс → предмет → видео и тест с сайта</p><span class="src-tag">eior.by</span></div>' +
+      '<div class="source-card adu" onclick="openOfficialBrowse(\'' + ADU_HOME + '\')"><div class="src-ico"><i class="fas fa-university"></i></div><h3>Аду.бай</h3><p>Новости, программы, экзамены, олимпиады — страница с портала</p><span class="src-tag">adu.by</span></div>' +
+    '</div>' +
+    '<div class="section-label">ЕИОР сейчас</div>' + eiorCards +
+    '<div class="section-label">Аду.бай сейчас</div>' + aduCards +
+    '<div class="section-label">Быстрый вход</div>' +
+    '<div class="quick-row">' +
+      '<div class="quick-chip" onclick="openOfficialGrade(9)">9 класс</div>' +
+      '<div class="quick-chip" onclick="openOfficialGrade(11)">11 класс</div>' +
+      '<div class="quick-chip" onclick="openOfficialBrowse(\'' + EIOR_CT + '\')">ЦТ на ЕИОР</div>' +
+      '<div class="quick-chip" onclick="openOfficialBrowse(\'https://adu.by/ru/pedagogam/ekzameny.html\')">Экзамены</div>' +
+      '<div class="quick-chip" onclick="openOfficialBrowse(\'https://olimp.adu.by/\')">Олимпиады</div>' +
+    '</div>';
+}
+
+function officialGo(view) {
+  officialState.view = view;
+  officialState.query = '';
+  officialState.url = view === 'eior' ? EIOR_CATALOG : officialState.url;
+  renderOfficial();
+}
+
+function renderEiorHome() {
+  const more = EIOR_SECTIONS.map(function (s) {
+    const click = s.action === 'eior' ? 'officialGo(\'eior\')' : 'openOfficialBrowse(\'' + s.url + '\')';
+    return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  }).join('');
+  const btns = [1,2,3,4,5,6,7,8,9,10,11].map(function (g) {
+    const cls = g === officialState.grade ? ' active' : '';
+    return '<button type="button" class="grade-btn' + cls + '" onclick="openOfficialGrade(' + g + ')">' + g + '<small>класс</small></button>';
+  }).join('');
+  return officialSearchHtml() +
+    crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: 'ЕИОР' }]) +
+    '<div class="card"><div class="card-header"><h2><i class="fas fa-play-circle"></i> Каталог ЕИОР</h2>' +
+    '<p class="card-desc">Темы подгружаются с eior.by. Выберите класс.</p></div>' +
+    '<div class="grade-grid">' + btns + '</div></div>' +
+    '<div class="section-label">Весь ЕИОР</div>' + more;
+}
+
+function openOfficialGrade(g) {
+  officialState.grade = g;
+  officialProgress.grade = g;
+  officialState.subject = null;
+  officialState.topicN = null;
+  officialState.view = 'subjects';
+  officialState.query = '';
+  saveOfficialProgress();
+  renderOfficial();
+}
+
+function renderEiorSubjects() {
+  const g = officialState.grade;
+  const cards = subjectsForGrade(g).map(function (s) {
+    return '<div class="subj-card" onclick="openOfficialSubject(' + g + ',\'' + s.id + '\')">' +
+      '<div class="ico"><i class="' + s.icon + '"></i></div><h3>' + escapeHtml(s.name) + '</h3>' +
+      '<p>темы с eior.by</p></div>';
+  }).join('');
+  return officialSearchHtml() +
+    crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: 'ЕИОР', fn: 'officialGo(\'eior\')' }, { label: g + ' класс' }]) +
+    '<div class="section-label">' + g + ' класс · предметы на ЕИОР</div>' +
+    '<div class="subj-grid">' + cards + '</div>';
+}
+
+function openOfficialSubject(grade, subjectId) {
+  officialState.grade = grade;
+  officialState.subject = subjectId;
+  officialState.topicN = null;
+  officialState.view = 'topics';
+  officialState.query = '';
+  renderOfficial();
+}
+
+function renderEiorTopicsShell() {
+  const g = officialState.grade;
+  const subj = getSubject(officialState.subject);
+  return officialSearchHtml() +
+    crumb([
+      { label: 'Ресурсы', fn: 'officialGo(\'hub\')' },
+      { label: 'ЕИОР', fn: 'officialGo(\'eior\')' },
+      { label: g + ' класс', fn: 'openOfficialGrade(' + g + ')' },
+      { label: subj ? subj.name : '' }
+    ]) +
+    '<div id="officialLiveBody">' + loadingBox('Скачиваю список тем с eior.by…') + '</div>';
+}
+
+async function loadEiorTopicsLive() {
+  const box = document.getElementById('officialLiveBody');
+  if (!box) return;
+  const g = officialState.grade;
+  const subj = getSubject(officialState.subject);
+  if (!subj) return;
+  const listUrl = 'list:' + g + ':' + subj.slug;
+  try {
+    const topics = await listEiorTopics(g, subj.slug, false);
+    const cached = readCache(listUrl);
+    box.innerHTML = renderTopicList(g, subj, topics, cached);
+  } catch (e) {
+    box.innerHTML = errorBox(e.message) +
+      '<button class="btn btn-eior" onclick="openExternal(\'' + EIOR_CATALOG + '\')"><i class="fas fa-external-link-alt"></i> Каталог на eior.by</button>';
+  }
+}
+
+function renderTopicList(g, subj, topics, cached) {
+  if (!topics.length) {
+    return '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-book-open"></i></div>' +
+      '<h3>На ЕИОР пока нет этой полки</h3><p>Предмет мог называться иначе или ещё не выложен для ' + g + ' класса.</p></div>' +
+      '<button class="btn btn-eior" onclick="openExternal(\'' + EIOR_CATALOG + '\')">Открыть каталог ЕИОР</button></div>';
+  }
+  let html = '<div class="section-label">' + topics.length + ' тем · ' + escapeHtml(subj.name) + ' · ' + g + ' класс</div>';
+  topics.forEach(function (tp) {
+    const key = topicKey(g, subj.slug, tp.n);
+    html += '<div class="topic-item' + (isDone(key) ? ' done' : '') + '" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + tp.n + ')">' +
+      '<div class="topic-top"><h3>' + escapeHtml(tp.title) + '</h3>' + (isDone(key) ? '<div class="done-dot"></div>' : '') + '</div>' +
+      '<div class="topic-meta">урок ' + tp.n + '</div></div>';
+  });
+  return html;
+}
+
+async function listEiorTopics(grade, slug, force) {
+  const listUrl = 'list:' + grade + ':' + slug;
+  if (!force) {
+    const hit = readCache(listUrl);
+    if (hit && Array.isArray(hit.data) && hit.data.length) return hit.data;
+  }
+  const fromCatalog = await topicsFromCatalogPage(grade, slug);
+  if (fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
+  const probed = await probeEiorTopics(grade, slug);
+  writeCache(listUrl, probed);
+  return probed;
+}
+
+async function topicsFromCatalogPage(grade, slug) {
+  try {
+    const page = await fetchLive(EIOR_CATALOG, false);
+    const prefix = '/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/';
+    const out = [];
+    const seen = {};
+    (page.links || []).forEach(function (l) {
+      const m = l.href.match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
+      if (!m) return;
+      if (m[2] !== slug) return;
+      if (eiorClassSlug(grade) !== m[1] && !(grade === 1 && m[1] === '1class')) return;
+      const n = parseInt(m[3], 10);
+      if (seen[n]) return;
+      seen[n] = true;
+      out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, '') });
+    });
+    out.sort(function (a, b) { return a.n - b.n; });
+    return out;
+  } catch (e) { return []; }
+}
+
+async function probeEiorTopics(grade, slug) {
+  const found = [];
+  let n = 1;
+  let miss = 0;
+  while (n <= 90 && miss < 4) {
+    const batch = [];
+    for (let i = 0; i < 4; i++) batch.push(n + i);
+    const parts = await Promise.all(batch.map(function (num) { return peekEiorTopic(grade, slug, num); }));
+    parts.forEach(function (item, idx) {
+      if (item) { found.push(item); miss = 0; }
+      else miss++;
+    });
+    n += 4;
+    const box = document.getElementById('officialLiveBody');
+    if (box && found.length) {
+      const subj = getSubject(officialState.subject);
+      box.innerHTML = renderTopicList(grade, subj, found.slice()) +
+        '<p style="text-align:center;color:var(--text-muted);font-size:12px;margin:8px 0;">Догружаю следующие темы с ЕИОР…</p>';
+    }
+  }
+  return found;
+}
+
+async function peekEiorTopic(grade, slug, n) {
+  const url = eiorTopicUrl(grade, slug, n);
+  try {
+    const page = await fetchLive(url, false);
+    const t = page.title || '';
+    if (/404|Forbidden|Not Found/i.test(t) && (!page.bodyText || page.bodyText.length < 80)) return null;
+    if (!t && !page.know.length && !page.videos.length) return null;
+    return { n: n, title: t.replace(/\s*[–—-]\s*ЕИОР.*$/i, '') || ('Тема ' + n) };
+  } catch (e) {
+    return null;
+  }
+}
+
+function openOfficialTopicN(grade, subjectId, n) {
+  officialState.grade = grade;
+  officialState.subject = subjectId;
+  officialState.topicN = n;
+  officialState.view = 'topic';
+  officialState.query = '';
+  const subj = getSubject(subjectId);
+  officialState.url = subj ? eiorTopicUrl(grade, subj.slug, n) : '';
+  renderOfficial();
+}
+
+function renderEiorTopicShell() {
+  const g = officialState.grade;
+  const subj = getSubject(officialState.subject);
+  return officialSearchHtml() +
+    crumb([
+      { label: 'Ресурсы', fn: 'officialGo(\'hub\')' },
+      { label: 'ЕИОР', fn: 'officialGo(\'eior\')' },
+      { label: g + ' класс', fn: 'openOfficialGrade(' + g + ')' },
+      { label: subj ? subj.name : '', fn: 'openOfficialSubject(' + g + ',\'' + officialState.subject + '\')' },
+      { label: 'Тема' }
+    ]) +
+    '<div id="officialLiveBody">' + loadingBox('Открываю урок на eior.by…') + '</div>';
+}
+
+async function loadEiorTopicLive() {
+  const box = document.getElementById('officialLiveBody');
+  if (!box) return;
+  const g = officialState.grade;
+  const subj = getSubject(officialState.subject);
+  const n = officialState.topicN;
+  if (!subj || !n) return;
+  const url = eiorTopicUrl(g, subj.slug, n);
+  officialState.url = url;
+  try {
+    const page = await fetchLive(url, false);
+    officialState.page = page;
+    box.innerHTML = renderTopicPage(g, subj, n, page);
+  } catch (e) {
+    box.innerHTML = errorBox(e.message) +
+      '<button class="btn btn-eior" onclick="openExternal(\'' + url + '\')">Открыть на eior.by</button>';
+  }
+}
+
+function renderTopicPage(g, subj, n, page) {
+  const key = topicKey(g, subj.slug, n);
+  const url = eiorTopicUrl(g, subj.slug, n);
+  let media = '';
+  if (page.videos && page.videos[0]) {
+    media += '<video class="off-video" controls preload="metadata" src="' + page.videos[0] + '"></video>';
+  } else if (page.images && page.images[0]) {
+    media += '<img class="off-video" alt="" src="' + page.images[0] + '">';
+  }
+  const know = page.know && page.know.length ? '<div class="know-box"><strong>Знать</strong><ul>' + listHtml(page.know) + '</ul></div>' : '';
+  const can = page.can && page.can.length ? '<div class="can-box"><strong>Уметь</strong><ul>' + listHtml(page.can) + '</ul></div>' : '';
+  const extraLinks = (page.links || []).filter(function (l) {
+    return /\.pdf|books|upload/i.test(l.href) && !/catalog_lecture/i.test(l.href);
+  }).slice(0, 6).map(function (l) {
+    return '<button class="adu-item" onclick="openExternal(\'' + l.href + '\')"><div class="adu-ico"><i class="fas fa-file"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>файл с ЕИОР</p></div></button>';
+  }).join('');
+  return '<div class="topic-hero">' +
+    '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;">' +
+      '<div class="meta">' + escapeHtml(subj.name) + ' · ' + g + ' класс · урок ' + n + '</div>' +
+      '<button class="fav-btn' + (isFav(key) ? ' on' : '') + '" onclick="toggleOfficialFav(\'' + key + '\')"><i class="fas fa-star"></i></button></div>' +
+    '<h2>' + escapeHtml(page.title) + '</h2></div>' +
+    media + know + can + extraLinks +
+    '<div class="official-actions">' +
+      '<button class="btn btn-eior" onclick="openExternal(\'' + url + '\')"><i class="fas fa-external-link-alt"></i> Полный урок и официальный тест</button>' +
+      '<button class="btn btn-primary" onclick="explainLivePage()"><i class="fas fa-lightbulb"></i> Объясни через NEVIO</button>' +
+      '<button class="btn btn-secondary" onclick="summaryLivePage()"><i class="fas fa-book"></i> Конспект</button>' +
+      '<button class="btn btn-secondary" onclick="practiceLivePage()"><i class="fas fa-check-circle"></i> Тренировочный тест</button>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+        (n > 1 ? '<button class="btn btn-secondary" style="margin-top:0" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + (n - 1) + ')"><i class="fas fa-arrow-left"></i> Предыдущая</button>' : '<span></span>') +
+        '<button class="btn btn-secondary" style="margin-top:0" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + (n + 1) + ')">Следующая <i class="fas fa-arrow-right"></i></button>' +
+      '</div>' +
+      '<button class="btn btn-secondary" onclick="toggleOfficialDone(\'' + key + '\')"><i class="fas fa-check"></i> ' + (isDone(key) ? 'Снять отметку' : 'Отметить пройденной') + '</button>' +
+    '</div>';
+}
+
+function toggleOfficialFav(key) {
+  const i = officialProgress.fav.indexOf(key);
+  if (i >= 0) officialProgress.fav.splice(i, 1); else officialProgress.fav.unshift(key);
+  saveOfficialProgress(); renderOfficial();
+}
+function toggleOfficialDone(key) {
+  if (officialProgress.done[key]) delete officialProgress.done[key];
+  else officialProgress.done[key] = Date.now();
+  saveOfficialProgress(); renderOfficial();
+}
+
+function openOfficialBrowse(url) {
+  officialState.view = 'browse';
+  officialState.url = url;
+  officialState.query = '';
+  officialState.page = null;
+  renderOfficial();
+}
+
+function renderBrowseShell() {
+  return officialSearchHtml() +
+    crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: hostLabel(officialState.url) }]) +
+    '<div id="officialLiveBody">' + loadingBox('Открываю официальную страницу…') + '</div>';
+}
+
+async function loadBrowseLive() {
+  const box = document.getElementById('officialLiveBody');
+  if (!box || !officialState.url) return;
+  try {
+    const page = await fetchLive(officialState.url, false);
+    officialState.page = page;
+    box.innerHTML = renderBrowsePage(page);
+  } catch (e) {
+    box.innerHTML = errorBox(e.message) +
+      '<button class="btn btn-primary" onclick="openExternal(\'' + officialState.url + '\')">Открыть в браузере</button>';
+  }
+}
+
+function renderBrowsePage(page) {
+  const moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_SECTIONS;
+  let nav = '';
+  if (!/catalog_lecture/i.test(officialState.url)) {
+    nav = moreSections.map(function (s) {
+      return '<button type="button" class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+    }).join('');
+  }
+  const contentLinks = (page.links || []).filter(function (l) {
+    return l.title.length > 8 && !/меню|контакты|twitter|facebook/i.test(l.title);
+  }).slice(0, 40);
+  const items = contentLinks.map(function (l) {
+    const inner = sameOfficial(l.href);
+    const click = inner ? 'openOfficialBrowse(\'' + l.href + '\')' : 'openExternal(\'' + l.href + '\')';
+    return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="fas fa-file-lines"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 60)) + '</p></div></button>';
+  }).join('');
+  let media = '';
+  (page.videos || []).slice(0, 2).forEach(function (v) {
+    media += '<video class="off-video" controls preload="metadata" src="' + v + '"></video>';
+  });
+  return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + '</div>' +
+    '<h2>' + escapeHtml(page.title) + '</h2>' +
+    (page.bodyText ? '<p style="font-size:13px;color:var(--text-secondary);margin-top:8px;line-height:1.55;">' + escapeHtml(page.bodyText.slice(0, 420)) + (page.bodyText.length > 420 ? '…' : '') + '</p>' : '') +
+    '</div>' + media +
+    '<div class="official-actions">' +
+      '<button class="btn btn-primary" onclick="explainLivePage()"><i class="fas fa-lightbulb"></i> Разбери через NEVIO</button>' +
+      '<button class="btn btn-secondary" onclick="openExternal(\'' + officialState.url + '\')"><i class="fas fa-external-link-alt"></i> Открыть оригинал</button>' +
+    '</div>' +
+    (items ? '<div class="section-label">Материалы этой страницы</div>' + items : '') +
+    (nav ? '<div class="section-label">Другие разделы</div>' + nav : '');
+}
+
+function liveContextPrompt(mode) {
+  const page = officialState.page || {};
+  const title = page.title || 'официальный материал';
+  const extra = (page.know && page.know.length ? 'Знать: ' + page.know.join('; ') + '\n' : '') +
+    (page.can && page.can.length ? 'Уметь: ' + page.can.join('; ') + '\n' : '') +
+    (page.bodyText ? page.bodyText.slice(0, 1600) : '');
+  if (mode === 'summary') {
+    return 'Составь конспект по официальному материалу системы образования Беларуси.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nОпирайся только на школьную программу РБ. Формулы — LaTeX.';
+  }
+  return 'Объясни официальный материал системы образования Беларуси как репетитор.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nПросто, с примерами и типичными ошибками. Формулы — LaTeX.';
+}
+
+function explainLivePage() { runLiveAi('explain'); }
+function summaryLivePage() { runLiveAi('summary'); }
+
+function runLiveAi(mode) {
+  const title = (officialState.page && officialState.page.title) || 'Официальный материал';
+  state.currentActionId = mode === 'summary' ? 'eior_summary' : 'eior_explain';
+  state.conversationHistory = [];
+  document.getElementById('actionTitle').innerHTML = '<i class="fas fa-' + (mode === 'summary' ? 'book' : 'lightbulb') + '"></i> ' + escapeHtml(title);
+  document.getElementById('actionDescription').textContent = 'По живой странице ' + hostLabel(officialState.url);
+  document.getElementById('actionForm').innerHTML = '';
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('continueChatArea').style.display = 'none';
+  showPage('actionPage');
+  const prompt = liveContextPrompt(mode);
+  const userMsg = (mode === 'summary' ? 'Конспект: ' : 'Объясни: ') + title;
+  state.conversationHistory.push({ role: 'user', content: prompt });
+  addChatMessage(userMsg, true);
+  (async function () {
+    const loadingId = addLoadingMessage();
+    state.isLoading = true;
+    try {
+      const response = await callGroqWithStream(state.conversationHistory, loadingId);
+      state.conversationHistory.push({ role: 'assistant', content: response });
+      saveToHistory({ type: state.currentActionId, input: userMsg, result: response, timestamp: new Date().toISOString() });
+      showContinueChat();
+    } catch (e) {
+      removeLoadingMessage(loadingId);
+      addChatMessage('❌ Не удалось получить ответ: ' + e.message, false);
+    } finally { state.isLoading = false; }
+  })();
+}
+
+async function practiceLivePage() {
+  const title = (officialState.page && officialState.page.title) || 'Тема ЕИОР';
+  testState = { questions: [], currentQ: 0, score: 0, subject: title, answered: false, fromOfficial: true };
+  showPage('testPage');
+  document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:48px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:12px;color:var(--text-secondary);">Тест по официальной теме</p></div>';
+  try {
+    const extra = liveContextPrompt('explain');
+    const questions = await generateTestQuestions(title + '\n' + extra, 7, 'смешанный');
+    if (!questions.length) throw new Error('ИИ не вернул вопросы');
+    testState.questions = questions;
+    renderCurrentQuestion();
+  } catch (e) {
+    document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:36px;"><h3>Не получилось</h3><p style="color:var(--text-secondary);">' + escapeHtml(e.message) + '</p><button class="btn btn-primary" onclick="openOfficial()">Назад</button></div>';
+  }
+}
+
+function renderOfficialSearch() {
+  const q = officialState.query.trim().toLowerCase();
+  const pool = EIOR_SECTIONS.concat(ADU_SECTIONS);
+  const hits = pool.filter(function (s) {
+    return (s.title + ' ' + s.desc).toLowerCase().indexOf(q) !== -1;
+  });
+  const subjHits = EIOR_SUBJECTS.filter(function (s) { return s.name.toLowerCase().indexOf(q) !== -1; });
+  let html = officialSearchHtml() + crumb([{ label: 'Ресурсы', fn: 'officialGo(\'hub\')' }, { label: 'Поиск' }]);
+  if (!hits.length && !subjHits.length) {
+    html += '<div class="empty-state"><div class="icon"><i class="fas fa-search"></i></div><h3>Нет раздела с таким названием</h3><p>Откройте ЕИОР или Аду.бай и ищите уже внутри живой страницы</p></div>';
+    html += '<button class="btn btn-eior" onclick="officialGo(\'eior\')">Каталог ЕИОР</button>';
+    html += '<button class="btn btn-secondary" onclick="openOfficialBrowse(\'' + ADU_HOME + '\')">Портал Аду.бай</button>';
+    return html;
+  }
+  if (subjHits.length) {
+    html += '<div class="section-label">Предметы ЕИОР</div>';
+    subjHits.forEach(function (s) {
+      html += '<button class="adu-item" onclick="openOfficialSubject(' + (officialState.grade || 9) + ',\'' + s.id + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.name) + '</h3><p>открыть в ' + (officialState.grade || 9) + ' классе</p></div></button>';
+    });
+  }
+  if (hits.length) {
+    html += '<div class="section-label">Разделы сайтов</div>';
+    hits.forEach(function (s) {
+      const click = s.action === 'eior' ? 'officialGo(\'eior\')' : 'openOfficialBrowse(\'' + s.url + '\')';
+      html += '<button class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+    });
+  }
+  return html;
+}
+
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
