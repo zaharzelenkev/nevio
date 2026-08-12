@@ -861,10 +861,6 @@
     .stat-pill b { display:block; font-size:18px; color:var(--gold); }
     .stat-pill span { font-size:11px; color:var(--text-secondary); }
     .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; }
-    .fresh-note { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; color:var(--text-muted); margin-left:6px; letter-spacing:0.2px; vertical-align:middle; }
-    .fresh-note i { font-size:7px; color:#2ecc71; }
-    .fresh-note.arch i { color:var(--gold); }
-    .fresh-note.stale i { color:#f87171; }
   </style>
 </head>
 <body>
@@ -2768,13 +2764,6 @@ function hostLabel(url) {
   if (/adu\.by/i.test(url)) return 'Аду.бай';
   return 'Материал';
 }
-function ageLabel(ms, cached, stale, archived) {
-  if (archived) return 'архивная копия';
-  if (stale) return 'кэш, сайт не ответил';
-  if (!cached || !ms) return 'только что с сайта';
-  const m = Math.max(1, Math.round(ms / 60000));
-  return 'обновлено ' + m + ' мин назад';
-}
 
 const EIOR_SUBJECTS = [
   { id: 'math', name: 'Математика', slug: 'math', icon: 'fas fa-calculator', grades: [1,2,3,4,5,6,7,8,9,10,11] },
@@ -3180,8 +3169,6 @@ async function loadEiorTopicLive() {
 function renderTopicPage(g, subj, n, page) {
   const key = topicKey(g, subj.id, n);
   const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
-  const freshCls = page.archived ? ' arch' : (page.stale ? ' stale' : '');
-  const freshHtml = '<span class="fresh-note' + freshCls + '"><i class="fas fa-circle"></i>' + escapeHtml(ageLabel(page.age, page.cached, page.stale, page.archived)) + '</span>';
   let media = '';
   if (page.videos && page.videos[0]) {
     media += '<video class="off-video" controls preload="metadata" src="' + page.videos[0] + '"></video>';
@@ -3197,7 +3184,7 @@ function renderTopicPage(g, subj, n, page) {
   }).join('');
   return '<div class="topic-hero">' +
     '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;">' +
-      '<div class="meta">' + escapeHtml(subj.name) + ' · ' + g + ' класс · урок ' + n + freshHtml + '</div>' +
+      '<div class="meta">' + escapeHtml(subj.name) + ' · ' + g + ' класс · урок ' + n + '</div>' +
       '<button class="fav-btn' + (isFav(key) ? ' on' : '') + '" onclick="toggleOfficialFav(\'' + key + '\')"><i class="fas fa-star"></i></button></div>' +
     '<h2>' + escapeHtml(page.title) + '</h2></div>' +
     media + know + can + extraLinks +
@@ -3254,8 +3241,6 @@ async function loadBrowseLive() {
 
 function renderBrowsePage(page) {
   const moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_SECTIONS;
-  const freshCls = page.archived ? ' arch' : (page.stale ? ' stale' : '');
-  const freshHtml = '<span class="fresh-note' + freshCls + '"><i class="fas fa-circle"></i>' + escapeHtml(ageLabel(page.age, page.cached, page.stale, page.archived)) + '</span>';
   let nav = '';
   if (!/catalog_lecture/i.test(officialState.url)) {
     nav = moreSections.map(function (s) {
@@ -3274,7 +3259,7 @@ function renderBrowsePage(page) {
   (page.videos || []).slice(0, 2).forEach(function (v) {
     media += '<video class="off-video" controls preload="metadata" src="' + v + '"></video>';
   });
-  return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + freshHtml + '</div>' +
+  return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + '</div>' +
     '<h2>' + escapeHtml(page.title) + '</h2>' +
     (page.bodyText ? '<p style="font-size:13px;color:var(--text-secondary);margin-top:8px;line-height:1.55;">' + escapeHtml(page.bodyText.slice(0, 420)) + (page.bodyText.length > 420 ? '…' : '') + '</p>' : '') +
     '</div>' + media +
