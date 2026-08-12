@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NEVIO</title>
+  <!-- Фавиконки: логотип NEVIO (файлы рядом с index.html на хостинге) -->
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="logo-nevio.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -946,6 +953,10 @@
         <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-item-text"><h4>Политика конфиденциальности</h4><p>Как мы обрабатываем данные</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
+      <div class="settings-item" onclick="showTerms()">
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-file-contract"></i></div><div class="settings-item-text"><h4>Условия использования</h4><p>Правила работы с сервисом</p></div></div>
+        <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
+      </div>
       <div class="settings-item" onclick="deleteAccount()">
         <div class="settings-item-left">
           <div class="settings-item-icon" style="background:rgba(248,113,113,0.1);color:#f87171;border-color:rgba(248,113,113,0.2);"><i class="fas fa-user-slash"></i></div>
@@ -974,14 +985,68 @@
     <div class="card">
       <div class="card-header"><h2><i class="fas fa-shield-alt"></i> Политика конфиденциальности</h2></div>
       <div class="legal-content">
-        <h3>Хранение данных</h3>
-        <p>Вся история запросов и настройки хранятся <strong>только на вашем устройстве</strong>. Разработчик не имеет к ним доступа.</p>
-        <h3>Запросы к ИИ</h3>
-        <p>Ваши запросы передаются в ИИ по защищённому соединению исключительно для генерации ответов.</p>
-        <h3>Telegram</h3>
-        <p>Из Telegram используется только имя и фото профиля для отображения в интерфейсе. Эти данные никуда не передаются.</p>
-        <h3>Ваши права</h3>
-        <p>Вы можете в любой момент очистить историю или полностью удалить все данные через настройки.</p>
+        <p><em>Редакция от 12 августа 2026 г.</em></p>
+        <p>NEVIO — образовательный помощник для школьников и педагогов Беларуси. Сервис устроен так, чтобы собирать минимум данных: у NEVIO нет собственного сервера, и персональные данные пользователей не хранятся у разработчика.</p>
+        <h3>1. Какие данные обрабатываются</h3>
+        <p><strong>Данные Telegram.</strong> При открытии мини-приложения Telegram передаёт имя, фамилию, имя пользователя, аватар и язык. Эти данные используются только для отображения вашего профиля внутри приложения и не передаются третьим лицам. Обработка данных на платформе регулируется политикой конфиденциальности Telegram (telegram.org/privacy).</p>
+        <p><strong>Данные на вашем устройстве.</strong> История запросов и ответов ИИ, результаты тестов, отметки о пройденных темах, статистика и настройки хранятся только в локальном хранилище вашего устройства (localStorage) и никуда не передаются. Разработчик не имеет к ним доступа.</p>
+        <p><strong>Содержимое запросов к ИИ.</strong> Когда вы задаёте вопрос, текст запроса и контекст (например, выбранная тема) отправляются через сервис OpenRouter (openrouter.ai) к сторонним ИИ-моделям исключительно для генерации ответа. Пожалуйста, не передавайте в запросах лишние персональные данные.</p>
+        <p><strong>Адреса страниц образовательных порталов.</strong> Раздел «Ресурсы» загружает публичные материалы eior.by, adu.by и других официальных порталов. Запросы могут проходить через сторонние сервисы-прокси и архивные службы, которые видят только адрес запрашиваемой публичной страницы.</p>
+        <h3>2. Кто обрабатывает данные</h3>
+        <p>Оператором сервиса является разработчик NEVIO. Связаться с нами можно по адресу: <strong>support@nevio.app</strong>.</p>
+        <h3>3. Правовые основания</h3>
+        <p>Обработка данных сведена к технически необходимому минимуму. Сервис руководствуется законодательством Республики Беларусь, в том числе Законом «О защите персональных данных» (№ 99-З от 7 мая 2021 г.), и правилами платформы Telegram.</p>
+        <h3>4. Куда данные не передаются</h3>
+        <p>Разработчик не собирает и не хранит на своих ресурсах историю запросов, результаты тестов, прогресс и статистику. У сервиса нет серверов, баз данных и систем аналитики.</p>
+        <h3>5. Сторонние сервисы</h3>
+        <p>Для работы сервиса используются: Telegram (платформа), OpenRouter (провайдер ИИ-моделей), сервисы-прокси и Wayback Machine (загрузка публичных страниц в разделе «Ресурсы»), а также CDN для шрифтов, иконок и формул (Google Fonts, Font Awesome, MathJax). На эти сервисы распространяются их собственные политики конфиденциальности.</p>
+        <h3>6. Данные несовершеннолетних</h3>
+        <p>Сервис предназначен в том числе для школьников. Разработчик не собирает персональные данные детей и не создаёт пользовательские профили. Рекомендуем использовать приложение под контролем родителей или педагогов.</p>
+        <h3>7. Ваши права</h3>
+        <p>Вы вправе получить информацию об обработке данных, а также очистить или удалить все данные: для этого в Настройках доступны пункты «Очистить историю» и «Удалить аккаунт». По любым вопросам о персональных данных пишите на <strong>support@nevio.app</strong> — мы отвечаем в течение 15 дней.</p>
+        <h3>8. Безопасность</h3>
+        <p>Все соединения защищены (HTTPS). Данные, которые хранятся на вашем устройстве, не покидают его. В случае обнаружения уязвимости просим сообщить разработчику.</p>
+        <h3>9. Изменения политики</h3>
+        <p>При изменениях новая редакция публикуется в этом разделе. Продолжение использования сервиса означает согласие с обновлённой редакцией.</p>
+        <h3>10. Контакты</h3>
+        <p>По всем вопросам: <strong>support@nevio.app</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- УСЛОВИЯ -->
+<div class="page" id="termsPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="card">
+      <div class="card-header"><h2><i class="fas fa-file-contract"></i> Условия использования</h2></div>
+      <div class="legal-content">
+        <p><em>Редакция от 12 августа 2026 г.</em></p>
+        <h3>1. Общие положения</h3>
+        <p>Используя NEVIO, вы соглашаетесь с настоящими условиями. Если вы не согласны с ними, пожалуйста, не используйте сервис.</p>
+        <h3>2. Описание сервиса</h3>
+        <p>NEVIO — бесплатный образовательный помощник: объяснение тем, подготовка к ЦТ/ЦЭ, интерактивные тесты, конспекты и доступ к официальным образовательным ресурсам Беларуси (ЕИОР, Аду.бай). Сервис работает как Telegram Mini App и веб-приложение.</p>
+        <h3>3. Кто может пользоваться сервисом</h3>
+        <p>Сервис предназначен для учащихся и педагогов. Несовершеннолетние используют NEVIO под контролем родителей или педагогов.</p>
+        <h3>4. Правила использования</h3>
+        <p>Запрещается: нарушать законодательство Республики Беларусь; использовать сервис для размещения незаконного или вредоносного контента; пытаться нарушить работу сервиса или получить несанкционированный доступ; использовать сервис для массовых рассылок и спама; копировать или перепродавать сервис без разрешения разработчика.</p>
+        <h3>5. Ответственность за контент ИИ</h3>
+        <p>Ответы генерируются ИИ-моделями и могут содержать неточности. Важную информацию всегда сверяйте с официальными источниками: учебниками, учителями, порталами eior.by и adu.by. Решения, принятые на основе ответов ИИ, — ваша ответственность.</p>
+        <h3>6. Официальные образовательные ресурсы</h3>
+        <p>Раздел «Ресурсы» показывает публичные материалы ЕИОР (eior.by) и Национального образовательного портала (adu.by). Контент принадлежит их правообладателям — Министерству образования Республики Беларусь и ГИАЦ. NEVIO не является официальным сервисом этих организаций, а доступность материалов зависит от их владельцев.</p>
+        <h3>7. Интеллектуальная собственность</h3>
+        <p>Название, дизайн и код NEVIO принадлежат разработчику. Учебные материалы порталов принадлежат их правообладателям и используются в ознакомительных целях.</p>
+        <h3>8. Ограничение ответственности</h3>
+        <p>Сервис предоставляется «как есть» (as is). Разработчик не гарантирует бесперебойную работу, точность ответов ИИ и доступность сторонних ресурсов. Разработчик не несёт ответственности за убытки, связанные с использованием сервиса, включая потерю локальных данных устройства.</p>
+        <h3>9. Прекращение использования</h3>
+        <p>Вы можете прекратить использование сервиса в любой момент, удалив данные через Настройки. Разработчик вправе ограничить доступ при нарушении настоящих условий.</p>
+        <h3>10. Изменения условий</h3>
+        <p>Новая редакция условий публикуется в этом разделе. Продолжение использования сервиса означает согласие с обновлённой редакцией.</p>
+        <h3>11. Применимое право</h3>
+        <p>Настоящие условия регулируются законодательством Республики Беларусь.</p>
+        <h3>12. Контакты</h3>
+        <p>По всем вопросам: <strong>support@nevio.app</strong>.</p>
       </div>
     </div>
   </div>
@@ -1235,10 +1300,11 @@ const systemPrompts = {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function fetchWithTimeout(url, options, timeoutMs) {
+  if (typeof AbortController === 'undefined') return fetch(url, options);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetch(url, Object.assign({}, options, { signal: controller.signal }));
   } finally {
     clearTimeout(timer);
   }
@@ -2279,6 +2345,7 @@ function deleteAccount() {
 }
 
 function showPrivacy() { showPage('privacyPage'); }
+function showTerms() { showPage('termsPage'); }
 
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2288,7 +2355,7 @@ function showPage(pageId) {
   if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
   if (pageId === 'officialPage') document.getElementById('nav-official')?.classList.add('active');
   if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
-  if (pageId === 'settingsPage' || pageId === 'privacyPage') {
+  if (pageId === 'settingsPage' || pageId === 'privacyPage' || pageId === 'termsPage') {
     document.getElementById('nav-settings')?.classList.add('active');
   }
   window.scrollTo(0, 0);
@@ -2392,6 +2459,111 @@ function eiorClassSlug(g) { return g === 1 ? '1class' : (g + '-klass'); }
 function eiorTopicUrl(grade, slug, n) {
   return 'https://eior.by/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/' + n + '.php';
 }
+
+// На ЕИОР адреса тем разные для разных классов (9 класс: algebra, а не math,
+// английский: angliyskiy-yazyk, информатика: informatick, география: geografiya).
+// Перебираем варианты один раз, а найденный запоминаем для каждого класса.
+const EIOR_SLUG_ALIASES = {
+  math: ['math', 'algebra', 'geometriya', 'matematika'],
+  rusyaz: ['rusyaz', 'russkiy-yazyk', 'russkij-yazyk'],
+  belmova: ['belmova'],
+  bellit: ['bellit'],
+  ruslit: ['ruslit', 'russkaya-literatura'],
+  phisics: ['phisics', 'fizika'],
+  himiya: ['himiya', 'khimiya'],
+  biology: ['biology', 'biologiya'],
+  history_by: ['history_of_belarus', 'istoriya_belarusi'],
+  vsem_istoriya: ['vsem_istoriya', 'vsemirnaya-istoriya'],
+  obschestvo: ['obschestvo', 'obshchestvovedenie'],
+  geografia: ['geografiya', 'geografia'],
+  informatika: ['informatick', 'informatika'],
+  english: ['angliyskiy-yazyk', 'english'],
+  chelovek: ['chelovek-i-mir', 'chelovek'],
+  doprpodg: ['doprpodg', 'doprizyvnaya-podgotovka']
+};
+const slugMem = {};
+function slugKey(grade, subjectId) { return grade + ':' + subjectId; }
+function slugFor(grade, subjectId) {
+  const key = slugKey(grade, subjectId);
+  if (slugMem[key]) return slugMem[key];
+  try {
+    const s = localStorage.getItem('nevioSlug:' + key);
+    if (s) { slugMem[key] = s; return s; }
+  } catch (e) {}
+  const subj = getSubject(subjectId);
+  if (!subj) return null;
+  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  return aliases[0];
+}
+function rememberSlug(grade, subjectId, slug) {
+  const key = slugKey(grade, subjectId);
+  slugMem[key] = slug;
+  try { localStorage.setItem('nevioSlug:' + key, slug); } catch (e) {}
+}
+async function resolveEiorSlug(grade, subjectId) {
+  const key = slugKey(grade, subjectId);
+  if (slugMem[key]) return slugMem[key];
+  const subj = getSubject(subjectId);
+  if (!subj) return null;
+  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  for (let i = 0; i < aliases.length; i++) {
+    // Параллельно: живая проверка темы + проверка в архиве (CDX) — кто первый
+    const hit = await firstTruthy([
+      peekEiorTopic(grade, aliases[i], 1),
+      waybackHasTopics(grade, aliases[i])
+    ]);
+    if (hit) { rememberSlug(grade, subjectId, aliases[i]); return aliases[i]; }
+  }
+  return null;
+}
+
+function waybackCdxUrl(grade, slug, limit) {
+  return 'https://web.archive.org/cdx/search/cdx?url=eior.by/catalog_lecture/' +
+    eiorClassSlug(grade) + '/' + slug + '/*&fl=original&collapse=urlkey&limit=' + (limit || 200);
+}
+async function waybackHasTopics(grade, slug) {
+  try {
+    const res = await fetchWithTimeout(waybackCdxUrl(grade, slug, 3), {}, 8000);
+    if (!res.ok) return 0;
+    const text = await res.text();
+    const m = text.match(/catalog_lecture\/[^/]+\/[^/]+\/(\d+)\.php/);
+    return m ? parseInt(m[1], 10) : 0;
+  } catch (e) { return 0; }
+}
+async function topicsFromWaybackCdx(grade, slug) {
+  const res = await fetchWithTimeout(waybackCdxUrl(grade, slug, 250), {}, 12000);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const text = await res.text();
+  const out = [];
+  const seen = {};
+  (text.match(/catalog_lecture\/[^/]+\/[^/]+\/(\d+)\.php/g) || []).forEach(function (u) {
+    const m = u.match(/\/(\d+)\.php$/);
+    if (!m) return;
+    const n = parseInt(m[1], 10);
+    if (seen[n] || n < 1 || n > 120) return;
+    seen[n] = true;
+    out.push({ n: n, title: 'Тема ' + n });
+  });
+  out.sort(function (a, b) { return a.n - b.n; });
+  return out;
+}
+function firstTruthy(promises) {
+  return new Promise(function (resolve) {
+    let pending = promises.length;
+    let done = false;
+    if (!pending) { resolve(null); return; }
+    promises.forEach(function (p) {
+      p.then(function (v) {
+        if (done) return;
+        if (v) { done = true; resolve(v); }
+        else if (--pending === 0) resolve(null);
+      }, function () {
+        if (done) return;
+        if (--pending === 0) resolve(null);
+      });
+    });
+  });
+}
 function openExternal(url) {
   if (!url) return;
   if (window.Telegram?.WebApp?.openLink) Telegram.WebApp.openLink(url);
@@ -2415,41 +2587,107 @@ function writeCache(url, data) {
   try { localStorage.setItem(cacheKey(url), JSON.stringify(obj)); } catch (e) {}
 }
 
-async function fetchLive(url, force) {
+// Прокси-цепочка для живых страниц ЕИОР/Аду.бай.
+// Ступень 1 — быстрые живые прокси (гонка: побеждает первый ответивший).
+// Ступень 2 — резерв: Jina Reader (свежая копия) + Wayback Machine (архив).
+// Если всё упало — отдаём устаревший кэш, и только потом ошибку.
+const LIVE_PROXY_GROUPS = [
+  {
+    timeout: 8000,
+    proxies: [
+      { kind: 'html', make: u => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) }
+    ]
+  },
+  {
+    timeout: 16000,
+    proxies: [
+      { kind: 'md', make: u => 'https://r.jina.ai/' + u },
+      { kind: 'arch', make: u => 'https://web.archive.org/web/2026id_/' + u }
+    ]
+  }
+];
+const LIVE_PROXY_QUICK_TIMEOUT = 7000;
+
+function firstSuccess(promises) {
+  return new Promise(function (resolve, reject) {
+    let pending = promises.length;
+    let firstErr = null;
+    if (!pending) { reject(new Error('нет прокси')); return; }
+    promises.forEach(function (p) {
+      p.then(function (v) { resolve(v); }, function (e) {
+        if (!firstErr) firstErr = e;
+        if (--pending === 0) reject(firstErr || new Error('нет ответа'));
+      });
+    });
+  });
+}
+
+async function attemptProxy(proxy, url, timeoutMs) {
+  const res = await fetchWithTimeout(proxy.make(url), { headers: { 'Accept': 'text/html,text/plain,*/*' } }, timeoutMs);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const text = await res.text();
+  if (!text || text.length < 40) throw new Error('пустой ответ');
+  if (/has not archived that URL/i.test(text)) throw new Error('в архиве нет страницы');
+  if (/522: Connection timed out/i.test(text)) throw new Error('прокси недоступен');
+  if (/Just a moment|cf-browser-verification|free usage is limited|readableMessage|AssertionFailureError|corsfix_error|invalid_origin/i.test(text) && text.length < 4000) {
+    throw new Error('прокси недоступен');
+  }
+  return { proxy: proxy, text: text };
+}
+
+function parseProxyResult(proxy, url, text) {
+  if (proxy.kind === 'md') return parseMarkdownPage(url, text);
+  if (proxy.kind === 'json') {
+    try {
+      const obj = JSON.parse(text);
+      if (obj && typeof obj.contents === 'string') text = obj.contents;
+    } catch (e) {}
+    return parseHtmlPage(url, text);
+  }
+  return parseHtmlPage(url, text);
+}
+
+function readStaleCache(url) {
+  try { return JSON.parse(localStorage.getItem(cacheKey(url)) || 'null'); } catch (e) { return null; }
+}
+
+async function fetchLive(url, force, quick) {
   if (!force) {
     const hit = readCache(url);
     if (hit) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
   }
-  const proxies = [
-    { kind: 'html', make: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
-    { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
-    { kind: 'md', make: u => 'https://r.jina.ai/' + u }
-  ];
   let lastErr = 'нет ответа';
-  for (let i = 0; i < proxies.length; i++) {
+  for (let gi = 0; gi < LIVE_PROXY_GROUPS.length; gi++) {
+    const grp = LIVE_PROXY_GROUPS[gi];
+    if (quick && gi > 0) break;
     try {
-      const res = await fetchWithTimeout(proxies[i].make(url), { headers: { 'Accept': 'text/html,text/plain,*/*' } }, 18000);
-      if (!res.ok) { lastErr = 'HTTP ' + res.status; continue; }
-      const text = await res.text();
-      if (!text || text.length < 40) { lastErr = 'пустой ответ'; continue; }
-      if (/522: Connection timed out|Just a moment|cf-browser-verification/i.test(text) && text.length < 2500) {
-        lastErr = 'прокси недоступен'; continue;
-      }
-      const parsed = proxies[i].kind === 'md' ? parseMarkdownPage(url, text) : parseHtmlPage(url, text);
+      const winner = await firstSuccess(grp.proxies.map(function (p) {
+        return attemptProxy(p, url, quick ? LIVE_PROXY_QUICK_TIMEOUT : grp.timeout);
+      }));
+      const parsed = parseProxyResult(winner.proxy, url, winner.text);
       if (!parsed || (!parsed.title && !parsed.links.length && !parsed.bodyText)) {
-        lastErr = 'не удалось разобрать страницу'; continue;
+        lastErr = 'не удалось разобрать страницу';
+        continue;
+      }
+      if (/just a moment|attention required|cf-chl|проверка браузера/i.test(parsed.title || '')) {
+        lastErr = 'прокси недоступен';
+        continue;
       }
       parsed.source = url;
+      if (winner.proxy.kind === 'arch') parsed.archived = true;
       writeCache(url, parsed);
-      return Object.assign({ cached: false, age: 0 }, parsed);
+      return Object.assign({ cached: false, age: 0, archived: !!parsed.archived }, parsed);
     } catch (e) {
-      lastErr = e.message || 'сеть';
+      lastErr = e.message || 'нет ответа';
     }
   }
-  const stale = (function () {
-    try { return JSON.parse(localStorage.getItem(cacheKey(url)) || 'null'); } catch (e) { return null; }
-  })();
-  if (stale && stale.data) return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts }, stale.data);
+  const stale = readStaleCache(url);
+  if (stale && stale.data) {
+    return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts, archived: !!stale.data.archived }, stale.data);
+  }
   throw new Error('Сайт временно не открывается. Попробуйте ещё раз.');
 }
 
@@ -2535,12 +2773,13 @@ function parseMarkdownPage(url, md) {
   const title = cleanText(titleM ? titleM[1] : '');
   const links = [];
   const seen = {};
-  const re = /\[([^\]]+)\]\((https?:[^)\s]+)\)/g;
+  // Jina добавляет title-атрибуты: [текст](https://… "Подпись") — учитываем их
+  const re = /\[([^\]]+)\]\((https?:[^)\s]+)(?:\s+"[^"]*")?\)/g;
   let m;
   while ((m = re.exec(md))) {
     const href = m[2].replace(/\\/g, '');
     if (!sameOfficial(href) || seen[href]) continue;
-    const label = cleanText(m[1]);
+    const label = cleanText(m[1]).replace(/\\+/g, '');
     if (!label || label.length < 2) continue;
     seen[href] = true;
     links.push({ href: href, title: label });
@@ -2561,9 +2800,10 @@ function parseMarkdownPage(url, md) {
     if (/^\s*#{1,3}\s/.test(line) || /^[A-ZА-ЯЁ]/.test(line) && line.length < 40 && !/^-/.test(line)) {
       if (!/знать|уметь/i.test(line)) mode = '';
     }
-    const item = cleanText(line.replace(/^[-*•]\s*/, ''));
-    if (mode === 'k' && item && item.length > 2) know.push(item);
-    if (mode === 'c' && item && item.length > 2) can.push(item);
+    const item = cleanText(line.replace(/^[-*•]\s*/, '').replace(/\[(?:Video|Image)\s*\d*\]\([^)]*\)/gi, '').replace(/\\+/g, ''));
+    if (!item || item.length <= 2 || /\]\(https?:/.test(item)) return;
+    if (mode === 'k') know.push(item);
+    if (mode === 'c') can.push(item);
   });
   return {
     title: title || hostLabel(url),
@@ -2590,12 +2830,6 @@ function hostLabel(url) {
   if (/adu\.by/i.test(url)) return 'Аду.бай';
   return 'Материал';
 }
-function ageLabel(ms, cached, stale) {
-  if (stale) return 'кэш, сайт не ответил';
-  if (!cached || !ms) return 'только что с сайта';
-  const m = Math.max(1, Math.round(ms / 60000));
-  return 'обновлено ' + m + ' мин назад';
-}
 
 const EIOR_SUBJECTS = [
   { id: 'math', name: 'Математика', slug: 'math', icon: 'fas fa-calculator', grades: [1,2,3,4,5,6,7,8,9,10,11] },
@@ -2609,9 +2843,9 @@ const EIOR_SUBJECTS = [
   { id: 'history_by', name: 'История Беларуси', slug: 'history_of_belarus', icon: 'fas fa-landmark', grades: [5,6,7,8,9,10,11] },
   { id: 'vsem_istoriya', name: 'Всемирная история', slug: 'vsem_istoriya', icon: 'fas fa-globe-europe', grades: [5,6,7,8,9,10,11] },
   { id: 'obschestvo', name: 'Обществоведение', slug: 'obschestvo', icon: 'fas fa-balance-scale', grades: [9,10,11] },
-  { id: 'geografia', name: 'География', slug: 'geografia', icon: 'fas fa-map-marked-alt', grades: [6,7,8,9,10,11] },
-  { id: 'informatika', name: 'Информатика', slug: 'informatika', icon: 'fas fa-laptop-code', grades: [6,7,8,9,10,11] },
-  { id: 'english', name: 'Английский язык', slug: 'english', icon: 'fas fa-comments', grades: [3,4,5,6,7,8,9,10,11] },
+  { id: 'geografia', name: 'География', slug: 'geografiya', icon: 'fas fa-map-marked-alt', grades: [6,7,8,9,10,11] },
+  { id: 'informatika', name: 'Информатика', slug: 'informatick', icon: 'fas fa-laptop-code', grades: [6,7,8,9,10,11] },
+  { id: 'english', name: 'Английский язык', slug: 'angliyskiy-yazyk', icon: 'fas fa-comments', grades: [3,4,5,6,7,8,9,10,11] },
   { id: 'chelovek', name: 'Человек и мир', slug: 'chelovek', icon: 'fas fa-leaf', grades: [1,2,3,4] },
   { id: 'doprpodg', name: 'Допризывная подготовка', slug: 'doprpodg', icon: 'fas fa-shield-alt', grades: [10,11] }
 ];
@@ -2722,8 +2956,7 @@ function refreshOfficial() {
     delete liveMem[url];
   }
   if (officialState.view === 'topics' && officialState.subject) {
-    const subj = getSubject(officialState.subject);
-    const listUrl = 'list:' + officialState.grade + ':' + (subj ? subj.slug : '');
+    const listUrl = 'list:' + officialState.grade + ':' + officialState.subject;
     try { localStorage.removeItem(cacheKey(listUrl)); } catch (e) {}
     delete liveMem[listUrl];
   }
@@ -2837,9 +3070,9 @@ async function loadEiorTopicsLive() {
   const g = officialState.grade;
   const subj = getSubject(officialState.subject);
   if (!subj) return;
-  const listUrl = 'list:' + g + ':' + subj.slug;
+  const listUrl = 'list:' + g + ':' + subj.id;
   try {
-    const topics = await listEiorTopics(g, subj.slug, false);
+    const topics = await listEiorTopics(g, subj.id, false);
     const cached = readCache(listUrl);
     box.innerHTML = renderTopicList(g, subj, topics, cached);
   } catch (e) {
@@ -2856,7 +3089,7 @@ function renderTopicList(g, subj, topics, cached) {
   }
   let html = '<div class="section-label">' + topics.length + ' тем · ' + escapeHtml(subj.name) + ' · ' + g + ' класс</div>';
   topics.forEach(function (tp) {
-    const key = topicKey(g, subj.slug, tp.n);
+    const key = topicKey(g, subj.id, tp.n);
     html += '<div class="topic-item' + (isDone(key) ? ' done' : '') + '" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + tp.n + ')">' +
       '<div class="topic-top"><h3>' + escapeHtml(tp.title) + '</h3>' + (isDone(key) ? '<div class="done-dot"></div>' : '') + '</div>' +
       '<div class="topic-meta">урок ' + tp.n + '</div></div>';
@@ -2864,41 +3097,56 @@ function renderTopicList(g, subj, topics, cached) {
   return html;
 }
 
-async function listEiorTopics(grade, slug, force) {
-  const listUrl = 'list:' + grade + ':' + slug;
+async function listEiorTopics(grade, subjectId, force) {
+  const listUrl = 'list:' + grade + ':' + subjectId;
   if (!force) {
     const hit = readCache(listUrl);
     if (hit && Array.isArray(hit.data) && hit.data.length) return hit.data;
   }
-  const fromCatalog = await topicsFromCatalogPage(grade, slug);
-  if (fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
-  const probed = await probeEiorTopics(grade, slug);
+  let netErr = null;
+  try {
+    const fromCatalog = await topicsFromCatalogPage(grade, subjectId);
+    if (fromCatalog && fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
+  } catch (e) { netErr = e; }
+  const slug = await resolveEiorSlug(grade, subjectId);
+  if (!slug) {
+    if (netErr) throw netErr;
+    return [];
+  }
+  const probed = await probeEiorTopics(grade, slug, !!netErr);
+  if (probed.length) { writeCache(listUrl, probed); return probed; }
+  // Живые прокси молчат, но темы есть в архиве — показываем их из Wayback CDX
+  try {
+    const fromCdx = await topicsFromWaybackCdx(grade, slug);
+    if (fromCdx.length) { writeCache(listUrl, fromCdx); return fromCdx; }
+  } catch (e) {}
   writeCache(listUrl, probed);
   return probed;
 }
 
-async function topicsFromCatalogPage(grade, slug) {
-  try {
-    const page = await fetchLive(EIOR_CATALOG, false);
-    const prefix = '/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/';
-    const out = [];
-    const seen = {};
-    (page.links || []).forEach(function (l) {
-      const m = l.href.match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
-      if (!m) return;
-      if (m[2] !== slug) return;
-      if (eiorClassSlug(grade) !== m[1] && !(grade === 1 && m[1] === '1class')) return;
-      const n = parseInt(m[3], 10);
-      if (seen[n]) return;
-      seen[n] = true;
-      out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, '') });
-    });
-    out.sort(function (a, b) { return a.n - b.n; });
-    return out;
-  } catch (e) { return []; }
+async function topicsFromCatalogPage(grade, subjectId) {
+  const page = await fetchLive(EIOR_CATALOG, false);
+  const subj = getSubject(subjectId);
+  if (!subj) return [];
+  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  const out = [];
+  const seen = {};
+  (page.links || []).forEach(function (l) {
+    const m = l.href.match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
+    if (!m) return;
+    if (aliases.indexOf(m[2]) < 0) return;
+    if (eiorClassSlug(grade) !== m[1] && !(grade === 1 && m[1] === '1class')) return;
+    rememberSlug(grade, subjectId, m[2]);
+    const n = parseInt(m[3], 10);
+    if (seen[n]) return;
+    seen[n] = true;
+    out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, '') });
+  });
+  out.sort(function (a, b) { return a.n - b.n; });
+  return out;
 }
 
-async function probeEiorTopics(grade, slug) {
+async function probeEiorTopics(grade, slug, abortFast) {
   const found = [];
   let n = 1;
   let miss = 0;
@@ -2906,10 +3154,12 @@ async function probeEiorTopics(grade, slug) {
     const batch = [];
     for (let i = 0; i < 4; i++) batch.push(n + i);
     const parts = await Promise.all(batch.map(function (num) { return peekEiorTopic(grade, slug, num); }));
-    parts.forEach(function (item, idx) {
-      if (item) { found.push(item); miss = 0; }
+    let any = false;
+    parts.forEach(function (item) {
+      if (item) { found.push(item); miss = 0; any = true; }
       else miss++;
     });
+    if (abortFast && !any && n === 1) throw new Error('Сайт ЕИОР временно не отвечает. Попробуйте ещё раз.');
     n += 4;
     const box = document.getElementById('officialLiveBody');
     if (box && found.length) {
@@ -2924,10 +3174,14 @@ async function probeEiorTopics(grade, slug) {
 async function peekEiorTopic(grade, slug, n) {
   const url = eiorTopicUrl(grade, slug, n);
   try {
-    const page = await fetchLive(url, false);
-    const t = page.title || '';
-    if (/404|Forbidden|Not Found/i.test(t) && (!page.bodyText || page.bodyText.length < 80)) return null;
-    if (!t && !page.know.length && !page.videos.length) return null;
+    const page = await fetchLive(url, false, true);
+    const t = cleanText(page.title || '');
+    if (/^(404|not found|ошибка 404|страница не найдена|не найдено)/i.test(t)) return null;
+    // Заголовок-заглушка (страница без настоящего заголовка) — не тема
+    if (t === hostLabel(url) && !page.know.length && !page.videos.length && !page.images.length) return null;
+    const hasMedia = page.know.length || page.can.length || page.videos.length || page.images.length;
+    if (!t && !hasMedia) return null;
+    if (!hasMedia && (page.bodyText || '').length < 150) return null;
     return { n: n, title: t.replace(/\s*[–—-]\s*ЕИОР.*$/i, '') || ('Тема ' + n) };
   } catch (e) {
     return null;
@@ -2941,7 +3195,7 @@ function openOfficialTopicN(grade, subjectId, n) {
   officialState.view = 'topic';
   officialState.query = '';
   const subj = getSubject(subjectId);
-  officialState.url = subj ? eiorTopicUrl(grade, subj.slug, n) : '';
+  officialState.url = subj ? eiorTopicUrl(grade, slugFor(grade, subjectId), n) : '';
   renderOfficial();
 }
 
@@ -2966,7 +3220,7 @@ async function loadEiorTopicLive() {
   const subj = getSubject(officialState.subject);
   const n = officialState.topicN;
   if (!subj || !n) return;
-  const url = eiorTopicUrl(g, subj.slug, n);
+  const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   officialState.url = url;
   try {
     const page = await fetchLive(url, false);
@@ -2979,8 +3233,8 @@ async function loadEiorTopicLive() {
 }
 
 function renderTopicPage(g, subj, n, page) {
-  const key = topicKey(g, subj.slug, n);
-  const url = eiorTopicUrl(g, subj.slug, n);
+  const key = topicKey(g, subj.id, n);
+  const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   let media = '';
   if (page.videos && page.videos[0]) {
     media += '<video class="off-video" controls preload="metadata" src="' + page.videos[0] + '"></video>';

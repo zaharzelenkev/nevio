@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5cc6e"/>
+      <stop offset="0.55" stop-color="#e8b13e"/>
+      <stop offset="1" stop-color="#c4911a"/>
+    </linearGradient>
+    <linearGradient id="goldBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe9ad"/>
+      <stop offset="1" stop-color="#f0bf4c"/>
+    </linearGradient>
+  </defs>
+  <!-- Фон: тёплый градиент в фирменном стиле NEVIO -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#goldBg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#gold)" opacity="0.35"/>
+  <!-- Буква N (фирменный тёмный цвет приложения #1C1B17) -->
+  <text x="256" y="256" font-family="Arial, Helvetica, sans-serif" font-size="300"
+        font-weight="800" fill="#1C1B17" text-anchor="middle" dominant-baseline="central">N</text>
+  <!-- Лёгкий блик сверху -->
+  <rect x="16" y="16" width="480" height="150" rx="112" fill="#ffffff" opacity="0.14"/>
+</svg>
