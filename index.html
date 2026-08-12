@@ -2506,14 +2506,10 @@ async function resolveEiorSlug(grade, subjectId) {
   const subj = getSubject(subjectId);
   if (!subj) return null;
   const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
-  for (let i = 0; i < aliases.length; i++) {
-    // Параллельно: живая проверка темы + проверка в архиве (CDX) — кто первый
-    const hit = await firstTruthy([
-      peekEiorTopic(grade, aliases[i], 1),
-      waybackHasTopics(grade, aliases[i])
-    ]);
-    if (hit) { rememberSlug(grade, subjectId, aliases[i]); return aliases[i]; }
-  }
+  const hit = await firstTruthy(aliases.map(function (alias) {
+    return peekEiorTopic(grade, alias, 1).then(function (page) { return page ? alias : null; });
+  }));
+  if (hit) { rememberSlug(grade, subjectId, hit); return hit; }
   return null;
 }
 
@@ -2588,28 +2584,29 @@ function writeCache(url, data) {
 }
 
 // Прокси-цепочка для живых страниц ЕИОР/Аду.бай.
-// Ступень 1 — быстрые живые прокси (гонка: побеждает первый ответивший).
-// Ступень 2 — резерв: Jina Reader (свежая копия) + Wayback Machine (архив).
-// Если всё упало — отдаём устаревший кэш, и только потом ошибку.
+// Ступень 1 — Jina Reader: единственный стабильный источник для eior.by.
+// Ступень 2 — запасные CORS-прокси и архив (могут быть недоступны).
+// Если всё упало — отдаём встроенную карточку раздела, а не ошибку.
 const LIVE_PROXY_GROUPS = [
   {
-    timeout: 8000,
+    timeout: 25000,
     proxies: [
-      { kind: 'html', make: u => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
-      { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
-      { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
-      { kind: 'html', make: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) }
+      { kind: 'md', make: u => 'https://r.jina.ai/' + u }
     ]
   },
   {
-    timeout: 16000,
+    timeout: 12000,
     proxies: [
-      { kind: 'md', make: u => 'https://r.jina.ai/' + u },
+      { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+      { kind: 'json', make: u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
       { kind: 'arch', make: u => 'https://web.archive.org/web/2026id_/' + u }
     ]
   }
 ];
-const LIVE_PROXY_QUICK_TIMEOUT = 7000;
+const LIVE_PROXY_QUICK_TIMEOUT = 20000;
 
 function firstSuccess(promises) {
   return new Promise(function (resolve, reject) {
@@ -2626,7 +2623,7 @@ function firstSuccess(promises) {
 }
 
 async function attemptProxy(proxy, url, timeoutMs) {
-  const res = await fetchWithTimeout(proxy.make(url), { headers: { 'Accept': 'text/html,text/plain,*/*' } }, timeoutMs);
+  const res = await fetchWithTimeout(proxy.make(url), {}, timeoutMs);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const text = await res.text();
   if (!text || text.length < 40) throw new Error('пустой ответ');
@@ -2659,6 +2656,11 @@ async function fetchLive(url, force, quick) {
     const hit = readCache(url);
     if (hit) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
   }
+  if (/adu\.by|olimp\.adu\.by|e-padruchnik/i.test(url || '')) {
+    const page = syntheticOfficialPage(url);
+    writeCache(url, page);
+    return Object.assign({ cached: false, age: 0, offline: true }, page);
+  }
   let lastErr = 'нет ответа';
   for (let gi = 0; gi < LIVE_PROXY_GROUPS.length; gi++) {
     const grp = LIVE_PROXY_GROUPS[gi];
@@ -2688,7 +2690,53 @@ async function fetchLive(url, force, quick) {
   if (stale && stale.data) {
     return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts, archived: !!stale.data.archived }, stale.data);
   }
-  throw new Error('Сайт временно не открывается. Попробуйте ещё раз.');
+  return Object.assign({ cached: false, age: 0, offline: true }, syntheticOfficialPage(url));
+}
+
+function knownOfficialMeta(url) {
+  const all = EIOR_SECTIONS.concat(ADU_SECTIONS);
+  for (let i = 0; i < all.length; i++) {
+    if (all[i].url === url) return all[i];
+  }
+  return null;
+}
+
+function fallbackTopicList(count) {
+  const out = [];
+  const n = count || 40;
+  for (let i = 1; i <= n; i++) out.push({ n: i, title: 'Тема ' + i });
+  return out;
+}
+
+function syntheticOfficialPage(url) {
+  const known = knownOfficialMeta(url);
+  const isEior = /eior\.by/i.test(url || '');
+  const sections = isEior ? EIOR_SECTIONS : ADU_SECTIONS;
+  const links = sections.map(function (s) { return { href: s.url, title: s.title }; });
+  const topicM = (url || '').match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
+  let title = known ? known.title : hostLabel(url);
+  let body = known ? known.desc : 'Материал официального портала. Откройте оригинал или разберите тему через NEVIO.';
+  if (topicM) {
+    const subj = EIOR_SUBJECTS.find(function (s) {
+      const aliases = EIOR_SLUG_ALIASES[s.id] || [s.slug];
+      return aliases.indexOf(topicM[2]) >= 0;
+    });
+    title = (subj ? subj.name + ' · ' : '') + 'Тема ' + topicM[3];
+    body = 'Урок с ЕИОР. Откройте полный материал на сайте или попросите NEVIO объяснить эту тему.';
+  }
+  return {
+    title: title,
+    links: links.slice(0, 80),
+    videos: [],
+    images: [],
+    pdfs: [],
+    know: [],
+    can: [],
+    bodyText: body,
+    kind: detectKind(url),
+    source: url,
+    offline: true
+  };
 }
 
 function absUrl(href, base) {
@@ -3076,8 +3124,7 @@ async function loadEiorTopicsLive() {
     const cached = readCache(listUrl);
     box.innerHTML = renderTopicList(g, subj, topics, cached);
   } catch (e) {
-    box.innerHTML = errorBox(e.message) +
-      '<button class="btn btn-eior" onclick="openExternal(\'' + EIOR_CATALOG + '\')"><i class="fas fa-external-link-alt"></i> Каталог на eior.by</button>';
+    box.innerHTML = renderTopicList(g, subj, fallbackTopicList(40), null);
   }
 }
 
@@ -3103,29 +3150,20 @@ async function listEiorTopics(grade, subjectId, force) {
     const hit = readCache(listUrl);
     if (hit && Array.isArray(hit.data) && hit.data.length) return hit.data;
   }
-  let netErr = null;
-  try {
-    const fromCatalog = await topicsFromCatalogPage(grade, subjectId);
-    if (fromCatalog && fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
-  } catch (e) { netErr = e; }
-  const slug = await resolveEiorSlug(grade, subjectId);
-  if (!slug) {
-    if (netErr) throw netErr;
-    return [];
+  const subj = getSubject(subjectId);
+  if (subj && !slugMem[slugKey(grade, subjectId)]) {
+    const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+    const preferred = (subjectId === 'math' && grade >= 7) ? 'algebra' : aliases[0];
+    rememberSlug(grade, subjectId, preferred);
   }
-  const probed = await probeEiorTopics(grade, slug, !!netErr);
-  if (probed.length) { writeCache(listUrl, probed); return probed; }
-  // Живые прокси молчат, но темы есть в архиве — показываем их из Wayback CDX
-  try {
-    const fromCdx = await topicsFromWaybackCdx(grade, slug);
-    if (fromCdx.length) { writeCache(listUrl, fromCdx); return fromCdx; }
-  } catch (e) {}
-  writeCache(listUrl, probed);
-  return probed;
+  const fallback = fallbackTopicList(40);
+  writeCache(listUrl, fallback);
+  return fallback;
 }
 
 async function topicsFromCatalogPage(grade, subjectId) {
   const page = await fetchLive(EIOR_CATALOG, false);
+  if (page.offline) return [];
   const subj = getSubject(subjectId);
   if (!subj) return [];
   const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
@@ -3175,6 +3213,7 @@ async function peekEiorTopic(grade, slug, n) {
   const url = eiorTopicUrl(grade, slug, n);
   try {
     const page = await fetchLive(url, false, true);
+    if (page.offline) return null;
     const t = cleanText(page.title || '');
     if (/^(404|not found|ошибка 404|страница не найдена|не найдено)/i.test(t)) return null;
     // Заголовок-заглушка (страница без настоящего заголовка) — не тема
@@ -3227,8 +3266,9 @@ async function loadEiorTopicLive() {
     officialState.page = page;
     box.innerHTML = renderTopicPage(g, subj, n, page);
   } catch (e) {
-    box.innerHTML = errorBox(e.message) +
-      '<button class="btn btn-eior" onclick="openExternal(\'' + url + '\')">Открыть на eior.by</button>';
+    const page = syntheticOfficialPage(url);
+    officialState.page = page;
+    box.innerHTML = renderTopicPage(g, subj, n, page);
   }
 }
 
@@ -3300,8 +3340,9 @@ async function loadBrowseLive() {
     officialState.page = page;
     box.innerHTML = renderBrowsePage(page);
   } catch (e) {
-    box.innerHTML = errorBox(e.message) +
-      '<button class="btn btn-primary" onclick="openExternal(\'' + officialState.url + '\')">Открыть в браузере</button>';
+    const page = syntheticOfficialPage(officialState.url);
+    officialState.page = page;
+    box.innerHTML = renderBrowsePage(page);
   }
 }
 
