@@ -861,6 +861,10 @@
     .stat-pill b { display:block; font-size:18px; color:var(--gold); }
     .stat-pill span { font-size:11px; color:var(--text-secondary); }
     .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; }
+    .fresh-note { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; color:var(--text-muted); margin-left:6px; letter-spacing:0.2px; vertical-align:middle; }
+    .fresh-note i { font-size:7px; color:#2ecc71; }
+    .fresh-note.arch i { color:var(--gold); }
+    .fresh-note.stale i { color:#f87171; }
   </style>
 </head>
 <body>
@@ -1235,10 +1239,11 @@ const systemPrompts = {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function fetchWithTimeout(url, options, timeoutMs) {
+  if (typeof AbortController === 'undefined') return fetch(url, options);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetch(url, Object.assign({}, options, { signal: controller.signal }));
   } finally {
     clearTimeout(timer);
   }
@@ -2392,6 +2397,111 @@ function eiorClassSlug(g) { return g === 1 ? '1class' : (g + '-klass'); }
 function eiorTopicUrl(grade, slug, n) {
   return 'https://eior.by/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/' + n + '.php';
 }
+
+// На ЕИОР адреса тем разные для разных классов (9 класс: algebra, а не math,
+// английский: angliyskiy-yazyk, информатика: informatick, география: geografiya).
+// Перебираем варианты один раз, а найденный запоминаем для каждого класса.
+const EIOR_SLUG_ALIASES = {
+  math: ['math', 'algebra', 'geometriya', 'matematika'],
+  rusyaz: ['rusyaz', 'russkiy-yazyk', 'russkij-yazyk'],
+  belmova: ['belmova'],
+  bellit: ['bellit'],
+  ruslit: ['ruslit', 'russkaya-literatura'],
+  phisics: ['phisics', 'fizika'],
+  himiya: ['himiya', 'khimiya'],
+  biology: ['biology', 'biologiya'],
+  history_by: ['history_of_belarus', 'istoriya_belarusi'],
+  vsem_istoriya: ['vsem_istoriya', 'vsemirnaya-istoriya'],
+  obschestvo: ['obschestvo', 'obshchestvovedenie'],
+  geografia: ['geografiya', 'geografia'],
+  informatika: ['informatick', 'informatika'],
+  english: ['angliyskiy-yazyk', 'english'],
+  chelovek: ['chelovek-i-mir', 'chelovek'],
+  doprpodg: ['doprpodg', 'doprizyvnaya-podgotovka']
+};
+const slugMem = {};
+function slugKey(grade, subjectId) { return grade + ':' + subjectId; }
+function slugFor(grade, subjectId) {
+  const key = slugKey(grade, subjectId);
+  if (slugMem[key]) return slugMem[key];
+  try {
+    const s = localStorage.getItem('nevioSlug:' + key);
+    if (s) { slugMem[key] = s; return s; }
+  } catch (e) {}
+  const subj = getSubject(subjectId);
+  if (!subj) return null;
+  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  return aliases[0];
+}
+function rememberSlug(grade, subjectId, slug) {
+  const key = slugKey(grade, subjectId);
+  slugMem[key] = slug;
+  try { localStorage.setItem('nevioSlug:' + key, slug); } catch (e) {}
+}
+async function resolveEiorSlug(grade, subjectId) {
+  const key = slugKey(grade, subjectId);
+  if (slugMem[key]) return slugMem[key];
+  const subj = getSubject(subjectId);
+  if (!subj) return null;
+  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  for (let i = 0; i < aliases.length; i++) {
+    // Параллельно: живая проверка темы + проверка в архиве (CDX) — кто первый
+    const hit = await firstTruthy([
+      peekEiorTopic(grade, aliases[i], 1),
+      waybackHasTopics(grade, aliases[i])
+    ]);
+    if (hit) { rememberSlug(grade, subjectId, aliases[i]); return aliases[i]; }
+  }
+  return null;
+}
+
+function waybackCdxUrl(grade, slug, limit) {
+  return 'https://web.archive.org/cdx/search/cdx?url=eior.by/catalog_lecture/' +
+    eiorClassSlug(grade) + '/' + slug + '/*&fl=original&collapse=urlkey&limit=' + (limit || 200);
+}
+async function waybackHasTopics(grade, slug) {
+  try {
+    const res = await fetchWithTimeout(waybackCdxUrl(grade, slug, 3), {}, 8000);
+    if (!res.ok) return 0;
+    const text = await res.text();
+    const m = text.match(/catalog_lecture\/[^/]+\/[^/]+\/(\d+)\.php/);
+    return m ? parseInt(m[1], 10) : 0;
+  } catch (e) { return 0; }
+}
+async function topicsFromWaybackCdx(grade, slug) {
+  const res = await fetchWithTimeout(waybackCdxUrl(grade, slug, 250), {}, 12000);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const text = await res.text();
+  const out = [];
+  const seen = {};
+  (text.match(/catalog_lecture\/[^/]+\/[^/]+\/(\d+)\.php/g) || []).forEach(function (u) {
+    const m = u.match(/\/(\d+)\.php$/);
+    if (!m) return;
+    const n = parseInt(m[1], 10);
+    if (seen[n] || n < 1 || n > 120) return;
+    seen[n] = true;
+    out.push({ n: n, title: 'Тема ' + n });
+  });
+  out.sort(function (a, b) { return a.n - b.n; });
+  return out;
+}
+function firstTruthy(promises) {
+  return new Promise(function (resolve) {
+    let pending = promises.length;
+    let done = false;
+    if (!pending) { resolve(null); return; }
+    promises.forEach(function (p) {
+      p.then(function (v) {
+        if (done) return;
+        if (v) { done = true; resolve(v); }
+        else if (--pending === 0) resolve(null);
+      }, function () {
+        if (done) return;
+        if (--pending === 0) resolve(null);
+      });
+    });
+  });
+}
 function openExternal(url) {
   if (!url) return;
   if (window.Telegram?.WebApp?.openLink) Telegram.WebApp.openLink(url);
@@ -2415,41 +2525,107 @@ function writeCache(url, data) {
   try { localStorage.setItem(cacheKey(url), JSON.stringify(obj)); } catch (e) {}
 }
 
-async function fetchLive(url, force) {
+// Прокси-цепочка для живых страниц ЕИОР/Аду.бай.
+// Ступень 1 — быстрые живые прокси (гонка: побеждает первый ответивший).
+// Ступень 2 — резерв: Jina Reader (свежая копия) + Wayback Machine (архив).
+// Если всё упало — отдаём устаревший кэш, и только потом ошибку.
+const LIVE_PROXY_GROUPS = [
+  {
+    timeout: 8000,
+    proxies: [
+      { kind: 'html', make: u => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) }
+    ]
+  },
+  {
+    timeout: 16000,
+    proxies: [
+      { kind: 'md', make: u => 'https://r.jina.ai/' + u },
+      { kind: 'arch', make: u => 'https://web.archive.org/web/2026id_/' + u }
+    ]
+  }
+];
+const LIVE_PROXY_QUICK_TIMEOUT = 7000;
+
+function firstSuccess(promises) {
+  return new Promise(function (resolve, reject) {
+    let pending = promises.length;
+    let firstErr = null;
+    if (!pending) { reject(new Error('нет прокси')); return; }
+    promises.forEach(function (p) {
+      p.then(function (v) { resolve(v); }, function (e) {
+        if (!firstErr) firstErr = e;
+        if (--pending === 0) reject(firstErr || new Error('нет ответа'));
+      });
+    });
+  });
+}
+
+async function attemptProxy(proxy, url, timeoutMs) {
+  const res = await fetchWithTimeout(proxy.make(url), { headers: { 'Accept': 'text/html,text/plain,*/*' } }, timeoutMs);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const text = await res.text();
+  if (!text || text.length < 40) throw new Error('пустой ответ');
+  if (/has not archived that URL/i.test(text)) throw new Error('в архиве нет страницы');
+  if (/522: Connection timed out/i.test(text)) throw new Error('прокси недоступен');
+  if (/Just a moment|cf-browser-verification|free usage is limited|readableMessage|AssertionFailureError|corsfix_error|invalid_origin/i.test(text) && text.length < 4000) {
+    throw new Error('прокси недоступен');
+  }
+  return { proxy: proxy, text: text };
+}
+
+function parseProxyResult(proxy, url, text) {
+  if (proxy.kind === 'md') return parseMarkdownPage(url, text);
+  if (proxy.kind === 'json') {
+    try {
+      const obj = JSON.parse(text);
+      if (obj && typeof obj.contents === 'string') text = obj.contents;
+    } catch (e) {}
+    return parseHtmlPage(url, text);
+  }
+  return parseHtmlPage(url, text);
+}
+
+function readStaleCache(url) {
+  try { return JSON.parse(localStorage.getItem(cacheKey(url)) || 'null'); } catch (e) { return null; }
+}
+
+async function fetchLive(url, force, quick) {
   if (!force) {
     const hit = readCache(url);
     if (hit) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
   }
-  const proxies = [
-    { kind: 'html', make: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
-    { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
-    { kind: 'md', make: u => 'https://r.jina.ai/' + u }
-  ];
   let lastErr = 'нет ответа';
-  for (let i = 0; i < proxies.length; i++) {
+  for (let gi = 0; gi < LIVE_PROXY_GROUPS.length; gi++) {
+    const grp = LIVE_PROXY_GROUPS[gi];
+    if (quick && gi > 0) break;
     try {
-      const res = await fetchWithTimeout(proxies[i].make(url), { headers: { 'Accept': 'text/html,text/plain,*/*' } }, 18000);
-      if (!res.ok) { lastErr = 'HTTP ' + res.status; continue; }
-      const text = await res.text();
-      if (!text || text.length < 40) { lastErr = 'пустой ответ'; continue; }
-      if (/522: Connection timed out|Just a moment|cf-browser-verification/i.test(text) && text.length < 2500) {
-        lastErr = 'прокси недоступен'; continue;
-      }
-      const parsed = proxies[i].kind === 'md' ? parseMarkdownPage(url, text) : parseHtmlPage(url, text);
+      const winner = await firstSuccess(grp.proxies.map(function (p) {
+        return attemptProxy(p, url, quick ? LIVE_PROXY_QUICK_TIMEOUT : grp.timeout);
+      }));
+      const parsed = parseProxyResult(winner.proxy, url, winner.text);
       if (!parsed || (!parsed.title && !parsed.links.length && !parsed.bodyText)) {
-        lastErr = 'не удалось разобрать страницу'; continue;
+        lastErr = 'не удалось разобрать страницу';
+        continue;
+      }
+      if (/just a moment|attention required|cf-chl|проверка браузера/i.test(parsed.title || '')) {
+        lastErr = 'прокси недоступен';
+        continue;
       }
       parsed.source = url;
+      if (winner.proxy.kind === 'arch') parsed.archived = true;
       writeCache(url, parsed);
-      return Object.assign({ cached: false, age: 0 }, parsed);
+      return Object.assign({ cached: false, age: 0, archived: !!parsed.archived }, parsed);
     } catch (e) {
-      lastErr = e.message || 'сеть';
+      lastErr = e.message || 'нет ответа';
     }
   }
-  const stale = (function () {
-    try { return JSON.parse(localStorage.getItem(cacheKey(url)) || 'null'); } catch (e) { return null; }
-  })();
-  if (stale && stale.data) return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts }, stale.data);
+  const stale = readStaleCache(url);
+  if (stale && stale.data) {
+    return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts, archived: !!stale.data.archived }, stale.data);
+  }
   throw new Error('Сайт временно не открывается. Попробуйте ещё раз.');
 }
 
@@ -2535,12 +2711,13 @@ function parseMarkdownPage(url, md) {
   const title = cleanText(titleM ? titleM[1] : '');
   const links = [];
   const seen = {};
-  const re = /\[([^\]]+)\]\((https?:[^)\s]+)\)/g;
+  // Jina добавляет title-атрибуты: [текст](https://… "Подпись") — учитываем их
+  const re = /\[([^\]]+)\]\((https?:[^)\s]+)(?:\s+"[^"]*")?\)/g;
   let m;
   while ((m = re.exec(md))) {
     const href = m[2].replace(/\\/g, '');
     if (!sameOfficial(href) || seen[href]) continue;
-    const label = cleanText(m[1]);
+    const label = cleanText(m[1]).replace(/\\+/g, '');
     if (!label || label.length < 2) continue;
     seen[href] = true;
     links.push({ href: href, title: label });
@@ -2561,9 +2738,10 @@ function parseMarkdownPage(url, md) {
     if (/^\s*#{1,3}\s/.test(line) || /^[A-ZА-ЯЁ]/.test(line) && line.length < 40 && !/^-/.test(line)) {
       if (!/знать|уметь/i.test(line)) mode = '';
     }
-    const item = cleanText(line.replace(/^[-*•]\s*/, ''));
-    if (mode === 'k' && item && item.length > 2) know.push(item);
-    if (mode === 'c' && item && item.length > 2) can.push(item);
+    const item = cleanText(line.replace(/^[-*•]\s*/, '').replace(/\[(?:Video|Image)\s*\d*\]\([^)]*\)/gi, '').replace(/\\+/g, ''));
+    if (!item || item.length <= 2 || /\]\(https?:/.test(item)) return;
+    if (mode === 'k') know.push(item);
+    if (mode === 'c') can.push(item);
   });
   return {
     title: title || hostLabel(url),
@@ -2590,7 +2768,8 @@ function hostLabel(url) {
   if (/adu\.by/i.test(url)) return 'Аду.бай';
   return 'Материал';
 }
-function ageLabel(ms, cached, stale) {
+function ageLabel(ms, cached, stale, archived) {
+  if (archived) return 'архивная копия';
   if (stale) return 'кэш, сайт не ответил';
   if (!cached || !ms) return 'только что с сайта';
   const m = Math.max(1, Math.round(ms / 60000));
@@ -2609,9 +2788,9 @@ const EIOR_SUBJECTS = [
   { id: 'history_by', name: 'История Беларуси', slug: 'history_of_belarus', icon: 'fas fa-landmark', grades: [5,6,7,8,9,10,11] },
   { id: 'vsem_istoriya', name: 'Всемирная история', slug: 'vsem_istoriya', icon: 'fas fa-globe-europe', grades: [5,6,7,8,9,10,11] },
   { id: 'obschestvo', name: 'Обществоведение', slug: 'obschestvo', icon: 'fas fa-balance-scale', grades: [9,10,11] },
-  { id: 'geografia', name: 'География', slug: 'geografia', icon: 'fas fa-map-marked-alt', grades: [6,7,8,9,10,11] },
-  { id: 'informatika', name: 'Информатика', slug: 'informatika', icon: 'fas fa-laptop-code', grades: [6,7,8,9,10,11] },
-  { id: 'english', name: 'Английский язык', slug: 'english', icon: 'fas fa-comments', grades: [3,4,5,6,7,8,9,10,11] },
+  { id: 'geografia', name: 'География', slug: 'geografiya', icon: 'fas fa-map-marked-alt', grades: [6,7,8,9,10,11] },
+  { id: 'informatika', name: 'Информатика', slug: 'informatick', icon: 'fas fa-laptop-code', grades: [6,7,8,9,10,11] },
+  { id: 'english', name: 'Английский язык', slug: 'angliyskiy-yazyk', icon: 'fas fa-comments', grades: [3,4,5,6,7,8,9,10,11] },
   { id: 'chelovek', name: 'Человек и мир', slug: 'chelovek', icon: 'fas fa-leaf', grades: [1,2,3,4] },
   { id: 'doprpodg', name: 'Допризывная подготовка', slug: 'doprpodg', icon: 'fas fa-shield-alt', grades: [10,11] }
 ];
@@ -2722,8 +2901,7 @@ function refreshOfficial() {
     delete liveMem[url];
   }
   if (officialState.view === 'topics' && officialState.subject) {
-    const subj = getSubject(officialState.subject);
-    const listUrl = 'list:' + officialState.grade + ':' + (subj ? subj.slug : '');
+    const listUrl = 'list:' + officialState.grade + ':' + officialState.subject;
     try { localStorage.removeItem(cacheKey(listUrl)); } catch (e) {}
     delete liveMem[listUrl];
   }
@@ -2837,9 +3015,9 @@ async function loadEiorTopicsLive() {
   const g = officialState.grade;
   const subj = getSubject(officialState.subject);
   if (!subj) return;
-  const listUrl = 'list:' + g + ':' + subj.slug;
+  const listUrl = 'list:' + g + ':' + subj.id;
   try {
-    const topics = await listEiorTopics(g, subj.slug, false);
+    const topics = await listEiorTopics(g, subj.id, false);
     const cached = readCache(listUrl);
     box.innerHTML = renderTopicList(g, subj, topics, cached);
   } catch (e) {
@@ -2856,7 +3034,7 @@ function renderTopicList(g, subj, topics, cached) {
   }
   let html = '<div class="section-label">' + topics.length + ' тем · ' + escapeHtml(subj.name) + ' · ' + g + ' класс</div>';
   topics.forEach(function (tp) {
-    const key = topicKey(g, subj.slug, tp.n);
+    const key = topicKey(g, subj.id, tp.n);
     html += '<div class="topic-item' + (isDone(key) ? ' done' : '') + '" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + tp.n + ')">' +
       '<div class="topic-top"><h3>' + escapeHtml(tp.title) + '</h3>' + (isDone(key) ? '<div class="done-dot"></div>' : '') + '</div>' +
       '<div class="topic-meta">урок ' + tp.n + '</div></div>';
@@ -2864,41 +3042,56 @@ function renderTopicList(g, subj, topics, cached) {
   return html;
 }
 
-async function listEiorTopics(grade, slug, force) {
-  const listUrl = 'list:' + grade + ':' + slug;
+async function listEiorTopics(grade, subjectId, force) {
+  const listUrl = 'list:' + grade + ':' + subjectId;
   if (!force) {
     const hit = readCache(listUrl);
     if (hit && Array.isArray(hit.data) && hit.data.length) return hit.data;
   }
-  const fromCatalog = await topicsFromCatalogPage(grade, slug);
-  if (fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
-  const probed = await probeEiorTopics(grade, slug);
+  let netErr = null;
+  try {
+    const fromCatalog = await topicsFromCatalogPage(grade, subjectId);
+    if (fromCatalog && fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
+  } catch (e) { netErr = e; }
+  const slug = await resolveEiorSlug(grade, subjectId);
+  if (!slug) {
+    if (netErr) throw netErr;
+    return [];
+  }
+  const probed = await probeEiorTopics(grade, slug, !!netErr);
+  if (probed.length) { writeCache(listUrl, probed); return probed; }
+  // Живые прокси молчат, но темы есть в архиве — показываем их из Wayback CDX
+  try {
+    const fromCdx = await topicsFromWaybackCdx(grade, slug);
+    if (fromCdx.length) { writeCache(listUrl, fromCdx); return fromCdx; }
+  } catch (e) {}
   writeCache(listUrl, probed);
   return probed;
 }
 
-async function topicsFromCatalogPage(grade, slug) {
-  try {
-    const page = await fetchLive(EIOR_CATALOG, false);
-    const prefix = '/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/';
-    const out = [];
-    const seen = {};
-    (page.links || []).forEach(function (l) {
-      const m = l.href.match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
-      if (!m) return;
-      if (m[2] !== slug) return;
-      if (eiorClassSlug(grade) !== m[1] && !(grade === 1 && m[1] === '1class')) return;
-      const n = parseInt(m[3], 10);
-      if (seen[n]) return;
-      seen[n] = true;
-      out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, '') });
-    });
-    out.sort(function (a, b) { return a.n - b.n; });
-    return out;
-  } catch (e) { return []; }
+async function topicsFromCatalogPage(grade, subjectId) {
+  const page = await fetchLive(EIOR_CATALOG, false);
+  const subj = getSubject(subjectId);
+  if (!subj) return [];
+  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  const out = [];
+  const seen = {};
+  (page.links || []).forEach(function (l) {
+    const m = l.href.match(/catalog_lecture\/([^/]+)\/([^/]+)\/(\d+)\.php/i);
+    if (!m) return;
+    if (aliases.indexOf(m[2]) < 0) return;
+    if (eiorClassSlug(grade) !== m[1] && !(grade === 1 && m[1] === '1class')) return;
+    rememberSlug(grade, subjectId, m[2]);
+    const n = parseInt(m[3], 10);
+    if (seen[n]) return;
+    seen[n] = true;
+    out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, '') });
+  });
+  out.sort(function (a, b) { return a.n - b.n; });
+  return out;
 }
 
-async function probeEiorTopics(grade, slug) {
+async function probeEiorTopics(grade, slug, abortFast) {
   const found = [];
   let n = 1;
   let miss = 0;
@@ -2906,10 +3099,12 @@ async function probeEiorTopics(grade, slug) {
     const batch = [];
     for (let i = 0; i < 4; i++) batch.push(n + i);
     const parts = await Promise.all(batch.map(function (num) { return peekEiorTopic(grade, slug, num); }));
-    parts.forEach(function (item, idx) {
-      if (item) { found.push(item); miss = 0; }
+    let any = false;
+    parts.forEach(function (item) {
+      if (item) { found.push(item); miss = 0; any = true; }
       else miss++;
     });
+    if (abortFast && !any && n === 1) throw new Error('Сайт ЕИОР временно не отвечает. Попробуйте ещё раз.');
     n += 4;
     const box = document.getElementById('officialLiveBody');
     if (box && found.length) {
@@ -2924,10 +3119,14 @@ async function probeEiorTopics(grade, slug) {
 async function peekEiorTopic(grade, slug, n) {
   const url = eiorTopicUrl(grade, slug, n);
   try {
-    const page = await fetchLive(url, false);
-    const t = page.title || '';
-    if (/404|Forbidden|Not Found/i.test(t) && (!page.bodyText || page.bodyText.length < 80)) return null;
-    if (!t && !page.know.length && !page.videos.length) return null;
+    const page = await fetchLive(url, false, true);
+    const t = cleanText(page.title || '');
+    if (/^(404|not found|ошибка 404|страница не найдена|не найдено)/i.test(t)) return null;
+    // Заголовок-заглушка (страница без настоящего заголовка) — не тема
+    if (t === hostLabel(url) && !page.know.length && !page.videos.length && !page.images.length) return null;
+    const hasMedia = page.know.length || page.can.length || page.videos.length || page.images.length;
+    if (!t && !hasMedia) return null;
+    if (!hasMedia && (page.bodyText || '').length < 150) return null;
     return { n: n, title: t.replace(/\s*[–—-]\s*ЕИОР.*$/i, '') || ('Тема ' + n) };
   } catch (e) {
     return null;
@@ -2941,7 +3140,7 @@ function openOfficialTopicN(grade, subjectId, n) {
   officialState.view = 'topic';
   officialState.query = '';
   const subj = getSubject(subjectId);
-  officialState.url = subj ? eiorTopicUrl(grade, subj.slug, n) : '';
+  officialState.url = subj ? eiorTopicUrl(grade, slugFor(grade, subjectId), n) : '';
   renderOfficial();
 }
 
@@ -2966,7 +3165,7 @@ async function loadEiorTopicLive() {
   const subj = getSubject(officialState.subject);
   const n = officialState.topicN;
   if (!subj || !n) return;
-  const url = eiorTopicUrl(g, subj.slug, n);
+  const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   officialState.url = url;
   try {
     const page = await fetchLive(url, false);
@@ -2979,8 +3178,10 @@ async function loadEiorTopicLive() {
 }
 
 function renderTopicPage(g, subj, n, page) {
-  const key = topicKey(g, subj.slug, n);
-  const url = eiorTopicUrl(g, subj.slug, n);
+  const key = topicKey(g, subj.id, n);
+  const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
+  const freshCls = page.archived ? ' arch' : (page.stale ? ' stale' : '');
+  const freshHtml = '<span class="fresh-note' + freshCls + '"><i class="fas fa-circle"></i>' + escapeHtml(ageLabel(page.age, page.cached, page.stale, page.archived)) + '</span>';
   let media = '';
   if (page.videos && page.videos[0]) {
     media += '<video class="off-video" controls preload="metadata" src="' + page.videos[0] + '"></video>';
@@ -2996,7 +3197,7 @@ function renderTopicPage(g, subj, n, page) {
   }).join('');
   return '<div class="topic-hero">' +
     '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;">' +
-      '<div class="meta">' + escapeHtml(subj.name) + ' · ' + g + ' класс · урок ' + n + '</div>' +
+      '<div class="meta">' + escapeHtml(subj.name) + ' · ' + g + ' класс · урок ' + n + freshHtml + '</div>' +
       '<button class="fav-btn' + (isFav(key) ? ' on' : '') + '" onclick="toggleOfficialFav(\'' + key + '\')"><i class="fas fa-star"></i></button></div>' +
     '<h2>' + escapeHtml(page.title) + '</h2></div>' +
     media + know + can + extraLinks +
@@ -3053,6 +3254,8 @@ async function loadBrowseLive() {
 
 function renderBrowsePage(page) {
   const moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_SECTIONS;
+  const freshCls = page.archived ? ' arch' : (page.stale ? ' stale' : '');
+  const freshHtml = '<span class="fresh-note' + freshCls + '"><i class="fas fa-circle"></i>' + escapeHtml(ageLabel(page.age, page.cached, page.stale, page.archived)) + '</span>';
   let nav = '';
   if (!/catalog_lecture/i.test(officialState.url)) {
     nav = moreSections.map(function (s) {
@@ -3071,7 +3274,7 @@ function renderBrowsePage(page) {
   (page.videos || []).slice(0, 2).forEach(function (v) {
     media += '<video class="off-video" controls preload="metadata" src="' + v + '"></video>';
   });
-  return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + '</div>' +
+  return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + freshHtml + '</div>' +
     '<h2>' + escapeHtml(page.title) + '</h2>' +
     (page.bodyText ? '<p style="font-size:13px;color:var(--text-secondary);margin-top:8px;line-height:1.55;">' + escapeHtml(page.bodyText.slice(0, 420)) + (page.bodyText.length > 420 ? '…' : '') + '</p>' : '') +
     '</div>' + media +
