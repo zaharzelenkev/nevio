@@ -867,9 +867,9 @@
     .stat-pill { background:var(--card); border:1.5px solid var(--border); border-radius:14px; padding:10px 12px; }
     .stat-pill b { display:block; font-size:18px; color:var(--gold); }
     .stat-pill span { font-size:11px; color:var(--text-secondary); }
-    .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; display:block; }
+    .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:280px; object-fit:contain; display:block; }
     .off-video-wrap { position:relative; border-radius:16px; overflow:hidden; margin:0 0 12px; background:#111; }
-    .off-video-wrap .off-video { margin:0; max-height:240px; }
+    .off-video-wrap .off-video { margin:0; max-height:320px; min-height:180px; width:100%; background:#0b0b0b; }
     .off-frame {
       width:100%; height:68vh; min-height:420px; border:0; border-radius:16px; margin:0 0 12px;
       background:var(--surface); box-shadow:inset 0 0 0 1.5px var(--border);
@@ -2467,7 +2467,7 @@ const ADU_HOME = 'https://adu.by/ru/';
 const ADU_BASE = 'https://adu.by/ru/homeru/obrazovatelnyj-protsess/obshchee-srednee-obrazovanie';
 const LIVE_TTL = 6 * 60 * 60 * 1000;
 
-let officialState = { view: 'hub', grade: 9, subject: null, topicN: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
+let officialState = { view: 'hub', grade: 9, subject: null, topicN: null, topicSlug: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
 let officialProgress = { done: {}, fav: [], grade: 9 };
 const liveMem = {};
 
@@ -2494,57 +2494,102 @@ function eiorTopicUrl(grade, slug, n) {
   return 'https://eior.by/catalog_lecture/' + eiorClassSlug(grade) + '/' + slug + '/' + n + '.php';
 }
 
-// На ЕИОР адреса тем разные для разных классов (9 класс: algebra, а не math,
-// английский: angliyskiy-yazyk, информатика: informatick, география: geografiya).
-// Перебираем варианты один раз, а найденный запоминаем для каждого класса.
+// Реальные адреса полок на eior.by разные по классам:
+// 1–6 математика = math, с 7-го = algebra + geometry;
+// физика = phythics, биология = bio, информатика = informatics,
+// история Беларуси = history_of_bel, всемирная = history,
+// русский 7+ = rus_lan, бел. литература 7+ = bel-lit.
 const EIOR_SLUG_ALIASES = {
-  math: ['math', 'algebra', 'geometriya', 'matematika'],
-  rusyaz: ['rusyaz', 'russkiy-yazyk', 'russkij-yazyk'],
+  math: ['math', 'algebra', 'geometry', 'geometriya', 'matematika'],
+  rusyaz: ['rusyaz', 'rus_lan', 'russkiy-yazyk', 'russkij-yazyk'],
   belmova: ['belmova'],
-  bellit: ['bellit'],
+  bellit: ['bellit', 'bel-lit'],
   ruslit: ['ruslit', 'russkaya-literatura'],
-  phisics: ['phisics', 'fizika'],
+  phisics: ['phythics', 'phisics', 'fizika', 'physics'],
   himiya: ['himiya', 'khimiya'],
-  biology: ['biology', 'biologiya'],
-  history_by: ['history_of_belarus', 'istoriya_belarusi'],
-  vsem_istoriya: ['vsem_istoriya', 'vsemirnaya-istoriya'],
+  biology: ['bio', 'biology', 'biologiya'],
+  history_by: ['history_of_bel', 'history_of_belarus', 'istoriya_belarusi'],
+  vsem_istoriya: ['history', 'vsem_istoriya', 'vsemirnaya-istoriya'],
   obschestvo: ['obschestvo', 'obshchestvovedenie'],
-  geografia: ['geografiya', 'geografia'],
-  informatika: ['informatick', 'informatika'],
+  geografia: ['geografiya', 'geography', 'geografia'],
+  informatika: ['informatics', 'informatick', 'informatika'],
   english: ['angliyskiy-yazyk', 'english'],
-  chelovek: ['chelovek-i-mir', 'chelovek'],
+  chelovek: ['chelovek', 'chelovek-i-mir'],
   doprpodg: ['doprpodg', 'doprizyvnaya-podgotovka']
+};
+const EIOR_SLUG_LABELS = {
+  algebra: 'Алгебра',
+  geometry: 'Геометрия',
+  geometriya: 'Геометрия',
+  math: 'Математика',
+  matematika: 'Математика'
 };
 const slugMem = {};
 function slugKey(grade, subjectId) { return grade + ':' + subjectId; }
+function slugsForGrade(grade, subjectId) {
+  const subj = getSubject(subjectId);
+  const all = ((EIOR_SLUG_ALIASES[subjectId] || (subj ? [subj.slug] : [])).slice());
+  const prefer = [];
+  if (subjectId === 'math') prefer.push.apply(prefer, grade >= 7 ? ['algebra', 'geometry'] : ['math']);
+  else if (subjectId === 'rusyaz') prefer.push.apply(prefer, grade >= 7 ? ['rus_lan', 'rusyaz'] : ['rusyaz']);
+  else if (subjectId === 'bellit') prefer.push.apply(prefer, grade >= 7 ? ['bel-lit', 'bellit'] : ['bellit']);
+  else if (subjectId === 'ruslit') prefer.push.apply(prefer, grade === 6 ? ['russkaya-literatura', 'ruslit'] : ['ruslit']);
+  else if (subjectId === 'geografia') prefer.push.apply(prefer, grade <= 6 ? ['geography', 'geografiya'] : ['geografiya']);
+  else if (subjectId === 'phisics') prefer.push('phythics', 'phisics');
+  else if (subjectId === 'biology') prefer.push('bio', 'biology');
+  else if (subjectId === 'history_by') prefer.push('history_of_bel', 'history_of_belarus');
+  else if (subjectId === 'vsem_istoriya') prefer.push('history', 'vsem_istoriya');
+  else if (subjectId === 'informatika') prefer.push('informatics', 'informatick');
+  const out = [];
+  prefer.concat(all).forEach(function (s) { if (s && out.indexOf(s) < 0) out.push(s); });
+  return out;
+}
 function slugFor(grade, subjectId) {
   const key = slugKey(grade, subjectId);
   if (slugMem[key]) return slugMem[key];
   try {
-    const s = localStorage.getItem('nevioSlug:' + key);
+    const s = localStorage.getItem('nevioSlug3:' + key);
     if (s) { slugMem[key] = s; return s; }
   } catch (e) {}
-  const subj = getSubject(subjectId);
-  if (!subj) return null;
-  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
-  return aliases[0];
+  const aliases = slugsForGrade(grade, subjectId);
+  return aliases[0] || null;
 }
 function rememberSlug(grade, subjectId, slug) {
   const key = slugKey(grade, subjectId);
   slugMem[key] = slug;
-  try { localStorage.setItem('nevioSlug:' + key, slug); } catch (e) {}
+  try { localStorage.setItem('nevioSlug3:' + key, slug); } catch (e) {}
+}
+function wantsAllSlugs(grade, subjectId) {
+  return subjectId === 'math' && grade >= 7;
+}
+async function resolveAllEiorSlugs(grade, subjectId) {
+  const aliases = slugsForGrade(grade, subjectId);
+  const found = [];
+  const takeAll = wantsAllSlugs(grade, subjectId);
+  for (let i = 0; i < aliases.length; i += 2) {
+    if (!takeAll && found.length) break;
+    if (takeAll && found.indexOf('algebra') >= 0 && found.indexOf('geometry') >= 0) break;
+    const batch = aliases.slice(i, i + 2);
+    const parts = await Promise.all(batch.map(function (alias) {
+      return peekEiorTopic(grade, alias, 1, true).then(function (page) { return page ? alias : null; });
+    }));
+    parts.forEach(function (alias) { if (alias && found.indexOf(alias) < 0) found.push(alias); });
+  }
+  if (!found.length) {
+    for (let i = 0; i < aliases.length; i++) {
+      const page = await peekEiorTopic(grade, aliases[i], 1, false);
+      if (page) {
+        found.push(aliases[i]);
+        if (!takeAll) break;
+      }
+    }
+  }
+  if (found[0]) rememberSlug(grade, subjectId, found[0]);
+  return found;
 }
 async function resolveEiorSlug(grade, subjectId) {
-  const key = slugKey(grade, subjectId);
-  if (slugMem[key]) return slugMem[key];
-  const subj = getSubject(subjectId);
-  if (!subj) return null;
-  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
-  const hit = await firstTruthy(aliases.map(function (alias) {
-    return peekEiorTopic(grade, alias, 1).then(function (page) { return page ? alias : null; });
-  }));
-  if (hit) { rememberSlug(grade, subjectId, hit); return hit; }
-  return null;
+  const all = await resolveAllEiorSlugs(grade, subjectId);
+  return all[0] || null;
 }
 
 function waybackCdxUrl(grade, slug, limit) {
@@ -2768,8 +2813,9 @@ function ingestEiorCatalog(page) {
         const pack = buckets[classSlug + '\t' + aliases[i]];
         if (!pack || !pack.length) continue;
         pack.sort(function (a, b) { return a.n - b.n; });
+        pack = pack.map(function (t) { return { n: t.n, title: t.title, slug: aliases[i] }; });
         rememberSlug(g, subj.id, aliases[i]);
-        writeCache('list:' + g + ':' + subj.id, pack);
+        writeCache('list3:' + g + ':' + subj.id, pack);
         break;
       }
     });
@@ -2837,9 +2883,53 @@ function cleanText(s) {
   return String(s || '').replace(/\s+/g, ' ').trim();
 }
 
+function pullMp4Urls(text, base) {
+  const out = [];
+  if (!text) return out;
+  const re = /(?:https?:\/\/eior\.by)?\/upload\/[^"'\\\s<>)\]]+\.mp4/gi;
+  let m;
+  while ((m = re.exec(text))) {
+    const href = absUrl(m[0].replace(/&amp;/g, '&'), base || 'https://eior.by/');
+    if (href && out.indexOf(href) < 0) out.push(href);
+  }
+  const abs = /(https?:\/\/eior\.by\/[^"'\\\s<>)\]]+\.mp4)/gi;
+  while ((m = abs.exec(text))) {
+    const href = m[1].replace(/&amp;/g, '&');
+    if (out.indexOf(href) < 0) out.push(href);
+  }
+  return out;
+}
+function collectOfficialVideos(page) {
+  const out = [];
+  function add(u) {
+    if (!u) return;
+    u = String(u).replace(/&amp;/g, '&').trim();
+    if (!/\.mp4(\?|#|$)/i.test(u)) return;
+    if (!/^https?:/i.test(u)) {
+      try { u = new URL(u, 'https://eior.by/').href; } catch (e) { return; }
+    }
+    if (out.indexOf(u) < 0) out.push(u);
+  }
+  (page.videos || []).forEach(add);
+  (page.links || []).forEach(function (l) { add(l && l.href); });
+  (page.images || []).forEach(function (img) {
+    if (/\/upload\/info-oso\//i.test(img) && /\.(jpe?g|png|webp)(\?|#|$)/i.test(img)) {
+      add(img.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '.mp4'));
+    }
+  });
+  pullMp4Urls(page.bodyText || '', page.source || 'https://eior.by/').forEach(add);
+  return out;
+}
 function parseHtmlPage(url, html) {
+  const rawVideos = pullMp4Urls(html, url);
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  ['script', 'style', 'noscript', 'iframe'].forEach(function (tag) {
+  const videos = rawVideos.slice();
+  doc.querySelectorAll('video, video source, source[src], a[href], iframe[src], [data-src], [data-file], [data-video]').forEach(function (el) {
+    const raw = el.getAttribute('src') || el.getAttribute('href') || el.getAttribute('data-src') || el.getAttribute('data-file') || el.getAttribute('data-video') || '';
+    const src = absUrl(raw, url);
+    if (src && /\.mp4(\?|#|$)/i.test(src) && videos.indexOf(src) < 0) videos.push(src);
+  });
+  ['script', 'style', 'noscript'].forEach(function (tag) {
     doc.querySelectorAll(tag).forEach(function (n) { n.remove(); });
   });
   const title = cleanText(doc.querySelector('h1, .pagetitle, title')?.textContent || '');
@@ -2850,23 +2940,26 @@ function parseHtmlPage(url, html) {
     if (!href || !sameOfficial(href) || seen[href]) return;
     const label = cleanText(a.getAttribute('title') || a.textContent);
     if (!label || label.length < 2 || label.length > 220) return;
-    if (/^(бел|рус|меню|главная|контакты|twitter|facebook|instagram|youtube)$/i.test(label)) return;
+    if (/^(бел|рус|меню|главная|контакты|twitter|facebook|instagram|youtube|video\s*\d*)$/i.test(label)) return;
     seen[href] = true;
     links.push({ href: href, title: label });
-  });
-  const videos = [];
-  doc.querySelectorAll('video source, video[src], a[href$=".mp4"]').forEach(function (el) {
-    const src = absUrl(el.getAttribute('src') || el.getAttribute('href'), url);
-    if (src && videos.indexOf(src) < 0) videos.push(src);
   });
   const images = [];
   doc.querySelectorAll('img[src]').forEach(function (img) {
     const src = absUrl(img.getAttribute('src'), url);
-    if (src && /upload|info-oso|\.jpg|\.jpeg|\.png|\.webp/i.test(src) && images.length < 6) images.push(src);
+    if (src && /upload|info-oso|\.jpg|\.jpeg|\.png|\.webp/i.test(src) && images.length < 8) images.push(src);
   });
+  if (!videos.length) {
+    images.forEach(function (img) {
+      if (/\/upload\/info-oso\//i.test(img) && /\.(jpe?g|png|webp)$/i.test(img)) {
+        const v = img.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '.mp4');
+        if (videos.indexOf(v) < 0) videos.push(v);
+      }
+    });
+  }
   const pdfs = links.filter(function (l) { return /\.pdf(\?|$)/i.test(l.href); });
-  const know = extractListAfter(doc, /знать|ведаць/i);
-  const can = extractListAfter(doc, /уметь|умець/i);
+  const know = extractListAfter(doc, /знать|ведаць|know/i);
+  const can = extractListAfter(doc, /уметь|умець|be able/i);
   let bodyText = '';
   const main = doc.querySelector('.content, #content, article, .item-page, .blog, .workarea, main') || doc.body;
   if (main) bodyText = cleanText(main.textContent).slice(0, 4000);
@@ -2917,19 +3010,25 @@ function parseMarkdownPage(url, md) {
     seen[href] = true;
     links.push({ href: href, title: label });
   }
-  const videos = [];
-  const vre = /(https?:\/\/eior\.by\/[^\s)]+\.mp4)/gi;
-  while ((m = vre.exec(md))) if (videos.indexOf(m[1]) < 0) videos.push(m[1]);
+  const videos = pullMp4Urls(md, url);
   const images = [];
-  const ire = /(https?:\/\/eior\.by\/upload\/[^\s)]+\.(?:jpg|jpeg|png|JPG))/g;
-  while ((m = ire.exec(md))) if (images.length < 6 && images.indexOf(m[1]) < 0) images.push(m[1]);
+  const ire = /(https?:\/\/eior\.by\/upload\/[^\s)]+\.(?:jpg|jpeg|png|JPG|webp))/g;
+  while ((m = ire.exec(md))) if (images.length < 8 && images.indexOf(m[1]) < 0) images.push(m[1]);
+  if (!videos.length) {
+    images.forEach(function (img) {
+      if (/\/upload\/info-oso\//i.test(img)) {
+        const v = img.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '.mp4');
+        if (videos.indexOf(v) < 0) videos.push(v);
+      }
+    });
+  }
   const know = [];
   const can = [];
   const lines = md.split('\n');
   let mode = '';
   lines.forEach(function (line) {
-    if (/^\s*знать\s*:?\s*$/i.test(line) || /\*\*Знать\*\*/i.test(line)) { mode = 'k'; return; }
-    if (/^\s*уметь\s*:?\s*$/i.test(line) || /\*\*Уметь\*\*/i.test(line)) { mode = 'c'; return; }
+    if (/^\s*знать\s*:?\s*$/i.test(line) || /\*\*Знать\*\*/i.test(line) || /^\s*know\s*:?\s*$/i.test(line)) { mode = 'k'; return; }
+    if (/^\s*уметь\s*:?\s*$/i.test(line) || /\*\*Уметь\*\*/i.test(line) || /^\s*be able to\s*:?\s*$/i.test(line)) { mode = 'c'; return; }
     if (/^\s*#{1,3}\s/.test(line) || /^[A-ZА-ЯЁ]/.test(line) && line.length < 40 && !/^-/.test(line)) {
       if (!/знать|уметь/i.test(line)) mode = '';
     }
@@ -2970,11 +3069,11 @@ const EIOR_SUBJECTS = [
   { id: 'belmova', name: 'Беларуская мова', slug: 'belmova', icon: 'fas fa-language', grades: [2,3,4,5,6,7,8,9,10,11] },
   { id: 'bellit', name: 'Беларуская літаратура', slug: 'bellit', icon: 'fas fa-feather', grades: [5,6,7,8,9,10,11] },
   { id: 'ruslit', name: 'Русская литература', slug: 'ruslit', icon: 'fas fa-book-open', grades: [5,6,7,8,9,10,11] },
-  { id: 'phisics', name: 'Физика', slug: 'phisics', icon: 'fas fa-atom', grades: [7,8,9,10,11] },
+  { id: 'phisics', name: 'Физика', slug: 'phythics', icon: 'fas fa-atom', grades: [7,8,9,10,11] },
   { id: 'himiya', name: 'Химия', slug: 'himiya', icon: 'fas fa-flask', grades: [7,8,9,10,11] },
-  { id: 'biology', name: 'Биология', slug: 'biology', icon: 'fas fa-dna', grades: [6,7,8,9,10,11] },
-  { id: 'history_by', name: 'История Беларуси', slug: 'history_of_belarus', icon: 'fas fa-landmark', grades: [5,6,7,8,9,10,11] },
-  { id: 'vsem_istoriya', name: 'Всемирная история', slug: 'vsem_istoriya', icon: 'fas fa-globe-europe', grades: [5,6,7,8,9,10,11] },
+  { id: 'biology', name: 'Биология', slug: 'bio', icon: 'fas fa-dna', grades: [6,7,8,9,10,11] },
+  { id: 'history_by', name: 'История Беларуси', slug: 'history_of_bel', icon: 'fas fa-landmark', grades: [5,6,7,8,9,10,11] },
+  { id: 'vsem_istoriya', name: 'Всемирная история', slug: 'history', icon: 'fas fa-globe-europe', grades: [5,6,7,8,9,10,11] },
   { id: 'obschestvo', name: 'Обществоведение', slug: 'obschestvo', icon: 'fas fa-balance-scale', grades: [9,10,11] },
   { id: 'geografia', name: 'География', slug: 'geografiya', icon: 'fas fa-map-marked-alt', grades: [6,7,8,9,10,11] },
   { id: 'informatika', name: 'Информатика', slug: 'informatick', icon: 'fas fa-laptop-code', grades: [6,7,8,9,10,11] },
@@ -3687,7 +3786,7 @@ const ADU_SECTIONS = ADU_CATS.map(function (c) {
 
 function getSubject(id) { return EIOR_SUBJECTS.find(function (s) { return s.id === id; }); }
 function subjectsForGrade(g) { return EIOR_SUBJECTS.filter(function (s) { return s.grades.indexOf(g) >= 0; }); }
-function topicKey(grade, slug, n) { return grade + ':' + slug + ':' + n; }
+function topicKey(grade, subjectId, n, slug) { return grade + ':' + subjectId + ':' + (slug || '') + ':' + n; }
 function isDone(key) { return !!officialProgress.done[key]; }
 function isFav(key) { return officialProgress.fav.indexOf(key) >= 0; }
 
@@ -3735,7 +3834,7 @@ function findAduCatByUrl(url) {
 }
 
 function openOfficial(reset) {
-  if (reset) officialState = { view: 'hub', grade: officialProgress.grade || 9, subject: null, topicN: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
+  if (reset) officialState = { view: 'hub', grade: officialProgress.grade || 9, subject: null, topicN: null, topicSlug: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
   renderOfficial();
   showPage('officialPage');
   warmupOfficial();
@@ -3787,7 +3886,7 @@ function refreshOfficial() {
     delete liveMem[url];
   }
   if (officialState.view === 'topics' && officialState.subject) {
-    const listUrl = 'list:' + officialState.grade + ':' + officialState.subject;
+    const listUrl = 'list3:' + officialState.grade + ':' + officialState.subject;
     try { localStorage.removeItem(cacheKey(listUrl)); } catch (e) {}
     delete liveMem[listUrl];
   }
@@ -4005,6 +4104,7 @@ function openOfficialSubject(grade, subjectId) {
   officialState.grade = grade;
   officialState.subject = subjectId;
   officialState.topicN = null;
+  officialState.topicSlug = null;
   officialState.view = 'topics';
   officialState.query = '';
   officialState.aduItem = null;
@@ -4030,7 +4130,7 @@ async function loadEiorTopicsLive() {
   const g = officialState.grade;
   const subj = getSubject(officialState.subject);
   if (!subj) return;
-  const listUrl = 'list:' + g + ':' + subj.id;
+  const listUrl = 'list3:' + g + ':' + subj.id;
   const instant = readCache(listUrl) || readStaleCache(listUrl);
   if (instant && Array.isArray(instant.data) && instant.data.length) {
     box.innerHTML = renderTopicList(g, subj, instant.data, instant);
@@ -4045,28 +4145,50 @@ async function loadEiorTopicsLive() {
   }
 }
 
+function topicSlugOf(tp, grade, subjectId) {
+  return (tp && tp.slug) || slugFor(grade, subjectId);
+}
 function renderTopicList(g, subj, topics, cached) {
   if (!topics.length) {
-    return '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-book-open"></i></div>' +
-      '<h3>На ЕИОР пока нет этой полки</h3><p>Предмет мог называться иначе или ещё не выложен для ' + g + ' класса.</p></div>' +
-      '<button class="btn btn-eior" onclick="openExternal(\'' + EIOR_CATALOG + '\')">Открыть каталог ЕИОР</button></div>';
+    return '<div class="card" style="text-align:center;padding:28px 18px;">' +
+      '<div class="loading-dots"><span></span><span></span><span></span></div>' +
+      '<p style="margin-top:12px;color:var(--text-secondary);font-size:13px;">Ищу полку «' + escapeHtml(subj.name) + '» на eior.by для ' + g + ' класса…</p>' +
+      '<button class="btn btn-eior" style="margin-top:12px" onclick="retryEiorTopics()">Повторить загрузку</button></div>';
   }
   let html = '<div class="section-label">' + topics.length + ' тем · ' + escapeHtml(subj.name) + ' · ' + g + ' класс</div>';
+  let lastGroup = null;
   topics.forEach(function (tp) {
-    const key = topicKey(g, subj.id, tp.n);
-    html += '<div class="topic-item' + (isDone(key) ? ' done' : '') + '" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + tp.n + ')">' +
+    const slug = topicSlugOf(tp, g, subj.id);
+    const group = EIOR_SLUG_LABELS[slug];
+    if (group && group !== lastGroup && wantsAllSlugs(g, subj.id)) {
+      html += '<div class="topic-group-title">' + escapeHtml(group) + '</div>';
+      lastGroup = group;
+    }
+    const key = topicKey(g, subj.id, tp.n, slug);
+    html += '<div class="topic-item' + (isDone(key) ? ' done' : '') + '" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + tp.n + ',\'' + slug + '\')">' +
       '<div class="topic-top"><h3>' + escapeHtml(tp.title) + '</h3>' + (isDone(key) ? '<div class="done-dot"></div>' : '') + '</div>' +
-      '<div class="topic-meta">урок ' + tp.n + '</div></div>';
+      '<div class="topic-meta">' + (group && wantsAllSlugs(g, subj.id) ? escapeHtml(group) + ' · ' : '') + 'урок ' + tp.n + '</div></div>';
   });
   return html;
 }
 
+function retryEiorTopics() {
+  const g = officialState.grade;
+  const id = officialState.subject;
+  if (!id) return;
+  const listUrl = 'list3:' + g + ':' + id;
+  try { localStorage.removeItem(cacheKey(listUrl)); } catch (e) {}
+  delete liveMem[listUrl];
+  renderOfficial();
+}
+
 async function listEiorTopics(grade, subjectId, force) {
-  const listUrl = 'list:' + grade + ':' + subjectId;
+  const listUrl = 'list3:' + grade + ':' + subjectId;
   if (!force) {
     const hit = readCache(listUrl) || readStaleCache(listUrl);
-    if (hit && Array.isArray(hit.data) && hit.data.length && hit.data.some(function (t) { return t.title && !/^Тема\s+\d+$/.test(t.title); })) {
-      if (hit.ts && Date.now() - hit.ts > LIVE_TTL) refreshLiveInBackground(EIOR_CATALOG);
+    if (hit && Array.isArray(hit.data) && hit.data.length && hit.data.some(function (t) {
+      return t && t.slug && t.title && !/^Тема\s+\d+$/.test(t.title);
+    })) {
       return hit.data;
     }
   }
@@ -4074,20 +4196,26 @@ async function listEiorTopics(grade, subjectId, force) {
     const fromCatalog = await topicsFromCatalogPage(grade, subjectId);
     if (fromCatalog && fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
   } catch (e) {}
-  const slug = await resolveEiorSlug(grade, subjectId);
-  if (slug) {
-    const probed = await probeEiorTopics(grade, slug, false);
-    if (probed.length) { writeCache(listUrl, probed); return probed; }
+  const slugs = await resolveAllEiorSlugs(grade, subjectId);
+  const merged = [];
+  const seen = {};
+  for (let i = 0; i < slugs.length; i++) {
+    const probed = await probeEiorTopics(grade, slugs[i], false);
+    probed.forEach(function (tp) {
+      const key = slugs[i] + ':' + tp.n;
+      if (seen[key]) return;
+      seen[key] = true;
+      merged.push({ n: tp.n, title: tp.title, slug: slugs[i] });
+    });
   }
-  return [];
+  if (merged.length) writeCache(listUrl, merged);
+  return merged;
 }
 
 async function topicsFromCatalogPage(grade, subjectId) {
   const page = await fetchLive(EIOR_CATALOG, false);
   if (page.offline) return [];
-  const subj = getSubject(subjectId);
-  if (!subj) return [];
-  const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
+  const aliases = slugsForGrade(grade, subjectId);
   const out = [];
   const seen = {};
   (page.links || []).forEach(function (l) {
@@ -4097,11 +4225,15 @@ async function topicsFromCatalogPage(grade, subjectId) {
     if (eiorClassSlug(grade) !== m[1] && !(grade === 1 && m[1] === '1class')) return;
     rememberSlug(grade, subjectId, m[2]);
     const n = parseInt(m[3], 10);
-    if (seen[n]) return;
-    seen[n] = true;
-    out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, '') });
+    const key = m[2] + ':' + n;
+    if (seen[key]) return;
+    seen[key] = true;
+    out.push({ n: n, title: l.title.replace(/^Тема\s*\d+\.?\s*/i, ''), slug: m[2] });
   });
-  out.sort(function (a, b) { return a.n - b.n; });
+  out.sort(function (a, b) {
+    if (a.slug !== b.slug) return aliases.indexOf(a.slug) - aliases.indexOf(b.slug);
+    return a.n - b.n;
+  });
   return out;
 }
 
@@ -4109,13 +4241,19 @@ async function probeEiorTopics(grade, slug, abortFast) {
   const found = [];
   let n = 1;
   let miss = 0;
+  let usedQuick = true;
   while (n <= 90 && miss < 4) {
     const batch = [];
     for (let i = 0; i < 4; i++) batch.push(n + i);
-    const parts = await Promise.all(batch.map(function (num) { return peekEiorTopic(grade, slug, num); }));
-    let any = false;
+    let parts = await Promise.all(batch.map(function (num) { return peekEiorTopic(grade, slug, num, usedQuick); }));
+    let any = parts.some(Boolean);
+    if (!any && n === 1 && usedQuick) {
+      usedQuick = false;
+      parts = await Promise.all(batch.map(function (num) { return peekEiorTopic(grade, slug, num, false); }));
+      any = parts.some(Boolean);
+    }
     parts.forEach(function (item) {
-      if (item) { found.push(item); miss = 0; any = true; }
+      if (item) { found.push(item); miss = 0; }
       else miss++;
     });
     if (abortFast && !any && n === 1) throw new Error('Сайт ЕИОР временно не отвечает. Попробуйте ещё раз.');
@@ -4130,33 +4268,33 @@ async function probeEiorTopics(grade, slug, abortFast) {
   return found;
 }
 
-async function peekEiorTopic(grade, slug, n) {
+async function peekEiorTopic(grade, slug, n, quick) {
   const url = eiorTopicUrl(grade, slug, n);
   try {
-    const page = await fetchLive(url, false, true);
+    const page = await fetchLive(url, false, quick !== false);
     if (page.offline) return null;
     const t = cleanText(page.title || '');
-    if (/^(404|not found|ошибка 404|страница не найдена|не найдено)/i.test(t)) return null;
-    // Заголовок-заглушка (страница без настоящего заголовка) — не тема
-    if (t === hostLabel(url) && !page.know.length && !page.videos.length && !page.images.length) return null;
-    const hasMedia = page.know.length || page.can.length || page.videos.length || page.images.length;
+    if (/^(404|not found|ошибка 404|страница не найдена|не найдено)$/i.test(t)) return null;
+    const videos = collectOfficialVideos(page);
+    const hasMedia = (page.know && page.know.length) || (page.can && page.can.length) || videos.length || (page.images && page.images.length);
+    if (t === hostLabel(url) && !hasMedia) return null;
     if (!t && !hasMedia) return null;
     if (!hasMedia && (page.bodyText || '').length < 150) return null;
-    return { n: n, title: t.replace(/\s*[–—-]\s*ЕИОР.*$/i, '') || ('Тема ' + n) };
+    return { n: n, title: t.replace(/\s*[–—-]\s*ЕИОР.*$/i, '') || ('Тема ' + n), slug: slug };
   } catch (e) {
     return null;
   }
 }
 
-function openOfficialTopicN(grade, subjectId, n) {
+function openOfficialTopicN(grade, subjectId, n, slug) {
   officialState.grade = grade;
   officialState.subject = subjectId;
   officialState.topicN = n;
+  officialState.topicSlug = slug || slugFor(grade, subjectId);
   officialState.view = 'topic';
   officialState.query = '';
   officialState.aduItem = null;
-  const subj = getSubject(subjectId);
-  officialState.url = subj ? eiorTopicUrl(grade, slugFor(grade, subjectId), n) : '';
+  officialState.url = officialState.topicSlug ? eiorTopicUrl(grade, officialState.topicSlug, n) : '';
   renderOfficial();
 }
 
@@ -4189,7 +4327,13 @@ prefetchOfficialMedia.seen = {};
 function officialVideoHtml(src, poster) {
   prefetchOfficialMedia(src);
   const posterAttr = poster ? ' poster="' + poster + '"' : '';
-  return '<div class="off-video-wrap"><video class="off-video" controls preload="auto" playsinline webkit-playsinline' + posterAttr + ' src="' + src + '"></video></div>';
+  const sources = [
+    src,
+    'https://web.archive.org/web/2026id_/' + src
+  ].map(function (u) {
+    return '<source src="' + u + '" type="video/mp4">';
+  }).join('');
+  return '<div class="off-video-wrap"><video class="off-video" controls preload="metadata" playsinline webkit-playsinline' + posterAttr + '>' + sources + '</video></div>';
 }
 
 async function loadEiorTopicLive() {
@@ -4199,25 +4343,29 @@ async function loadEiorTopicLive() {
   const subj = getSubject(officialState.subject);
   const n = officialState.topicN;
   if (!subj || !n) return;
-  let url = eiorTopicUrl(g, slugFor(g, subj.id), n);
+  const slug = officialState.topicSlug || slugFor(g, subj.id);
+  officialState.topicSlug = slug;
+  let url = eiorTopicUrl(g, slug, n);
   officialState.url = url;
   const instant = readCache(url) || readStaleCache(url);
   if (instant && instant.data && !instant.data.offline) {
     officialState.page = instant.data;
     box.innerHTML = renderTopicPage(g, subj, n, instant.data);
-    if (instant.data.videos && instant.data.videos[0]) prefetchOfficialMedia(instant.data.videos[0]);
+    const vids = collectOfficialVideos(instant.data);
+    if (vids[0]) prefetchOfficialMedia(vids[0]);
   }
   try {
     let page = await fetchLive(url, false);
     const bad = !page || page.offline || !page.title || /^(404|not found|ошибка 404|страница не найдена|ЕИОР)$/i.test(page.title);
     if (bad) {
-      const aliases = EIOR_SLUG_ALIASES[subj.id] || [subj.slug];
+      const aliases = slugsForGrade(g, subj.id);
       for (let i = 0; i < aliases.length; i++) {
-        if (aliases[i] === slugFor(g, subj.id)) continue;
+        if (aliases[i] === slug) continue;
         const alt = eiorTopicUrl(g, aliases[i], n);
         const next = await fetchLive(alt, false);
         if (next && !next.offline && next.title && !/^(404|not found|ошибка 404|страница не найдена|ЕИОР)$/i.test(next.title)) {
           rememberSlug(g, subj.id, aliases[i]);
+          officialState.topicSlug = aliases[i];
           url = alt;
           officialState.url = alt;
           page = next;
@@ -4228,8 +4376,9 @@ async function loadEiorTopicLive() {
     if (document.getElementById('officialLiveBody') !== box) return;
     officialState.page = page;
     box.innerHTML = renderTopicPage(g, subj, n, page);
-    if (page.videos && page.videos[0]) prefetchOfficialMedia(page.videos[0]);
-    prefetchEiorNeighbor(g, subj.id, n + 1);
+    const vids = collectOfficialVideos(page);
+    if (vids[0]) prefetchOfficialMedia(vids[0]);
+    prefetchEiorNeighbor(g, subj.id, n + 1, officialState.topicSlug);
   } catch (e) {
     if (document.getElementById('officialLiveBody') !== box) return;
     if (instant && instant.data && !instant.data.offline) return;
@@ -4238,34 +4387,42 @@ async function loadEiorTopicLive() {
     box.innerHTML = renderTopicPage(g, subj, n, page);
   }
 }
-function prefetchEiorNeighbor(grade, subjectId, n) {
+function prefetchEiorNeighbor(grade, subjectId, n, slug) {
   try {
-    const url = eiorTopicUrl(grade, slugFor(grade, subjectId), n);
+    const url = eiorTopicUrl(grade, slug || slugFor(grade, subjectId), n);
     fetchLive(url, false, true).then(function (page) {
-      if (page && page.videos && page.videos[0]) prefetchOfficialMedia(page.videos[0]);
+      const vids = collectOfficialVideos(page || {});
+      if (vids[0]) prefetchOfficialMedia(vids[0]);
     }).catch(function () {});
   } catch (e) {}
 }
 
 function renderTopicPage(g, subj, n, page) {
-  const key = topicKey(g, subj.id, n);
-  const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
+  const slug = officialState.topicSlug || slugFor(g, subj.id);
+  const key = topicKey(g, subj.id, n, slug);
+  const url = eiorTopicUrl(g, slug, n);
+  const videos = collectOfficialVideos(page);
+  page.videos = videos;
   let media = '';
-  if (page.videos && page.videos[0]) {
-    media += officialVideoHtml(page.videos[0], page.images && page.images[0]);
-  } else if (page.images && page.images[0]) {
+  if (videos[0]) {
+    media += officialVideoHtml(videos[0], page.images && page.images[0]);
+  } else if (page.images && page.images[0] && !/btn-trg|cld-t|house_icon|vv\.png/i.test(page.images[0])) {
     media += '<img class="off-video" alt="" src="' + page.images[0] + '">';
   }
   const know = page.know && page.know.length ? '<div class="know-box"><strong>Знать</strong><ul>' + listHtml(page.know) + '</ul></div>' : '';
   const can = page.can && page.can.length ? '<div class="can-box"><strong>Уметь</strong><ul>' + listHtml(page.can) + '</ul></div>' : '';
   const extraLinks = (page.links || []).filter(function (l) {
-    return /\.pdf|books|upload/i.test(l.href) && !/catalog_lecture/i.test(l.href);
+    if (!l || !l.href) return false;
+    if (/\.mp4(\?|#|$)/i.test(l.href)) return false;
+    if (/video\s*\d*/i.test(l.title || '')) return false;
+    return /\.pdf|books/i.test(l.href + ' ' + (l.title || '')) && !/catalog_lecture/i.test(l.href);
   }).slice(0, 6).map(function (l) {
     return '<button class="adu-item" onclick="openExternal(\'' + l.href + '\')"><div class="adu-ico"><i class="fas fa-file"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>файл с ЕИОР</p></div></button>';
   }).join('');
+  const group = EIOR_SLUG_LABELS[slug];
   return '<div class="topic-hero">' +
     '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;">' +
-      '<div class="meta">' + escapeHtml(subj.name) + ' · ' + g + ' класс · урок ' + n + '</div>' +
+      '<div class="meta">' + escapeHtml(subj.name) + (group ? ' · ' + escapeHtml(group) : '') + ' · ' + g + ' класс · урок ' + n + '</div>' +
       '<button class="fav-btn' + (isFav(key) ? ' on' : '') + '" onclick="toggleOfficialFav(\'' + key + '\')"><i class="fas fa-star"></i></button></div>' +
     '<h2>' + escapeHtml(page.title) + '</h2></div>' +
     media + know + can + extraLinks +
@@ -4275,8 +4432,8 @@ function renderTopicPage(g, subj, n, page) {
       '<button class="btn btn-secondary" onclick="summaryLivePage()"><i class="fas fa-book"></i> Конспект</button>' +
       '<button class="btn btn-secondary" onclick="practiceLivePage()"><i class="fas fa-check-circle"></i> Тренировочный тест</button>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
-        (n > 1 ? '<button class="btn btn-secondary" style="margin-top:0" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + (n - 1) + ')"><i class="fas fa-arrow-left"></i> Предыдущая</button>' : '<span></span>') +
-        '<button class="btn btn-secondary" style="margin-top:0" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + (n + 1) + ')">Следующая <i class="fas fa-arrow-right"></i></button>' +
+        (n > 1 ? '<button class="btn btn-secondary" style="margin-top:0" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + (n - 1) + ',\'' + slug + '\')"><i class="fas fa-arrow-left"></i> Предыдущая</button>' : '<span></span>') +
+        '<button class="btn btn-secondary" style="margin-top:0" onclick="openOfficialTopicN(' + g + ',\'' + officialState.subject + '\',' + (n + 1) + ',\'' + slug + '\')">Следующая <i class="fas fa-arrow-right"></i></button>' +
       '</div>' +
       '<button class="btn btn-secondary" onclick="toggleOfficialDone(\'' + key + '\')"><i class="fas fa-check"></i> ' + (isDone(key) ? 'Снять отметку' : 'Отметить пройденной') + '</button>' +
     '</div>';
@@ -4347,7 +4504,7 @@ function renderBrowsePage(page) {
     }).join('');
   }
   const contentLinks = (page.links || []).filter(function (l) {
-    return l.title.length > 8 && !/меню|контакты|twitter|facebook/i.test(l.title);
+    return l.title && l.title.length > 8 && !/меню|контакты|twitter|facebook|video\s*\d*/i.test(l.title) && !/\.mp4(\?|#|$)/i.test(l.href);
   }).slice(0, 40);
   const items = contentLinks.map(function (l) {
     const inner = sameOfficial(l.href);
@@ -4355,7 +4512,7 @@ function renderBrowsePage(page) {
     return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="fas fa-file-lines"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 60)) + '</p></div></button>';
   }).join('');
   let media = '';
-  (page.videos || []).slice(0, 2).forEach(function (v) {
+  collectOfficialVideos(page).slice(0, 2).forEach(function (v) {
     media += officialVideoHtml(v, page.images && page.images[0]);
   });
   return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + '</div>' +
