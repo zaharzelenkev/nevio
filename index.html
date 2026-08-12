@@ -2883,38 +2883,50 @@ function cleanText(s) {
   return String(s || '').replace(/\s+/g, ' ').trim();
 }
 
+function canonEiorUrl(u) {
+  if (!u) return '';
+  u = String(u).replace(/&amp;/g, '&').trim();
+  const up = u.match(/\/upload\/[^?#\s"'<>]+/i);
+  if (up) return 'https://eior.by' + up[0];
+  return u.replace(/^https?:\/\/web\.archive\.org\/web\/[^/]+\/(https?:\/\/eior\.by\/)/i, '$1');
+}
+function eiorPoster(page) {
+  const imgs = (page && page.images) || [];
+  for (let i = 0; i < imgs.length; i++) {
+    const u = canonEiorUrl(imgs[i]);
+    if (/\/upload\/info-oso\//i.test(u) && /\.(jpe?g|png|webp)(\?|#|$)/i.test(u)) return u;
+  }
+  return '';
+}
 function pullMp4Urls(text, base) {
   const out = [];
   if (!text) return out;
-  const re = /(?:https?:\/\/eior\.by)?\/upload\/[^"'\\\s<>)\]]+\.mp4/gi;
+  const re = /(?:https?:\/\/(?:eior\.by|web\.archive\.org)[^"'\\\s<>)\]]*)?\/upload\/[^"'\\\s<>)\]]+\.mp4/gi;
   let m;
   while ((m = re.exec(text))) {
-    const href = absUrl(m[0].replace(/&amp;/g, '&'), base || 'https://eior.by/');
+    const href = canonEiorUrl(absUrl(m[0].replace(/&amp;/g, '&'), base || 'https://eior.by/'));
     if (href && out.indexOf(href) < 0) out.push(href);
   }
   const abs = /(https?:\/\/eior\.by\/[^"'\\\s<>)\]]+\.mp4)/gi;
   while ((m = abs.exec(text))) {
-    const href = m[1].replace(/&amp;/g, '&');
-    if (out.indexOf(href) < 0) out.push(href);
+    const href = canonEiorUrl(m[1]);
+    if (href && out.indexOf(href) < 0) out.push(href);
   }
   return out;
 }
 function collectOfficialVideos(page) {
   const out = [];
   function add(u) {
-    if (!u) return;
-    u = String(u).replace(/&amp;/g, '&').trim();
-    if (!/\.mp4(\?|#|$)/i.test(u)) return;
-    if (!/^https?:/i.test(u)) {
-      try { u = new URL(u, 'https://eior.by/').href; } catch (e) { return; }
-    }
+    u = canonEiorUrl(u);
+    if (!u || !/\.mp4(\?|#|$)/i.test(u)) return;
     if (out.indexOf(u) < 0) out.push(u);
   }
   (page.videos || []).forEach(add);
   (page.links || []).forEach(function (l) { add(l && l.href); });
   (page.images || []).forEach(function (img) {
-    if (/\/upload\/info-oso\//i.test(img) && /\.(jpe?g|png|webp)(\?|#|$)/i.test(img)) {
-      add(img.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '.mp4'));
+    const u = canonEiorUrl(img);
+    if (/\/upload\/info-oso\//i.test(u) && /\.(jpe?g|png|webp)(\?|#|$)/i.test(u)) {
+      add(u.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '.mp4'));
     }
   });
   pullMp4Urls(page.bodyText || '', page.source || 'https://eior.by/').forEach(add);
@@ -2946,7 +2958,7 @@ function parseHtmlPage(url, html) {
   });
   const images = [];
   doc.querySelectorAll('img[src]').forEach(function (img) {
-    const src = absUrl(img.getAttribute('src'), url);
+    const src = canonEiorUrl(absUrl(img.getAttribute('src'), url));
     if (src && /upload|info-oso|\.jpg|\.jpeg|\.png|\.webp/i.test(src) && images.length < 8) images.push(src);
   });
   if (!videos.length) {
@@ -3012,8 +3024,11 @@ function parseMarkdownPage(url, md) {
   }
   const videos = pullMp4Urls(md, url);
   const images = [];
-  const ire = /(https?:\/\/eior\.by\/upload\/[^\s)]+\.(?:jpg|jpeg|png|JPG|webp))/g;
-  while ((m = ire.exec(md))) if (images.length < 8 && images.indexOf(m[1]) < 0) images.push(m[1]);
+  const ire = /((?:https?:\/\/[^\s)]+)?\/upload\/[^\s)]+\.(?:jpg|jpeg|png|JPG|webp))/g;
+  while ((m = ire.exec(md))) {
+    const src = canonEiorUrl(m[1]);
+    if (src && images.length < 8 && images.indexOf(src) < 0) images.push(src);
+  }
   if (!videos.length) {
     images.forEach(function (img) {
       if (/\/upload\/info-oso\//i.test(img)) {
@@ -4404,10 +4419,11 @@ function renderTopicPage(g, subj, n, page) {
   const videos = collectOfficialVideos(page);
   page.videos = videos;
   let media = '';
+  const poster = eiorPoster(page);
   if (videos[0]) {
-    media += officialVideoHtml(videos[0], page.images && page.images[0]);
-  } else if (page.images && page.images[0] && !/btn-trg|cld-t|house_icon|vv\.png/i.test(page.images[0])) {
-    media += '<img class="off-video" alt="" src="' + page.images[0] + '">';
+    media += officialVideoHtml(videos[0], poster);
+  } else if (poster) {
+    media += officialVideoHtml(poster.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '.mp4'), poster);
   }
   const know = page.know && page.know.length ? '<div class="know-box"><strong>Знать</strong><ul>' + listHtml(page.know) + '</ul></div>' : '';
   const can = page.can && page.can.length ? '<div class="can-box"><strong>Уметь</strong><ul>' + listHtml(page.can) + '</ul></div>' : '';
@@ -4513,7 +4529,7 @@ function renderBrowsePage(page) {
   }).join('');
   let media = '';
   collectOfficialVideos(page).slice(0, 2).forEach(function (v) {
-    media += officialVideoHtml(v, page.images && page.images[0]);
+    media += officialVideoHtml(v, eiorPoster(page));
   });
   return '<div class="topic-hero"><div class="meta">' + escapeHtml(hostLabel(officialState.url)) + '</div>' +
     '<h2>' + escapeHtml(page.title) + '</h2>' +
