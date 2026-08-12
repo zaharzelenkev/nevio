@@ -868,6 +868,10 @@
     .stat-pill b { display:block; font-size:18px; color:var(--gold); }
     .stat-pill span { font-size:11px; color:var(--text-secondary); }
     .off-video { width:100%; border-radius:16px; margin:0 0 12px; background:#111; max-height:220px; object-fit:contain; }
+    .off-frame {
+      width:100%; height:68vh; min-height:420px; border:0; border-radius:16px; margin:0 0 12px;
+      background:var(--surface); box-shadow:inset 0 0 0 1.5px var(--border);
+    }
   </style>
 </head>
 <body>
@@ -2654,12 +2658,7 @@ function readStaleCache(url) {
 async function fetchLive(url, force, quick) {
   if (!force) {
     const hit = readCache(url);
-    if (hit) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
-  }
-  if (/adu\.by|olimp\.adu\.by|e-padruchnik/i.test(url || '')) {
-    const page = syntheticOfficialPage(url);
-    writeCache(url, page);
-    return Object.assign({ cached: false, age: 0, offline: true }, page);
+    if (hit && !hit.data.offline) return Object.assign({ cached: true, age: Date.now() - hit.ts }, hit.data);
   }
   let lastErr = 'нет ответа';
   for (let gi = 0; gi < LIVE_PROXY_GROUPS.length; gi++) {
@@ -3124,7 +3123,7 @@ async function loadEiorTopicsLive() {
     const cached = readCache(listUrl);
     box.innerHTML = renderTopicList(g, subj, topics, cached);
   } catch (e) {
-    box.innerHTML = renderTopicList(g, subj, fallbackTopicList(40), null);
+    box.innerHTML = renderTopicList(g, subj, [], null);
   }
 }
 
@@ -3148,17 +3147,20 @@ async function listEiorTopics(grade, subjectId, force) {
   const listUrl = 'list:' + grade + ':' + subjectId;
   if (!force) {
     const hit = readCache(listUrl);
-    if (hit && Array.isArray(hit.data) && hit.data.length) return hit.data;
+    if (hit && Array.isArray(hit.data) && hit.data.length && hit.data.some(function (t) { return t.title && !/^Тема\s+\d+$/.test(t.title); })) {
+      return hit.data;
+    }
   }
-  const subj = getSubject(subjectId);
-  if (subj && !slugMem[slugKey(grade, subjectId)]) {
-    const aliases = EIOR_SLUG_ALIASES[subjectId] || [subj.slug];
-    const preferred = (subjectId === 'math' && grade >= 7) ? 'algebra' : aliases[0];
-    rememberSlug(grade, subjectId, preferred);
+  try {
+    const fromCatalog = await topicsFromCatalogPage(grade, subjectId);
+    if (fromCatalog && fromCatalog.length) { writeCache(listUrl, fromCatalog); return fromCatalog; }
+  } catch (e) {}
+  const slug = await resolveEiorSlug(grade, subjectId);
+  if (slug) {
+    const probed = await probeEiorTopics(grade, slug, false);
+    if (probed.length) { writeCache(listUrl, probed); return probed; }
   }
-  const fallback = fallbackTopicList(40);
-  writeCache(listUrl, fallback);
-  return fallback;
+  return [];
 }
 
 async function topicsFromCatalogPage(grade, subjectId) {
@@ -3259,14 +3261,30 @@ async function loadEiorTopicLive() {
   const subj = getSubject(officialState.subject);
   const n = officialState.topicN;
   if (!subj || !n) return;
-  const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
+  let url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   officialState.url = url;
   try {
-    const page = await fetchLive(url, false);
+    let page = await fetchLive(url, false);
+    const bad = !page || page.offline || !page.title || /^(404|not found|ошибка 404|страница не найдена|ЕИОР)$/i.test(page.title);
+    if (bad) {
+      const aliases = EIOR_SLUG_ALIASES[subj.id] || [subj.slug];
+      for (let i = 0; i < aliases.length; i++) {
+        if (aliases[i] === slugFor(g, subj.id)) continue;
+        const alt = eiorTopicUrl(g, aliases[i], n);
+        const next = await fetchLive(alt, false);
+        if (next && !next.offline && next.title && !/^(404|not found|ошибка 404|страница не найдена|ЕИОР)$/i.test(next.title)) {
+          rememberSlug(g, subj.id, aliases[i]);
+          url = alt;
+          officialState.url = alt;
+          page = next;
+          break;
+        }
+      }
+    }
     officialState.page = page;
     box.innerHTML = renderTopicPage(g, subj, n, page);
   } catch (e) {
-    const page = syntheticOfficialPage(url);
+    const page = Object.assign(syntheticOfficialPage(url), { embed: url });
     officialState.page = page;
     box.innerHTML = renderTopicPage(g, subj, n, page);
   }
@@ -3276,7 +3294,9 @@ function renderTopicPage(g, subj, n, page) {
   const key = topicKey(g, subj.id, n);
   const url = eiorTopicUrl(g, slugFor(g, subj.id), n);
   let media = '';
-  if (page.videos && page.videos[0]) {
+  if (page.embed) {
+    media += '<iframe class="off-frame" src="' + page.embed + '" title="' + escapeHtml(page.title || '') + '" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+  } else if (page.videos && page.videos[0]) {
     media += '<video class="off-video" controls preload="metadata" src="' + page.videos[0] + '"></video>';
   } else if (page.images && page.images[0]) {
     media += '<img class="off-video" alt="" src="' + page.images[0] + '">';
@@ -3336,11 +3356,22 @@ async function loadBrowseLive() {
   const box = document.getElementById('officialLiveBody');
   if (!box || !officialState.url) return;
   try {
+    if (/adu\.by|olimp\.adu\.by|e-padruchnik/i.test(officialState.url)) {
+      const page = Object.assign(syntheticOfficialPage(officialState.url), {
+        embed: officialState.url,
+        offline: false,
+        bodyText: ''
+      });
+      officialState.page = page;
+      box.innerHTML = renderBrowsePage(page);
+      return;
+    }
     const page = await fetchLive(officialState.url, false);
+    if (page.offline) page.embed = officialState.url;
     officialState.page = page;
     box.innerHTML = renderBrowsePage(page);
   } catch (e) {
-    const page = syntheticOfficialPage(officialState.url);
+    const page = Object.assign(syntheticOfficialPage(officialState.url), { embed: officialState.url });
     officialState.page = page;
     box.innerHTML = renderBrowsePage(page);
   }
@@ -3363,6 +3394,9 @@ function renderBrowsePage(page) {
     return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="fas fa-file-lines"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 60)) + '</p></div></button>';
   }).join('');
   let media = '';
+  if (page.embed) {
+    media += '<iframe class="off-frame" src="' + page.embed + '" title="' + escapeHtml(page.title || '') + '" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+  }
   (page.videos || []).slice(0, 2).forEach(function (v) {
     media += '<video class="off-video" controls preload="metadata" src="' + v + '"></video>';
   });
