@@ -1108,12 +1108,16 @@ if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
 // API КЛЮЧ И МОДЕЛИ (бесплатные)
 const OPENROUTER_API_KEY = "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";
+// ВАЖНО: только бесплатные модели (нулевая стоимость токенов).
+// НЕ добавляйте сюда "openrouter/auto" — этот роутер выбирает и из платных
+// моделей и тарифицируется по цене выбранной модели (в т.ч. "openrouter/auto:free").
+// "openrouter/free" — роутер, который выбирает только среди бесплатных моделей.
 const OPENROUTER_MODELS = [
-  "openrouter/auto",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "qwen/qwen3-30b-a3b:free",
-  "nvidia/nemotron-4-340b-instruct:free",
-  "deepseek/deepseek-prover-v2:free"
+  "openrouter/free",
+  "google/gemma-4-31b-it:free",
+  "google/gemma-4-26b-a4b-it:free",
+  "nvidia/nemotron-3-super-120b-a12b:free",
+  "openai/gpt-oss-20b:free"
 ];
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
