@@ -34,14 +34,19 @@ NEVIO использует **MathJax 3** для рендеринга LaTeX-фо�
 
 ### 🔄 Авто-резервирование моделей
 ```
-OpenRouter (бесплатные модели):
-├── openrouter/auto
-├── meta-llama/llama-3.3-70b-instruct:free
-├── qwen/qwen3-30b-a3b:free
-├── nvidia/nemotron-4-340b-instruct:free
-└── deepseek/deepseek-prover-v2:free
+OpenRouter (только бесплатные модели):
+├── openrouter/free                        ← роутер по бесплатным моделям
+├── google/gemma-4-31b-it:free
+├── google/gemma-4-26b-a4b-it:free
+├── nvidia/nemotron-3-super-120b-a12b:free
+└── openai/gpt-oss-20b:free
 ```
 При недоступности одной модели — автоматическое переключение на следующую.
+
+> ⚠️ Не используйте `openrouter/auto`: этот роутер выбирает модель в том числе
+> из платных и тарифицируется по цене выбранной модели. Суффикс `:free` на роутер
+> не действует — `openrouter/auto:free` тоже платный. Для нулевой стоимости
+> используйте `openrouter/free` или конкретные модели с суффиксом `:free`.
 
 ### 🏆 Архитектура для конкурса
 
