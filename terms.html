@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Условия использования — NEVIO</title>
-  <meta name="description" content="Условия использования образовательного сервиса NEVIO">
+  <meta name="description" content="Условия использования образовательного сервиса NEVIO для Беларуси, России, Казахстана и Узбекистана">
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
   <style>
@@ -20,7 +20,7 @@
       background:linear-gradient(135deg,#f5cc6e,#e8b13e 55%,#c4911a);
       -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .updated { font-size:12.5px; color:#A39E91; margin-bottom:22px; }
+    .updated { font-size:12.5px; color:#A39E91; margin-bottom:14px; }
     .card {
       background:#FFFFFF; border:1.5px solid #EAE7DD; border-radius:20px;
       padding:26px 24px; box-shadow:0 8px 24px rgba(28,27,23,0.05);
@@ -30,8 +30,30 @@
     .card p { margin-bottom:12px; color:#6E6A61; }
     .card p strong { color:#1C1B17; }
     .card p em { color:#A39E91; }
+    .card ul { margin:0 0 12px 20px; color:#6E6A61; }
+    .card li { margin-bottom:6px; }
     a { color:#c4911a; }
     .footer { margin-top:26px; text-align:center; font-size:12px; color:#A39E91; }
+
+    .country-switch { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 18px; }
+    .country-chip {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#FFFFFF; border:1.5px solid #EAE7DD; border-radius:999px;
+      padding:6px 14px; font-size:13px; font-weight:600; color:#6E6A61;
+      cursor:pointer; transition:all 0.2s; font-family:inherit;
+    }
+    .country-chip:hover { border-color:#e8b13e; color:#1C1B17; }
+    .country-chip.active { border-color:#e8b13e; background:rgba(232,177,62,0.08); color:#c4911a; font-weight:700; }
+    .juris {
+      background:rgba(232,177,62,0.06); border:1.5px solid rgba(232,177,62,0.3);
+      border-left:4px solid #e8b13e; border-radius:12px;
+      padding:12px 16px; margin-bottom:14px;
+    }
+    .juris p { margin-bottom:6px; }
+    .juris p:last-child { margin-bottom:0; }
+    .juris .j-title { font-weight:800; color:#c4911a; font-size:13.5px; margin-bottom:4px; }
+    [data-juris] { display:none; }
+    [data-juris].show { display:block; }
     @media (prefers-color-scheme: dark) {
       body { background:#15130e; color:#EDEAE2; }
       .card { background:#1e1b14; border-color:#2c281d; box-shadow:0 8px 24px rgba(0,0,0,0.35); }
@@ -39,34 +61,71 @@
       .card p { color:#b5b0a3; }
       .card p strong { color:#EDEAE2; }
       .card p em { color:#7d786c; }
+      .card ul { color:#b5b0a3; }
+      .country-chip { background:#1e1b14; border-color:#2c281d; color:#b5b0a3; }
+      .country-chip.active { color:#e8b13e; border-color:#e8b13e; }
+      .juris { background:rgba(232,177,62,0.05); border-color:rgba(232,177,62,0.25); }
+      .juris .j-title { color:#e8b13e; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="logo">NEVIO</div>
-    <div class="updated">Редакция от 12 августа 2026 г.</div>
+    <div class="updated">Редакция от 14 августа 2026 г. · Действует для Беларуси, России, Казахстана и Узбекистана</div>
+
+    <div class="country-switch" id="countrySwitch" role="tablist" aria-label="Выбор страны">
+      <button class="country-chip" data-country="BY" role="tab">🇧🇾 Беларусь</button>
+      <button class="country-chip" data-country="RU" role="tab">🇷🇺 Россия</button>
+      <button class="country-chip" data-country="KZ" role="tab">🇰🇿 Казахстан</button>
+      <button class="country-chip" data-country="UZ" role="tab">🇺🇿 Узбекистан</button>
+    </div>
+
     <div class="card">
       <h1>Условия использования</h1>
-      <p><em>Настоящие условия действуют в отношении сервиса NEVIO — образовательного помощника для школьников и педагогов Беларуси (Telegram Mini App и веб-приложение).</em></p>
+      <p><em>Настоящие условия действуют в отношении сервиса NEVIO — образовательного ИИ-помощника для школьников, студентов и педагогов Беларуси, России, Казахстана и Узбекистана (Telegram Mini App и веб-приложение). Разделы, отмеченные значком страны, дополняют общий текст положениями соответствующей юрисдикции.</em></p>
 
       <h2>1. Общие положения</h2>
       <p>Используя NEVIO, вы соглашаетесь с настоящими условиями. Если вы не согласны с ними, пожалуйста, не используйте сервис.</p>
 
       <h2>2. Описание сервиса</h2>
-      <p>NEVIO — бесплатный образовательный помощник: объяснение тем, подготовка к ЦТ/ЦЭ, интерактивные тесты, конспекты и доступ к официальным образовательным ресурсам Беларуси (ЕИОР, Аду.бай). Сервис работает как Telegram Mini App и веб-приложение.</p>
+      <p>NEVIO — бесплатный образовательный помощник: объяснение тем, решение задач, проверка решений по критериям экзаменов, интерактивные тесты, конспекты, прогресс и рекомендации, режим учителя (классы, задания, аналитика) и доступ к официальным образовательным ресурсам. Контент подстраивается под выбранную страну:</p>
+      <ul>
+        <li><strong>🇧🇾 Беларусь:</strong> подготовка к ЦТ/ЦЭ и экзаменам после 9 класса, ресурсы ЕИОР и Аду.бай;</li>
+        <li><strong>🇷🇺 Россия:</strong> подготовка к ЕГЭ и ОГЭ (форматы и критерии ФИПИ);</li>
+        <li><strong>🇰🇿 Казахстан:</strong> подготовка к ЕНТ и итоговым экзаменам после 9 класса (формат Национального центра тестирования);</li>
+        <li><strong>🇺🇿 Узбекистан:</strong> подготовка к вступительным тестам и выпускным экзаменам после 9 класса.</li>
+      </ul>
+      <p>Сервис работает как Telegram Mini App и как веб-приложение; это одна и та же логика, поэтому условия распространяются на обе формы.</p>
 
       <h2>3. Кто может пользоваться сервисом</h2>
-      <p>Сервис предназначен для учащихся и педагогов. Несовершеннолетние используют NEVIO под контролем родителей или педагогов.</p>
+      <p>Сервис предназначен для учащихся, студентов и педагогов. Несовершеннолетние используют NEVIO под контролем родителей или педагогов.</p>
 
       <h2>4. Правила использования</h2>
-      <p>Запрещается: нарушать законодательство Республики Беларусь; использовать сервис для размещения незаконного или вредоносного контента; пытаться нарушить работу сервиса или получить несанкционированный доступ; использовать сервис для массовых рассылок и спама; копировать или перепродавать сервис без разрешения разработчика.</p>
+      <p>Запрещается: нарушать законодательство страны пользователя и нормы, применимые к сервису; использовать сервис для размещения незаконного или вредоносного контента; пытаться нарушить работу сервиса или получить несанкционированный доступ; использовать сервис для массовых рассылок и спама; копировать или перепродавать сервис без разрешения разработчика.</p>
+      <p>Форматы экзаменов и критерии в сервисе являются справочной информацией и могут меняться; перед важными решениями сверяйтесь с официальными источниками (раздел 6).</p>
 
       <h2>5. Ответственность за контент ИИ</h2>
-      <p>Ответы генерируются ИИ-моделями и могут содержать неточности. Важную информацию всегда сверяйте с официальными источниками: учебниками, учителями, порталами eior.by и adu.by. Решения, принятые на основе ответов ИИ, — ваша ответственность.</p>
+      <p>Ответы генерируются ИИ-моделями и могут содержать неточности. Важную информацию всегда сверяйте с официальными источниками: учебниками, учителями и порталами из раздела 6. Решения, принятые на основе ответов ИИ, — ваша ответственность.</p>
 
       <h2>6. Официальные образовательные ресурсы</h2>
-      <p>Раздел «Ресурсы» показывает публичные материалы ЕИОР (eior.by) и Национального образовательного портала (adu.by). Контент принадлежит их правообладателям — Министерству образования Республики Беларусь и ГИАЦ. NEVIO не является официальным сервисом этих организаций, а доступность материалов зависит от их владельцев.</p>
+      <p>Раздел «Ресурсы» показывает публичные материалы официальных порталов страны пользователя. Контент принадлежит их правообладателям; NEVIO не является официальным сервисом этих организаций, а доступность материалов зависит от их владельцев.</p>
+      <div data-juris="BY" class="juris">
+        <div class="j-title">🇧🇾 Республика Беларусь</div>
+        <p>Используются материалы ЕИОР (eior.by) и Национального образовательного портала (adu.by). Контент принадлежит Министерству образования Республики Беларусь и ГИАЦ.</p>
+      </div>
+      <div data-juris="RU" class="juris">
+        <div class="j-title">🇷🇺 Российская Федерация</div>
+        <p>Используются материалы ФИПИ (fipi.ru), Рособрнадзора (obrnadzor.gov.ru) и Минпросвещения России (edu.gov.ru). NEVIO не является официальным сервисом этих организаций.</p>
+      </div>
+      <div data-juris="KZ" class="juris">
+        <div class="j-title">🇰🇿 Республика Казахстан</div>
+        <p>Используются материалы Национального центра тестирования (testcenter.kz) и официальных порталов Казахстана. NEVIO не является официальным сервисом НЦТ или Министерства просвещения РК.</p>
+      </div>
+      <div data-juris="UZ" class="juris">
+        <div class="j-title">🇺🇿 Республика Узбекистан</div>
+        <p>Используются материалы официальных порталов Узбекистана (включая порталы приёма в вузы). NEVIO не является официальным сервисом Министерства высшего образования, науки и инноваций РУз или Агентства по оценке знаний.</p>
+      </div>
 
       <h2>7. Интеллектуальная собственность</h2>
       <p>Название, дизайн и код NEVIO принадлежат разработчику. Учебные материалы порталов принадлежат их правообладателям и используются в ознакомительных целях.</p>
@@ -75,18 +134,68 @@
       <p>Сервис предоставляется «как есть» (as is). Разработчик не гарантирует бесперебойную работу, точность ответов ИИ и доступность сторонних ресурсов. Разработчик не несёт ответственности за убытки, связанные с использованием сервиса, включая потерю локальных данных устройства.</p>
 
       <h2>9. Прекращение использования</h2>
-      <p>Вы можете прекратить использование сервиса в любой момент, удалив данные через Настройки приложения. Разработчик вправе ограничить доступ при нарушении настоящих условий.</p>
+      <p>Вы можете прекратить использование сервиса в любой момент, удалив данные через Настройки. Разработчик вправе ограничить доступ при нарушении настоящих условий.</p>
 
       <h2>10. Изменения условий</h2>
-      <p>Новая редакция условий публикуется в этом разделе и в приложении. Продолжение использования сервиса означает согласие с обновлённой редакцией.</p>
+      <p>Новая редакция условий публикуется в этом разделе. Продолжение использования сервиса означает согласие с обновлённой редакцией.</p>
 
       <h2>11. Применимое право</h2>
-      <p>Настоящие условия регулируются законодательством Республики Беларусь.</p>
+      <p>Отношения регулируются законодательством страны пользователя, выбранной в сервисе, а также правилами платформы Telegram для мини-приложений:</p>
+      <div data-juris="BY" class="juris">
+        <div class="j-title">🇧🇾 Республика Беларусь</div>
+        <p>Настоящие условия регулируются законодательством Республики Беларусь.</p>
+      </div>
+      <div data-juris="RU" class="juris">
+        <div class="j-title">🇷🇺 Российская Федерация</div>
+        <p>Настоящие условия регулируются законодательством Российской Федерации.</p>
+      </div>
+      <div data-juris="KZ" class="juris">
+        <div class="j-title">🇰🇿 Республика Казахстан</div>
+        <p>Настоящие условия регулируются законодательством Республики Казахстан.</p>
+      </div>
+      <div data-juris="UZ" class="juris">
+        <div class="j-title">🇺🇿 Республика Узбекистан</div>
+        <p>Настоящие условия регулируются законодательством Республики Узбекистан.</p>
+      </div>
 
       <h2>12. Контакты</h2>
       <p>По всем вопросам: <strong>support@nevio.app</strong>.</p>
     </div>
     <div class="footer">NEVIO — твой умный помощник в учёбе · <a href="privacy.html">Политика конфиденциальности</a></div>
   </div>
+
+  <script>
+    (function () {
+      function savedCountry() {
+        try {
+          var c = sessionStorage.getItem('nevioLegalCountry');
+          if (c) return c;
+          c = localStorage.getItem('nevioCountry');
+          if (c) return c;
+          var d = JSON.parse(localStorage.getItem('nevioData_v3') || 'null');
+          if (d && d.country) return d.country;
+        } catch (e) {}
+        return 'BY';
+      }
+      var current = savedCountry();
+      var chips = document.querySelectorAll('.country-chip');
+      function apply(code) {
+        if (['BY','RU','KZ','UZ'].indexOf(code) === -1) code = 'BY';
+        current = code;
+        try { sessionStorage.setItem('nevioLegalCountry', code); } catch (e) {}
+        chips.forEach(function (el) {
+          el.classList.toggle('active', el.getAttribute('data-country') === code);
+          el.setAttribute('aria-selected', el.getAttribute('data-country') === code ? 'true' : 'false');
+        });
+        document.querySelectorAll('[data-juris]').forEach(function (el) {
+          el.classList.toggle('show', el.getAttribute('data-juris') === code);
+        });
+      }
+      chips.forEach(function (el) {
+        el.addEventListener('click', function () { apply(el.getAttribute('data-country')); });
+      });
+      apply(current);
+    })();
+  </script>
 </body>
 </html>
