@@ -312,6 +312,7 @@
       color:var(--text-secondary);
       font-style:italic;
     }
+    .ai-content .ai-divider { height:1px; background:var(--border); margin:16px 0; }
     .ai-content .formula-box {
       background:linear-gradient(135deg,rgba(232,177,62,0.08),rgba(232,177,62,0.03));
       border:2px solid rgba(232,177,62,0.2);
@@ -446,7 +447,8 @@
     }
     .settings-item:last-child { border-bottom:none; }
     .settings-item:hover { background:rgba(232,177,62,0.05); padding-left:22px; }
-    .settings-item-left { display:flex; align-items:center; gap:14px; }
+    .settings-item-left { display:flex; align-items:center; gap:14px; flex:1; min-width:0; }
+    .settings-item-text { flex:1; min-width:0; }
     .settings-item-icon {
       width:38px; height:38px;
       border-radius:10px;
@@ -460,7 +462,12 @@
     }
     .settings-item-text h4 { font-size:14px; font-weight:600; margin-bottom:2px; }
     .settings-item-text p { font-size:11px; color:var(--text-secondary); }
-    .settings-item-right { color:var(--text-muted); font-size:14px; }
+    .settings-item-right {
+      color:var(--text-muted); font-size:14px;
+      flex-shrink:0; display:flex; align-items:center; gap:8px;
+      margin-left:10px; white-space:nowrap;
+    }
+    .settings-item-right .fa-chevron-right { flex-shrink:0; font-size:12px; }
     
     /* History */
     .history-item {
@@ -950,8 +957,9 @@
     .role-country-line a:hover { text-decoration:underline; }
 
     .settings-value {
-      font-size:12px; font-weight:800; color:var(--gold); margin-right:8px;
+      font-size:12px; font-weight:800; color:var(--gold);
       background:rgba(232,177,62,0.1); border-radius:8px; padding:2px 8px;
+      white-space:nowrap;
     }
 
     /* Прогресс-дашборд */
@@ -978,6 +986,28 @@
     .weak-topic .wt-acc { font-size:12px; font-weight:800; color:#f87171; }
     .weak-topic .wt-btns { display:flex; gap:6px; width:100%; margin-top:8px; }
     .weak-topic .wt-btns .btn { flex:1; padding:8px 6px; font-size:11px; }
+
+    /* Маскот-советник на странице «Прогресс» */
+    .prog-mascot {
+      position:relative; overflow:hidden;
+      background:var(--gradient-dark); border-radius:18px; padding:16px 14px; margin-bottom:14px;
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .prog-mascot-avatar {
+      width:58px; height:58px; flex-shrink:0; border-radius:50%;
+      background:var(--gradient-gold);
+      display:flex; align-items:center; justify-content:center; font-size:30px;
+      box-shadow:0 8px 22px rgba(232,177,62,0.28);
+      animation:mascotPop 0.5s ease;
+    }
+    @keyframes mascotPop { 0% { transform:scale(0.5) rotate(-8deg); opacity:0; } 100% { transform:scale(1) rotate(0); opacity:1; } }
+    .prog-mascot-body { flex:1; min-width:0; }
+    .prog-mascot-name { font-size:10px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+    .prog-mascot-text { color:rgba(255,255,255,0.92); font-size:13px; line-height:1.55; }
+    .prog-mascot-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .prog-mascot-actions .btn { flex:1 1 auto; min-width:132px; padding:9px 12px; font-size:12px; margin-top:0; }
+    .prog-mascot-actions .btn-secondary { background:rgba(255,255,255,0.08); color:#fff; border-color:rgba(255,255,255,0.28); }
+    .prog-mascot-actions .btn-secondary:hover { border-color:var(--gold); background:rgba(232,177,62,0.12); }
 
     /* Блоки доверия: «почему это верно» */
     .ai-block p { margin-bottom:8px; }
@@ -1034,11 +1064,6 @@
     }
     .q-preview .q-num { color:var(--gold); font-weight:800; margin-right:6px; }
     .q-preview .q-ans { color:#4ade80; font-weight:700; font-size:11.5px; margin-top:6px; }
-    .sync-note {
-      background:rgba(232,177,62,0.08); border:1px solid rgba(232,177,62,0.2);
-      border-radius:14px; padding:12px 14px; margin-bottom:12px; font-size:12px; line-height:1.5; color:var(--text-secondary);
-    }
-    .sync-note strong { color:var(--gold); }
     .lang-chips { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 14px; }
     .lang-chip {
       background:var(--card); border:1.5px solid var(--border); color:var(--text-secondary);
@@ -1105,7 +1130,6 @@
   <div class="header">
     <h1>NEVIO</h1>
     <p data-i18n="app.subtitle">Твой умный помощник в учёбе</p>
-    <div class="country-badge" id="countryBadge" style="display:none;" onclick="openCountrySwitch()"></div>
   </div>
   <div id="menuContainer"></div>
 </div>
@@ -2477,14 +2501,99 @@ function escapeHtml(text) {
     .replace(/'/g, '&#39;');
 }
 
-function formatInlineMarkdown(text) {
-  let f = escapeHtml(text);
-  f = f.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  f = f.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  f = f.replace(/`(.+?)`/g, '<code>$1</code>');
-  f = f.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
-  if (!f.startsWith('<')) f = '<p>' + f + '</p>';
+// Формулы ($...$ и $$...$$) защищаются от обработки разметкой:
+// внутри них markdown-символы (*, #, -) остаются нетронутыми.
+function protectMath(text) {
+  const stash = [];
+  const out = String(text ?? '')
+    .replace(/\$\$([\s\S]+?)\$\$/g, function (m, body) {
+      stash.push({ math: '$$' + body + '$$' });
+      return '\u0000M' + (stash.length - 1) + '\u0000';
+    })
+    .replace(/(^|[^$])\$([^$\n]+?)\$/g, function (m, pre, body) {
+      stash.push({ math: '$' + body + '$' });
+      return pre + '\u0000M' + (stash.length - 1) + '\u0000';
+    });
+  return { text: out, stash: stash };
+}
+function restoreMath(text, stash) {
+  return String(text).replace(/\u0000M(\d+)\u0000/g, function (m, i) {
+    const item = stash[parseInt(i, 10)];
+    return item ? escapeHtml(item.math) : '';
+  });
+}
+
+// Внутристрочная разметка одной строки (уже экранированной, без формул)
+function formatInlineLine(line) {
+  let f = line;
+  f = f.replace(/`([^`]+)`/g, '<code>$1</code>');
+  f = f.replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>');
+  f = f.replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>');
   return f;
+}
+
+function formatInlineMarkdown(text) {
+  const pm = protectMath(text);
+  const lines = escapeHtml(pm.text).split('\n');
+  const out = [];
+  let para = [];
+  let list = null;
+  let quote = [];
+
+  function flushPara() {
+    if (para.length) { out.push('<p>' + para.join('<br>') + '</p>'); para = []; }
+  }
+  function flushList() {
+    if (list && list.items.length) {
+      out.push('<' + list.type + '>' + list.items.map(function (it) { return '<li>' + it + '</li>'; }).join('') + '</' + list.type + '>');
+    }
+    list = null;
+  }
+  function flushQuote() {
+    if (quote.length) { out.push('<blockquote>' + quote.join('<br>') + '</blockquote>'); quote = []; }
+  }
+  function flushAll() { flushPara(); flushList(); flushQuote(); }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = (lines[i] || '').trim();
+    if (!line) { flushAll(); continue; }
+    // горизонтальная черта (---, ***, ___, —) → аккуратный разделитель
+    if (/^(?:-{3,}|\*{3,}|_{3,}|[—–]{1,})$/.test(line)) { flushAll(); out.push('<div class="ai-divider"></div>'); continue; }
+    // заголовки ### ## # — без «решёток», как аккуратные подзаголовки
+    const hm = line.match(/^(#{1,6})\s+(.*)$/);
+    if (hm) {
+      flushAll();
+      const tag = hm[1].length <= 3 ? 'h3' : 'h4';
+      out.push('<' + tag + '>' + formatInlineLine(hm[2]) + '</' + tag + '>');
+      continue;
+    }
+    // цитаты > — жёлтая подсветка-совет (сохраняем)
+    if (line.indexOf('&gt;') === 0) {
+      flushPara(); flushList();
+      quote.push(formatInlineLine(line.replace(/^&gt;\s?/, '')));
+      continue;
+    }
+    // маркированный список: -, *, •, + — без «тире», как настоящий список
+    const bm = line.match(/^[-*+•]\s+(.*)$/);
+    if (bm) {
+      flushPara(); flushQuote();
+      if (!list || list.type !== 'ul') { flushList(); list = { type: 'ul', items: [] }; }
+      list.items.push(formatInlineLine(bm[1]));
+      continue;
+    }
+    // нумерованный список: 1. 2) — без лишних символов
+    const nm = line.match(/^\d{1,3}[.)]\s+(.*)$/);
+    if (nm) {
+      flushPara(); flushQuote();
+      if (!list || list.type !== 'ol') { flushList(); list = { type: 'ol', items: [] }; }
+      list.items.push(formatInlineLine(nm[1]));
+      continue;
+    }
+    flushList(); flushQuote();
+    para.push(formatInlineLine(line));
+  }
+  flushAll();
+  return restoreMath(out.join(''), pm.stash);
 }
 
 // Разбивает ответ ИИ на «блоки доверия» (📚 опора на программу, 🧮 критерии)
@@ -3088,7 +3197,7 @@ function writeCache(url, data) {
 const liveInflight = {};
 const LIVE_PROXY_GROUPS = [
   {
-    timeout: 9000,
+    timeout: 6000,
     proxies: [
       { kind: 'md', make: u => 'https://r.jina.ai/' + u },
       { kind: 'html', make: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
@@ -3096,16 +3205,18 @@ const LIVE_PROXY_GROUPS = [
     ]
   },
   {
-    timeout: 7000,
+    timeout: 5500,
     proxies: [
       { kind: 'html', make: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
       { kind: 'html', make: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
       { kind: 'html', make: u => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
+      { kind: 'html', make: u => 'https://api.cors.lol/?url=' + encodeURIComponent(u) },
       { kind: 'arch', make: u => 'https://web.archive.org/web/2026id_/' + u }
     ]
   }
 ];
-const LIVE_PROXY_QUICK_TIMEOUT = 7000;
+const LIVE_PROXY_QUICK_TIMEOUT = 4500;
+const LIVE_PROXY_GROUP_STAGGER = 2200;
 
 function firstSuccess(promises) {
   return new Promise(function (resolve, reject) {
@@ -3128,7 +3239,7 @@ async function attemptProxy(proxy, url, timeoutMs) {
   if (!text || text.length < 40) throw new Error('пустой ответ');
   if (/has not archived that URL/i.test(text)) throw new Error('в архиве нет страницы');
   if (/522: Connection timed out/i.test(text)) throw new Error('прокси недоступен');
-  if (/Just a moment|cf-browser-verification|free usage is limited|readableMessage|AssertionFailureError|corsfix_error|invalid_origin/i.test(text) && text.length < 4000) {
+  if (/Just a moment|cf-browser-verification|free usage is limited|readableMessage|AssertionFailureError|corsfix_error|invalid_origin|rate limit exceeded|too many requests|bad gateway|service unavailable/i.test(text) && text.length < 4000) {
     throw new Error('прокси недоступен');
   }
   return { proxy: proxy, text: text };
@@ -3181,31 +3292,45 @@ async function fetchLive(url, force, quick) {
 }
 
 async function fetchLiveNetwork(url, quick) {
-  let lastErr = 'нет ответа';
-  for (let gi = 0; gi < LIVE_PROXY_GROUPS.length; gi++) {
-    const grp = LIVE_PROXY_GROUPS[gi];
-    if (quick && gi > 0) break;
-    try {
-      const winner = await firstSuccess(grp.proxies.map(function (p) {
-        return attemptProxy(p, url, quick ? LIVE_PROXY_QUICK_TIMEOUT : grp.timeout);
-      }));
-      const parsed = parseProxyResult(winner.proxy, url, winner.text);
-      if (!parsed || (!parsed.title && !parsed.links.length && !parsed.bodyText)) {
-        lastErr = 'не удалось разобрать страницу';
-        continue;
-      }
-      if (/just a moment|attention required|cf-chl|проверка браузера/i.test(parsed.title || '')) {
-        lastErr = 'прокси недоступен';
-        continue;
-      }
-      parsed.source = url;
-      if (winner.proxy.kind === 'arch') parsed.archived = true;
-      writeCache(url, parsed);
-      if (/eior\.by\/obrazovanie\/obshchee-srednee/i.test(url)) ingestEiorCatalog(parsed);
-      return Object.assign({ cached: false, age: 0, archived: !!parsed.archived }, parsed);
-    } catch (e) {
-      lastErr = e.message || 'нет ответа';
+  // Нет сети — сразу отдаём кэш или офлайн-карточку, не ждём таймаутов
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    const stale = readStaleCache(url);
+    if (stale && stale.data) {
+      return Object.assign({ cached: true, stale: true, age: Date.now() - stale.ts, archived: !!stale.data.archived }, stale.data);
     }
+    return Object.assign({ cached: false, age: 0, offline: true }, syntheticOfficialPage(url));
+  }
+  let lastErr = 'нет ответа';
+  // Группы прокси гоняются параллельно: вторая стартует чуть позже первой,
+  // чтобы быстрый источник почти всегда выигрывал, но при зависшей первой
+  // группе вторая подхватывала раньше, чем раньше (было строго последовательно).
+  const groups = quick ? LIVE_PROXY_GROUPS.slice(0, 1) : LIVE_PROXY_GROUPS;
+  const races = groups.map(function (grp, gi) {
+    const run = firstSuccess(grp.proxies.map(function (p) {
+      return attemptProxy(p, url, quick ? LIVE_PROXY_QUICK_TIMEOUT : grp.timeout);
+    }));
+    if (gi === 0 || quick) return run;
+    return new Promise(function (resolve) {
+      setTimeout(function () { run.then(resolve, function () { resolve(null); }); }, LIVE_PROXY_GROUP_STAGGER);
+    });
+  });
+  try {
+    const winner = await firstSuccess(races);
+    if (!winner) throw new Error(lastErr || 'нет ответа');
+    const parsed = parseProxyResult(winner.proxy, url, winner.text);
+    if (!parsed || (!parsed.title && !parsed.links.length && !parsed.bodyText)) {
+      throw new Error('не удалось разобрать страницу');
+    }
+    if (/just a moment|attention required|cf-chl|проверка браузера/i.test(parsed.title || '')) {
+      throw new Error('прокси недоступен');
+    }
+    parsed.source = url;
+    if (winner.proxy.kind === 'arch') parsed.archived = true;
+    writeCache(url, parsed);
+    if (/eior\.by\/obrazovanie\/obshchee-srednee/i.test(url)) ingestEiorCatalog(parsed);
+    return Object.assign({ cached: false, age: 0, archived: !!parsed.archived }, parsed);
+  } catch (e) {
+    lastErr = (e && e.message) || 'нет ответа';
   }
   const stale = readStaleCache(url);
   if (stale && stale.data) {
@@ -5199,6 +5324,16 @@ const I18N = {
     'progress.subjectTest': 'Тест по предмету',
     'progress.reset': 'Обнулить прогресс',
     'progress.recent': 'Последние действия',
+    'progress.mascotName': 'Нэви',
+    'progress.mascotHelloEmpty': 'Привет! Я Нэви, твой помощник в учёбе. Здесь появится твой прогресс. Начнём с пары заданий?',
+    'progress.mascotHello': 'Привет! Я Нэви. Давай позанимаемся — выбери, с чего начнём!',
+    'progress.mascotGreat': 'Отличная работа! Точность {acc}. Продолжим?',
+    'progress.mascotBtnTest': 'Порешаем задания',
+    'progress.mascotBtnSummary': 'Составим конспект',
+    'progress.mascotBtnSolve': 'Решим задачу',
+    'progress.mascotBtnWeak': 'Потренируем слабое место',
+    'progress.mascotBtnQuiz': 'Создадим тест',
+    'progress.mascotBtnLesson': 'Составим план урока',
     'teacher.title': 'Класс и аналитика',
     'teacher.subtitle': 'Назначайте задания классу и смотрите, кто справился и где ошибки',
     'teacher.classes': 'Мои классы',
@@ -5211,6 +5346,8 @@ const I18N = {
     'teacher.newAssignment': 'Назначить задание',
     'teacher.assignmentTopic': 'Тема задания',
     'teacher.assignmentTopicPh': 'Например: квадратные уравнения',
+    'teacher.assignmentCount': 'Количество заданий',
+    'teacher.assignmentClass': 'Класс',
     'teacher.genQuestions': 'Сгенерировать вопросы (ИИ)',
     'teacher.generating': 'Генерирую вопросы…',
     'teacher.preview': 'Предпросмотр вопросов',
@@ -5227,7 +5364,6 @@ const I18N = {
     'teacher.attempts': 'попыток',
     'teacher.demo': 'Пробное прохождение',
     'teacher.demoDesc': 'Пройдите задание как ученик на этом устройстве, чтобы проверить аналитику',
-    'teacher.syncNote': 'Результаты учеников с других устройств попадают в аналитику, когда включена бесплатная синхронизация (Firebase Realtime Database, тариф Spark). Без неё всё работает локально на этом устройстве.',
     'teacher.copyCode': 'Скопировать код',
     'myTasks.title': 'Задания от учителя',
     'myTasks.subtitle': 'Введите код, который дал учитель',
@@ -5383,6 +5519,16 @@ const I18N = {
     'progress.subjectTest': 'Пән бойынша тест',
     'progress.reset': 'Прогресті тазалау',
     'progress.recent': 'Соңғы әрекеттер',
+    'progress.mascotName': 'Нэви',
+    'progress.mascotHelloEmpty': 'Сәлем! Мен Нэви — оқудағы көмекшің. Мұнда сенің прогрессің көрсетіледі. Бір-екі тапсырмадан бастайық?',
+    'progress.mascotHello': 'Сәлем! Мен Нэви. Бірге оқиық — неден бастайтыныңды таңда!',
+    'progress.mascotGreat': 'Керемет жұмыс! Дәлдігің {acc}%. Жалғастырамыз ба?',
+    'progress.mascotBtnTest': 'Тапсырмаларды шешейік',
+    'progress.mascotBtnSummary': 'Конспект жасайық',
+    'progress.mascotBtnSolve': 'Есеп шығарайық',
+    'progress.mascotBtnWeak': 'Әлсіз тұсты жаттықтырайық',
+    'progress.mascotBtnQuiz': 'Тест құрайық',
+    'progress.mascotBtnLesson': 'Сабақ жоспарын құрайық',
     'teacher.title': 'Сынып және аналитика',
     'teacher.subtitle': 'Сыныпқа тапсырмалар тағайындап, кім орындағанын және қателерді көріңіз',
     'teacher.classes': 'Менің сыныптарым',
@@ -5395,6 +5541,8 @@ const I18N = {
     'teacher.newAssignment': 'Тапсырма тағайындау',
     'teacher.assignmentTopic': 'Тапсырма тақырыбы',
     'teacher.assignmentTopicPh': 'Мысалы: квадрат теңдеулер',
+    'teacher.assignmentCount': 'Тапсырмалар саны',
+    'teacher.assignmentClass': 'Сынып',
     'teacher.genQuestions': 'Сұрақтарды генерациялау (ИИ)',
     'teacher.generating': 'Сұрақтарды генерациялау…',
     'teacher.preview': 'Сұрақтарды алдын ала қарау',
@@ -5411,7 +5559,6 @@ const I18N = {
     'teacher.attempts': 'әрекет',
     'teacher.demo': 'Сынақ өту',
     'teacher.demoDesc': 'Аналитиканы тексеру үшін тапсырманы оқушы ретінде осы құрылғыда өтіңіз',
-    'teacher.syncNote': 'Басқа құрылғылардағы оқушылардың нәтижелері тегін синхрондау (Firebase Realtime Database, Spark тарифі) қосылғанда аналитикаға түседі. Онсыз бәрі осы құрылғыда жергілікті жұмыс істейді.',
     'teacher.copyCode': 'Кодты көшіру',
     'myTasks.title': 'Мұғалімнің тапсырмалары',
     'myTasks.subtitle': 'Мұғалім берген кодты енгізіңіз',
@@ -5567,6 +5714,16 @@ const I18N = {
     'progress.subjectTest': 'Fan boʻyicha test',
     'progress.reset': 'Taraqqiyotni tozalash',
     'progress.recent': 'Soʻnggi amallar',
+    'progress.mascotName': 'Nevi',
+    'progress.mascotHelloEmpty': "Salom! Men Nevi — o'qishdagi yordamching. Bu yerda sizning progressingiz ko'rinadi. Bir-ikkita topshiriqdan boshlaymizmi?",
+    'progress.mascotHello': "Salom! Men Nevi. Keling, birga shug'ullanamiz — nimadan boshlashni tanlang!",
+    'progress.mascotGreat': 'Ajoyib ish! Aniqlik {acc}%. Davom etamizmi?',
+    'progress.mascotBtnTest': 'Topshiriqlarni yechamiz',
+    'progress.mascotBtnSummary': 'Konspekt tuzamiz',
+    'progress.mascotBtnSolve': 'Masala yechamiz',
+    'progress.mascotBtnWeak': 'Zaif joyni mashq qilamiz',
+    'progress.mascotBtnQuiz': 'Test tuzamiz',
+    'progress.mascotBtnLesson': 'Dars rejasini tuzamiz',
     'teacher.title': 'Sinf va tahlil',
     'teacher.subtitle': 'Sinfga topshiriqlar tayinlang va kim bajardi, qayerda xatolar — koʻring',
     'teacher.classes': 'Mening sinflarim',
@@ -5579,6 +5736,8 @@ const I18N = {
     'teacher.newAssignment': 'Topshiriq tayinlash',
     'teacher.assignmentTopic': 'Topshiriq mavzusi',
     'teacher.assignmentTopicPh': 'Masalan: kvadrat tenglamalar',
+    'teacher.assignmentCount': 'Topshiriqlar soni',
+    'teacher.assignmentClass': 'Sinf',
     'teacher.genQuestions': 'Savollarni generatsiya qilish (AI)',
     'teacher.generating': 'Savollar generatsiya qilinmoqda…',
     'teacher.preview': 'Savollarni oldindan koʻrish',
@@ -5595,7 +5754,6 @@ const I18N = {
     'teacher.attempts': 'urinish',
     'teacher.demo': 'Sinovdan oʻtish',
     'teacher.demoDesc': "Tahlilni tekshirish uchun topshiriqni o'quvchi sifatida shu qurilmada bajaring",
-    'teacher.syncNote': "Boshqa qurilmalardagi o'quvchilar natijalari bepul sinxronizatsiya (Firebase Realtime Database, Spark tarifi) yoqilganda tahlilga tushadi. U holda hammasi shu qurilmada lokal ishlaydi.",
     'teacher.copyCode': 'Kodni nusxalash',
     'myTasks.title': "O'qituvchining topshiriqlari",
     'myTasks.subtitle': "O'qituvchi bergan kodni kiriting",
@@ -6247,7 +6405,7 @@ const MENU_T_RU = {
   schema: { ru: 'Сделать схему' }, schemaD: { ru: 'Визуальная шпаргалка' },
   oral: { ru: 'Устный экзамен' }, oralD: { ru: 'Потренируйся отвечать устно' },
   lit: { ru: 'Анализ произведения' }, litD: { ru: 'Герои, темы, идеи' },
-  formulas: { ru: 'Книга формул' }, formulasD: { ru: 'Все формулы с LaTeX-рендерингом' },
+  formulas: { ru: 'Книга формул' }, formulasD: { ru: 'Все формулы по предметам' },
   check: { ru: 'Проверка решения по критериям' }, checkD: { ru: 'Оценка решения по критериям ЕГЭ/ОГЭ' },
   myTasks: { ru: 'Задания от учителя' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте' },
   lesson: { ru: 'План урока' }, lessonD: { ru: 'Полный план за 30 секунд' },
@@ -6276,7 +6434,7 @@ const MENU_T_KZ = {
   schema: { ru: 'Сделать схему', kk: 'Схема жасау' }, schemaD: { ru: 'Визуальная шпаргалка', kk: 'Көрнекі шпаргалка' },
   oral: { ru: 'Устный экзамен', kk: 'Ауызша емтихан' }, oralD: { ru: 'Потренируйся отвечать устно', kk: 'Ауызша жауап беруді жаттықтыр' },
   lit: { ru: 'Анализ произведения', kk: 'Шығарманы талдау' }, litD: { ru: 'Герои, темы, идеи', kk: 'Кейіпкерлер, тақырыптар, идеялар' },
-  formulas: { ru: 'Книга формул', kk: 'Формулалар кітабы' }, formulasD: { ru: 'Все формулы с LaTeX-рендерингом', kk: 'Барлық формулалар LaTeX-пен' },
+  formulas: { ru: 'Книга формул', kk: 'Формулалар кітабы' }, formulasD: { ru: 'Все формулы по предметам', kk: 'Барлық пәндер бойынша формулалар' },
   check: { ru: 'Проверка решения по критериям', kk: 'Шешімді критерийлер бойынша тексеру' }, checkD: { ru: 'Оценка решения по критериям ЕНТ', kk: 'ҰБТ критерийлері бойынша бағалау' },
   myTasks: { ru: 'Задания от учителя', kk: 'Мұғалімнің тапсырмалары' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', kk: 'Код бойынша қосылып, орындаңыз' },
   lesson: { ru: 'План урока', kk: 'Сабақ жоспары' }, lessonD: { ru: 'Полный план за 30 секунд', kk: 'Толық жоспар 30 секундта' },
@@ -6305,7 +6463,7 @@ const MENU_T_UZ = {
   schema: { ru: 'Сделать схему', uz: 'Sxema tuzish' }, schemaD: { ru: 'Визуальная шпаргалка', uz: 'Koʻrgazmali shpargalka' },
   oral: { ru: 'Устный экзамен', uz: 'Ogʻzaki imtihon' }, oralD: { ru: 'Потренируйся отвечать устно', uz: 'Ogʻzaki javob berishni mashq qiling' },
   lit: { ru: 'Анализ произведения', uz: 'Asar tahlili' }, litD: { ru: 'Герои, темы, идеи', uz: 'Qahramonlar, mavzular, gʻoyalar' },
-  formulas: { ru: 'Книга формул', uz: 'Formulalar kitobi' }, formulasD: { ru: 'Все формулы с LaTeX-рендерингом', uz: 'Barcha formulalar LaTeX bilan' },
+  formulas: { ru: 'Книга формул', uz: 'Formulalar kitobi' }, formulasD: { ru: 'Все формулы по предметам', uz: 'Barcha fanlar boʻyicha formulalar' },
   check: { ru: 'Проверка решения по критериям', uz: 'Yechimni mezonlar boʻyicha tekshirish' }, checkD: { ru: 'Оценка решения по критериям тестов', uz: 'Test mezonlari boʻyicha baholash' },
   myTasks: { ru: 'Задания от учителя', uz: 'Oʻqituvchi topshiriqlari' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', uz: 'Kod orqali qoʻshiling va bajaring' },
   lesson: { ru: 'План урока', uz: 'Dars rejasi' }, lessonD: { ru: 'Полный план за 30 секунд', uz: 'Toʻliq reja 30 soniyada' },
@@ -6710,7 +6868,7 @@ function byMenu() {
   const student = JSON.parse(JSON.stringify(menuConfigs.student));
   student.sections[0].items.push({ id: 'exam_info', icon: 'fas fa-file-signature', title: 'Формат и критерии ЦТ/ЦЭ', description: 'Структура, баллы и критерии — без запросов к ИИ' });
   student.sections[1].items.push(
-    { id: 'formula_book', icon: 'fas fa-square-root-alt', title: 'Книга формул', description: 'Все формулы с LaTeX-рендерингом' },
+    { id: 'formula_book', icon: 'fas fa-square-root-alt', title: 'Книга формул', description: 'Все формулы по предметам' },
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: 'Проверка решения по критериям', description: 'Оценка решения по критериям ЦТ/ЦЭ' },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: 'Задания от учителя', description: 'Присоединяйтесь по коду и решайте' }
   );
@@ -7087,6 +7245,34 @@ function weakTopics() {
   return rows.filter(function (r) { return r.acc < 0.75; }).slice(0, 4);
 }
 
+// Маскот-советник «Нэви» — подсказывает, чем заняться дальше
+function renderMascot(acc, qTotal, weak) {
+  const c = activeCountry();
+  let text;
+  if (!qTotal) text = t('progress.mascotHelloEmpty');
+  else if (acc === null) text = t('progress.mascotHello');
+  else text = t('progress.mascotGreat').replace('{acc}', acc + '%');
+  const actions = [];
+  if (state.role === 'teacher') {
+    actions.push('<button class="btn btn-primary" onclick="openAction(\'generate_quiz\')"><i class="fas fa-question-circle"></i> ' + t('progress.mascotBtnQuiz') + '</button>');
+    actions.push('<button class="btn btn-secondary" onclick="openAction(\'lesson\')"><i class="fas fa-chalkboard-user"></i> ' + t('progress.mascotBtnLesson') + '</button>');
+  } else {
+    actions.push('<button class="btn btn-primary" onclick="openCTTest()"><i class="fas fa-trophy"></i> ' + t('progress.mascotBtnTest') + ' · ' + escapeHtml(examShort(c)) + '</button>');
+    actions.push('<button class="btn btn-secondary" onclick="openAction(\'summary\')"><i class="fas fa-book"></i> ' + t('progress.mascotBtnSummary') + '</button>');
+    actions.push('<button class="btn btn-secondary" onclick="openAction(\'solve\')"><i class="fas fa-calculator"></i> ' + t('progress.mascotBtnSolve') + '</button>');
+  }
+  if (weak.length) {
+    actions.push('<button class="btn btn-secondary" onclick="practiceWeakTopic(\'' + escapeAttr(weak[0].subject) + '\',\'' + escapeAttr(weak[0].topic) + '\')"><i class="fas fa-dumbbell"></i> ' + t('progress.mascotBtnWeak') + '</button>');
+  }
+  return '<div class="prog-mascot">' +
+    '<div class="prog-mascot-avatar">🦉</div>' +
+    '<div class="prog-mascot-body">' +
+      '<div class="prog-mascot-name">' + t('progress.mascotName') + '</div>' +
+      '<div class="prog-mascot-text">' + text + '</div>' +
+      '<div class="prog-mascot-actions">' + actions.join('') + '</div>' +
+    '</div></div>';
+}
+
 function renderProgressPage() {
   const root = document.getElementById('progressRoot');
   if (!root) return;
@@ -7094,11 +7280,12 @@ function renderProgressPage() {
   const qTotal = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].n; }, 0);
   const qOk = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].ok; }, 0);
   const acc = qTotal ? Math.round((qOk / qTotal) * 100) : null;
+  const weak = weakTopics();
 
   let html = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(t('nav.progress')) + '</div><h1>' + escapeHtml(t('progress.title')) + '</h1><p>' + escapeHtml(activeCountry().flag + ' ' + activeCountry().nameLocal()) + '</p></div>';
+  html += renderMascot(acc, qTotal, weak);
 
   if (!qTotal && !cp.tests.length && !cp.actions.length) {
-    html += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-chart-line"></i></div><h3>' + t('progress.noData') + '</h3><p>' + t('progress.noDataDesc') + '</p></div></div>';
     root.innerHTML = html;
     return;
   }
@@ -7131,7 +7318,6 @@ function renderProgressPage() {
   });
 
   // Слабые места + рекомендации
-  const weak = weakTopics();
   if (weak.length) {
     html += '<div class="section-label">' + t('progress.weak') + '</div><p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">' + t('progress.weakDesc') + '</p>';
     weak.forEach(function (w) {
@@ -7296,10 +7482,40 @@ function teacherShell(title, subtitle, body) {
   return '<div class="teacher-hero"><div class="th-flag">' + activeCountry().flag + '</div><h2>' + escapeHtml(title) + '</h2><p>' + escapeHtml(subtitle || '') + '</p></div>' + body;
 }
 
+async function mergeSyncedAttempts(code) {
+  // Подтягиваем результаты учеников из синхронизации (если она настроена),
+  // чтобы аналитика учителя видела решения с других устройств
+  if (!teacherSyncEnabled()) return false;
+  try {
+    const remote = await syncGetAttempts(code);
+    if (!Array.isArray(remote) || !remote.length) return false;
+    let changed = false;
+    remote.forEach(function (x) {
+      if (x && x.id && !teacherData.attempts.some(function (y) { return y.id === x.id; })) {
+        teacherData.attempts.push(x);
+        changed = true;
+      }
+    });
+    if (changed) {
+      if (teacherData.attempts.length > 500) teacherData.attempts = teacherData.attempts.slice(-500);
+      saveTeacherData();
+    }
+    return changed;
+  } catch (e) { return false; }
+}
+function mergeAllSyncedAttempts() {
+  if (!teacherSyncEnabled()) return Promise.resolve(false);
+  return Promise.all(teacherData.assignments.map(function (a) { return mergeSyncedAttempts(a.code); }))
+    .then(function (results) { return results.some(Boolean); });
+}
+
 function openTeacher(view) {
   state.currentActionId = view;
   showPage('teacherPage');
   renderTeacher(view);
+  mergeAllSyncedAttempts().then(function (changed) {
+    if (changed && state.currentActionId === view) renderTeacher(view);
+  });
 }
 
 function renderTeacher(view) {
@@ -7372,7 +7588,7 @@ function renderTeacherClass() {
     body += '<div class="section-label">' + t('teacher.assignments') + '</div>';
     as.forEach(function (a) {
       const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; }).length;
-      body += '<div class="class-card" onclick="openTeacherView(\'assignment\',\'' + a.code + '\')"><div class="cc-head"><h3>' + escapeHtml(a.title) + '</h3><span class="code-pill" style="font-size:11px;">' + escapeHtml(a.code) + '</span></div><p>' + escapeHtml(a.subject + ' · ' + a.questions.length + ' ' + t('progress.questions') + ' · ' + attempts + ' ' + t('teacher.attempts')) + '</p></div>';
+      body += '<div class="class-card" onclick="openTeacherView(\'assignment\',\'' + a.code + '\')"><div class="cc-head"><h3>' + escapeHtml(a.title) + '</h3><span class="code-pill" style="font-size:11px;">' + escapeHtml(a.code) + '</span></div><p>' + escapeHtml(a.subject + ' · ' + (a.grade ? a.grade + ' · ' : '') + a.questions.length + ' ' + t('progress.questions') + ' · ' + attempts + ' ' + t('teacher.attempts')) + '</p></div>';
     });
   } else {
     body += '<div class="card"><div class="empty-state"><h3>' + t('teacher.noAssignments') + '</h3></div></div>';
@@ -7391,11 +7607,11 @@ function renderTeacherAssignNew() {
   assignDraft.classId = cl ? cl.id : teacherData.classes[0].id;
   const cls = cl || teacherData.classes[0];
   let body = '<div class="card">' +
-    '<div class="form-group"><label>' + t('teacher.classes') + '</label><select id="assignClassId" onchange="assignDraft.classId=this.value">' +
-    teacherData.classes.map(function (x) { return '<option value="' + x.id + '"' + (x.id === assignDraft.classId ? ' selected' : '') + '>' + escapeHtml(x.name) + '</option>'; }).join('') + '</select></div>' +
-    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="assignSubject">' + activeCountry().studySubjects.map(function (s) { return '<option value="' + s + '">' + escapeHtml(subjectName(s)) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('teacher.assignmentClass') + '</label><select id="assignClassId" onchange="assignDraft.classId=this.value;assignDraft.questions=null;renderTeacher(\'assign_new\')">' +
+    teacherData.classes.map(function (x) { return '<option value="' + x.id + '"' + (x.id === assignDraft.classId ? ' selected' : '') + '>' + escapeHtml(x.name + ' · ' + x.grade) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="assignSubject">' + activeCountry().studySubjects.map(function (s) { return '<option value="' + s + '"' + (s === (assignDraft.subject || cls.subject) ? ' selected' : '') + '>' + escapeHtml(subjectName(s)) + '</option>'; }).join('') + '</select></div>' +
     '<div class="form-group"><label>' + t('teacher.assignmentTopic') + '</label><input type="text" id="assignTopic" placeholder="' + t('teacher.assignmentTopicPh') + '" value="' + escapeHtml(assignDraft.topic) + '"></div>' +
-    '<div class="form-group"><label>' + t('form.what') + '</label><select id="assignCount"><option value="5">5</option><option value="10">10</option></select></div>' +
+    '<div class="form-group"><label>' + t('teacher.assignmentCount') + '</label><select id="assignCount"><option value="5">5</option><option value="10">10</option></select></div>' +
     '<button class="btn btn-primary" id="assignGenBtn" onclick="generateAssignmentQuestions()"><i class="fas fa-wand-magic-sparkles"></i> ' + t('teacher.genQuestions') + '</button></div>';
   if (assignDraft.generating) {
     body += '<div class="card" style="text-align:center;padding:30px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:10px;color:var(--text-secondary);font-size:12.5px;">' + t('teacher.generating') + '</p></div>';
@@ -7406,10 +7622,9 @@ function renderTeacherAssignNew() {
         '<div style="margin:6px 0 0 18px;font-size:11.5px;color:var(--text-secondary);">' + q.options.map(function (o, j) { return escapeHtml(o); }).join(' · ') + '</div>' +
         '<div class="q-ans">✓ ' + escapeHtml(q.options[q.correctIndex]) + '</div></div>';
     });
-    body += '<button class="btn btn-primary" onclick="saveAssignment(\'' + cls.id + '\')"><i class="fas fa-save"></i> ' + t('teacher.saveAssignment') + '</button>';
+    body += '<button class="btn btn-primary" onclick="saveAssignment()"><i class="fas fa-save"></i> ' + t('teacher.saveAssignment') + '</button>';
   }
-  body += '<div class="sync-note" style="margin-top:12px;"><strong>ℹ️</strong> ' + t('teacher.syncNote') + '</div>';
-  return teacherShell(t('teacher.newAssignment'), cls.name, body);
+  return teacherShell(t('teacher.newAssignment'), cls.name + ' · ' + cls.grade, body);
 }
 
 async function generateAssignmentQuestions() {
@@ -7418,13 +7633,16 @@ async function generateAssignmentQuestions() {
   if (!topic) { showToast(t('toast.fillField')); return; }
   const subject = document.getElementById('assignSubject')?.value || '';
   const count = parseInt(document.getElementById('assignCount')?.value || '5', 10);
+  // Класс задания: ИИ учитывает класс, чтобы подобрать сложность вопросов
+  const cl = teacherData.classes.find(function (x) { return x.id === assignDraft.classId; }) || teacherData.classes[0];
+  const difficulty = (cl && cl.grade) ? (cl.grade + ', базовый уровень') : 'смешанный';
   assignDraft.subject = subject;
   assignDraft.topic = topic;
   assignDraft.questions = null;
   assignDraft.generating = true;
   renderTeacher('assign_new');
   try {
-    const questions = await generateTestQuestions(subject + ' — ' + topic, count, 'смешанный');
+    const questions = await generateTestQuestions(subject + ' — ' + topic, count, difficulty);
     if (!questions.length) throw new Error(t('errors.noQuestions'));
     assignDraft.questions = questions;
   } catch (e) {
@@ -7435,12 +7653,15 @@ async function generateAssignmentQuestions() {
   }
 }
 
-function saveAssignment(classId) {
+function saveAssignment() {
   if (!assignDraft.questions || !assignDraft.questions.length) return;
+  const cl = teacherData.classes.find(function (x) { return x.id === assignDraft.classId; }) || teacherData.classes[0];
+  if (!cl) return;
   const code = randomCode(6);
   const a = {
     id: 'as_' + Date.now(),
-    classId: classId,
+    classId: cl.id,
+    grade: cl.grade || '',
     code: code,
     title: assignDraft.topic,
     subject: assignDraft.subject,
@@ -7450,8 +7671,8 @@ function saveAssignment(classId) {
   teacherData.assignments.push(a);
   saveTeacherData();
   syncPutAssignment(a).catch(function () {});
-  assignDraft = { classId: classId, subject: '', topic: '', questions: null, generating: false };
-  teacherViewId = classId;
+  assignDraft = { classId: cl.id, subject: '', topic: '', questions: null, generating: false };
+  teacherViewId = cl.id;
   renderTeacher('class');
   showToast('✓ ' + code);
 }
@@ -7461,7 +7682,7 @@ function renderTeacherAssignment() {
   if (!a) return renderTeacherClasses();
   const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; });
   let body = '<div class="card" style="text-align:center;"><h3 style="font-size:17px;">' + escapeHtml(a.title) + '</h3>' +
-    '<p style="font-size:12.5px;color:var(--text-secondary);margin:6px 0 12px;">' + escapeHtml(a.subject + ' · ' + a.questions.length + ' ' + t('progress.questions')) + '</p>' +
+    '<p style="font-size:12.5px;color:var(--text-secondary);margin:6px 0 12px;">' + escapeHtml(a.subject + ' · ' + (a.grade ? a.grade + ' · ' : '') + a.questions.length + ' ' + t('progress.questions')) + '</p>' +
     '<div class="code-pill">' + escapeHtml(a.code) + '</div>' +
     '<div style="margin-top:10px;"><button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="copyTextToClipboard(\'' + a.code + '\',this)"><i class="fas fa-copy"></i> ' + t('teacher.copyCode') + '</button></div></div>';
   body += '<div class="section-label">' + t('teacher.preview') + '</div>';
@@ -7500,7 +7721,6 @@ function renderAnalyticsForAssignment(a) {
   if (!attempts.length) {
     html += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-hourglass-half"></i></div><h3>' + t('teacher.attempts') + ': 0</h3><p>' + t('teacher.demoDesc') + '</p></div></div>';
     html += '<button class="btn btn-primary" onclick="startDemoAssignment(\'' + a.code + '\')"><i class="fas fa-user-graduate"></i> ' + t('teacher.demo') + '</button>';
-    html += '<div class="sync-note" style="margin-top:12px;"><strong>ℹ️</strong> ' + t('teacher.syncNote') + '</div>';
     return html;
   }
   const avg = Math.round(attempts.reduce(function (s, x) { return s + (x.score / x.total); }, 0) / attempts.length * 100);
@@ -7538,7 +7758,6 @@ function renderAnalyticsForAssignment(a) {
       '<div class="q-ans">✓ ' + escapeHtml(m.q.options[m.q.correctIndex]) + '</div>' +
       (m.q.explanation ? '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">💡 ' + escapeHtml(m.q.explanation) + '</div>' : '') + '</div>';
   });
-  html += '<div class="sync-note" style="margin-top:12px;"><strong>ℹ️</strong> ' + t('teacher.syncNote') + '</div>';
   return html;
 }
 
@@ -7685,7 +7904,7 @@ function renderJoinableAssignment(a) {
   if (!profile || !profile.name) {
     nameBlock = '<div class="card"><div class="form-group"><label>' + t('myTasks.yourName') + '</label><input type="text" id="studentName" placeholder="' + t('myTasks.namePh') + '" value="' + escapeHtml(((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? [tg.initDataUnsafe.user.first_name, tg.initDataUnsafe.user.last_name].filter(Boolean).join(' ') : '')) + '"></div></div>';
   }
-  root.innerHTML = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(a.code) + '</div><h1>' + escapeHtml(a.title) + '</h1><p>' + escapeHtml(a.subject + ' · ' + a.questions.length + ' ' + t('progress.questions')) + '</p></div>' +
+  root.innerHTML = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(a.code) + '</div><h1>' + escapeHtml(a.title) + '</h1><p>' + escapeHtml(a.subject + ' · ' + (a.grade ? a.grade + ' · ' : '') + a.questions.length + ' ' + t('progress.questions')) + '</p></div>' +
     nameBlock +
     '<button class="btn btn-primary" onclick="startJoinedAssignment(\'' + a.code + '\')"><i class="fas fa-play"></i> ' + t('myTasks.start') + '</button>' +
     '<button class="btn btn-secondary" style="margin-top:8px;" onclick="openMyAssignments()"><i class="fas fa-arrow-left"></i> ' + t('common.back') + '</button>';
