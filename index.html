@@ -59,7 +59,7 @@
       color:var(--text);
       font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
       padding:14px;
-      padding-bottom:90px;
+      padding-bottom:130px; /* запас под нижнюю навигацию: длинные слова kk/uz делают контент выше */
       overflow-x:hidden;
       transition:background 0.4s,color 0.4s;
     }
@@ -1142,7 +1142,7 @@
 <!-- НАСТРОЙКИ -->
 <div class="page" id="settingsPage">
   <div class="action-container">
-    <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
     <div class="profile-section">
       <div class="profile-avatar" id="profileAvatar"><i class="fas fa-user"></i></div>
       <div class="profile-name" id="profileName">Пользователь</div>
@@ -1225,21 +1225,22 @@
 <!-- ПОЛИТИКА -->
 <div class="page" id="privacyPage">
   <div class="action-container">
-    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
     <div class="card">
       <div class="card-header"><h2><i class="fas fa-shield-alt"></i> Политика конфиденциальности</h2></div>
       <div class="legal-content">
         <p><em>Редакция от 12 августа 2026 г.</em></p>
-        <p>NEVIO — образовательный помощник для школьников и педагогов Беларуси. Сервис устроен так, чтобы собирать минимум данных: у NEVIO нет собственного сервера, и персональные данные пользователей не хранятся у разработчика.</p>
+        <p>NEVIO — образовательный помощник для школьников, студентов и педагогов Беларуси, России, Казахстана и Узбекистана. Сервис устроен так, чтобы собирать минимум данных: у NEVIO нет собственного сервера, и персональные данные пользователей не хранятся у разработчика. Выбранная страна используется только для подбора программы, формата экзаменов и языка интерфейса. Полный текст политики с положениями всех четырёх юрисдикций — на странице privacy.html.</p>
         <h3>1. Какие данные обрабатываются</h3>
         <p><strong>Данные Telegram.</strong> При открытии мини-приложения Telegram передаёт имя, фамилию, имя пользователя, аватар и язык. Эти данные используются только для отображения вашего профиля внутри приложения и не передаются третьим лицам. Обработка данных на платформе регулируется политикой конфиденциальности Telegram (telegram.org/privacy).</p>
+        <p><strong>Подсказка страны по геолокации.</strong> При первом запуске (до выбора страны) приложение может один раз в сутки запросить у сервиса ipapi.co страну по вашему IP-адресу, чтобы подсветить карточку страны. Уходит только IP-адрес; ответ не сохраняется, страна не выбирается автоматически; при недоступности сервиса подсказка молча пропускается.</p>
         <p><strong>Данные на вашем устройстве.</strong> История запросов и ответов ИИ, результаты тестов, отметки о пройденных темах, статистика и настройки хранятся только в локальном хранилище вашего устройства (localStorage) и никуда не передаются. Разработчик не имеет к ним доступа.</p>
-        <p><strong>Содержимое запросов к ИИ.</strong> Когда вы задаёте вопрос, текст запроса и контекст (например, выбранная тема) отправляются через сервис OpenRouter (openrouter.ai) к сторонним ИИ-моделям исключительно для генерации ответа. Пожалуйста, не передавайте в запросах лишние персональные данные.</p>
-        <p><strong>Адреса страниц образовательных порталов.</strong> Раздел «Ресурсы» загружает публичные материалы eior.by, adu.by и других официальных порталов. Запросы могут проходить через сторонние сервисы-прокси и архивные службы, которые видят только адрес запрашиваемой публичной страницы.</p>
+        <p><strong>Содержимое запросов к ИИ.</strong> Когда вы задаёте вопрос, текст запроса и контекст (например, выбранная тема и страна) отправляются через сервис OpenRouter (openrouter.ai) и, при подключении резервного провайдера, Groq (groq.com) к сторонним ИИ-моделям исключительно для генерации ответа. Используются только бесплатные модели. Пожалуйста, не передавайте в запросах лишние персональные данные.</p>
+        <p><strong>Адреса страниц образовательных порталов.</strong> Раздел «Ресурсы» загружает публичные материалы официальных порталов выбранной страны (eior.by, adu.by, fipi.ru, testcenter.kz и другие). Запросы могут проходить через сторонние сервисы-прокси и архивные службы, которые видят только адрес запрашиваемой публичной страницы.</p>
         <h3>2. Кто обрабатывает данные</h3>
         <p>Оператором сервиса является разработчик NEVIO. Связаться с нами можно по адресу: <strong>support@nevio.app</strong>.</p>
         <h3>3. Правовые основания</h3>
-        <p>Обработка данных сведена к технически необходимому минимуму. Сервис руководствуется законодательством Республики Беларусь, в том числе Законом «О защите персональных данных» (№ 99-З от 7 мая 2021 г.), и правилами платформы Telegram.</p>
+        <p>Обработка данных сведена к технически необходимому минимуму. Сервис руководствуется законодательством страны пользователя: РБ — Закон № 99-З от 07.05.2021 «О защите персональных данных»; РФ — 152-ФЗ «О персональных данных»; РК — Закон № 94-V от 21.05.2013 «О персональных данных и их защите»; РУз — Закон № ЗРУ-547 от 02.07.2019 «О персональных данных», а также правилами платформы Telegram.</p>
         <h3>4. Куда данные не передаются</h3>
         <p>Разработчик не собирает и не хранит на своих ресурсах историю запросов, результаты тестов, прогресс и статистику. У сервиса нет серверов, баз данных и систем аналитики.</p>
         <h3>5. Сторонние сервисы</h3>
@@ -1262,7 +1263,7 @@
 <!-- УСЛОВИЯ -->
 <div class="page" id="termsPage">
   <div class="action-container">
-    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
     <div class="card">
       <div class="card-header"><h2><i class="fas fa-file-contract"></i> Условия использования</h2></div>
       <div class="legal-content">
@@ -1270,15 +1271,15 @@
         <h3>1. Общие положения</h3>
         <p>Используя NEVIO, вы соглашаетесь с настоящими условиями. Если вы не согласны с ними, пожалуйста, не используйте сервис.</p>
         <h3>2. Описание сервиса</h3>
-        <p>NEVIO — бесплатный образовательный помощник: объяснение тем, подготовка к ЦТ/ЦЭ, интерактивные тесты, конспекты и доступ к официальным образовательным ресурсам Беларуси (ЕИОР, Аду.бай). Сервис работает как Telegram Mini App и веб-приложение.</p>
+        <p>NEVIO — бесплатный образовательный помощник: объяснение тем, решение задач, проверка решений по критериям, подготовка к экзаменам выбранной страны (BY: ЦТ/ЦЭ; RU: ЕГЭ/ОГЭ; KZ: ЕНТ; UZ: вступительные тесты), интерактивные тесты, конспекты, прогресс, режим учителя и доступ к официальным образовательным ресурсам. Сервис работает как Telegram Mini App и веб-приложение — это одна логика, условия распространяются на обе формы. Полный текст с положениями всех четырёх юрисдикций — на странице terms.html.</p>
         <h3>3. Кто может пользоваться сервисом</h3>
         <p>Сервис предназначен для учащихся и педагогов. Несовершеннолетние используют NEVIO под контролем родителей или педагогов.</p>
         <h3>4. Правила использования</h3>
-        <p>Запрещается: нарушать законодательство Республики Беларусь; использовать сервис для размещения незаконного или вредоносного контента; пытаться нарушить работу сервиса или получить несанкционированный доступ; использовать сервис для массовых рассылок и спама; копировать или перепродавать сервис без разрешения разработчика.</p>
+        <p>Запрещается: нарушать законодательство страны пользователя; использовать сервис для размещения незаконного или вредоносного контента; пытаться нарушить работу сервиса или получить несанкционированный доступ; использовать сервис для массовых рассылок и спама; копировать или перепродавать сервис без разрешения разработчика.</p>
         <h3>5. Ответственность за контент ИИ</h3>
         <p>Ответы генерируются ИИ-моделями и могут содержать неточности. Важную информацию всегда сверяйте с официальными источниками: учебниками, учителями, порталами eior.by и adu.by. Решения, принятые на основе ответов ИИ, — ваша ответственность.</p>
         <h3>6. Официальные образовательные ресурсы</h3>
-        <p>Раздел «Ресурсы» показывает публичные материалы ЕИОР (eior.by) и Национального образовательного портала (adu.by). Контент принадлежит их правообладателям — Министерству образования Республики Беларусь и ГИАЦ. NEVIO не является официальным сервисом этих организаций, а доступность материалов зависит от их владельцев.</p>
+        <p>Раздел «Ресурсы» показывает публичные материалы официальных порталов выбранной страны: Беларусь — ЕИОР (eior.by) и Аду.бай (adu.by); Россия — ФИПИ (fipi.ru) и Рособрнадзор (obrnadzor.gov.ru); Казахстан — Национальный центр тестирования (testcenter.kz); Узбекистан — официальные порталы приёма и образования. Контент принадлежит их правообладателям. NEVIO не является официальным сервисом этих организаций, а доступность материалов зависит от их владельцев.</p>
         <h3>7. Интеллектуальная собственность</h3>
         <p>Название, дизайн и код NEVIO принадлежат разработчику. Учебные материалы порталов принадлежат их правообладателям и используются в ознакомительных целях.</p>
         <h3>8. Ограничение ответственности</h3>
@@ -1288,7 +1289,7 @@
         <h3>10. Изменения условий</h3>
         <p>Новая редакция условий публикуется в этом разделе. Продолжение использования сервиса означает согласие с обновлённой редакцией.</p>
         <h3>11. Применимое право</h3>
-        <p>Настоящие условия регулируются законодательством Республики Беларусь.</p>
+        <p>Настоящие условия регулируются законодательством страны пользователя, выбранной в сервисе (РБ / РФ / РК / РУз), а также правилами платформы Telegram.</p>
         <h3>12. Контакты</h3>
         <p>По всем вопросам: <strong>support@nevio.app</strong>.</p>
       </div>
@@ -1323,12 +1324,28 @@ const OPENROUTER_API_KEY = "sk-or-v1-185abfb733b8f0f30ec8a5d1ee8c0744d24072292db
 // НЕ добавляйте сюда "openrouter/auto" — этот роутер выбирает и из платных
 // моделей и тарифицируется по цене выбранной модели (в т.ч. "openrouter/auto:free").
 // "openrouter/free" — роутер, который выбирает только среди бесплатных моделей.
+//
+// УСТОЙЧИВОСТЬ: бесплатные модели OpenRouter периодически снимаются с бесплатного
+// доступа. Если модель исчезла, API вернёт 404 и приложение автоматически
+// переключится на следующую в списке (см. callProxy). «Мёртвые» записи безвредны,
+// но список стоит сверять с https://openrouter.ai/models?q=%3Afree раз в 1-2 месяца.
+// Состояние списка ниже проверено по открытым источникам на июнь–август 2026.
 const OPENROUTER_MODELS = [
   "openrouter/free",
   "google/gemma-4-31b-it:free",
   "google/gemma-4-26b-a4b-it:free",
   "nvidia/nemotron-3-super-120b-a12b:free",
-  "openai/gpt-oss-20b:free"
+  "openai/gpt-oss-20b:free",
+  "openai/gpt-oss-120b:free",
+  "deepseek/deepseek-r1:free",
+  "deepseek/deepseek-chat-v3-0324:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "google/gemma-3-27b-it:free",
+  "nvidia/llama-3.1-nemotron-ultra-253b:free",
+  "nousresearch/hermes-3-llama-3.1-405b:free",
+  "z-ai/glm-4.5-air:free",
+  "microsoft/phi-4:free",
+  "mistralai/mistral-small:free"
 ];
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -1568,8 +1585,11 @@ async function fetchWithTimeout(url, options, timeoutMs) {
 // полностью совпадает с прежним (только OpenRouter).
 const GROQ_API_KEY = ""; // ← можно вписать бесплатный ключ Groq (console.groq.com)
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+// Бесплатные модели Groq free tier (список меняется — сверять с
+// https://console.groq.com/docs/models; недоступные пропускаются автоматически).
 const GROQ_MODELS = [
   "llama-3.3-70b-versatile",
+  "qwen3-32b",
   "llama-3.1-8b-instant"
 ];
 
@@ -1641,7 +1661,7 @@ async function callProxy(body, { retries = MAX_RETRIES } = {}) {
       }
     }
   }
-  throw new Error(lastError?.message || 'Все модели временно недоступны. Попробуйте позже.');
+  throw new Error(lastError?.message || t('errors.modelsDown'));
 }
 
 // ТЕСТ
@@ -1656,7 +1676,7 @@ function openCTTest() {
 function renderTestSetup() {
   const c = activeCountry();
   const subjects = c.ctSubjects;
-  const chips = subjects.map(s => `<span class="subject-chip" onclick="selectTestSubject(this,'${escapeHtml(s)}')">${escapeHtml(s)}</span>`).join('');
+  const chips = subjects.map(s => `<span class="subject-chip" onclick="selectTestSubject(this,'${escapeHtml(s)}')">${escapeHtml(subjectName(s))}</span>`).join('');
   const banner = c.testBanner ? c.testBanner() : `
     <div class="info-banner">
       <strong>🎯 Интерактивный тест в формате ЦТ</strong><br>
@@ -1665,30 +1685,30 @@ function renderTestSetup() {
   return banner + `
     <div class="card">
       <div class="card-header">
-        <h2><i class="fas fa-check-circle"></i> Настройка теста</h2>
+        <h2><i class="fas fa-check-circle"></i> ${t('test.setupTitle')}</h2>
       </div>
       <div class="form-group">
-        <label>Выбери предмет:</label>
+        <label>${t('test.chooseSubject')}</label>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="subjectChips">${chips}</div>
       </div>
       <div class="form-group">
-        <label>Количество вопросов:</label>
+        <label>${t('test.count')}</label>
         <select id="testQCount">
-          <option value="5">5 вопросов (быстрый)</option>
-          <option value="10" selected>10 вопросов</option>
-          <option value="15">15 вопросов</option>
+          <option value="5">${t('test.count5')}</option>
+          <option value="10" selected>${t('test.count10')}</option>
+          <option value="15">${t('test.count15')}</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Сложность:</label>
+        <label>${t('test.difficulty')}</label>
         <select id="testDifficulty">
-          <option value="смешанный" selected>Смешанный</option>
-          <option value="лёгкий">Лёгкий</option>
-          <option value="сложный">Сложный</option>
+          <option value="смешанный" selected>${t('test.mixed')}</option>
+          <option value="лёгкий">${t('test.easy')}</option>
+          <option value="сложный">${t('test.hard')}</option>
         </select>
       </div>
       <button class="btn btn-primary" onclick="startInteractiveTest()" id="startTestBtn" disabled>
-        <i class="fas fa-play"></i> Начать тест
+        <i class="fas fa-play"></i> ${t('test.start')}
       </button>
     </div>`;
 }
@@ -1710,14 +1730,14 @@ async function startInteractiveTest() {
   document.getElementById('testContainer').innerHTML = `
     <div class="card" style="text-align:center;padding:50px;">
       <div style="font-size:48px;margin-bottom:20px;">⏳</div>
-      <h3>Генерирую тест...</h3>
-      <p style="color:var(--text-secondary);margin-top:10px;">${count} вопросов по "${subject}"</p>
+      <h3>${t('test.generating')}</h3>
+      <p style="color:var(--text-secondary);margin-top:10px;">${count} · ${escapeHtml(subjectName(subject))}</p>
       <div class="loading-dots" style="margin-top:20px;"><span></span><span></span><span></span></div>
     </div>`;
 
   try {
     const questions = await generateTestQuestions(subject, count, difficulty);
-    if (questions.length === 0) throw new Error('ИИ не вернул вопросы');
+    if (questions.length === 0) throw new Error(t('errors.noQuestions'));
     
     testState.questions = questions;
     renderCurrentQuestion();
@@ -1725,9 +1745,9 @@ async function startInteractiveTest() {
     document.getElementById('testContainer').innerHTML = `
       <div class="card" style="text-align:center;padding:40px;">
         <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
-        <h3>Не получилось создать тест</h3>
-        <p style="color:var(--text-secondary);margin:12px 0;">${e.message}</p>
-        <button class="btn btn-primary" onclick="openCTTest()" style="margin-top:16px;"><i class="fas fa-redo"></i> Попробовать снова</button>
+        <h3>${t('test.failed')}</h3>
+        <p style="color:var(--text-secondary);margin:12px 0;">${escapeHtml(e.message)}</p>
+        <button class="btn btn-primary" onclick="openCTTest()" style="margin-top:16px;"><i class="fas fa-redo"></i> ${t('test.tryAgain')}</button>
       </div>`;
   }
 }
@@ -1825,8 +1845,8 @@ function renderCurrentQuestion() {
   document.getElementById('testContainer').innerHTML = `
     <div class="test-progress">
       <div>
-        <div class="test-score">Вопрос <strong>${current + 1}</strong> из ${total}</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">✅ Правильно: ${testState.score}</div>
+        <div class="test-score">${t('test.qOutOf')} <strong>${current + 1}</strong> ${t('test.of')} ${total}</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${t('test.correctCount')} ${testState.score}</div>
       </div>
       <div style="font-size:16px;color:var(--gold);font-weight:800;">${progress}%</div>
     </div>
@@ -1834,7 +1854,7 @@ function renderCurrentQuestion() {
       <div style="width:${progress}%;height:100%;background:var(--gradient-gold);border-radius:4px;transition:width 0.4s;"></div>
     </div>
     <div class="test-question-card">
-      <div class="test-question-num">${testState.subject} · Вопрос ${current + 1}</div>
+      <div class="test-question-num">${escapeHtml(subjectName(testState.subject))} · ${t('test.qOutOf')} ${current + 1}</div>
       <div class="test-question-text">${escapeHtml(q.question)}</div>
       <div class="test-options" id="optionsContainer">${optionsHTML}</div>
       <div class="test-explanation" id="testExplanation">
@@ -1868,10 +1888,10 @@ function answerQuestion(selectedIndex, btn) {
   document.getElementById('nextBtnContainer').innerHTML = `
     <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
       <div style="flex:1;font-size:15px;font-weight:700;color:${isCorrect ? '#4ade80' : '#f87171'}">
-        ${isCorrect ? '✅ Правильно!' : `❌ Неверно. Ответ: ${LETTERS[q.correctIndex]}`}
+        ${isCorrect ? t('test.correctWord') : `${t('test.wrongAnswer')} ${LETTERS[q.correctIndex]}`}
       </div>
       <button class="btn btn-primary" style="width:auto;padding:12px 24px;" onclick="nextQuestion()">
-        ${isLast ? '<i class="fas fa-flag-checkered"></i> Результат' : '<i class="fas fa-arrow-right"></i> Далее'}
+        ${isLast ? '<i class="fas fa-flag-checkered"></i> ' + t('test.result') : '<i class="fas fa-arrow-right"></i> ' + t('test.next')}
       </button>
     </div>`;
 }
@@ -1889,10 +1909,10 @@ function renderTestResult() {
   // Трекинг прогресса: итог теста
   recordTestResult(testState.subject, score, total);
   
-  let emoji = '😔', label = 'Нужно больше практики';
-  if (pct >= 90) { emoji = '🏆'; label = 'Отличный результат!'; triggerConfetti(); }
-  else if (pct >= 75) { emoji = '🎯'; label = 'Хороший результат!'; }
-  else if (pct >= 50) { emoji = '📚'; label = 'Неплохо, но есть куда расти'; }
+  let emoji = '😔', label = t('result.low');
+  if (pct >= 90) { emoji = '🏆'; label = t('result.excellent'); triggerConfetti(); }
+  else if (pct >= 75) { emoji = '🎯'; label = t('result.good'); }
+  else if (pct >= 50) { emoji = '📚'; label = t('result.mid'); }
 
   document.getElementById('testContainer').innerHTML = `
     <div class="card">
@@ -1902,16 +1922,16 @@ function renderTestResult() {
         <div class="test-result-label">${label}</div>
         <div style="margin:24px 0;">
           <div style="font-size:32px;font-weight:800;color:var(--gold);">${pct}%</div>
-          <div style="font-size:13px;color:var(--text-muted);">Точность</div>
+          <div style="font-size:13px;color:var(--text-muted);">${t('test.accuracy')}</div>
         </div>
         <div class="info-banner" style="text-align:left;">
-          <strong>📊 ${testState.subject}</strong><br>
-          ${pct >= 75 ? '✅ Хорошая подготовка!' : '⚠️ Рекомендуем повторить материал.'}<br>
-          <span style="font-size:12px;">Тренировочный тест, не официальный.</span>
+          <strong>📊 ${escapeHtml(subjectName(testState.subject))}</strong><br>
+          ${pct >= 75 ? t('test.goodPrep') : t('test.repeat')}<br>
+          <span style="font-size:12px;">${t('test.notOfficial')}</span>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="startInteractiveTest()"><i class="fas fa-redo"></i> Ещё раз</button>
-      <button class="btn btn-secondary" onclick="openCTTest()"><i class="fas fa-exchange-alt"></i> Другой предмет</button>
+      <button class="btn btn-primary" onclick="startInteractiveTest()"><i class="fas fa-redo"></i> ${t('test.again')}</button>
+      <button class="btn btn-secondary" onclick="openCTTest()"><i class="fas fa-exchange-alt"></i> ${t('test.otherSubject')}</button>
     </div>`;
 }
 
@@ -2180,19 +2200,19 @@ function generateForm(actionId) {
   let html = '';
   switch(actionId) {
     case 'ct_prep':
-      html = sel('subjectCT', t('form.subject'), c.ctSubjects.map(s => `<option>${s}</option>`).join(''))
-        + sel('ctMode', t('form.what'), c.ctModes.map(s => `<option>${s}</option>`).join(''))
+      html = sel('subjectCT', t('form.subject'), c.ctSubjects.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
+        + sel('ctMode', t('form.what'), modeRuList(c, 'ctModes').map(m => `<option value="${m}">${modeLabel(c, 'ctModes', m)}</option>`).join(''))
         + ta('inputText', 4)
         + btn('fas fa-trophy', t('form.startPrep'));
       break;
     case 'exam9':
-      html = sel('subjectExam9', t('form.subject'), c.exam9Subjects.map(s => `<option>${s}</option>`).join(''))
-        + sel('exam9Mode', t('form.what'), c.exam9Modes.map(s => `<option>${s}</option>`).join(''))
+      html = sel('subjectExam9', t('form.subject'), c.exam9Subjects.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
+        + sel('exam9Mode', t('form.what'), modeRuList(c, 'exam9Modes').map(m => `<option value="${m}">${modeLabel(c, 'exam9Modes', m)}</option>`).join(''))
         + ta('inputText', 4)
         + btn('fas fa-graduation-cap', t('form.startPrep'));
       break;
     case 'check_solution':
-      html = sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option>${s}</option>`).join(''))
+      html = sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', t('form.grade'), gradeOpts)
         + `<div class="form-group"><label>${t('check.taskLabel')}</label><textarea id="taskInput" placeholder="${t('check.taskPh')}" rows="3"></textarea></div>`
         + `<div class="form-group"><label>${t('check.solutionLabel')}</label><textarea id="solutionInput" placeholder="${t('check.solutionPh')}" rows="5"></textarea></div>`
@@ -2201,34 +2221,34 @@ function generateForm(actionId) {
       break;
     case 'oral_exam':
       html = ta('inputText', 4)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + btn('fas fa-microphone-alt', 'Тренироваться');
       break;
     case 'solve':
       html = ta('inputText', 4)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + btn('fas fa-calculator', 'Решить с объяснением');
       break;
     case 'explain':
       html = ta('inputText', 4)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
-        + sel('levelSelect', 'Уровень', `
-          <option>Для новичка</option>
-          <option>Обычное объяснение</option>
-          <option>Подробно с доказательствами</option>`)
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
+        + sel('levelSelect', t('form.level'), `
+          <option value="${t('level.basic')}">${t('level.basic')}</option>
+          <option value="${t('level.medium')}">${t('level.medium')}</option>
+          <option value="${t('level.deep')}">${t('level.deep')}</option>`)
         + btn('fas fa-lightbulb', 'Объяснить');
       break;
     case 'summary':
       html = ta('inputText', 4)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + btn('fas fa-book', 'Создать конспект');
       break;
     case 'schema':
       html = ta('inputText', 4)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + btn('fas fa-project-diagram', 'Создать схему');
       break;
     case 'lit_analysis':
@@ -2242,21 +2262,21 @@ function generateForm(actionId) {
       break;
     case 'lesson':
       html = ta('inputText', 3)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + sel('duration', 'Длительность', `<option>45 минут</option><option>90 минут</option>`)
         + btn('fas fa-chalkboard-user', 'Создать план урока');
       break;
     case 'tasks':
       html = ta('inputText', 3)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + sel('countSelect', 'Количество', `<option>5</option><option>10</option><option>15</option>`)
         + btn('fas fa-tasks', 'Создать задания');
       break;
     case 'variants':
       html = ta('inputText', 3)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + sel('variantCount', 'Вариантов', `<option>2 варианта</option><option>4 варианта</option>`)
         + btn('fas fa-copy', 'Создать контрольную');
@@ -2269,7 +2289,7 @@ function generateForm(actionId) {
       break;
     case 'differentiation':
       html = ta('inputText', 3)
-        + sel('subjectSelect', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + btn('fas fa-layer-group', 'Дифференцировать');
       break;
@@ -2311,8 +2331,8 @@ async function processAction() {
     showContinueChat();
   } catch(error) {
     removeLoadingMessage(loadingId);
-    addChatMessage('❌ Не удалось получить ответ: ' + error.message + '\n\nПопробуйте ещё раз.', false);
-    showToast('Ошибка соединения');
+    addChatMessage('❌ ' + t('errors.aiFailed') + ': ' + error.message, false);
+    showToast(t('errors.conn'));
   } finally {
     state.isLoading = false;
     disableForm(false);
@@ -2346,7 +2366,7 @@ async function sendContinue() {
     state.conversationHistory.push({ role: 'assistant', content: response });
   } catch(e) {
     removeLoadingMessage(loadingId);
-    addChatMessage('❌ Ошибка: ' + e.message, false);
+    addChatMessage('❌ ' + t('errors.aiFailed') + ': ' + e.message, false);
   } finally {
     state.isLoading = false;
     document.getElementById('sendContinueBtn').disabled = false;
@@ -2411,7 +2431,7 @@ async function callGroqWithStream(messages, loadingId) {
     }
   }
   
-  if (!fullText) throw new Error('Пустой ответ');
+  if (!fullText) throw new Error(t('errors.emptyResponse'));
   
   bubble.innerHTML = formatAIResponse(fullText);
   
@@ -2424,11 +2444,11 @@ async function callGroqWithStream(messages, loadingId) {
   
   const copyBtn = document.createElement('button');
   copyBtn.className = 'copy-btn';
-  copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать';
+  copyBtn.innerHTML = '<i class="fas fa-copy"></i> ' + t('common.copy');
   copyBtn.onclick = () => {
     navigator.clipboard.writeText(fullText).then(() => {
-      copyBtn.innerHTML = '<i class="fas fa-check"></i> Скопировано';
-      setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> Скопировать'; }, 2000);
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> ' + t('common.copied');
+      setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> ' + t('common.copy'); }, 2000);
     });
   };
   messageDiv.appendChild(copyBtn);
@@ -2610,7 +2630,7 @@ function addChatMessage(text, isUser, htmlContent = null) {
   div.className = 'message ' + (isUser ? 'user' : 'ai');
   const label = document.createElement('div');
   label.className = 'message-label';
-  label.textContent = isUser ? 'Вы' : 'NEVIO';
+  label.textContent = isUser ? t('common.you') : 'NEVIO';
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble' + (isUser ? '' : ' ai-content');
   if (htmlContent) {
@@ -2664,7 +2684,7 @@ function saveToHistory(item) {
 function showHistory() {
   const list = document.getElementById('historyList');
   if (!state.history.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon"><i class="fas fa-folder-open"></i></div><h3>История пуста</h3><p>Запросы будут сохраняться здесь</p></div>';
+    list.innerHTML = '<div class="empty-state"><div class="icon"><i class="fas fa-folder-open"></i></div><h3>' + t('history.empty') + '</h3><p>' + t('history.emptyDesc') + '</p></div>';
   } else {
     list.innerHTML = [...state.history].reverse().map((item, idx) => `
       <div class="history-item" onclick="viewHistoryItem(${state.history.length-1-idx})">
@@ -2699,7 +2719,7 @@ function viewHistoryItem(index) {
 }
 
 function clearHistory() {
-  if (confirm('Удалить всю историю запросов?')) {
+  if (confirm(t('settings.clearConfirm'))) {
     state.history = [];
     saveData();
     showToast('История очищена');
@@ -2711,8 +2731,11 @@ function updateProfile() {
   const user = state.telegramUser;
   if (user) {
     document.getElementById('profileAvatar').innerHTML = user.photo_url ? `<img src="${user.photo_url}" alt="">` : '<i class="fas fa-user"></i>';
-    document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
+    document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || t('profile.defaultName');
     document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
+  } else {
+    document.getElementById('profileName').textContent = t('profile.defaultName');
+    document.getElementById('profileUsername').textContent = '';
   }
   const r = { student: t('roleNames.student'), teacher: t('roleNames.teacher') };
   document.getElementById('profileRole').textContent = r[state.role] || '';
@@ -2745,7 +2768,7 @@ function updateThemeUI(isDark) {
 }
 
 function deleteAccount() {
-  if (confirm('Удалить все данные и сменить роль?')) {
+  if (confirm(t('settings.deleteConfirm'))) {
     localStorage.removeItem('nevioData_v3');
     state.role = null;
     state.history = [];
@@ -5003,7 +5026,7 @@ async function practiceLivePage() {
   try {
     const extra = liveContextPrompt('explain');
     const questions = await generateTestQuestions(title + '\n' + extra, 7, 'смешанный');
-    if (!questions.length) throw new Error('ИИ не вернул вопросы');
+    if (!questions.length) throw new Error(t('errors.noQuestions'));
     testState.questions = questions;
     renderCurrentQuestion();
   } catch (e) {
@@ -5196,6 +5219,10 @@ const I18N = {
     'myTasks.namePh': 'Имя и фамилия (для отчёта учителю)',
     'myTasks.finish': 'Завершить и отправить',
     'myTasks.sent': 'Результат отправлен учителю',
+    'common.you': 'Вы',
+    'profile.defaultName': 'Пользователь',
+    'errors.modelsDown': 'Все модели временно недоступны. Попробуйте позже.',
+    'errors.noQuestions': 'ИИ не вернул вопросы',
     'common.copy': 'Скопировать',
     'common.copied': 'Скопировано',
     'common.close': 'Закрыть',
@@ -5205,7 +5232,46 @@ const I18N = {
     'examInfo.criteria': 'Критерии оценивания',
     'examInfo.official': 'Официальные источники',
     'examInfo.tips': 'Советы',
-    'examInfo.secondary': 'Экзамен после 9 класса'
+    'examInfo.secondary': 'Экзамен после 9 класса',
+    'level.basic': 'Для новичка',
+    'level.medium': 'Обычное объяснение',
+    'level.deep': 'Подробно с доказательствами',
+    'test.setupTitle': 'Настройка теста',
+    'test.chooseSubject': 'Выбери предмет:',
+    'test.count': 'Количество вопросов:',
+    'test.count5': '5 вопросов (быстрый)',
+    'test.count10': '10 вопросов',
+    'test.count15': '15 вопросов',
+    'test.difficulty': 'Сложность:',
+    'test.mixed': 'Смешанный',
+    'test.easy': 'Лёгкий',
+    'test.hard': 'Сложный',
+    'test.start': 'Начать тест',
+    'test.generating': 'Генерирую тест...',
+    'test.qOutOf': 'Вопрос',
+    'test.of': 'из',
+    'test.correctCount': '✅ Правильно:',
+    'test.wrongAnswer': '❌ Неверно. Ответ:',
+    'test.correctWord': 'Правильно!',
+    'test.next': 'Далее',
+    'test.result': 'Результат',
+    'test.again': 'Ещё раз',
+    'test.otherSubject': 'Другой предмет',
+    'test.accuracy': 'Точность',
+    'result.excellent': 'Отличный результат!',
+    'result.good': 'Хороший результат!',
+    'result.mid': 'Неплохо, но есть куда расти',
+    'result.low': 'Нужно больше практики',
+    'test.goodPrep': '✅ Хорошая подготовка!',
+    'test.repeat': '⚠️ Рекомендуем повторить материал.',
+    'test.notOfficial': 'Тренировочный тест, не официальный.',
+    'test.failed': 'Не получилось создать тест',
+    'test.tryAgain': 'Попробовать снова',
+    'errors.aiFailed': 'Не удалось получить ответ',
+    'errors.conn': 'Ошибка соединения',
+    'errors.emptyResponse': 'Пустой ответ',
+    'settings.clearConfirm': 'Удалить всю историю запросов?',
+    'settings.deleteConfirm': 'Удалить все данные и сменить роль?'
   },
   kk: {
     'app.subtitle': 'Оқудағы ақылды көмекшің',
@@ -5337,6 +5403,10 @@ const I18N = {
     'myTasks.namePh': 'Аты-жөніңіз (мұғалімге есеп үшін)',
     'myTasks.finish': 'Аяқтау және жіберу',
     'myTasks.sent': 'Нәтиже мұғалімге жіберілді',
+    'common.you': 'Сіз',
+    'profile.defaultName': 'Пайдаланушы',
+    'errors.modelsDown': 'Барлық модельдер уақытша қолжетімсіз. Кейінірек көріңіз.',
+    'errors.noQuestions': 'ИИ сұрақтар қайтармады',
     'common.copy': 'Көшіру',
     'common.copied': 'Көшірілді',
     'common.close': 'Жабу',
@@ -5346,7 +5416,46 @@ const I18N = {
     'examInfo.criteria': 'Бағалау критерийлері',
     'examInfo.official': 'Ресми дереккөздер',
     'examInfo.tips': 'Кеңестер',
-    'examInfo.secondary': '9-сыныптан кейінгі емтихан'
+    'examInfo.secondary': '9-сыныптан кейінгі емтихан',
+    'level.basic': 'Жаңадан бастаушыға',
+    'level.medium': 'Кәдімгі түсіндіру',
+    'level.deep': 'Дәлелдемелермен толық',
+    'test.setupTitle': 'Тест баптауы',
+    'test.chooseSubject': 'Пәнді таңда:',
+    'test.count': 'Сұрақтар саны:',
+    'test.count5': '5 сұрақ (жылдам)',
+    'test.count10': '10 сұрақ',
+    'test.count15': '15 сұрақ',
+    'test.difficulty': 'Қиындық деңгейі:',
+    'test.mixed': 'Аралас',
+    'test.easy': 'Жеңіл',
+    'test.hard': 'Қиын',
+    'test.start': 'Тестті бастау',
+    'test.generating': 'Тестті генерациялау...',
+    'test.qOutOf': 'Сұрақ',
+    'test.of': 'ішінде',
+    'test.correctCount': '✅ Дұрыс:',
+    'test.wrongAnswer': '❌ Қате. Жауап:',
+    'test.correctWord': 'Дұрыс!',
+    'test.next': 'Әрі қарай',
+    'test.result': 'Нәтиже',
+    'test.again': 'Қайтадан',
+    'test.otherSubject': 'Басқа пән',
+    'test.accuracy': 'Дәлдік',
+    'result.excellent': 'Өте жақсы нәтиже!',
+    'result.good': 'Жақсы нәтиже!',
+    'result.mid': 'Жаман емес, бірақ өсетін жер бар',
+    'result.low': 'Көбірек жаттығу керек',
+    'test.goodPrep': '✅ Дайындық жақсы!',
+    'test.repeat': '⚠️ Материалды қайталауды ұсынамыз.',
+    'test.notOfficial': 'Жаттығу тесті, ресми емес.',
+    'test.failed': 'Тест құру мүмкін болмады',
+    'test.tryAgain': 'Қайталап көру',
+    'errors.aiFailed': 'Жауап алу мүмкін болмады',
+    'errors.conn': 'Байланыс қатесі',
+    'errors.emptyResponse': 'Бос жауап',
+    'settings.clearConfirm': 'Барлық сұраулар тарихын жою керек пе?',
+    'settings.deleteConfirm': 'Барлық деректерді жойып, рөлді ауыстыру керек пе?'
   },
   uz: {
     'app.subtitle': "O'quvdagi aqlli yordamching",
@@ -5478,6 +5587,10 @@ const I18N = {
     'myTasks.namePh': "Ism va familiya (o'qituvchiga hisobot uchun)",
     'myTasks.finish': 'Yakunlash va yuborish',
     'myTasks.sent': "Natija o'qituvchiga yuborildi",
+    'common.you': 'Siz',
+    'profile.defaultName': 'Foydalanuvchi',
+    'errors.modelsDown': "Barcha modellar vaqtincha mavjud emas. Keyinroq urinib ko'ring.",
+    'errors.noQuestions': 'AI savollarni qaytarmadi',
     'common.copy': 'Nusxalash',
     'common.copied': 'Nusxalandi',
     'common.close': 'Yopish',
@@ -5487,9 +5600,47 @@ const I18N = {
     'examInfo.criteria': 'Baholash mezonlari',
     'examInfo.official': 'Rasmiy manbalar',
     'examInfo.tips': 'Maslahatlar',
-    'examInfo.secondary': '9-sinfdan keyingi imtihon'
-  }
-};
+    'examInfo.secondary': '9-sinfdan keyingi imtihon',
+    'level.basic': 'Boshlovchi uchun',
+    'level.medium': 'Oddiy tushuntirish',
+    'level.deep': 'Isbotlar bilan batafsil',
+    'test.setupTitle': 'Testni sozlash',
+    'test.chooseSubject': 'Fanni tanlang:',
+    'test.count': "Savollar soni:",
+    'test.count5': '5 ta savol (tez)',
+    'test.count10': '10 ta savol',
+    'test.count15': '15 ta savol',
+    'test.difficulty': 'Qiyinlik darajasi:',
+    'test.mixed': 'Aralash',
+    'test.easy': 'Yengil',
+    'test.hard': 'Qiyin',
+    'test.start': 'Testni boshlash',
+    'test.generating': 'Test generatsiya qilinmoqda...',
+    'test.qOutOf': 'Savol',
+    'test.of': 'dan',
+    'test.correctCount': '✅ Toʻgʻri:',
+    'test.wrongAnswer': '❌ Notoʻgʻri. Javob:',
+    'test.correctWord': "To'g'ri!",
+    'test.next': 'Keyingi',
+    'test.result': 'Natija',
+    'test.again': 'Yana',
+    'test.otherSubject': 'Boshqa fan',
+    'test.accuracy': 'Aniqlik',
+    'result.excellent': "A'lo natija!",
+    'result.good': 'Yaxshi natija!',
+    'result.mid': 'Yomon emas, lekin yaxshilash mumkin',
+    'result.low': "Ko'proq mashq qilish kerak",
+    'test.goodPrep': "✅ Tayyorgarlik yaxshi!",
+    'test.repeat': '⚠️ Materialni takrorlashni tavsiya qilamiz.',
+    'test.notOfficial': 'Mashq testi, rasmiy emas.',
+    'test.failed': "Test yaratishning iloji bo'lmadi",
+    'test.tryAgain': 'Qayta urinish',
+    'errors.aiFailed': "Javob olishning iloji bo'lmadi",
+    'errors.conn': 'Aloqa xatosi',
+    'errors.emptyResponse': 'Boʻsh javob',
+    'settings.clearConfirm': "Barcha so'rovlar tarixini o'chirish kerakmi?",
+    'settings.deleteConfirm': "Barcha ma'lumotlarni o'chirib, rolni almashtirish kerakmi?"
+  }};
 
 function t(key) {
   const dict = I18N[state.lang] || I18N.ru;
@@ -5508,6 +5659,7 @@ function applyLanguage(lang) {
   state.lang = lang || 'ru';
   document.documentElement.lang = (state.lang === 'kk' || state.lang === 'uz') ? state.lang : 'ru';
   applyI18n();
+  updateThemeUI(document.body.classList.contains('dark-theme'));
   updateSettingsCountryLine();
   renderCountryBadge();
 }
@@ -5536,6 +5688,38 @@ function activeCountry() {
   return NEVIO_COUNTRIES[state.country] || NEVIO_COUNTRIES.BY;
 }
 
+// Локализованное название предмета для текущего языка (ключи остаются
+// русскими — вся внутренняя логика и базы знаний работают по ключам).
+function subjectName(subject) {
+  const c = activeCountry();
+  const map = (c.subjects && c.subjects[state.lang]) ? c.subjects[state.lang] : null;
+  return (map && map[subject]) ? map[subject] : subject;
+}
+
+// Списки режимов («Что нужно») могут быть массивом (BY/RU — русский) или
+// объектом {ru, kk}/{ru, uz} — возвращает список для текущего языка.
+function modeList(c, name) {
+  const v = c[name];
+  if (Array.isArray(v)) return v;
+  if (v && Array.isArray(v[state.lang])) return v[state.lang];
+  if (v && Array.isArray(v.ru)) return v.ru;
+  return [];
+}
+function modeRuList(c, name) {
+  const v = c[name];
+  if (Array.isArray(v)) return v;
+  return (v && Array.isArray(v.ru)) ? v.ru : [];
+}
+// Переводит каноническое значение режима в отображаемый текст текущего языка
+// (значения в select остаются каноническими — логика промптов не меняется).
+function modeLabel(c, name, canonical) {
+  const ru = modeRuList(c, name);
+  const idx = ru.indexOf(canonical);
+  if (idx === -1) return canonical;
+  const list = modeList(c, name);
+  return list[idx] || canonical;
+}
+
 // ---------- Определение страны: язык Telegram → геолокация → ручной выбор ----------
 function detectCountryByTelegram() {
   const lang = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.language_code : '').toLowerCase();
@@ -5544,6 +5728,16 @@ function detectCountryByTelegram() {
 }
 
 function maybeDetectCountryByGeo() {
+  // ipapi.co бесплатно: 30 000 запросов/мес, до 1 000/день; при исчерпании
+  // возвращает HTTP 429. Вызываем не чаще раза в сутки и только до первого
+  // выбора страны — лимит заведомо не выбирается. Любая ошибка/429/таймаут
+  // обрабатывается тихо: пользователь просто выбирает страну вручную.
+  try {
+    const now = Date.now();
+    const last = parseInt(localStorage.getItem('nevioGeoChecked') || '0', 10) || 0;
+    if (last && (now - last) < 24 * 60 * 60 * 1000) return;
+    localStorage.setItem('nevioGeoChecked', String(now));
+  } catch (e) { return; }
   try {
     fetchWithTimeout('https://ipapi.co/json/', {}, 3500)
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -6104,7 +6298,22 @@ const MENU_T_UZ = {
   analytics: { ru: 'Аналитика класса', uz: 'Sinf tahlili' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', uz: 'Kim bajardi, qayerda xatolar' }
 };
 
-/* ---------- КОНФИГУРАЦИИ СТРАН ---------- */
+/* ---------- КОНФИГУРАЦИИ СТРАН ----------
+   ДАННЫЕ О ФОРМАТАХ ЭКЗАМЕНОВ (structure/criteria/пороги/баллы):
+   зафиксированы по состоянию на 2025/2026 учебный год. Форматы меняются
+   ежегодно — ПЕРЕПРОВЕРЯЙТЕ перед началом каждого учебного года (июль–август)
+   по официальным источникам:
+   • BY: РИКЗ (rikc.by), НИО/Аду.бай (adu.by), ЕИОР (eior.by)
+   • RU: ФИПИ (fipi.ru — демоверсии, кодификаторы, спецификации),
+         Рособрнадзор (obrnadzor.gov.ru)
+   • KZ: Национальный центр тестирования (testcenter.kz, app.testcenter.kz,
+         prob-ent.testcenter.kz), Правила проведения ЕНТ (adilet.zan.kz)
+   • UZ: Министерство высшего образования, науки и инноваций (edu.uz),
+         Постановление КМ РУз № 578 от 13.09.2025 (189 баллов),
+         платформа подачи my.uzbmb.uz
+   Полный список и порядок проверки — в docs/MULTICOUNTRY.md, раздел
+   «Источники данных о форматах экзаменов».
+   ---------------------------------------------------------------- */
 const NEVIO_COUNTRIES = {
   BY: {
     id: 'BY',
@@ -6194,6 +6403,9 @@ const NEVIO_COUNTRIES = {
       }
     },
     testFormatName: 'ЕГЭ (Россия)',
+    testBanner: function () {
+      return '<div class="info-banner"><strong>🎯 Интерактивный тест в формате ЕГЭ</strong><br>ИИ генерирует вопросы формата ЕГЭ. Тренировочные задания — используй для практики!</div>';
+    },
     ctSubjects: ['Математика','Русский язык','Физика','Химия','Биология','История','Обществознание','Информатика','Литература','География','Английский язык'],
     exam9Subjects: ['Математика','Русский язык','Обществознание','Физика','Химия','Биология','История','География','Информатика','Английский язык'],
     studySubjects: ['Математика','Русский язык','Физика','Химия','Биология','История','Обществознание','Информатика','Литература','География','Английский язык'],
@@ -6277,8 +6489,35 @@ const NEVIO_COUNTRIES = {
     ctSubjects: ['Математика','Математическая грамотность','Грамотность чтения','История Казахстана','Физика','Химия','Биология','География','Всемирная история','Английский язык','Информатика','Русский язык','Казахский язык','Основы права'],
     exam9Subjects: ['Математика','Казахский язык','Русский язык','Английский язык','История Казахстана'],
     studySubjects: ['Математика','Физика','Химия','Биология','История Казахстана','Всемирная история','География','Английский язык','Информатика','Русский язык','Казахский язык'],
-    ctModes: ['Разбор типичных заданий ЕНТ','Разобрать моё задание','Вся теория для ЕНТ','Пробный тест ЕНТ','Стратегия сдачи ЕНТ','Работа над ошибками'],
-    exam9Modes: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+    subjects: { kk: {
+      'Математика': 'Математика',
+      'Математическая грамотность': 'Математикалық сауаттылық',
+      'Грамотность чтения': 'Оқу сауаттылығы',
+      'История Казахстана': 'Қазақстан тарихы',
+      'Физика': 'Физика',
+      'Химия': 'Химия',
+      'Биология': 'Биология',
+      'География': 'География',
+      'Всемирная история': 'Дүниежүзі тарихы',
+      'Английский язык': 'Ағылшын тілі',
+      'Информатика': 'Информатика',
+      'Русский язык': 'Орыс тілі',
+      'Казахский язык': 'Қазақ тілі',
+      'Основы права': 'Құқық негіздері'
+    } },
+    ctModes: {
+      ru: ['Разбор типичных заданий ЕНТ','Разобрать моё задание','Вся теория для ЕНТ','Пробный тест ЕНТ','Стратегия сдачи ЕНТ','Работа над ошибками'],
+      kk: ['ҰБТ типтік тапсырмаларын талдау','Менің тапсырмамды талдау','ҰБТ үшін толық теория','ҰБТ сынақ тесті','ҰБТ тапсыру стратегиясы','Қатемен жұмыс']
+    },
+    exam9Modes: {
+      ru: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+      kk: ['Билет / сұрақты талдау','Пән бойынша толық теория','Емтиханның типтік тапсырмалары','Дайындық стратегиясы']
+    },
+    testBanner: function () {
+      return state.lang === 'kk'
+        ? '<div class="info-banner"><strong>🎯 ҰБТ форматындағы интерактивті тест</strong><br>ИИ ҰБТ форматындағы сұрақтарды генерациялайды. Жаттығу тапсырмалары!</div>'
+        : '<div class="info-banner"><strong>🎯 Интерактивный тест в формате ЕНТ</strong><br>ИИ генерирует вопросы формата ЕНТ. Тренировочные задания — используй для практики!</div>';
+    },
     kbForSubject: function (subject) {
       const kb = kbVariant('ЕНТ');
       const map = {
@@ -6363,8 +6602,32 @@ const NEVIO_COUNTRIES = {
     ctSubjects: ['Математика','Родной язык','История Узбекистана','Физика','Химия','Биология','География','Английский язык','Информатика','Литература'],
     exam9Subjects: ['Математика','Родной язык','История Узбекистана','Иностранный язык'],
     studySubjects: ['Математика','Физика','Химия','Биология','История Узбекистана','Родной язык','География','Английский язык','Информатика'],
-    ctModes: ['Разбор типичных заданий теста','Разобрать моё задание','Вся теория для теста','Пробный тест','Стратегия подготовки','Работа над ошибками'],
-    exam9Modes: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+    subjects: { uz: {
+      'Математика': 'Matematika',
+      'Родной язык': 'Ona tili',
+      'История Узбекистана': 'Oʻzbekiston tarixi',
+      'Физика': 'Fizika',
+      'Химия': 'Kimyo',
+      'Биология': 'Biologiya',
+      'География': 'Geografiya',
+      'Английский язык': 'Ingliz tili',
+      'Информатика': 'Informatika',
+      'Литература': 'Adabiyot',
+      'Иностранный язык': 'Chet tili'
+    } },
+    ctModes: {
+      ru: ['Разбор типичных заданий теста','Разобрать моё задание','Вся теория для теста','Пробный тест','Стратегия подготовки','Работа над ошибками'],
+      uz: ['Testning tipik topshiriqlarini tahlil qilish',"Mening topshirig'imni tahlil qilish",'Test uchun toʻliq nazariya','Sinov testi','Tayyorgarlik strategiyasi','Xatolar ustida ishlash']
+    },
+    exam9Modes: {
+      ru: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+      uz: ['Bilet / savolni tahlil qilish','Fan boʻyicha toʻliq nazariya',"Imtihonning tipik topshiriqlari",'Tayyorgarlik strategiyasi']
+    },
+    testBanner: function () {
+      return state.lang === 'uz'
+        ? '<div class="info-banner"><strong>🎯 Interaktiv test</strong><br>AI test formatidagi savollarni generatsiya qiladi. Mashq topshiriqlari!</div>'
+        : '<div class="info-banner"><strong>🎯 Интерактивный тест</strong><br>ИИ генерирует вопросы в формате вступительных тестов. Тренировочные задания — используй для практики!</div>';
+    },
     kbForSubject: function (subject) {
       const kb = kbVariant('тестов');
       const map = {
@@ -6866,7 +7129,7 @@ function practiceWeakTopic(subject, topic) {
   (async function () {
     try {
       const questions = await generateTestQuestions(subject + ' — ' + topic, 5, 'смешанный');
-      if (!questions.length) throw new Error('ИИ не вернул вопросы');
+      if (!questions.length) throw new Error(t('errors.noQuestions'));
       testState.questions = questions;
       renderCurrentQuestion();
     } catch (e) {
@@ -6887,9 +7150,9 @@ function explainWeakTopic(subject, topic) {
   document.getElementById('continueChatArea').style.display = 'none';
   const form = document.getElementById('actionForm');
   const subjectsAll = activeCountry().studySubjects;
-  form.innerHTML = '<div class="form-group"><label>' + t('form.subject') + '</label><select id="subjectSelect">' + subjectsAll.map(function (s) { return '<option' + (s === subject ? ' selected' : '') + '>' + escapeHtml(s) + '</option>'; }).join('') + '</select></div>' +
+  form.innerHTML = '<div class="form-group"><label>' + t('form.subject') + '</label><select id="subjectSelect">' + subjectsAll.map(function (s) { return '<option value="' + s + '"' + (s === subject ? ' selected' : '') + '>' + escapeHtml(subjectName(s)) + '</option>'; }).join('') + '</select></div>' +
     '<div class="form-group"><label>' + t('form.query') + '</label><textarea id="inputText" rows="4" placeholder="' + t('form.queryPh') + '">' + escapeHtml(topic) + '</textarea></div>' +
-    '<div class="form-group"><label>' + t('form.level') + '</label><select id="levelSelect"><option>Для новичка</option><option>Обычное объяснение</option><option>Подробно с доказательствами</option></select></div>' +
+    '<div class="form-group"><label>' + t('form.level') + '</label><select id="levelSelect"><option value="' + t('level.basic') + '">' + t('level.basic') + '</option><option value="' + t('level.medium') + '">' + t('level.medium') + '</option><option value="' + t('level.deep') + '">' + t('level.deep') + '</option></select></div>' +
     '<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-lightbulb"></i> ' + t('form.startPrep') + '</button>';
   showPage('actionPage');
 }
@@ -7033,7 +7296,7 @@ function renderTeacherClasses() {
     });
   }
   body += '<div class="card"><div class="form-group"><label>' + t('teacher.newClass') + '</label><input type="text" id="newClassName" placeholder="' + t('teacher.classNamePh') + '"></div>' +
-    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="newClassSubject">' + activeCountry().studySubjects.map(function (s) { return '<option>' + escapeHtml(s) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="newClassSubject">' + activeCountry().studySubjects.map(function (s) { return '<option value="' + s + '">' + escapeHtml(subjectName(s)) + '</option>'; }).join('') + '</select></div>' +
     '<div class="form-group"><label>' + t('form.grade') + '</label><select id="newClassGrade">' + [5,6,7,8,9,10,11].map(function (g) { return '<option>' + g + ' ' + t('form.gradeWord') + '</option>'; }).join('') + '</select></div>' +
     '<button class="btn btn-primary" onclick="createClass()"><i class="fas fa-plus"></i> ' + t('teacher.newClass') + '</button></div>';
   if (teacherData.classes.length) {
@@ -7096,7 +7359,7 @@ function renderTeacherAssignNew() {
   let body = '<div class="card">' +
     '<div class="form-group"><label>' + t('teacher.classes') + '</label><select id="assignClassId" onchange="assignDraft.classId=this.value">' +
     teacherData.classes.map(function (x) { return '<option value="' + x.id + '"' + (x.id === assignDraft.classId ? ' selected' : '') + '>' + escapeHtml(x.name) + '</option>'; }).join('') + '</select></div>' +
-    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="assignSubject">' + activeCountry().studySubjects.map(function (s) { return '<option>' + escapeHtml(s) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="assignSubject">' + activeCountry().studySubjects.map(function (s) { return '<option value="' + s + '">' + escapeHtml(subjectName(s)) + '</option>'; }).join('') + '</select></div>' +
     '<div class="form-group"><label>' + t('teacher.assignmentTopic') + '</label><input type="text" id="assignTopic" placeholder="' + t('teacher.assignmentTopicPh') + '" value="' + escapeHtml(assignDraft.topic) + '"></div>' +
     '<div class="form-group"><label>' + t('form.what') + '</label><select id="assignCount"><option value="5">5</option><option value="10">10</option></select></div>' +
     '<button class="btn btn-primary" id="assignGenBtn" onclick="generateAssignmentQuestions()"><i class="fas fa-wand-magic-sparkles"></i> ' + t('teacher.genQuestions') + '</button></div>';
@@ -7128,7 +7391,7 @@ async function generateAssignmentQuestions() {
   renderTeacher('assign_new');
   try {
     const questions = await generateTestQuestions(subject + ' — ' + topic, count, 'смешанный');
-    if (!questions.length) throw new Error('ИИ не вернул вопросы');
+    if (!questions.length) throw new Error(t('errors.noQuestions'));
     assignDraft.questions = questions;
   } catch (e) {
     showToast(e.message || 'Ошибка');
