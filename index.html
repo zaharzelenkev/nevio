@@ -1721,11 +1721,15 @@ function selectTestSubject(el, subject) {
 }
 
 async function startInteractiveTest() {
-  const count = parseInt(document.getElementById('testQCount').value);
-  const difficulty = document.getElementById('testDifficulty').value;
+  // После первого прохождения настройки (select'ы) удалены из DOM — кнопка
+  // «Ещё раз» вызывает этот метод повторно, поэтому берём сохранённые значения.
+  const countEl = document.getElementById('testQCount');
+  const diffEl = document.getElementById('testDifficulty');
+  const count = countEl ? parseInt(countEl.value) : (testState.count || 10);
+  const difficulty = diffEl ? diffEl.value : (testState.difficulty || 'смешанный');
   const subject = testState.subject;
 
-  testState = { questions: [], currentQ: 0, score: 0, subject, answered: false };
+  testState = { questions: [], currentQ: 0, score: 0, subject, answered: false, count, difficulty };
 
   document.getElementById('testContainer').innerHTML = `
     <div class="card" style="text-align:center;padding:50px;">
@@ -1972,9 +1976,11 @@ function init() {
   
   // Загрузка данных
   const saved = localStorage.getItem('nevioData_v3');
+  let savedOk = false;
   if (saved) {
     try {
       const p = JSON.parse(saved);
+      savedOk = true;
       state.role = p.role;
       state.history = p.history || [];
       state.country = p.country || null;
@@ -1995,7 +2001,7 @@ function init() {
   if (!country) {
     try { country = localStorage.getItem('nevioCountry') || null; } catch(e) {}
   }
-  if (!country && saved) country = 'BY'; // существующие пользователи: поведение не меняется
+  if (!country && savedOk) country = 'BY'; // существующие пользователи (с валидными данными): поведение не меняется
   if (!country) country = detectCountryByTelegram();
   state.country = country || null;
   applyLanguage(country ? defaultCountryLang(country) : 'ru');
@@ -2084,6 +2090,7 @@ function openAction(actionId) {
 }
 
 function openFormulaBook() {
+  const c = activeCountry();
   state.currentActionId = 'formula_book';
   document.getElementById('actionTitle').innerHTML = '<i class="fas fa-square-root-alt"></i> Книга формул';
   document.getElementById('actionDescription').textContent = 'Все формулы с объяснениями';
@@ -2092,7 +2099,7 @@ function openFormulaBook() {
     <div class="message ai">
       <div class="message-label">NEVIO</div>
       <div class="message-bubble ai-content">
-        <h3>📐 Книга формул для ЦТ</h3>
+        <h3>📐 Книга формул — ${c.flag} ${escapeHtml(examTitle(c))}</h3>
         <p>Выберите предмет, и я покажу все ключевые формулы с объяснениями:</p>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0;">
           <div class="menu-card" onclick="showFormulas('math')" style="padding:16px;">
@@ -2117,7 +2124,7 @@ function openFormulaBook() {
     </div>`;
   document.getElementById('continueChatArea').style.display = 'block';
   state.conversationHistory = [
-    { role: 'system', content: systemPrompts[state.role] || systemPrompts.student },
+    { role: 'system', content: activeCountry().systemPrompt(state.role) },
     { role: 'user', content: 'Покажи все формулы в красивом LaTeX формате' },
     { role: 'assistant', content: 'Выберите предмет выше или напишите тему!' }
   ];
@@ -2338,6 +2345,10 @@ async function processAction() {
     disableForm(false);
     const el = document.getElementById('inputText');
     if (el) el.value = '';
+    const taskEl = document.getElementById('taskInput');
+    if (taskEl) taskEl.value = '';
+    const solEl = document.getElementById('solutionInput');
+    if (solEl) solEl.value = '';
   }
 }
 
@@ -3485,6 +3496,15 @@ function detectKind(url) {
 function hostLabel(url) {
   if (/eior\.by/i.test(url)) return 'ЕИОР';
   if (/adu\.by/i.test(url)) return 'Аду.бай';
+  if (/fipi\.ru/i.test(url)) return 'ФИПИ';
+  if (/obrnadzor\.gov\.ru/i.test(url)) return 'Рособрнадзор';
+  if (/edu\.gov\.ru/i.test(url)) return 'Минпросвещения РФ';
+  if (/testcenter\.kz/i.test(url)) return 'НЦТ Казахстана';
+  if (/gov\.kz/i.test(url)) return 'Порталы Казахстана';
+  if (/egov\.kz/i.test(url)) return 'eGov.kz';
+  if (/uzedu\.uz/i.test(url)) return 'Мин. образования Узбекистана';
+  if (/abiturient\.uz/i.test(url)) return 'Портал абитуриента';
+  if (/my\.gov\.uz/i.test(url)) return 'my.gov.uz';
   return 'Материал';
 }
 
@@ -4980,10 +5000,12 @@ function liveContextPrompt(mode) {
       extra += g.name + ': ' + g.items.map(function (m) { return m.t + (m.d ? ' (' + m.d + ')' : ''); }).join('; ') + '\n';
     });
   }
+  const cname = activeCountry().nameLocal();
+  const exam = examTitle(activeCountry());
   if (mode === 'summary') {
-    return 'Составь конспект по официальному материалу системы образования Беларуси.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nОпирайся только на школьную программу РБ. Формулы — LaTeX.';
+    return 'Составь конспект по официальному материалу системы образования ' + cname + '.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nОпирайся только на школьную программу ' + cname + ' и формат ' + exam + '. Формулы — LaTeX.';
   }
-  return 'Объясни официальный материал системы образования Беларуси как репетитор.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nПросто, с примерами и типичными ошибками. Формулы — LaTeX.';
+  return 'Объясни официальный материал системы образования ' + cname + ' как репетитор.\nИсточник: ' + (officialState.url || '') + '\nЗаголовок: ' + title + '\n' + extra + '\nПросто, с примерами и типичными ошибками. Формулы — LaTeX.';
 }
 
 function explainLivePage() { runLiveAi('explain'); }
@@ -5020,7 +5042,7 @@ function runLiveAi(mode) {
 
 async function practiceLivePage() {
   const title = (officialState.page && officialState.page.title) || 'Тема ЕИОР';
-  testState = { questions: [], currentQ: 0, score: 0, subject: title, answered: false, fromOfficial: true };
+  testState = { questions: [], currentQ: 0, score: 0, subject: title, answered: false, fromOfficial: true, count: 7, difficulty: 'смешанный' };
   showPage('testPage');
   document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:48px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:12px;color:var(--text-secondary);">Тест по официальной теме</p></div>';
   try {
@@ -6225,6 +6247,7 @@ const MENU_T_RU = {
   schema: { ru: 'Сделать схему' }, schemaD: { ru: 'Визуальная шпаргалка' },
   oral: { ru: 'Устный экзамен' }, oralD: { ru: 'Потренируйся отвечать устно' },
   lit: { ru: 'Анализ произведения' }, litD: { ru: 'Герои, темы, идеи' },
+  formulas: { ru: 'Книга формул' }, formulasD: { ru: 'Все формулы с LaTeX-рендерингом' },
   check: { ru: 'Проверка решения по критериям' }, checkD: { ru: 'Оценка решения по критериям ЕГЭ/ОГЭ' },
   myTasks: { ru: 'Задания от учителя' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте' },
   lesson: { ru: 'План урока' }, lessonD: { ru: 'Полный план за 30 секунд' },
@@ -6253,6 +6276,7 @@ const MENU_T_KZ = {
   schema: { ru: 'Сделать схему', kk: 'Схема жасау' }, schemaD: { ru: 'Визуальная шпаргалка', kk: 'Көрнекі шпаргалка' },
   oral: { ru: 'Устный экзамен', kk: 'Ауызша емтихан' }, oralD: { ru: 'Потренируйся отвечать устно', kk: 'Ауызша жауап беруді жаттықтыр' },
   lit: { ru: 'Анализ произведения', kk: 'Шығарманы талдау' }, litD: { ru: 'Герои, темы, идеи', kk: 'Кейіпкерлер, тақырыптар, идеялар' },
+  formulas: { ru: 'Книга формул', kk: 'Формулалар кітабы' }, formulasD: { ru: 'Все формулы с LaTeX-рендерингом', kk: 'Барлық формулалар LaTeX-пен' },
   check: { ru: 'Проверка решения по критериям', kk: 'Шешімді критерийлер бойынша тексеру' }, checkD: { ru: 'Оценка решения по критериям ЕНТ', kk: 'ҰБТ критерийлері бойынша бағалау' },
   myTasks: { ru: 'Задания от учителя', kk: 'Мұғалімнің тапсырмалары' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', kk: 'Код бойынша қосылып, орындаңыз' },
   lesson: { ru: 'План урока', kk: 'Сабақ жоспары' }, lessonD: { ru: 'Полный план за 30 секунд', kk: 'Толық жоспар 30 секундта' },
@@ -6281,6 +6305,7 @@ const MENU_T_UZ = {
   schema: { ru: 'Сделать схему', uz: 'Sxema tuzish' }, schemaD: { ru: 'Визуальная шпаргалка', uz: 'Koʻrgazmali shpargalka' },
   oral: { ru: 'Устный экзамен', uz: 'Ogʻzaki imtihon' }, oralD: { ru: 'Потренируйся отвечать устно', uz: 'Ogʻzaki javob berishni mashq qiling' },
   lit: { ru: 'Анализ произведения', uz: 'Asar tahlili' }, litD: { ru: 'Герои, темы, идеи', uz: 'Qahramonlar, mavzular, gʻoyalar' },
+  formulas: { ru: 'Книга формул', uz: 'Formulalar kitobi' }, formulasD: { ru: 'Все формулы с LaTeX-рендерингом', uz: 'Barcha formulalar LaTeX bilan' },
   check: { ru: 'Проверка решения по критериям', uz: 'Yechimni mezonlar boʻyicha tekshirish' }, checkD: { ru: 'Оценка решения по критериям тестов', uz: 'Test mezonlari boʻyicha baholash' },
   myTasks: { ru: 'Задания от учителя', uz: 'Oʻqituvchi topshiriqlari' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', uz: 'Kod orqali qoʻshiling va bajaring' },
   lesson: { ru: 'План урока', uz: 'Dars rejasi' }, lessonD: { ru: 'Полный план за 30 секунд', uz: 'Toʻliq reja 30 soniyada' },
@@ -6685,6 +6710,7 @@ function byMenu() {
   const student = JSON.parse(JSON.stringify(menuConfigs.student));
   student.sections[0].items.push({ id: 'exam_info', icon: 'fas fa-file-signature', title: 'Формат и критерии ЦТ/ЦЭ', description: 'Структура, баллы и критерии — без запросов к ИИ' });
   student.sections[1].items.push(
+    { id: 'formula_book', icon: 'fas fa-square-root-alt', title: 'Книга формул', description: 'Все формулы с LaTeX-рендерингом' },
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: 'Проверка решения по критериям', description: 'Оценка решения по критериям ЦТ/ЦЭ' },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: 'Задания от учителя', description: 'Присоединяйтесь по коду и решайте' }
   );
@@ -6710,6 +6736,7 @@ function buildMenuFor(c) {
     { id: 'schema', icon: 'fas fa-project-diagram', title: pick(c.t.schema), description: pick(c.t.schemaD) },
     { id: 'oral_exam', icon: 'fas fa-microphone-alt', title: pick(c.t.oral), description: pick(c.t.oralD) },
     { id: 'lit_analysis', icon: 'fas fa-book-open', title: pick(c.t.lit), description: pick(c.t.litD) },
+    { id: 'formula_book', icon: 'fas fa-square-root-alt', title: pick(c.t.formulas), description: pick(c.t.formulasD) },
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: pick(c.t.check), description: pick(c.t.checkD) },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: pick(c.t.myTasks), description: pick(c.t.myTasksD) }
   ];
@@ -6830,7 +6857,7 @@ function openExamInfo() {
 function renderExamInfo(c) {
   const e = c.exam;
   const subjects = c.ctSubjects.map(function (s) {
-    return '<span class="subject-chip" style="cursor:default;">' + escapeHtml(s) + '</span>';
+    return '<span class="subject-chip" style="cursor:default;">' + escapeHtml(subjectName(s)) + '</span>';
   }).join(' ');
   const tips = (c.tips || []).map(function (tp) { return '<li>' + escapeHtml(tp) + '</li>'; }).join('');
   let officialBtns = '';
@@ -7023,8 +7050,15 @@ function trackAction(actionId, subject, input) {
   const cp = countryProgress();
   cp.actions.push({ type: actionId, subject: subject, input: String(input || '').slice(0, 120), at: Date.now() });
   if (cp.actions.length > 100) cp.actions.shift();
+  // Активность по темам ведём отдельно от точности: действие (решить/объяснить)
+  // не является ответом на вопрос и не должно понижать процент верных.
   const topic = tagTopic(subject, input);
-  recordSkill(subject, topic, null); // факт работы над темой (без оценки)
+  if (topic) {
+    if (!cp.activity) cp.activity = {};
+    const k = subject + '|' + topic;
+    if (!cp.activity[k]) cp.activity[k] = { n: 0, subject: subject, topic: topic };
+    cp.activity[k].n++;
+  }
   saveProgressData();
 }
 
@@ -7123,7 +7157,7 @@ function escapeAttr(s) {
 }
 
 function practiceWeakTopic(subject, topic) {
-  testState = { questions: [], currentQ: 0, score: 0, subject: subject + ' — ' + topic, answered: false, fromProgress: true };
+  testState = { questions: [], currentQ: 0, score: 0, subject: subject + ' — ' + topic, answered: false, fromProgress: true, count: 5, difficulty: 'смешанный' };
   showPage('testPage');
   document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:48px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:12px;color:var(--text-secondary);">' + escapeHtml(t('teacher.generating')) + '</p></div>';
   (async function () {
