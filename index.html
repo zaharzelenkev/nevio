@@ -1344,7 +1344,7 @@
 
 <script>
 const tg = window.Telegram?.WebApp;
-if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
+if (tg) { if (tg.expand) tg.expand(); if (tg.enableClosingConfirmation) tg.enableClosingConfirmation(); }
 
 // API КЛЮЧ И МОДЕЛИ (бесплатные)
 const OPENROUTER_API_KEY = "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";
@@ -5377,6 +5377,7 @@ const I18N = {
     'teacher.importResultBtn': 'Добавить результат',
     'teacher.importOk': 'Результат добавлен в аналитику',
     'teacher.importBad': 'Код не распознан или не подходит к этому заданию',
+    'teacher.shareMsg': '📚 Задание «{title}»\n{line}\n\nОткройте NEVIO → «Задания от учителя» и вставьте код:\n\n{code}',
     'myTasks.title': 'Задания от учителя',
     'myTasks.subtitle': 'Введите код, который дал учитель',
     'myTasks.join': 'Присоединиться',
@@ -5386,6 +5387,8 @@ const I18N = {
     'myTasks.resultCode': 'Код результата',
     'myTasks.resultCodeDesc': 'Результат сохранён. Скопируйте код ниже и отправьте его учителю — так он попадёт в аналитику класса.',
     'myTasks.resultCodeBackup': 'Дополнительно можно скопировать код результата ниже.',
+    'myTasks.resultSending': 'Отправляю результат учителю…',
+    'myTasks.shareMsg': '📊 Мой результат по заданию «{title}»: {score}/{total} ({pct}%)\n\nКод результата:\n\n{code}',
     'myTasks.start': 'Начать',
     'myTasks.results': 'Мои результаты',
     'myTasks.notFound': 'Задание с таким кодом не найдено. Проверьте код у учителя.',
@@ -5585,6 +5588,7 @@ const I18N = {
     'teacher.importResultBtn': 'Нәтижені қосу',
     'teacher.importOk': 'Нәтиже аналитикаға қосылды',
     'teacher.importBad': 'Код танылмады немесе бұл тапсырмаға сәйкес келмейді',
+    'teacher.shareMsg': '📚 «{title}» тапсырмасы\n{line}\n\nNEVIO-ны ашып → «Мұғалімнің тапсырмалары» бөліміне кодты қойыңыз:\n\n{code}',
     'myTasks.title': 'Мұғалімнің тапсырмалары',
     'myTasks.subtitle': 'Мұғалім берген кодты енгізіңіз',
     'myTasks.join': 'Қосылу',
@@ -5594,6 +5598,8 @@ const I18N = {
     'myTasks.resultCode': 'Нәтиже коды',
     'myTasks.resultCodeDesc': 'Нәтиже сақталды. Төмендегі кодты көшіріп, мұғалімге жіберіңіз — ол сынып аналитикасына түседі.',
     'myTasks.resultCodeBackup': 'Төмендегі нәтиже кодын қосымша көшіруге болады.',
+    'myTasks.resultSending': 'Нәтижені мұғалімге жіберуде…',
+    'myTasks.shareMsg': '📊 «{title}» тапсырмасы бойынша менің нәтижем: {score}/{total} ({pct}%)\n\nНәтиже коды:\n\n{code}',
     'myTasks.start': 'Бастау',
     'myTasks.results': 'Менің нәтижелерім',
     'myTasks.notFound': 'Мұндай кодпен тапсырма табылмады. Кодты мұғалімнен тексеріңіз.',
@@ -5793,6 +5799,7 @@ const I18N = {
     'teacher.importResultBtn': 'Natijani qoʻshish',
     'teacher.importOk': 'Natija tahlilga qoʻshildi',
     'teacher.importBad': "Kod tanilmadi yoki bu topshiriqqa mos kelmaydi",
+    'teacher.shareMsg': "📚 «{title}» topshirig'i\n{line}\n\nNEVIO-ni oching → «O'qituvchi topshiriqlari» bo'limiga kodni qo'ying:\n\n{code}",
     'myTasks.title': "O'qituvchining topshiriqlari",
     'myTasks.subtitle': "O'qituvchi bergan kodni kiriting",
     'myTasks.join': "Qo'shilish",
@@ -5802,6 +5809,8 @@ const I18N = {
     'myTasks.resultCode': 'Natija kodi',
     'myTasks.resultCodeDesc': "Natija saqlandi. Quyidagi kodni nusxalab, o'qituvchiga yuboring — u sinf tahliliga tushadi.",
     'myTasks.resultCodeBackup': 'Quyidagi natija kodini qoʻshimcha nusxalash mumkin.',
+    'myTasks.resultSending': "Natijani o'qituvchiga yuborilmoqda…",
+    'myTasks.shareMsg': "📊 «{title}» topshirig'i bo'yicha mening natijam: {score}/{total} ({pct}%)\n\nNatija kodi:\n\n{code}",
     'myTasks.start': 'Boshlash',
     'myTasks.results': 'Mening natijalarim',
     'myTasks.notFound': 'Bu kod bilan topshiriq topilmadi. Kodni o’qituvchidan tekshiring.',
@@ -7662,13 +7671,20 @@ function decodeResultPayload(code) {
   } catch (e) { return null; }
 }
 
-// Поделиться текстом: Web Share API, а если его нет — копирование в буфер
-function shareText(text, btn) {
+// Поделиться готовым сообщением: 1) системный диалог Telegram (в Mini App),
+// 2) Web Share API (мобильные браузеры), 3) копирование в буфер
+function shareMessage(text, btn) {
+  if (!text) return;
+  const appUrl = (typeof location !== 'undefined' && location.href) ? location.href : 'https://t.me';
+  if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink) {
+    Telegram.WebApp.openLink('https://t.me/share/url?url=' + encodeURIComponent(appUrl) + '&text=' + encodeURIComponent(text));
+    return;
+  }
   if (navigator.share) {
     navigator.share({ title: 'NEVIO', text: text }).catch(function () {});
-  } else {
-    copyTextToClipboard(text, btn);
+    return;
   }
+  copyTextToClipboard(text, btn);
 }
 
 function copyTextToClipboard(text, btn) {
@@ -7913,10 +7929,17 @@ function renderTeacherAssignment() {
   return teacherShell(a.title, a.subject, body);
 }
 
+function composeAssignmentShareText(a) {
+  const line = (a.subject || '') + (a.grade ? ' · ' + a.grade : '');
+  return t('teacher.shareMsg')
+    .replace('{title}', a.title || '')
+    .replace('{line}', line)
+    .replace('{code}', encodeAssignmentPayload(a));
+}
 function shareAssignmentCode(btn) {
-  const box = document.getElementById('shareCodeBox');
-  if (!box) return;
-  shareText(box.value, btn);
+  const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
+  if (!a) return;
+  shareMessage(composeAssignmentShareText(a), btn);
 }
 
 function renderTeacherAnalytics() {
@@ -8071,7 +8094,6 @@ function finishSolve() {
   teacherData.attempts.push(attempt);
   if (teacherData.attempts.length > 500) teacherData.attempts.shift();
   saveTeacherData();
-  syncPushAttempt(a.code, attempt).catch(function () {});
   let emoji = '😔', label = '';
   if (pct >= 90) { emoji = '🏆'; label = 'Отличный результат!'; }
   else if (pct >= 70) { emoji = '🎯'; label = 'Хороший результат!'; }
@@ -8080,13 +8102,20 @@ function finishSolve() {
   let tail = '';
   if (solveState.demo) {
     // пробное прохождение учителя — сразу в аналитику
+    syncPushAttempt(a.code, attempt).catch(function () {});
     tail = '<button class="btn btn-primary" onclick="openTeacherView(\'analytics\',\'' + a.code + '\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button>';
   } else {
     saveMyAttempt(attempt); // демо-прохождение учителя не попадает в «Мои результаты» ученика
     const resultCode = encodeResultPayload(attempt);
     const auto = teacherSyncEnabled();
-    tail = '<div class="info-banner" style="text-align:left;"><strong>📊 ' + escapeHtml(solveState.name) + '</strong><br>' +
-      (auto ? t('myTasks.sent') + '. ' + t('myTasks.resultCodeBackup') : t('myTasks.resultCodeDesc')) + '</div>' +
+    lastResultShareText = t('myTasks.shareMsg')
+      .replace('{title}', a.title || '')
+      .replace('{score}', String(score))
+      .replace('{total}', String(total))
+      .replace('{pct}', String(pct))
+      .replace('{code}', resultCode);
+    tail = '<div class="info-banner" style="text-align:left;"><strong>📊 ' + escapeHtml(solveState.name) + '</strong><br><span id="resultSyncStatus">' +
+      (auto ? t('myTasks.resultSending') : t('myTasks.resultCodeDesc')) + '</span></div>' +
       '<div class="form-group" style="text-align:left;"><label>' + t('myTasks.resultCode') + '</label>' +
       '<textarea class="share-code-box" id="resultCodeBox" rows="3" readonly onclick="this.select()">' + escapeHtml(resultCode) + '</textarea></div>' +
       '<div style="display:flex;gap:8px;">' +
@@ -8094,6 +8123,16 @@ function finishSolve() {
         '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="shareResultCode(this)"><i class="fas fa-share-nodes"></i> ' + t('common.share') + '</button>' +
       '</div>' +
       '<button class="btn btn-primary" style="width:100%;" onclick="openMyAssignments()"><i class="fas fa-arrow-left"></i> ' + t('myTasks.title') + '</button>';
+    if (auto) {
+      // честный статус: показываем «отправлено» только если синхронизация удалась
+      syncPushAttempt(a.code, attempt).then(function (ok) {
+        const el = document.getElementById('resultSyncStatus');
+        if (el) el.innerHTML = ok ? (t('myTasks.sent') + '. ' + t('myTasks.resultCodeBackup')) : t('myTasks.resultCodeDesc');
+      }, function () {
+        const el = document.getElementById('resultSyncStatus');
+        if (el) el.innerHTML = t('myTasks.resultCodeDesc');
+      });
+    }
   }
   root.innerHTML = '<div class="card"><div class="test-result"><div style="font-size:72px;margin-bottom:12px;">' + emoji + '</div>' +
     '<div class="test-result-score">' + score + '/' + total + '</div><div class="test-result-label">' + label + '</div>' +
@@ -8102,10 +8141,10 @@ function finishSolve() {
 }
 
 function shareResultCode(btn) {
-  const box = document.getElementById('resultCodeBox');
-  if (!box) return;
-  shareText(box.value, btn);
+  shareMessage(lastResultShareText || '', btn);
 }
+
+let lastResultShareText = '';
 
 /* ---- Сторона ученика: задания от учителя ---- */
 const MY_ATTEMPTS_KEY = 'nevioMyAttempts_v1';
