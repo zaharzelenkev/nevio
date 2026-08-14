@@ -1063,6 +1063,10 @@
       padding:12px 14px; margin-bottom:8px; font-size:12.5px; line-height:1.5;
     }
     .q-preview .q-num { color:var(--gold); font-weight:800; margin-right:6px; }
+    .share-code-box {
+      font-family:'Fira Code',monospace; font-size:10.5px; line-height:1.45;
+      word-break:break-all; resize:none; color:var(--text); margin-top:6px;
+    }
     .q-preview .q-ans { color:#4ade80; font-weight:700; font-size:11.5px; margin-top:6px; }
     .lang-chips { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 14px; }
     .lang-chip {
@@ -5365,11 +5369,23 @@ const I18N = {
     'teacher.demo': 'Пробное прохождение',
     'teacher.demoDesc': 'Пройдите задание как ученик на этом устройстве, чтобы проверить аналитику',
     'teacher.copyCode': 'Скопировать код',
+    'teacher.shareCode': 'Код задания для учеников',
+    'teacher.shareCodeDesc': 'Работает без интернета и без настроек. Скопируйте и отправьте ученикам — они вставят его в «Задания от учителя».',
+    'teacher.copyShare': 'Скопировать код задания',
+    'teacher.importResult': 'Внести результат ученика',
+    'teacher.importResultPh': 'Вставьте код результата, который прислал ученик',
+    'teacher.importResultBtn': 'Добавить результат',
+    'teacher.importOk': 'Результат добавлен в аналитику',
+    'teacher.importBad': 'Код не распознан или не подходит к этому заданию',
     'myTasks.title': 'Задания от учителя',
     'myTasks.subtitle': 'Введите код, который дал учитель',
     'myTasks.join': 'Присоединиться',
     'myTasks.codePh': 'Код задания',
     'myTasks.nothing': 'Вы ещё не выполняли задания',
+    'myTasks.joinPh': 'Короткий код или код из сообщения учителя',
+    'myTasks.resultCode': 'Код результата',
+    'myTasks.resultCodeDesc': 'Результат сохранён. Скопируйте код ниже и отправьте его учителю — так он попадёт в аналитику класса.',
+    'myTasks.resultCodeBackup': 'Дополнительно можно скопировать код результата ниже.',
     'myTasks.start': 'Начать',
     'myTasks.results': 'Мои результаты',
     'myTasks.notFound': 'Задание с таким кодом не найдено. Проверьте код у учителя.',
@@ -5383,6 +5399,7 @@ const I18N = {
     'errors.noQuestions': 'ИИ не вернул вопросы',
     'common.copy': 'Скопировать',
     'common.copied': 'Скопировано',
+    'common.share': 'Поделиться',
     'common.close': 'Закрыть',
     'examInfo.title': 'Формат и критерии',
     'examInfo.static': 'Статичная справка — без запросов к ИИ',
@@ -5560,11 +5577,23 @@ const I18N = {
     'teacher.demo': 'Сынақ өту',
     'teacher.demoDesc': 'Аналитиканы тексеру үшін тапсырманы оқушы ретінде осы құрылғыда өтіңіз',
     'teacher.copyCode': 'Кодты көшіру',
+    'teacher.shareCode': 'Оқушыларға арналған тапсырма коды',
+    'teacher.shareCodeDesc': 'Интернетсіз және баптаусыз жұмыс істейді. Көшіріп, оқушыларға жіберіңіз — олар оны «Мұғалімнің тапсырмалары» бөліміне қояды.',
+    'teacher.copyShare': 'Тапсырма кодын көшіру',
+    'teacher.importResult': 'Оқушының нәтижесін енгізу',
+    'teacher.importResultPh': 'Оқушы жіберген нәтиже кодын қойыңыз',
+    'teacher.importResultBtn': 'Нәтижені қосу',
+    'teacher.importOk': 'Нәтиже аналитикаға қосылды',
+    'teacher.importBad': 'Код танылмады немесе бұл тапсырмаға сәйкес келмейді',
     'myTasks.title': 'Мұғалімнің тапсырмалары',
     'myTasks.subtitle': 'Мұғалім берген кодты енгізіңіз',
     'myTasks.join': 'Қосылу',
     'myTasks.codePh': 'Тапсырма коды',
     'myTasks.nothing': 'Сіз әлі тапсырма орындаған жоқсыз',
+    'myTasks.joinPh': 'Қысқа код немесе мұғалімнің хабарындағы код',
+    'myTasks.resultCode': 'Нәтиже коды',
+    'myTasks.resultCodeDesc': 'Нәтиже сақталды. Төмендегі кодты көшіріп, мұғалімге жіберіңіз — ол сынып аналитикасына түседі.',
+    'myTasks.resultCodeBackup': 'Төмендегі нәтиже кодын қосымша көшіруге болады.',
     'myTasks.start': 'Бастау',
     'myTasks.results': 'Менің нәтижелерім',
     'myTasks.notFound': 'Мұндай кодпен тапсырма табылмады. Кодты мұғалімнен тексеріңіз.',
@@ -5578,6 +5607,7 @@ const I18N = {
     'errors.noQuestions': 'ИИ сұрақтар қайтармады',
     'common.copy': 'Көшіру',
     'common.copied': 'Көшірілді',
+    'common.share': 'Бөлісу',
     'common.close': 'Жабу',
     'examInfo.title': 'Формат және критерийлер',
     'examInfo.static': 'Статикалық анықтама — ИИ сұрауынсыз',
@@ -5755,11 +5785,23 @@ const I18N = {
     'teacher.demo': 'Sinovdan oʻtish',
     'teacher.demoDesc': "Tahlilni tekshirish uchun topshiriqni o'quvchi sifatida shu qurilmada bajaring",
     'teacher.copyCode': 'Kodni nusxalash',
+    'teacher.shareCode': "O'quvchilar uchun topshiriq kodi",
+    'teacher.shareCodeDesc': "Internetsiz va sozlamalarsiz ishlaydi. Nusxalab, o'quvchilarga yuboring — ular uni «O'qituvchi topshiriqlari» bo'limiga qo'yadi.",
+    'teacher.copyShare': 'Topshiriq kodini nusxalash',
+    'teacher.importResult': "O'quvchi natijasini kiritish",
+    'teacher.importResultPh': "O'quvchi yuborgan natija kodini qo'ying",
+    'teacher.importResultBtn': 'Natijani qoʻshish',
+    'teacher.importOk': 'Natija tahlilga qoʻshildi',
+    'teacher.importBad': "Kod tanilmadi yoki bu topshiriqqa mos kelmaydi",
     'myTasks.title': "O'qituvchining topshiriqlari",
     'myTasks.subtitle': "O'qituvchi bergan kodni kiriting",
     'myTasks.join': "Qo'shilish",
     'myTasks.codePh': 'Topshiriq kodi',
     'myTasks.nothing': 'Siz hali topshiriq bajarmagansiz',
+    'myTasks.joinPh': "Qisqa kod yoki o'qituvchining xabaridagi kod",
+    'myTasks.resultCode': 'Natija kodi',
+    'myTasks.resultCodeDesc': "Natija saqlandi. Quyidagi kodni nusxalab, o'qituvchiga yuboring — u sinf tahliliga tushadi.",
+    'myTasks.resultCodeBackup': 'Quyidagi natija kodini qoʻshimcha nusxalash mumkin.',
     'myTasks.start': 'Boshlash',
     'myTasks.results': 'Mening natijalarim',
     'myTasks.notFound': 'Bu kod bilan topshiriq topilmadi. Kodni o’qituvchidan tekshiring.',
@@ -5773,6 +5815,7 @@ const I18N = {
     'errors.noQuestions': 'AI savollarni qaytarmadi',
     'common.copy': 'Nusxalash',
     'common.copied': 'Nusxalandi',
+    'common.share': 'Ulashish',
     'common.close': 'Yopish',
     'examInfo.title': 'Format va mezonlar',
     'examInfo.static': 'Statik maʼlumot — AI soʻrovisiz',
@@ -7402,11 +7445,13 @@ function testWeakSubject(subject) {
 /* =====================================================================
    РЕЖИМ УЧИТЕЛЯ: классы, задания, агрегированная аналитика (задача 4).
    Работает поверх существующих учительских фич (не заменяя их).
-   Без сервера: локальное хранение + опциональная бесплатная
-   синхронизация Firebase Realtime Database (тариф Spark, бесплатный).
+   Без сервера: задания передаются кодом NEV1.... (ученик вставляет код),
+   результаты возвращаются кодом NEVR1.... (учитель вносит в аналитику).
+   Опционально: можно подключить Firebase (бесплатный Spark) — тогда
+   результаты приходят автоматически, а коды остаются запасным каналом.
    ===================================================================== */
 const TEACHER_KEY = 'nevioTeacher_v1';
-const TEACHER_FIREBASE_DB = ''; // ← владелец может вписать URL Firebase Realtime Database (бесплатный Spark), чтобы включить синхронизацию между устройствами
+const TEACHER_FIREBASE_DB = ''; // ← НЕ обязательно. Если оставить пустым, всё работает через коды. Если вписать URL Firebase Realtime Database (бесплатный Spark), результаты будут синхронизироваться автоматически
 
 let teacherData = loadTeacherData();
 
@@ -7462,6 +7507,168 @@ function randomCode(len) {
   let out = '';
   for (let i = 0; i < (len || 6); i++) out += abc[Math.floor(Math.random() * abc.length)];
   return out;
+}
+
+/* ---------- Коды заданий и результатов (работают БЕЗ сервера) ----------
+   Задание целиком (вопросы, варианты, ответы) сжимается в код NEV1.... —
+   учитель отправляет его ученикам, ученик вставляет в «Задания от учителя».
+   Результат ученика сжимается в код NEVR1.... — ученик присылает его
+   учителю, учитель вносит код в аналитику. Firebase не обязателен. */
+
+// Простое LZSS-сжатие: на выходе base64url-строка. Первые 4 байта — длина
+// исходных данных, чтобы при распаковке не читать хвостовые биты заполнения.
+function lzCompress(text) {
+  const bytes = new TextEncoder().encode(String(text ?? ''));
+  const n = bytes.length;
+  const out = [ (n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255 ];
+  let acc = 0, bits = 0;
+  function emit(value, count) {
+    for (let i = count - 1; i >= 0; i--) {
+      acc = (acc << 1) | ((value >> i) & 1);
+      bits++;
+      if (bits === 8) { out.push(acc); acc = 0; bits = 0; }
+    }
+  }
+  const WINDOW = 1024, MIN_MATCH = 4, MAX_MATCH = 35;
+  let i = 0;
+  while (i < n) {
+    let bestLen = 0, bestOff = 0;
+    const maxLen = Math.min(MAX_MATCH, n - i);
+    const start = Math.max(0, i - WINDOW);
+    for (let j = i - 1; j >= start; j--) {
+      if (bytes[j] !== bytes[i]) continue;
+      let l = 1;
+      while (l < maxLen && bytes[j + l] === bytes[i + l]) l++;
+      if (l > bestLen) { bestLen = l; bestOff = i - j; if (l === maxLen) break; }
+    }
+    if (bestLen >= MIN_MATCH) { emit(1, 1); emit(bestOff, 10); emit(bestLen - MIN_MATCH, 5); i += bestLen; }
+    else { emit(0, 1); emit(bytes[i], 8); i++; }
+  }
+  if (bits) out.push((acc << (8 - bits)) & 255);
+  let bin = '';
+  for (let k = 0; k < out.length; k++) bin += String.fromCharCode(out[k]);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function lzDecompress(code) {
+  const bin = atob(String(code || '').replace(/-/g, '+').replace(/_/g, '/'));
+  const src = new Uint8Array(bin.length);
+  for (let k = 0; k < bin.length; k++) src[k] = bin.charCodeAt(k);
+  if (src.length < 4) throw new Error('код слишком короткий');
+  const n = ((src[0] << 24) | (src[1] << 16) | (src[2] << 8) | src[3]) >>> 0;
+  if (n === 0) return '';
+  if (n > 1 << 20) throw new Error('код повреждён');
+  const out = [];
+  let pos = 4, bit = 0;
+  function read(count) {
+    let v = 0;
+    for (let i = 0; i < count; i++) {
+      v = (v << 1) | ((src[pos] >> (7 - bit)) & 1);
+      bit++;
+      if (bit === 8) { bit = 0; pos++; }
+    }
+    return v;
+  }
+  while (out.length < n) {
+    const flag = read(1);
+    if (flag === 0) out.push(read(8));
+    else {
+      const off = read(10), len = read(5) + 4;
+      for (let i = 0; i < len; i++) out.push(out[out.length - off]);
+    }
+    if (pos > src.length + 1) throw new Error('код повреждён');
+  }
+  const u8 = new Uint8Array(out);
+  return new TextDecoder().decode(u8);
+}
+
+const ASSIGN_MAGIC = 'NEV1';
+const RESULT_MAGIC = 'NEVR1';
+
+// base64url без сжатия (для коротких данных, когда сжатие не даёт выигрыша)
+function utf8ToB64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let k = 0; k < bytes.length; k++) bin += String.fromCharCode(bytes[k]);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64ToUtf8(b64) {
+  const bin = atob(String(b64 || '').replace(/-/g, '+').replace(/_/g, '/'));
+  const u8 = new Uint8Array(bin.length);
+  for (let k = 0; k < bin.length; k++) u8[k] = bin.charCodeAt(k);
+  return new TextDecoder().decode(u8);
+}
+// упаковываем JSON: 'c' + сжатый код либо 'r' + обычный base64 — что короче
+function packJson(obj) {
+  const raw = JSON.stringify(obj);
+  const c = lzCompress(raw);
+  const r = utf8ToB64(raw);
+  return (c.length < r.length ? 'c' + c : 'r' + r);
+}
+function unpackJson(body) {
+  if (!body) throw new Error('пустой код');
+  return JSON.parse(body[0] === 'c' ? lzDecompress(body.slice(1)) : b64ToUtf8(body.slice(1)));
+}
+
+function encodeAssignmentPayload(a) {
+  const data = {
+    v: 1,
+    title: a.title || '',
+    subject: a.subject || '',
+    grade: a.grade || '',
+    code: a.code || '',
+    questions: (a.questions || []).map(function (q) {
+      return { q: q.question, o: q.options || [], c: q.correctIndex, e: q.explanation || '' };
+    })
+  };
+  return ASSIGN_MAGIC + '.' + packJson(data);
+}
+function decodeAssignmentPayload(code) {
+  try {
+    const s = String(code || '').trim();
+    if (s.indexOf(ASSIGN_MAGIC + '.') !== 0) return null;
+    const d = unpackJson(s.slice(ASSIGN_MAGIC.length + 1));
+    if (!d || !Array.isArray(d.questions) || !d.questions.length) return null;
+    return {
+      code: d.code || ('CODE' + s.slice(5, 13)),
+      title: d.title || 'Задание',
+      subject: d.subject || '',
+      grade: d.grade || '',
+      questions: d.questions.map(function (x) {
+        return { question: String(x.q || ''), options: (x.o || []).map(String), correctIndex: x.c | 0, explanation: x.e || '' };
+      })
+    };
+  } catch (e) { return null; }
+}
+function encodeResultPayload(attempt) {
+  const data = {
+    v: 1,
+    acode: attempt.code,
+    id: attempt.id,
+    name: attempt.name,
+    score: attempt.score,
+    total: attempt.total,
+    at: attempt.at,
+    answers: (attempt.answers || []).map(function (x) { return { q: x.q, s: x.selected }; })
+  };
+  return RESULT_MAGIC + '.' + packJson(data);
+}
+function decodeResultPayload(code) {
+  try {
+    const s = String(code || '').trim();
+    if (s.indexOf(RESULT_MAGIC + '.') !== 0) return null;
+    const d = unpackJson(s.slice(RESULT_MAGIC.length + 1));
+    if (!d || typeof d.acode !== 'string' || !Array.isArray(d.answers)) return null;
+    return d;
+  } catch (e) { return null; }
+}
+
+// Поделиться текстом: Web Share API, а если его нет — копирование в буфер
+function shareText(text, btn) {
+  if (navigator.share) {
+    navigator.share({ title: 'NEVIO', text: text }).catch(function () {});
+  } else {
+    copyTextToClipboard(text, btn);
+  }
 }
 
 function copyTextToClipboard(text, btn) {
@@ -7684,7 +7891,14 @@ function renderTeacherAssignment() {
   let body = '<div class="card" style="text-align:center;"><h3 style="font-size:17px;">' + escapeHtml(a.title) + '</h3>' +
     '<p style="font-size:12.5px;color:var(--text-secondary);margin:6px 0 12px;">' + escapeHtml(a.subject + ' · ' + (a.grade ? a.grade + ' · ' : '') + a.questions.length + ' ' + t('progress.questions')) + '</p>' +
     '<div class="code-pill">' + escapeHtml(a.code) + '</div>' +
-    '<div style="margin-top:10px;"><button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="copyTextToClipboard(\'' + a.code + '\',this)"><i class="fas fa-copy"></i> ' + t('teacher.copyCode') + '</button></div></div>';
+    '<div style="margin-top:10px;"><button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="copyTextToClipboard(\'' + a.code + '\',this)"><i class="fas fa-copy"></i> ' + t('teacher.copyCode') + '</button></div></div>' +
+    '<div class="card"><div class="form-group"><label>' + t('teacher.shareCode') + '</label>' +
+      '<textarea class="share-code-box" id="shareCodeBox" rows="3" readonly onclick="this.select()">' + escapeHtml(encodeAssignmentPayload(a)) + '</textarea>' +
+      '<p style="font-size:11px;color:var(--text-secondary);margin-top:6px;line-height:1.5;">' + t('teacher.shareCodeDesc') + '</p>' +
+      '<div style="display:flex;gap:8px;margin-top:8px;">' +
+        '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="copyTextToClipboard(document.getElementById(\'shareCodeBox\').value,this)"><i class="fas fa-copy"></i> ' + t('teacher.copyShare') + '</button>' +
+        '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="shareAssignmentCode(this)"><i class="fas fa-share-nodes"></i> ' + t('common.share') + '</button>' +
+      '</div></div>';
   body += '<div class="section-label">' + t('teacher.preview') + '</div>';
   a.questions.forEach(function (q, i) {
     body += '<div class="q-preview"><span class="q-num">' + (i + 1) + '.</span> ' + escapeHtml(q.question) +
@@ -7697,6 +7911,12 @@ function renderTeacherAssignment() {
     '<p style="font-size:11px;color:var(--text-muted);margin-top:8px;">' + t('teacher.demoDesc') + '</p>' +
     '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="openTeacherView(\'class\',\'' + a.classId + '\')"><i class="fas fa-arrow-left"></i> ' + t('common.back') + '</button>';
   return teacherShell(a.title, a.subject, body);
+}
+
+function shareAssignmentCode(btn) {
+  const box = document.getElementById('shareCodeBox');
+  if (!box) return;
+  shareText(box.value, btn);
 }
 
 function renderTeacherAnalytics() {
@@ -7717,7 +7937,10 @@ function renderTeacherAnalytics() {
 
 function renderAnalyticsForAssignment(a) {
   const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; });
-  let html = '';
+  let html = '<div class="card"><div class="form-group"><label>' + t('teacher.importResult') + '</label>' +
+    '<textarea class="share-code-box" id="importResultCode" rows="2" placeholder="' + escapeHtml(t('teacher.importResultPh')) + '"></textarea>' +
+    '<button class="btn btn-secondary" style="margin-top:8px;" onclick="importStudentResult()"><i class="fas fa-plus"></i> ' + t('teacher.importResultBtn') + '</button>' +
+    '</div></div>';
   if (!attempts.length) {
     html += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-hourglass-half"></i></div><h3>' + t('teacher.attempts') + ': 0</h3><p>' + t('teacher.demoDesc') + '</p></div></div>';
     html += '<button class="btn btn-primary" onclick="startDemoAssignment(\'' + a.code + '\')"><i class="fas fa-user-graduate"></i> ' + t('teacher.demo') + '</button>';
@@ -7759,6 +7982,36 @@ function renderAnalyticsForAssignment(a) {
       (m.q.explanation ? '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">💡 ' + escapeHtml(m.q.explanation) + '</div>' : '') + '</div>';
   });
   return html;
+}
+
+// Вносит результат ученика из кода NEVR1.... (без сервера: ученик присылает код)
+function importStudentResult() {
+  const box = document.getElementById('importResultCode');
+  const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
+  if (!box || !a) return;
+  const d = decodeResultPayload(box.value);
+  if (!d || d.acode !== a.code) { showToast(t('teacher.importBad')); return; }
+  const attempt = {
+    id: d.id || ('at_' + Date.now()),
+    code: a.code,
+    name: d.name || t('profile.defaultName'),
+    score: d.score | 0,
+    total: d.total | 0,
+    at: d.at || Date.now(),
+    answers: (d.answers || []).map(function (x) {
+      const q = a.questions[x.q];
+      return { q: x.q, selected: x.s, correct: q ? q.correctIndex : -1 };
+    })
+  };
+  if (teacherData.attempts.some(function (x) { return x.id === attempt.id; })) {
+    showToast(t('teacher.importOk'));
+    return;
+  }
+  teacherData.attempts.push(attempt);
+  if (teacherData.attempts.length > 500) teacherData.attempts.shift();
+  saveTeacherData();
+  renderTeacher('analytics');
+  showToast(t('teacher.importOk'));
 }
 
 /* ---- Прохождение задания (учитель-демо и ученик) ---- */
@@ -7824,15 +8077,34 @@ function finishSolve() {
   else if (pct >= 70) { emoji = '🎯'; label = 'Хороший результат!'; }
   else if (pct >= 50) { emoji = '📚'; label = 'Неплохо, но есть куда расти'; }
   else label = 'Нужно больше практики';
+  let tail = '';
+  if (solveState.demo) {
+    // пробное прохождение учителя — сразу в аналитику
+    tail = '<button class="btn btn-primary" onclick="openTeacherView(\'analytics\',\'' + a.code + '\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button>';
+  } else {
+    saveMyAttempt(attempt); // демо-прохождение учителя не попадает в «Мои результаты» ученика
+    const resultCode = encodeResultPayload(attempt);
+    const auto = teacherSyncEnabled();
+    tail = '<div class="info-banner" style="text-align:left;"><strong>📊 ' + escapeHtml(solveState.name) + '</strong><br>' +
+      (auto ? t('myTasks.sent') + '. ' + t('myTasks.resultCodeBackup') : t('myTasks.resultCodeDesc')) + '</div>' +
+      '<div class="form-group" style="text-align:left;"><label>' + t('myTasks.resultCode') + '</label>' +
+      '<textarea class="share-code-box" id="resultCodeBox" rows="3" readonly onclick="this.select()">' + escapeHtml(resultCode) + '</textarea></div>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="copyTextToClipboard(document.getElementById(\'resultCodeBox\').value,this)"><i class="fas fa-copy"></i> ' + t('common.copy') + '</button>' +
+        '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="shareResultCode(this)"><i class="fas fa-share-nodes"></i> ' + t('common.share') + '</button>' +
+      '</div>' +
+      '<button class="btn btn-primary" style="width:100%;" onclick="openMyAssignments()"><i class="fas fa-arrow-left"></i> ' + t('myTasks.title') + '</button>';
+  }
   root.innerHTML = '<div class="card"><div class="test-result"><div style="font-size:72px;margin-bottom:12px;">' + emoji + '</div>' +
     '<div class="test-result-score">' + score + '/' + total + '</div><div class="test-result-label">' + label + '</div>' +
     '<div style="margin:24px 0;"><div style="font-size:32px;font-weight:800;color:var(--gold);">' + pct + '%</div><div style="font-size:13px;color:var(--text-muted);">' + t('progress.accuracy') + '</div></div>' +
-    '<div class="info-banner" style="text-align:left;"><strong>📊 ' + escapeHtml(solveState.name) + '</strong><br>' + t('myTasks.sent') + '.</div></div>' +
-    (solveState.demo
-      ? '<button class="btn btn-primary" onclick="openTeacherView(\'analytics\',\'' + a.code + '\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button>'
-      : '<button class="btn btn-primary" onclick="openMyAssignments()"><i class="fas fa-arrow-left"></i> ' + t('myTasks.title') + '</button>') +
-    '</div>';
-  if (!solveState.demo) saveMyAttempt(attempt); // демо-прохождение учителя не попадает в «Мои результаты» ученика
+    tail + '</div></div>';
+}
+
+function shareResultCode(btn) {
+  const box = document.getElementById('resultCodeBox');
+  if (!box) return;
+  shareText(box.value, btn);
 }
 
 /* ---- Сторона ученика: задания от учителя ---- */
@@ -7865,7 +8137,7 @@ function renderMyAssignments() {
   if (!root) return;
   const my = loadMyAttempts();
   let html = '<div class="country-hero"><div class="country-kicker">📚</div><h1>' + t('myTasks.title') + '</h1><p>' + t('myTasks.subtitle') + '</p></div>' +
-    '<div class="card"><div class="form-group"><label>' + t('myTasks.codePh') + '</label><input type="text" id="joinCode" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:2px;"></div>' +
+    '<div class="card"><div class="form-group"><label>' + t('myTasks.codePh') + '</label><input type="text" id="joinCode" placeholder="' + escapeHtml(t('myTasks.joinPh')) + '"></div>' +
     '<button class="btn btn-primary" onclick="joinAssignment()"><i class="fas fa-sign-in-alt"></i> ' + t('myTasks.join') + '</button></div>';
   if (my.length) {
     html += '<div class="section-label">' + t('myTasks.results') + '</div>';
@@ -7882,9 +8154,17 @@ function renderMyAssignments() {
 const joinedCache = {};
 
 async function joinAssignment() {
-  const code = (document.getElementById('joinCode')?.value || '').trim().toUpperCase();
-  if (!code) { showToast(t('toast.fillField')); return; }
+  const raw = (document.getElementById('joinCode')?.value || '').trim();
+  if (!raw) { showToast(t('toast.fillField')); return; }
+  // длинный код задания/результата не переводим в верхний регистр (в нём строчные буквы)
+  const isPayload = raw.indexOf(ASSIGN_MAGIC + '.') === 0 || raw.indexOf(RESULT_MAGIC + '.') === 0;
+  const code = (isPayload ? raw : raw.toUpperCase()).replace(/\s+/g, '');
   let a = teacherData.assignments.find(function (x) { return x.code === code; }) || null;
+  if (!a) {
+    // задание может быть «зашито» в сам код — тогда сервер не нужен вообще
+    const shared = decodeAssignmentPayload(code);
+    if (shared) { joinedCache[shared.code] = shared; a = shared; }
+  }
   if (!a && teacherSyncEnabled()) {
     a = await syncGetAssignment(code);
   }
