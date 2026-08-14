@@ -5138,6 +5138,7 @@ const I18N = {
     'resources.sections': 'Разделы',
     'resources.examInfoBtn': 'Формат и критерии экзамена',
     'resources.search': 'Поиск',
+    'resources.noResults': 'Ничего не найдено',
     'progress.title': 'Прогресс',
     'progress.noData': 'Пока нет данных',
     'progress.noDataDesc': 'Решайте задачи и проходите тесты — здесь появится ваш прогресс по предметам и темам.',
@@ -5278,6 +5279,7 @@ const I18N = {
     'resources.sections': 'Бөлімдер',
     'resources.examInfoBtn': 'Емтихан форматы мен критерийлері',
     'resources.search': 'Іздеу',
+    'resources.noResults': 'Ештеңе табылмады',
     'progress.title': 'Прогресс',
     'progress.noData': 'Әзірге дерек жоқ',
     'progress.noDataDesc': 'Есептер шығарып, тесттерден өтіңіз — пәндер мен тақырыптар бойынша прогресс осында пайда болады.',
@@ -5418,6 +5420,7 @@ const I18N = {
     'resources.sections': "Bo'limlar",
     'resources.examInfoBtn': 'Imtihon formati va mezonlari',
     'resources.search': 'Qidiruv',
+    'resources.noResults': 'Hech narsa topilmadi',
     'progress.title': 'Taraqqiyot',
     'progress.noData': 'Hozircha maʼlumot yoʻq',
     'progress.noDataDesc': 'Masalalar yeching va testlardan oʻting — fanlar va mavzular boʻyicha taraqqiyotingiz shu yerda paydo boʻladi.',
@@ -6142,7 +6145,7 @@ const NEVIO_COUNTRIES = {
     },
     ctPrepPrompt: function (data, inputText, ctKnowledge) {
       return 'Ты — эксперт по ЦТ в Беларуси. Предмет: ' + data.subjectCT + '.\n' +
-        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') + '\n' +
         (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
          data.ctMode === 'Вся теория для ЦТ' ? 'Дай всю теорию для ЦТ по ' + data.subjectCT + ' в формате LaTeX!' :
          data.ctMode === 'Стратегия сдачи ЦТ' ? 'Дай стратегию сдачи ЦТ по ' + data.subjectCT + '!' :
@@ -6210,7 +6213,7 @@ const NEVIO_COUNTRIES = {
     },
     ctPrepPrompt: function (data, inputText, ctKnowledge) {
       return 'Ты — эксперт по ЕГЭ (Россия). Предмет: ' + data.subjectCT + '.\n' +
-        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') + '\n' +
         (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
          data.ctMode === 'Вся теория для ЕГЭ' ? 'Дай всю теорию для ЕГЭ по ' + data.subjectCT + ' в формате LaTeX!' :
          data.ctMode === 'Стратегия сдачи ЕГЭ' ? 'Дай стратегию сдачи ЕГЭ по ' + data.subjectCT + ': план подготовки, распределение времени, типичные ошибки.' :
@@ -6296,7 +6299,7 @@ const NEVIO_COUNTRIES = {
     },
     ctPrepPrompt: function (data, inputText, ctKnowledge) {
       return 'Ты — эксперт по ЕНТ (Казахстан). Предмет: ' + data.subjectCT + '.\n' +
-        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') + '\n' +
         (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
          data.ctMode === 'Вся теория для ЕНТ' ? 'Дай всю теорию для ЕНТ по ' + data.subjectCT + ' в формате LaTeX!' :
          data.ctMode === 'Стратегия сдачи ЕНТ' ? 'Дай стратегию сдачи ЕНТ по ' + data.subjectCT + ': распределение времени, пороговые баллы, типичные ошибки.' :
@@ -6381,7 +6384,7 @@ const NEVIO_COUNTRIES = {
     },
     ctPrepPrompt: function (data, inputText, ctKnowledge) {
       return 'Ты — эксперт по вступительным тестам (Узбекистан). Предмет: ' + data.subjectCT + '.\n' +
-        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') + '\n' +
         (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
          data.ctMode === 'Вся теория для теста' ? 'Дай всю теорию для вступительных тестов по ' + data.subjectCT + ' в формате LaTeX!' :
          data.ctMode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к вступительным тестам по ' + data.subjectCT + ': план, распределение времени, типичные ошибки.' :
@@ -6617,7 +6620,7 @@ function renderCountryResourcesSearch() {
   });
   let html = officialSearchHtml() + crumb([{ label: t('nav.resources'), fn: 'officialGo(\'country_hub\')' }, { label: t('resources.search') }]);
   if (!hits.length) {
-    html += '<div class="empty-state"><div class="icon"><i class="fas fa-search"></i></div><h3>' + t('history.empty') + '</h3><p>' + t('progress.noData') + '</p></div>';
+    html += '<div class="empty-state"><div class="icon"><i class="fas fa-search"></i></div><h3>' + t('resources.noResults') + '</h3></div>';
     html += '<button class="btn btn-primary" onclick="officialGo(\'country_hub\')">' + t('nav.resources') + '</button>';
     return html;
   }
@@ -6894,7 +6897,8 @@ function explainWeakTopic(subject, topic) {
 function testWeakSubject(subject) {
   const c = activeCountry();
   if (c.ctSubjects.indexOf(subject) === -1) {
-    showToast(subject);
+    // предмета нет в формате экзамена — тренируем тему напрямую
+    practiceWeakTopic(subject, 'Общие темы');
     return;
   }
   testState.subject = subject;
