@@ -3314,8 +3314,13 @@ async function fetchLiveNetwork(url, quick) {
       return attemptProxy(p, url, quick ? LIVE_PROXY_QUICK_TIMEOUT : grp.timeout);
     }));
     if (gi === 0 || quick) return run;
+    // обработчик цепляем сразу (иначе реджект до прикрепления = unhandled rejection),
+    // а разрешаем группу только после задержки — быстрая группа успевает первой
     return new Promise(function (resolve) {
-      setTimeout(function () { run.then(resolve, function () { resolve(null); }); }, LIVE_PROXY_GROUP_STAGGER);
+      let value = null;
+      let hasValue = false;
+      run.then(function (v) { value = v; hasValue = true; }, function () { hasValue = true; });
+      setTimeout(function () { resolve(hasValue ? value : null); }, LIVE_PROXY_GROUP_STAGGER);
     });
   });
   try {
@@ -7929,10 +7934,17 @@ function renderTeacherAssignment() {
   return teacherShell(a.title, a.subject, body);
 }
 
+// Текст для чата: убираем случайные HTML-теги из пользовательских названий
+function plainText(s) {
+  return String(s ?? '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .trim();
+}
 function composeAssignmentShareText(a) {
-  const line = (a.subject || '') + (a.grade ? ' · ' + a.grade : '');
+  const line = (plainText(a.subject) || '') + (a.grade ? ' · ' + plainText(a.grade) : '');
   return t('teacher.shareMsg')
-    .replace('{title}', a.title || '')
+    .replace('{title}', plainText(a.title))
     .replace('{line}', line)
     .replace('{code}', encodeAssignmentPayload(a));
 }
@@ -8109,7 +8121,7 @@ function finishSolve() {
     const resultCode = encodeResultPayload(attempt);
     const auto = teacherSyncEnabled();
     lastResultShareText = t('myTasks.shareMsg')
-      .replace('{title}', a.title || '')
+      .replace('{title}', plainText(a.title))
       .replace('{score}', String(score))
       .replace('{total}', String(total))
       .replace('{pct}', String(pct))
