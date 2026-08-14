@@ -902,6 +902,163 @@
       border-radius:14px; padding:12px 14px; margin-bottom:10px; font-size:13px; line-height:1.55; color:var(--text-secondary);
     }
     .adu-note strong { color:var(--gold); }
+
+    /* ===== NEVIO Multi-Country: новые элементы (дополнение, ничего не удаляет) ===== */
+    .bottom-nav { grid-template-columns:repeat(5,1fr); }
+
+    .country-badge {
+      position:relative; z-index:1;
+      display:inline-flex; align-items:center; gap:6px;
+      margin-top:8px; padding:4px 12px 4px 8px;
+      background:var(--surface); border:1.5px solid var(--border); border-radius:999px;
+      font-size:11px; font-weight:700; color:var(--text-secondary);
+      cursor:pointer; transition:all 0.25s;
+    }
+    .country-badge:hover { border-color:var(--gold); color:var(--gold); }
+    .country-badge .flag { font-size:15px; line-height:1; }
+    .country-badge .sep { opacity:0.35; }
+    .country-badge .lang { color:var(--gold); }
+
+    .country-hero { text-align:center; margin:8px 0 16px; }
+    .country-kicker { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+    .country-hero h1 { font-size:24px; font-weight:800; margin-bottom:6px; }
+    .country-hero p { font-size:12.5px; color:var(--text-secondary); line-height:1.5; }
+
+    .country-card {
+      position:relative;
+      display:flex; align-items:center; gap:14px;
+      background:var(--card); border:1.5px solid var(--border); border-radius:16px;
+      padding:16px; margin-bottom:10px; cursor:pointer; transition:all 0.25s;
+      animation:fadeIn 0.4s ease;
+    }
+    .country-card:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 10px 28px var(--shadow-soft); }
+    .country-card.suggested { border-color:var(--gold); background:linear-gradient(135deg,rgba(232,177,62,0.08),var(--card)); }
+    .country-card .c-flag { font-size:34px; line-height:1; flex-shrink:0; }
+    .country-card .c-info { flex:1; min-width:0; }
+    .country-card .c-name { font-size:15px; font-weight:800; }
+    .country-card .c-exams { font-size:11.5px; color:var(--text-secondary); margin-top:3px; line-height:1.45; }
+    .country-card .c-lang { display:inline-block; margin-top:6px; font-size:10px; font-weight:700; color:var(--gold); background:rgba(232,177,62,0.1); border-radius:8px; padding:2px 8px; }
+    .country-card .c-check { color:var(--gold); font-size:18px; flex-shrink:0; }
+    .country-geo-hint {
+      display:flex; align-items:center; gap:8px; justify-content:center;
+      font-size:11.5px; color:var(--text-muted); margin-top:12px;
+    }
+    .country-geo-hint i { color:var(--gold); }
+
+    .role-country-line { margin-top:18px; font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:6px; justify-content:center; flex-wrap:wrap; }
+    .role-country-line a { color:var(--gold); cursor:pointer; font-weight:700; text-decoration:none; }
+    .role-country-line a:hover { text-decoration:underline; }
+
+    .settings-value {
+      font-size:12px; font-weight:800; color:var(--gold); margin-right:8px;
+      background:rgba(232,177,62,0.1); border-radius:8px; padding:2px 8px;
+    }
+
+    /* Прогресс-дашборд */
+    .prog-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+    .prog-stat {
+      background:var(--card); border:1.5px solid var(--border); border-radius:16px;
+      padding:14px; text-align:center;
+    }
+    .prog-stat b { display:block; font-size:24px; font-weight:800; color:var(--gold); }
+    .prog-stat span { font-size:10.5px; color:var(--text-secondary); display:block; margin-top:4px; line-height:1.4; }
+    .prog-bar-row { margin-bottom:12px; }
+    .prog-bar-head { display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:5px; }
+    .prog-bar-head .pct { color:var(--gold); }
+    .prog-bar-track { height:8px; background:var(--border); border-radius:99px; overflow:hidden; }
+    .prog-bar-fill { height:100%; border-radius:99px; background:var(--gradient-gold); transition:width 0.5s; }
+    .prog-bar-fill.warn { background:linear-gradient(135deg,#f87171,#f5cc6e); }
+    .weak-topic {
+      display:flex; align-items:center; gap:10px; justify-content:space-between; flex-wrap:wrap;
+      background:var(--card); border:1.5px solid var(--border); border-radius:14px;
+      padding:12px 14px; margin-bottom:8px;
+    }
+    .weak-topic .wt-name { font-size:13px; font-weight:700; }
+    .weak-topic .wt-sub { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+    .weak-topic .wt-acc { font-size:12px; font-weight:800; color:#f87171; }
+    .weak-topic .wt-btns { display:flex; gap:6px; width:100%; margin-top:8px; }
+    .weak-topic .wt-btns .btn { flex:1; padding:8px 6px; font-size:11px; }
+
+    /* Блоки доверия: «почему это верно» */
+    .ai-block p { margin-bottom:8px; }
+    .ai-block p:last-child { margin-bottom:0; }
+    .trust-box {
+      display:flex; gap:10px; margin:12px 0;
+      background:rgba(232,177,62,0.07);
+      border:1.5px solid rgba(232,177,62,0.35); border-left:4px solid var(--gold);
+      border-radius:12px; padding:12px 14px;
+      animation:fadeIn 0.4s ease;
+    }
+    .trust-box .tb-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+    .trust-box .tb-body { font-size:12.5px; line-height:1.55; color:var(--text); min-width:0; }
+    .trust-box .tb-body p { margin-bottom:6px; }
+    .trust-box .tb-body ul { margin:4px 0 4px 16px; }
+    .trust-box.criteria { background:rgba(74,222,128,0.06); border-color:rgba(74,222,128,0.3); border-left-color:#4ade80; }
+    .trust-box.criteria .tb-head { color:#4ade80; }
+    .trust-box .tb-head { font-weight:800; color:var(--gold); margin-bottom:6px; font-size:12.5px; }
+
+    /* Режим учителя */
+    .teacher-hero { background:var(--gradient-dark); border-radius:18px; padding:18px; color:#fff; margin-bottom:14px; position:relative; overflow:hidden; }
+    .teacher-hero h2 { font-size:19px; font-weight:800; }
+    .teacher-hero p { font-size:12.5px; color:rgba(255,255,255,0.72); margin-top:5px; line-height:1.5; }
+    .teacher-hero .th-flag { position:absolute; right:-14px; top:-14px; font-size:74px; opacity:0.14; }
+    .class-card {
+      background:var(--card); border:1.5px solid var(--border); border-radius:16px;
+      padding:14px 16px; margin-bottom:10px; cursor:pointer; transition:all 0.2s;
+    }
+    .class-card:hover { border-color:var(--gold); }
+    .class-card .cc-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .class-card h3 { font-size:14px; font-weight:800; }
+    .class-card p { font-size:11.5px; color:var(--text-secondary); margin-top:3px; line-height:1.5; }
+    .code-pill {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(232,177,62,0.1); border:1px dashed var(--gold); color:var(--gold);
+      font-weight:800; letter-spacing:1.5px; font-size:14px; border-radius:10px; padding:6px 12px;
+    }
+    .copy-mini { font-size:11px; background:none; border:none; color:var(--gold); cursor:pointer; font-weight:700; }
+    .an-bar-row { margin-bottom:10px; }
+    .an-bar-head { display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:4px; color:var(--text-secondary); }
+    .an-bar-head b { color:var(--text); }
+    .an-bar-track { height:7px; background:var(--border); border-radius:99px; overflow:hidden; }
+    .an-bar-fill { height:100%; border-radius:99px; background:var(--gradient-gold); }
+    .an-bar-fill.low { background:linear-gradient(135deg,#f87171,#fbbf24); }
+    .attempt-row { display:flex; justify-content:space-between; gap:8px; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+    .attempt-row:last-child { border-bottom:none; }
+    .attempt-row .sc { font-weight:800; }
+    .attempt-row .sc.good { color:#4ade80; }
+    .attempt-row .sc.mid { color:var(--gold); }
+    .attempt-row .sc.bad { color:#f87171; }
+    .q-preview {
+      background:var(--card); border:1.5px solid var(--border); border-radius:12px;
+      padding:12px 14px; margin-bottom:8px; font-size:12.5px; line-height:1.5;
+    }
+    .q-preview .q-num { color:var(--gold); font-weight:800; margin-right:6px; }
+    .q-preview .q-ans { color:#4ade80; font-weight:700; font-size:11.5px; margin-top:6px; }
+    .sync-note {
+      background:rgba(232,177,62,0.08); border:1px solid rgba(232,177,62,0.2);
+      border-radius:14px; padding:12px 14px; margin-bottom:12px; font-size:12px; line-height:1.5; color:var(--text-secondary);
+    }
+    .sync-note strong { color:var(--gold); }
+    .lang-chips { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 14px; }
+    .lang-chip {
+      background:var(--card); border:1.5px solid var(--border); color:var(--text-secondary);
+      border-radius:999px; padding:7px 16px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;
+    }
+    .lang-chip.active { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.08); }
+    .lang-chip:hover { border-color:var(--gold); }
+
+    .chip-row { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+    .mini-chip {
+      background:var(--card); border:1.5px solid var(--border); border-radius:999px;
+      padding:6px 12px; font-size:11px; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all 0.2s;
+    }
+    .mini-chip:hover { border-color:var(--gold); color:var(--gold); }
+    .mini-chip.active { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.08); }
+
+    .kv-row { display:flex; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); font-size:12.5px; line-height:1.45; }
+    .kv-row:last-child { border-bottom:none; }
+    .kv-row .k { color:var(--text-secondary); }
+    .kv-row .v { font-weight:700; text-align:right; }
   </style>
 </head>
 <body>
@@ -910,32 +1067,53 @@
 <div class="page active" id="roleSelectionPage">
   <div class="role-selection">
     <div class="role-logo">NEVIO</div>
-    <div class="role-sub">Умный помощник в учёбе</div>
-    <h2>Добро пожаловать!</h2>
-    <p>Выберите свою роль для персонализированного опыта</p>
+    <div class="role-sub" data-i18n="app.subtitle">Умный помощник в учёбе</div>
+    <h2 data-i18n="role.welcome">Добро пожаловать!</h2>
+    <p data-i18n="role.sub">Выберите свою роль для персонализированного опыта</p>
     <div class="role-buttons">
       <div class="role-btn" onclick="selectRole('student')">
         <div class="role-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="role-btn-text"><h3>Ученик</h3><p>ЦТ/ЦЭ, задачи, конспекты, подготовка к экзаменам</p></div>
+        <div class="role-btn-text"><h3 data-i18n="role.student">Ученик</h3><p data-i18n="role.studentDesc">ЦТ/ЦЭ, задачи, конспекты, подготовка к экзаменам</p></div>
       </div>
       <div class="role-btn" onclick="selectRole('teacher')">
         <div class="role-icon"><i class="fas fa-chalkboard-user"></i></div>
-        <div class="role-btn-text"><h3>Учитель</h3><p>Планы уроков, задания, контрольные работы</p></div>
+        <div class="role-btn-text"><h3 data-i18n="role.teacher">Учитель</h3><p data-i18n="role.teacherDesc">Планы уроков, задания, контрольные работы</p></div>
       </div>
     </div>
+    <div class="role-country-line" id="roleCountryLine" style="display:none;">
+      <span id="roleCountryFlag"></span><span id="roleCountryName"></span>
+      <a onclick="openCountrySwitch()">← изменить</a>
+    </div>
+  </div>
+</div>
+
+<!-- ВЫБОР СТРАНЫ (первый запуск / переключение) -->
+<div class="page" id="countryPage">
+  <div class="action-container">
+    <div class="back-btn" id="countryBackBtn" style="display:none;" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div class="country-hero">
+      <div class="country-kicker" data-i18n="country.kicker">Страна и регион</div>
+      <h1 data-i18n="country.title">Выберите страну</h1>
+      <p data-i18n="country.sub">От страны зависят экзамены, программа, критерии оценивания и язык интерфейса</p>
+    </div>
+    <div id="countryRoot"></div>
   </div>
 </div>
 
 <!-- ГЛАВНАЯ -->
 <div class="page" id="mainPage">
-  <div class="header"><h1>NEVIO</h1><p>Твой умный помощник в учёбе</p></div>
+  <div class="header">
+    <h1>NEVIO</h1>
+    <p data-i18n="app.subtitle">Твой умный помощник в учёбе</p>
+    <div class="country-badge" id="countryBadge" style="display:none;" onclick="openCountrySwitch()"></div>
+  </div>
   <div id="menuContainer"></div>
 </div>
 
 <!-- ДЕЙСТВИЕ -->
 <div class="page" id="actionPage">
   <div class="action-container">
-    <div class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
     <div class="card">
       <div class="card-header">
         <h2 id="actionTitle"></h2>
@@ -956,7 +1134,7 @@
 <!-- ТЕСТ -->
 <div class="page" id="testPage">
   <div class="action-container">
-    <div class="back-btn" onclick="exitTest()"><i class="fas fa-arrow-left"></i><span>Выйти из теста</span></div>
+    <div class="back-btn" onclick="exitTest()"><i class="fas fa-arrow-left"></i><span data-i18n="common.exitTest">Выйти из теста</span></div>
     <div id="testContainer"></div>
   </div>
 </div>
@@ -972,29 +1150,37 @@
       <div class="profile-role" id="profileRole">Роль</div>
     </div>
     <div class="settings-list">
+      <div class="settings-item" onclick="openCountrySwitch()">
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-globe"></i></div><div class="settings-item-text"><h4 data-i18n="settings.country">Страна и язык</h4><p id="settingsCountryDesc" data-i18n="settings.countryDesc">Экзамены, программа, язык интерфейса</p></div></div>
+        <div class="settings-item-right"><span class="settings-value" id="settingsCountryValue"></span><i class="fas fa-chevron-right"></i></div>
+      </div>
+      <div class="settings-item" id="settingsLangItem" style="display:none;" onclick="toggleLanguage()">
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-language"></i></div><div class="settings-item-text"><h4 data-i18n="settings.lang">Язык интерфейса</h4><p id="settingsLangDesc"></p></div></div>
+        <div class="settings-item-right"><span class="settings-value" id="settingsLangValue"></span><i class="fas fa-chevron-right"></i></div>
+      </div>
       <div class="settings-item" onclick="showHistory()">
-        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-history"></i></div><div class="settings-item-text"><h4>История запросов</h4><p>Все предыдущие запросы</p></div></div>
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-history"></i></div><div class="settings-item-text"><h4 data-i18n="settings.history">История запросов</h4><p data-i18n="settings.historyDesc">Все предыдущие запросы</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
       <div class="settings-item" onclick="clearHistory()">
-        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-trash-alt"></i></div><div class="settings-item-text"><h4>Очистить историю</h4><p>Удалить все сохранённые запросы</p></div></div>
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-trash-alt"></i></div><div class="settings-item-text"><h4 data-i18n="settings.clear">Очистить историю</h4><p data-i18n="settings.clearDesc">Удалить все сохранённые запросы</p></div></div>
       </div>
       <div class="settings-item" onclick="toggleTheme()">
-        <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div><div class="settings-item-text"><h4>Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
+        <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div><div class="settings-item-text"><h4 data-i18n="settings.theme">Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
       <div class="settings-item" onclick="showPrivacy()">
-        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-item-text"><h4>Политика конфиденциальности</h4><p>Как мы обрабатываем данные</p></div></div>
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-item-text"><h4 data-i18n="settings.privacy">Политика конфиденциальности</h4><p data-i18n="settings.privacyDesc">Как мы обрабатываем данные</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
       <div class="settings-item" onclick="showTerms()">
-        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-file-contract"></i></div><div class="settings-item-text"><h4>Условия использования</h4><p>Правила работы с сервисом</p></div></div>
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-file-contract"></i></div><div class="settings-item-text"><h4 data-i18n="settings.terms">Условия использования</h4><p data-i18n="settings.termsDesc">Правила работы с сервисом</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
       <div class="settings-item" onclick="deleteAccount()">
         <div class="settings-item-left">
           <div class="settings-item-icon" style="background:rgba(248,113,113,0.1);color:#f87171;border-color:rgba(248,113,113,0.2);"><i class="fas fa-user-slash"></i></div>
-          <div class="settings-item-text"><h4 style="color:#f87171;">Удалить аккаунт</h4><p>Удалить все данные и сменить роль</p></div>
+          <div class="settings-item-text"><h4 style="color:#f87171;" data-i18n="settings.delete">Удалить аккаунт</h4><p data-i18n="settings.deleteDesc">Удалить все данные и сменить роль</p></div>
         </div>
       </div>
     </div>
@@ -1004,11 +1190,35 @@
 <!-- ИСТОРИЯ -->
 <div class="page" id="historyPage">
   <div class="action-container">
-    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span>Назад</span></div>
+    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
     <div class="card">
-      <div class="card-header"><h2><i class="fas fa-history"></i> История запросов</h2><p class="card-desc">Все ваши предыдущие запросы сохранены здесь</p></div>
+      <div class="card-header"><h2><i class="fas fa-history"></i> <span data-i18n="history.title">История запросов</span></h2><p class="card-desc" data-i18n="history.desc">Все ваши предыдущие запросы сохранены здесь</p></div>
       <div id="historyList"></div>
     </div>
+  </div>
+</div>
+
+<!-- ПРОГРЕСС (новый раздел) -->
+<div class="page" id="progressPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div id="progressRoot"></div>
+  </div>
+</div>
+
+<!-- РЕЖИМ УЧИТЕЛЯ: классы и аналитика (новый раздел) -->
+<div class="page" id="teacherPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div id="teacherRoot"></div>
+  </div>
+</div>
+
+<!-- ЗАДАНИЯ ОТ УЧИТЕЛЯ (для учеников) -->
+<div class="page" id="myAssignmentsPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div id="myTasksRoot"></div>
   </div>
 </div>
 
@@ -1093,10 +1303,11 @@
 
 <!-- НАВИГАЦИЯ -->
 <div class="bottom-nav">
-  <div class="nav-item active" id="nav-main" onclick="showPage('mainPage')"><div class="icon"><i class="fas fa-home"></i></div><span>Главная</span></div>
-  <div class="nav-item" id="nav-official" onclick="openOfficial()"><div class="icon"><i class="fas fa-landmark"></i></div><span>Ресурсы</span></div>
-  <div class="nav-item" id="nav-history" onclick="showHistory()"><div class="icon"><i class="fas fa-history"></i></div><span>История</span></div>
-  <div class="nav-item" id="nav-settings" onclick="showPage('settingsPage')"><div class="icon"><i class="fas fa-gear"></i></div><span>Настройки</span></div>
+  <div class="nav-item active" id="nav-main" onclick="showPage('mainPage')"><div class="icon"><i class="fas fa-home"></i></div><span data-i18n="nav.home">Главная</span></div>
+  <div class="nav-item" id="nav-official" onclick="openOfficial()"><div class="icon"><i class="fas fa-landmark"></i></div><span data-i18n="nav.resources">Ресурсы</span></div>
+  <div class="nav-item" id="nav-progress" onclick="showProgress()"><div class="icon"><i class="fas fa-chart-line"></i></div><span data-i18n="nav.progress">Прогресс</span></div>
+  <div class="nav-item" id="nav-history" onclick="showHistory()"><div class="icon"><i class="fas fa-history"></i></div><span data-i18n="nav.history">История</span></div>
+  <div class="nav-item" id="nav-settings" onclick="showPage('settingsPage')"><div class="icon"><i class="fas fa-gear"></i></div><span data-i18n="nav.settings">Настройки</span></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1130,7 +1341,9 @@ let state = {
   history: [],
   conversationHistory: [],
   currentActionId: null,
-  isLoading: false
+  isLoading: false,
+  country: null,   // ID страны (BY/RU/KZ/UZ) — см. NEVIO_COUNTRIES ниже
+  lang: 'ru'       // язык интерфейса (ru/kk/uz)
 };
 
 // БАЗА ЗНАНИЙ ЦТ/ЦЭ
@@ -1348,43 +1561,83 @@ async function fetchWithTimeout(url, options, timeoutMs) {
   }
 }
 
+// РАСПРЕДЕЛЕНИЕ НАГРУЗКИ МЕЖДУ БЕСПЛАТНЫМИ ПРОВАЙДЕРАМИ (задача 6):
+// запросы чередуются между OpenRouter (только :free модели) и Groq
+// (бесплатный тариф, если владелец вписал GROQ_API_KEY), с фолбэком
+// на другой провайдер при сбое/лимитах. Без ключа Groq поведение
+// полностью совпадает с прежним (только OpenRouter).
+const GROQ_API_KEY = ""; // ← можно вписать бесплатный ключ Groq (console.groq.com)
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODELS = [
+  "llama-3.3-70b-versatile",
+  "llama-3.1-8b-instant"
+];
+
+function aiProviders() {
+  const providers = [
+    {
+      name: 'OpenRouter',
+      url: OPENROUTER_API_URL,
+      key: OPENROUTER_API_KEY,
+      models: OPENROUTER_MODELS,
+      headers: { 'HTTP-Referer': 'https://nevio.app', 'X-Title': 'NEVIO App' }
+    }
+  ];
+  if (String(GROQ_API_KEY || '').trim()) {
+    providers.push({ name: 'Groq', url: GROQ_API_URL, key: GROQ_API_KEY, models: GROQ_MODELS, headers: {} });
+  }
+  return providers;
+}
+
+let aiCursor = 0;
+try { aiCursor = parseInt(localStorage.getItem('nevioAiCursor') || '0', 10) || 0; } catch (e) {}
+
 async function callProxy(body, { retries = MAX_RETRIES } = {}) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + OPENROUTER_API_KEY.trim(),
-    'HTTP-Referer': 'https://nevio.app',
-    'X-Title': 'NEVIO App'
-  };
+  const providers = aiProviders();
+  if (!providers.length) throw new Error('Провайдеры ИИ не настроены');
+
+  // Круговое чередование провайдеров: стартовая позиция сдвигается на каждом запросе,
+  // чтобы нагрузка делилась между OpenRouter и Groq в рамках бесплатных квот.
+  aiCursor = (aiCursor + 1) % providers.length;
+  try { localStorage.setItem('nevioAiCursor', String(aiCursor)); } catch (e) {}
 
   let lastError;
-  for (let modelIndex = 0; modelIndex < OPENROUTER_MODELS.length; modelIndex++) {
-    const model = OPENROUTER_MODELS[modelIndex];
-    for (let attempt = 0; attempt <= retries; attempt++) {
-      try {
-        const response = await fetchWithTimeout(OPENROUTER_API_URL, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ model, ...body })
-        }, REQUEST_TIMEOUT_MS);
+  for (let pi = 0; pi < providers.length; pi++) {
+    const provider = providers[(aiCursor + pi) % providers.length];
+    const headers = Object.assign({}, provider.headers, {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + String(provider.key || '').trim()
+    });
 
-        if (!response.ok) {
-          const status = response.status;
-          if (status === 404 || status === 429) {
-            lastError = new Error('Модель ' + model + ' недоступна');
-            break;
+    for (let modelIndex = 0; modelIndex < provider.models.length; modelIndex++) {
+      const model = provider.models[modelIndex];
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          const response = await fetchWithTimeout(provider.url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ model, ...body })
+          }, REQUEST_TIMEOUT_MS);
+
+          if (!response.ok) {
+            const status = response.status;
+            if (status === 404 || status === 429 || status === 401 || status === 403) {
+              lastError = new Error('Модель ' + model + ' (' + provider.name + ') недоступна');
+              break;
+            }
+            if (status >= 500) throw new Error('Сервер временно недоступен');
+            throw new Error('Ошибка запроса (' + status + ')');
           }
-          if (status >= 500) throw new Error('Сервер временно недоступен');
-          throw new Error('Ошибка запроса (' + status + ')');
+          return response;
+        } catch (e) {
+          lastError = e;
+          if (e.message.includes('недоступна')) break;
+          if (attempt < retries) {
+            await sleep(800 * (attempt + 1));
+            continue;
+          }
+          break;
         }
-        return response;
-      } catch (e) {
-        lastError = e;
-        if (e.message.includes('недоступна')) break;
-        if (attempt < retries) {
-          await sleep(800 * (attempt + 1));
-          continue;
-        }
-        break;
       }
     }
   }
@@ -1401,13 +1654,15 @@ function openCTTest() {
 }
 
 function renderTestSetup() {
-  const subjects = ['Математика','Физика','Химия','Биология','История Беларуси','Обществоведение','Русский язык','Английский язык'];
-  const chips = subjects.map(s => `<span class="subject-chip" onclick="selectTestSubject(this,'${s}')">${s}</span>`).join('');
-  return `
+  const c = activeCountry();
+  const subjects = c.ctSubjects;
+  const chips = subjects.map(s => `<span class="subject-chip" onclick="selectTestSubject(this,'${escapeHtml(s)}')">${escapeHtml(s)}</span>`).join('');
+  const banner = c.testBanner ? c.testBanner() : `
     <div class="info-banner">
       <strong>🎯 Интерактивный тест в формате ЦТ</strong><br>
       ИИ генерирует вопросы формата ЦТ. Тренировочные задания — используй для практики!
-    </div>
+    </div>`;
+  return banner + `
     <div class="card">
       <div class="card-header">
         <h2><i class="fas fa-check-circle"></i> Настройка теста</h2>
@@ -1478,8 +1733,9 @@ async function startInteractiveTest() {
 }
 
 async function generateTestQuestions(subject, count, difficulty) {
+  const c = activeCountry();
   const knowledgeContext = getKnowledgeForSubject(subject);
-  const prompt = `Создай ${count} тестовых вопросов по "${subject}" в формате белорусского ЦТ. Сложность: ${difficulty}.
+  const prompt = `Создай ${count} тестовых вопросов по "${subject}" в формате ${c.testFormatName}. Сложность: ${difficulty}.
 
 ${knowledgeContext}
 
@@ -1489,7 +1745,7 @@ ${knowledgeContext}
   for (let attempt = 0; attempt < 2; attempt++) {
     const response = await callProxy({
       messages: [
-        { role: 'system', content: systemPrompts[state.role] || systemPrompts.student },
+        { role: 'system', content: c.systemPrompt ? c.systemPrompt(state.role) : (systemPrompts[state.role] || systemPrompts.student) },
         { role: 'user', content: prompt }
       ],
       temperature: 0.5,
@@ -1533,6 +1789,11 @@ function parseTestQuestionsJSON(text) {
 }
 
 function getKnowledgeForSubject(subject) {
+  const c = activeCountry();
+  if (c && c.kbForSubject) {
+    const val = c.kbForSubject(subject);
+    return val ? `БАЗА ЗНАНИЙ:\n${val}` : '';
+  }
   const map = {
     'Математика': CT_KNOWLEDGE_BASE.math,
     'Физика': CT_KNOWLEDGE_BASE.physics,
@@ -1590,6 +1851,9 @@ function answerQuestion(selectedIndex, btn) {
   const q = testState.questions[testState.currentQ];
   const isCorrect = selectedIndex === q.correctIndex;
   if (isCorrect) testState.score++;
+  
+  // Трекинг прогресса: сохраняем результат вопроса и тип ошибки
+  recordTestQuestion(testState.subject, q.question, isCorrect);
 
   document.querySelectorAll('.test-option').forEach(opt => {
     const idx = parseInt(opt.getAttribute('data-index'));
@@ -1621,6 +1885,9 @@ function renderTestResult() {
   const total = testState.questions.length;
   const score = testState.score;
   const pct = Math.round((score / total) * 100);
+  
+  // Трекинг прогресса: итог теста
+  recordTestResult(testState.subject, score, total);
   
   let emoji = '😔', label = 'Нужно больше практики';
   if (pct >= 90) { emoji = '🏆'; label = 'Отличный результат!'; triggerConfetti(); }
@@ -1654,6 +1921,11 @@ function exitTest() {
     openOfficial();
     return;
   }
+  if (testState.fromProgress) {
+    testState.fromProgress = false;
+    showProgress();
+    return;
+  }
   showPage('mainPage');
 }
 
@@ -1685,6 +1957,8 @@ function init() {
       const p = JSON.parse(saved);
       state.role = p.role;
       state.history = p.history || [];
+      state.country = p.country || null;
+      state.lang = p.lang || null;
     } catch(e) {}
   }
   
@@ -1694,7 +1968,29 @@ function init() {
   document.body.classList.toggle('dark-theme', isDark);
   updateThemeUI(isDark);
   
+  // СТРАНА/РЕГИОН (мультистрановая архитектура, поверх прежней логики):
+  // 1) сохранённая страна; 2) у существующих пользователей — Беларусь (как раньше);
+  // 3) язык Telegram; 4) иначе — страница выбора страны (+ подсказка геолокации).
+  let country = state.country;
+  if (!country) {
+    try { country = localStorage.getItem('nevioCountry') || null; } catch(e) {}
+  }
+  if (!country && saved) country = 'BY'; // существующие пользователи: поведение не меняется
+  if (!country) country = detectCountryByTelegram();
+  state.country = country || null;
+  applyLanguage(country ? defaultCountryLang(country) : 'ru');
+  
   loadOfficialProgress();
+  
+  if (!state.country) {
+    // Новый пользователь: сначала выбор страны (ручной, с подсказкой по геолокации)
+    renderCountryPage(false);
+    showPage('countryPage');
+    updateProfile();
+    maybeDetectCountryByGeo();
+    return;
+  }
+  
   if (state.role) {
     loadMainMenu();
     showPage('mainPage');
@@ -1702,6 +1998,7 @@ function init() {
     showPage('roleSelectionPage');
   }
   updateProfile();
+  renderCountryBadge();
 }
 
 function selectRole(role) {
@@ -1709,19 +2006,19 @@ function selectRole(role) {
   saveData();
   loadMainMenu();
   showPage('mainPage');
-  const names = { student: 'ученика', teacher: 'учителя' };
-  showToast('Режим ' + names[role] + ' активирован');
+  const toastKeys = { student: 'toast.roleStudent', teacher: 'toast.roleTeacher' };
+  showToast(t(toastKeys[role] || 'toast.roleStudent'));
 }
 
 function getAllItems() {
   const items = [];
-  menuConfigs[state.role].sections.forEach(s => s.items.forEach(i => items.push(i)));
+  (activeMenu()[state.role] || { sections: [] }).sections.forEach(s => s.items.forEach(i => items.push(i)));
   return items;
 }
 
 function loadMainMenu() {
   const container = document.getElementById('menuContainer');
-  const config = menuConfigs[state.role];
+  const config = activeMenu()[state.role] || { sections: [] };
   let html = '';
   config.sections.forEach(section => {
     html += `<div class="section-label">${section.label}</div><div class="menu-grid">`;
@@ -1737,12 +2034,18 @@ function loadMainMenu() {
     html += `</div>`;
   });
   container.innerHTML = html;
+  renderCountryBadge();
 }
 
 function openAction(actionId) {
   // Специальные страницы
   if (actionId === 'ct_test') { openCTTest(); return; }
   if (actionId === 'formula_book') { openFormulaBook(); return; }
+  if (actionId === 'exam_info') { openExamInfo(); return; }
+  if (actionId === 'classes') { openTeacher('classes'); return; }
+  if (actionId === 'assign') { openTeacher('assign_new'); return; }
+  if (actionId === 'class_analytics') { openTeacher('analytics'); return; }
+  if (actionId === 'my_assignments') { openMyAssignments(); return; }
   
   const config = getAllItems().find(m => m.id === actionId);
   if (!config) return;
@@ -1865,37 +2168,36 @@ function showFormulas(subject) {
 
 function generateForm(actionId) {
   const fc = document.getElementById('actionForm');
-  const ph = 'Опишите ваш запрос...';
-  const ta = (id, rows) => `<div class="form-group"><label>Ваш запрос</label><textarea id="${id}" placeholder="${ph}" rows="${rows||4}"></textarea></div>`;
+  const c = activeCountry();
+  const ph = t('form.queryPh');
+  const ta = (id, rows) => `<div class="form-group"><label>${t('form.query')}</label><textarea id="${id}" placeholder="${ph}" rows="${rows||4}"></textarea></div>`;
   const sel = (id, label, opts) => `<div class="form-group"><label>${label}</label><select id="${id}">${opts}</select></div>`;
   const btn = (icon, text) => `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
 
-  const subjectsAll = ['Математика','Физика','Химия','Биология','Русский язык','История','Обществоведение','Английский язык'];
-  const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option${g===11?' selected':''}>${g} класс</option>`).join('');
+  const subjectsAll = c.studySubjects;
+  const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option${g===11?' selected':''}>${g} ${t('form.gradeWord')}</option>`).join('');
 
   let html = '';
   switch(actionId) {
     case 'ct_prep':
-      html = sel('subjectCT', 'Предмет', subjectsAll.map(s => `<option>${s}</option>`).join(''))
-        + sel('ctMode', 'Что нужно', `
-          <option>Разбор типичных заданий ЦТ</option>
-          <option>Разобрать моё задание</option>
-          <option>Вся теория для ЦТ</option>
-          <option>Пробный тест ЦТ</option>
-          <option>Стратегия сдачи ЦТ</option>
-          <option>Работа над ошибками</option>`)
+      html = sel('subjectCT', t('form.subject'), c.ctSubjects.map(s => `<option>${s}</option>`).join(''))
+        + sel('ctMode', t('form.what'), c.ctModes.map(s => `<option>${s}</option>`).join(''))
         + ta('inputText', 4)
-        + btn('fas fa-trophy', 'Начать подготовку');
+        + btn('fas fa-trophy', t('form.startPrep'));
       break;
     case 'exam9':
-      html = sel('subjectExam9', 'Предмет', ['Математика','Русский язык','Белорусский язык','История Беларуси','Английский язык'].map(s => `<option>${s}</option>`).join(''))
-        + sel('exam9Mode', 'Что нужно', `
-          <option>Разбор билета / вопроса</option>
-          <option>Вся теория по предмету</option>
-          <option>Типичные задания экзамена</option>
-          <option>Стратегия подготовки</option>`)
+      html = sel('subjectExam9', t('form.subject'), c.exam9Subjects.map(s => `<option>${s}</option>`).join(''))
+        + sel('exam9Mode', t('form.what'), c.exam9Modes.map(s => `<option>${s}</option>`).join(''))
         + ta('inputText', 4)
-        + btn('fas fa-graduation-cap', 'Начать подготовку');
+        + btn('fas fa-graduation-cap', t('form.startPrep'));
+      break;
+    case 'check_solution':
+      html = sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option>${s}</option>`).join(''))
+        + sel('gradeSelect', t('form.grade'), gradeOpts)
+        + `<div class="form-group"><label>${t('check.taskLabel')}</label><textarea id="taskInput" placeholder="${t('check.taskPh')}" rows="3"></textarea></div>`
+        + `<div class="form-group"><label>${t('check.solutionLabel')}</label><textarea id="solutionInput" placeholder="${t('check.solutionPh')}" rows="5"></textarea></div>`
+        + `<div class="info-banner"><strong>${t('check.bannerTitle')}</strong><br>${t('check.bannerText')}</div>`
+        + btn('fas fa-clipboard-check', t('check.run'));
       break;
     case 'oral_exam':
       html = ta('inputText', 4)
@@ -1980,11 +2282,14 @@ function generateForm(actionId) {
 async function processAction() {
   if (state.isLoading) return;
   
-  const inputText = document.getElementById('inputText')?.value?.trim() || '';
+  let inputText = document.getElementById('inputText')?.value?.trim() || '';
+  if (state.currentActionId === 'check_solution') {
+    inputText = document.getElementById('taskInput')?.value?.trim() || '';
+  }
   const data = collectFormData();
   
   if (!inputText && !['ct_prep'].includes(state.currentActionId)) {
-    showToast('Заполните поле запроса');
+    showToast(t('toast.fillField'));
     return;
   }
   
@@ -2002,6 +2307,7 @@ async function processAction() {
     const response = await callGroqWithStream(state.conversationHistory, loadingId);
     state.conversationHistory.push({ role: 'assistant', content: response });
     saveToHistory({ type: state.currentActionId, input: userMsg, result: response, timestamp: new Date().toISOString() });
+    trackAction(state.currentActionId, data.subject || data.subjectCT || data.subjectExam9 || '', userMsg);
     showContinueChat();
   } catch(error) {
     removeLoadingMessage(loadingId);
@@ -2054,11 +2360,13 @@ function handleContinueKey(event) {
 }
 
 async function callGroqWithStream(messages, loadingId) {
-  const enrichedSystem = (systemPrompts[state.role] || systemPrompts.student) + '\n\n' +
+  const c = activeCountry();
+  const baseSystem = c.systemPrompt ? c.systemPrompt(state.role) : (systemPrompts[state.role] || systemPrompts.student);
+  const enrichedSystem = c.systemContext ? c.systemContext(baseSystem) : (baseSystem + '\n\n' +
     'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n' +
     '• inline: $формула$\n' +
     '• display: $$\\int_a^b f(x)dx$$\n\n' +
-    'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics;
+    'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics);
 
   const response = await callProxy({
     messages: [{ role: 'system', content: enrichedSystem }, ...messages],
@@ -2138,7 +2446,7 @@ function escapeHtml(text) {
     .replace(/'/g, '&#39;');
 }
 
-function formatAIResponse(text) {
+function formatInlineMarkdown(text) {
   let f = escapeHtml(text);
   f = f.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   f = f.replace(/\*(.+?)\*/g, '<em>$1</em>');
@@ -2146,6 +2454,48 @@ function formatAIResponse(text) {
   f = f.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
   if (!f.startsWith('<')) f = '<p>' + f + '</p>';
   return f;
+}
+
+// Разбивает ответ ИИ на «блоки доверия» (📚 опора на программу, 🧮 критерии)
+// и обычный текст. Блоки доверия рендерятся в золотые рамки «почему это верно».
+function splitTrustBlocks(text) {
+  const lines = String(text ?? '').split('\n');
+  const out = [];
+  let cur = { trust: null, lines: [] };
+  const markerRe = /^(📚|🧮|✅|❗)\s?(.*)$/;
+  const listRe = /^\s*([-•*✓✔→]|\d+[.)])/;
+  function flush() {
+    const body = cur.lines.join('\n').trim();
+    if (body) out.push(cur.trust ? { trust: cur.trust, body: body } : { text: body });
+    cur = { trust: null, lines: [] };
+  }
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const m = markerRe.exec(line);
+    if (m) {
+      flush();
+      cur = { trust: { icon: m[1], head: m[2].trim() }, lines: [] };
+    } else if (cur.trust && line.trim() !== '' && !listRe.test(line)) {
+      flush();
+      cur.lines.push(line);
+    } else {
+      cur.lines.push(line);
+    }
+  }
+  flush();
+  return out;
+}
+
+function formatAIResponse(text) {
+  const parts = splitTrustBlocks(text);
+  return parts.map(function (p) {
+    if (p.trust) {
+      const kind = (p.trust.icon === '🧮' || /критер|балл/i.test(p.trust.head)) ? 'criteria' : 'rules';
+      const head = p.trust.head ? '<div class="tb-head">' + escapeHtml(p.trust.head) + '</div>' : '';
+      return '<div class="trust-box ' + kind + '"><div class="tb-icon">' + p.trust.icon + '</div><div class="tb-body">' + head + formatInlineMarkdown(p.body) + '</div></div>';
+    }
+    return '<div class="ai-block">' + formatInlineMarkdown(p.text) + '</div>';
+  }).join('');
 }
 
 function collectFormData() {
@@ -2165,6 +2515,8 @@ function collectFormData() {
     quizType: g('quizType'),
     duration: g('duration'),
     variantCount: g('variantCount'),
+    task: g('taskInput'),
+    solution: g('solutionInput'),
   };
 }
 
@@ -2173,22 +2525,18 @@ function disableForm(d) {
 }
 
 function buildPrompt(actionId, inputText, data) {
+  const c = activeCountry();
   const ctKnowledge = getKnowledgeForSubject(data.subjectCT || data.subject || '');
   
-  const prompts = {
-    ct_prep: `Ты — эксперт по ЦТ в Беларуси. Предмет: ${data.subjectCT}.
-${ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : ''}
-${data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' : 
-data.ctMode === 'Вся теория для ЦТ' ? 'Дай всю теорию для ЦТ по ' + data.subjectCT + ' в формате LaTeX!' :
-data.ctMode === 'Стратегия сдачи ЦТ' ? 'Дай стратегию сдачи ЦТ по ' + data.subjectCT + '!' :
-'Разбери типичные задания ЦТ по ' + data.subjectCT}`,
-    
-    exam9: `Ты — эксперт по выпускным экзаменам после 9 класса в Беларуси. Предмет: ${data.subjectExam9}.
-${data.exam9Mode === 'Разбор билета / вопроса' ? 'Разбери подробно билет/вопрос:\n' + inputText + '\nДай план ответа, ключевые факты и формулировки для устного ответа!' :
-data.exam9Mode === 'Вся теория по предмету' ? 'Дай всю необходимую теорию для экзамена после 9 класса по ' + data.subjectExam9 + ' — структурированно, с примерами, в формате LaTeX для формул.' :
-data.exam9Mode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к экзамену после 9 класса по ' + data.subjectExam9 + ': план по неделям, приоритетные темы, типичные ошибки.' :
-'Дай типичные задания экзамена после 9 класса по ' + data.subjectExam9 + ' с разбором решений. Используй LaTeX для формул.'}`,
-    
+  let prompt;
+  if (actionId === 'ct_prep') {
+    prompt = c.ctPrepPrompt ? c.ctPrepPrompt(data, inputText, ctKnowledge) : '';
+  } else if (actionId === 'exam9') {
+    prompt = c.exam9Prompt ? c.exam9Prompt(data, inputText) : '';
+  } else if (actionId === 'check_solution') {
+    prompt = buildCheckSolutionPrompt(c, data);
+  } else {
+    const prompts = {
     oral_exam: `Проведи тренировку устного экзамена по теме "${inputText}" (${data.subject}, ${data.grade}).
 Дай:
 1) Примерные вопросы, которые могут спросить на экзамене
@@ -2222,13 +2570,24 @@ ${inputText}
     differentiation: `Разноуровневые задания по "${inputText}" (${data.subject}, ${data.grade}).`
   };
   
-  return prompts[actionId] || inputText;
+    prompt = prompts[actionId] || inputText;
+  }
+  
+  // «Точность и доверие»: просим модель опираться на статичную базу правил страны
+  // и оценивать решение по критериям её экзамена.
+  const trustSubject = data.subject || data.subjectCT || data.subjectExam9 || '';
+  if (['solve','explain','check_solution','ct_prep','exam9','summary'].indexOf(actionId) !== -1 && trustSubject && prompt) {
+    prompt += trustBlockFor(c, trustSubject);
+  }
+  
+  return prompt;
 }
 
 function buildUserMessage(actionId, inputText, data) {
   const types = {
     ct_prep: `ЦТ: ${data.subjectCT} — ${data.ctMode}`,
     exam9: `Экзамен 9 кл: ${data.subjectExam9} — ${data.exam9Mode}`,
+    check_solution: `Проверка решения: ${inputText.substring(0, 50)}...`,
     oral_exam: `Устный экзамен: ${inputText.substring(0, 50)}...`,
     solve: `Задача: ${inputText.substring(0, 50)}...`,
     explain: `Объяснить: ${inputText.substring(0, 50)}...`,
@@ -2355,20 +2714,34 @@ function updateProfile() {
     document.getElementById('profileName').textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Пользователь';
     document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
   }
-  const r = { student: 'Ученик', teacher: 'Учитель' };
+  const r = { student: t('roleNames.student'), teacher: t('roleNames.teacher') };
   document.getElementById('profileRole').textContent = r[state.role] || '';
+  updateRoleCountryLine();
+}
+
+function updateRoleCountryLine() {
+  const line = document.getElementById('roleCountryLine');
+  const c = activeCountry();
+  if (!line) return;
+  if (c) {
+    line.style.display = 'flex';
+    document.getElementById('roleCountryFlag').textContent = c.flag;
+    document.getElementById('roleCountryName').textContent = c.nameLocal();
+  } else {
+    line.style.display = 'none';
+  }
 }
 
 function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-theme');
   localStorage.setItem('nevioTheme', isDark ? 'dark' : 'light');
   updateThemeUI(isDark);
-  showToast(isDark ? 'Тёмная тема' : 'Светлая тема');
+  showToast(isDark ? t('toast.themeDark') : t('toast.themeLight'));
 }
 
 function updateThemeUI(isDark) {
   document.getElementById('themeIcon').innerHTML = `<i class="fas fa-${isDark ? 'sun' : 'moon'}"></i>`;
-  document.getElementById('themeText').textContent = isDark ? 'Переключить на светлую' : 'Переключить на тёмную';
+  document.getElementById('themeText').textContent = isDark ? t('toast.themeToLight') : t('toast.themeToDark');
 }
 
 function deleteAccount() {
@@ -2392,10 +2765,12 @@ function showPage(pageId) {
   
   if (pageId === 'mainPage') document.getElementById('nav-main')?.classList.add('active');
   if (pageId === 'officialPage') document.getElementById('nav-official')?.classList.add('active');
+  if (pageId === 'progressPage') document.getElementById('nav-progress')?.classList.add('active');
   if (pageId === 'historyPage') document.getElementById('nav-history')?.classList.add('active');
   if (pageId === 'settingsPage' || pageId === 'privacyPage' || pageId === 'termsPage') {
     document.getElementById('nav-settings')?.classList.add('active');
   }
+  if (pageId === 'settingsPage') updateSettingsCountryLine();
   window.scrollTo(0, 0);
 }
 
@@ -2428,7 +2803,13 @@ function getActionName(id) {
     generate_quiz: 'Тест',
     differentiation: 'Дифференциация',
     eior_explain: 'ЕИОР · объяснение',
-    eior_summary: 'ЕИОР · конспект'
+    eior_summary: 'ЕИОР · конспект',
+    check_solution: 'Проверка решения',
+    exam_info: 'Формат экзамена',
+    my_assignments: 'Задания учителя',
+    classes: 'Классы',
+    assign: 'Задание классу',
+    class_analytics: 'Аналитика'
   };
   return names[id] || 'Запрос';
 }
@@ -2451,7 +2832,9 @@ function saveData() {
   try {
     localStorage.setItem('nevioData_v3', JSON.stringify({
       role: state.role,
-      history: state.history
+      history: state.history,
+      country: state.country,
+      lang: state.lang
     }));
   } catch(e) {}
 }
@@ -3811,9 +4194,11 @@ function isFav(key) { return officialProgress.fav.indexOf(key) >= 0; }
 
 function officialSearchHtml() {
   const q = officialState.query || '';
+  const c = activeCountry();
+  const ph = (c && c.searchPh) ? (typeof c.searchPh === 'function' ? c.searchPh() : c.searchPh) : 'Найти на ЕИОР и Аду.бай…';
   return '<div class="official-search">' +
     '<i class="fas fa-search"></i>' +
-    '<input type="text" id="officialSearch" placeholder="Найти на ЕИОР и Аду.бай…" value="' + escapeHtml(q) + '" oninput="onOfficialSearch(this.value)" />' +
+    '<input type="text" id="officialSearch" placeholder="' + escapeHtml(ph) + '" value="' + escapeHtml(q) + '" oninput="onOfficialSearch(this.value)" />' +
     (q ? '<button type="button" onclick="onOfficialSearch(\'\')"><i class="fas fa-times"></i></button>' : '') +
     '</div>';
 }
@@ -3853,7 +4238,10 @@ function findAduCatByUrl(url) {
 }
 
 function openOfficial(reset) {
-  if (reset) officialState = { view: 'hub', grade: officialProgress.grade || 9, subject: null, topicN: null, topicSlug: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
+  const c = activeCountry();
+  const fresh = { view: c.id === 'BY' ? 'hub' : 'country_hub', grade: officialProgress.grade || 9, subject: null, topicN: null, topicSlug: null, query: '', url: '', page: null, aduCat: null, aduItem: null };
+  if (reset || (!officialState.countryView && c.id !== 'BY')) officialState = Object.assign(fresh, { countryView: c.id });
+  if (officialState.countryView && officialState.countryView !== c.id) officialState = Object.assign(fresh, { countryView: c.id });
   renderOfficial();
   showPage('officialPage');
   warmupOfficial();
@@ -3861,6 +4249,11 @@ function openOfficial(reset) {
 function warmupOfficial() {
   if (warmupOfficial.done) return;
   warmupOfficial.done = true;
+  const c = activeCountry();
+  if (c.id !== 'BY' && c.official && c.official.sections.length) {
+    fetchLive(c.official.sections[0].url, false).catch(function () {});
+    return;
+  }
   fetchLive(EIOR_CATALOG, false).catch(function () {});
 }
 
@@ -3874,6 +4267,7 @@ function renderOfficial() {
   }
   const map = {
     hub: renderOfficialHub,
+    country_hub: renderCountryResourcesHub,
     eior: renderEiorHome,
     subjects: renderEiorSubjects,
     topics: renderEiorTopicsShell,
@@ -3914,6 +4308,7 @@ function refreshOfficial() {
 }
 
 function renderOfficialHub() {
+  if (activeCountry().id !== 'BY') return renderCountryResourcesHub();
   const eiorCards = EIOR_SECTIONS.slice(0, 4).map(function (s) {
     const click = s.action === 'eior' ? 'officialGo(\'eior\')' : 'openOfficialBrowse(\'' + s.url + '\')';
     return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
@@ -4515,7 +4910,9 @@ async function loadBrowseLive() {
 }
 
 function renderBrowsePage(page) {
-  const moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_CATS;
+  let moreSections = /eior\.by/i.test(officialState.url) ? EIOR_SECTIONS : ADU_CATS;
+  const c = activeCountry();
+  if (c.id !== 'BY' && c.official) moreSections = c.official.sections;
   let nav = '';
   if (!/catalog_lecture/i.test(officialState.url)) {
     nav = moreSections.map(function (s) {
@@ -4624,6 +5021,7 @@ function aduItemHaystack(it) {
   return t.toLowerCase();
 }
 function renderOfficialSearch() {
+  if (activeCountry().id !== 'BY') return renderCountryResourcesSearch();
   const q = officialState.query.trim().toLowerCase();
   const pool = EIOR_SECTIONS.concat(ADU_SECTIONS);
   const hits = pool.filter(function (s) {
@@ -4658,6 +5056,2351 @@ function renderOfficialSearch() {
   return html;
 }
 
+
+/* =====================================================================
+   NEVIO · МУЛЬТИСТРАНОВАЯ АРХИТЕКТУРА (СНГ)
+   Дополнение поверх белорусской версии. Ничего из существующего кода
+   не удаляется: Беларусь (BY) остаётся полностью рабочей конфигурацией,
+   а страны RU / KZ / UZ добавляются как отдельные конфиги.
+   ===================================================================== */
+
+// ---------- I18N: словарь интерфейса (ru — как было; kk/uz — новые) ----------
+const I18N = {
+  ru: {
+    'app.subtitle': 'Твой умный помощник в учёбе',
+    'role.welcome': 'Добро пожаловать!',
+    'role.sub': 'Выберите свою роль для персонализированного опыта',
+    'role.student': 'Ученик',
+    'role.studentDesc': 'ЦТ/ЦЭ, задачи, конспекты, подготовка к экзаменам',
+    'role.teacher': 'Учитель',
+    'role.teacherDesc': 'Планы уроков, задания, контрольные работы',
+    'roleNames.student': 'Ученик',
+    'roleNames.teacher': 'Учитель',
+    'country.kicker': 'Страна и регион',
+    'country.title': 'Выберите страну',
+    'country.sub': 'От страны зависят экзамены, программа, критерии оценивания и язык интерфейса',
+    'country.geoHint': 'Похоже, вы находитесь в стране:',
+    'country.geoTap': '— нажмите на карточку, чтобы продолжить.',
+    'nav.home': 'Главная',
+    'nav.resources': 'Ресурсы',
+    'nav.progress': 'Прогресс',
+    'nav.history': 'История',
+    'nav.settings': 'Настройки',
+    'settings.country': 'Страна и язык',
+    'settings.countryDesc': 'Экзамены, программа, язык интерфейса',
+    'settings.lang': 'Язык интерфейса',
+    'settings.history': 'История запросов',
+    'settings.historyDesc': 'Все предыдущие запросы',
+    'settings.clear': 'Очистить историю',
+    'settings.clearDesc': 'Удалить все сохранённые запросы',
+    'settings.theme': 'Сменить тему',
+    'settings.privacy': 'Политика конфиденциальности',
+    'settings.privacyDesc': 'Как мы обрабатываем данные',
+    'settings.terms': 'Условия использования',
+    'settings.termsDesc': 'Правила работы с сервисом',
+    'settings.delete': 'Удалить аккаунт',
+    'settings.deleteDesc': 'Удалить все данные и сменить роль',
+    'history.title': 'История запросов',
+    'history.desc': 'Все ваши предыдущие запросы сохранены здесь',
+    'history.empty': 'История пуста',
+    'history.emptyDesc': 'Запросы будут сохраняться здесь',
+    'common.back': 'Назад',
+    'common.exitTest': 'Выйти из теста',
+    'common.write': 'Напишите сообщение...',
+    'form.queryPh': 'Опишите ваш запрос...',
+    'form.query': 'Ваш запрос',
+    'form.subject': 'Предмет',
+    'form.what': 'Что нужно',
+    'form.grade': 'Класс',
+    'form.level': 'Уровень',
+    'form.gradeWord': 'класс',
+    'form.startPrep': 'Начать подготовку',
+    'check.taskLabel': 'Условие задачи',
+    'check.taskPh': 'Вставьте условие задачи...',
+    'check.solutionLabel': 'Решение ученика (ваше решение)',
+    'check.solutionPh': 'Вставьте решение, которое нужно проверить...',
+    'check.bannerTitle': '🧮 Проверка по критериям экзамена',
+    'check.bannerText': 'NEVIO проверит решение по шагам и оценит его по официальным критериям: за что полный балл, где ошибки и сколько баллов теряется.',
+    'check.run': 'Проверить решение',
+    'toast.roleStudent': 'Режим ученика активирован',
+    'toast.roleTeacher': 'Режим учителя активирован',
+    'toast.fillField': 'Заполните поле запроса',
+    'toast.themeDark': 'Тёмная тема',
+    'toast.themeLight': 'Светлая тема',
+    'toast.themeToLight': 'Переключить на светлую',
+    'toast.themeToDark': 'Переключить на тёмную',
+    'toast.langChanged': 'Язык интерфейса изменён',
+    'menu.sec.exams': 'Подготовка к экзаменам',
+    'menu.sec.study': 'Учёба',
+    'menu.sec.plan': 'Планирование уроков',
+    'menu.sec.materials': 'Учебные материалы',
+    'menu.sec.class': 'Класс и аналитика',
+    'resources.sections': 'Разделы',
+    'resources.examInfoBtn': 'Формат и критерии экзамена',
+    'resources.search': 'Поиск',
+    'progress.title': 'Прогресс',
+    'progress.noData': 'Пока нет данных',
+    'progress.noDataDesc': 'Решайте задачи и проходите тесты — здесь появится ваш прогресс по предметам и темам.',
+    'progress.tests': 'тестов',
+    'progress.questions': 'вопросов',
+    'progress.accuracy': 'точность',
+    'progress.actions': 'действий',
+    'progress.subjects': 'По предметам',
+    'progress.weak': 'Слабые места',
+    'progress.weakDesc': 'Темы, где ошибок больше всего — тренируйте их:',
+    'progress.genTasks': '5 заданий',
+    'progress.explainTopic': 'Объяснить',
+    'progress.subjectTest': 'Тест по предмету',
+    'progress.reset': 'Обнулить прогресс',
+    'progress.recent': 'Последние действия',
+    'teacher.title': 'Класс и аналитика',
+    'teacher.subtitle': 'Назначайте задания классу и смотрите, кто справился и где ошибки',
+    'teacher.classes': 'Мои классы',
+    'teacher.newClass': 'Новый класс',
+    'teacher.classNamePh': 'Название, например «9А»',
+    'teacher.noClasses': 'Классов пока нет',
+    'teacher.noClassesDesc': 'Создайте класс, чтобы назначать ему задания',
+    'teacher.studentsJoin': 'Ученики присоединяются по коду',
+    'teacher.assignments': 'Задания',
+    'teacher.newAssignment': 'Назначить задание',
+    'teacher.assignmentTopic': 'Тема задания',
+    'teacher.assignmentTopicPh': 'Например: квадратные уравнения',
+    'teacher.genQuestions': 'Сгенерировать вопросы (ИИ)',
+    'teacher.generating': 'Генерирую вопросы…',
+    'teacher.preview': 'Предпросмотр вопросов',
+    'teacher.saveAssignment': 'Сохранить и назначить классу',
+    'teacher.noAssignments': 'Заданий пока нет',
+    'teacher.analytics': 'Аналитика',
+    'teacher.analyticsPick': 'Выберите задание для аналитики',
+    'teacher.whoDone': 'Кто справился',
+    'teacher.commonMistakes': 'Типичные ошибки',
+    'teacher.perQuestion': 'Верные ответы по вопросам',
+    'teacher.avgScore': 'Средний результат',
+    'solve.question': 'Вопрос',
+    'teacher.completed': 'выполнено',
+    'teacher.attempts': 'попыток',
+    'teacher.demo': 'Пробное прохождение',
+    'teacher.demoDesc': 'Пройдите задание как ученик на этом устройстве, чтобы проверить аналитику',
+    'teacher.syncNote': 'Результаты учеников с других устройств попадают в аналитику, когда включена бесплатная синхронизация (Firebase Realtime Database, тариф Spark). Без неё всё работает локально на этом устройстве.',
+    'teacher.copyCode': 'Скопировать код',
+    'myTasks.title': 'Задания от учителя',
+    'myTasks.subtitle': 'Введите код, который дал учитель',
+    'myTasks.join': 'Присоединиться',
+    'myTasks.codePh': 'Код задания',
+    'myTasks.nothing': 'Вы ещё не выполняли задания',
+    'myTasks.start': 'Начать',
+    'myTasks.results': 'Мои результаты',
+    'myTasks.notFound': 'Задание с таким кодом не найдено. Проверьте код у учителя.',
+    'myTasks.yourName': 'Как вас зовут?',
+    'myTasks.namePh': 'Имя и фамилия (для отчёта учителю)',
+    'myTasks.finish': 'Завершить и отправить',
+    'myTasks.sent': 'Результат отправлен учителю',
+    'common.copy': 'Скопировать',
+    'common.copied': 'Скопировано',
+    'common.close': 'Закрыть',
+    'examInfo.title': 'Формат и критерии',
+    'examInfo.static': 'Статичная справка — без запросов к ИИ',
+    'examInfo.subjects': 'Предметы',
+    'examInfo.criteria': 'Критерии оценивания',
+    'examInfo.official': 'Официальные источники',
+    'examInfo.tips': 'Советы',
+    'examInfo.secondary': 'Экзамен после 9 класса'
+  },
+  kk: {
+    'app.subtitle': 'Оқудағы ақылды көмекшің',
+    'role.welcome': 'Қош келдіңіз!',
+    'role.sub': 'Жеке тәжірибе үшін рөліңізді таңдаңыз',
+    'role.student': 'Оқушы',
+    'role.studentDesc': 'ҰБТ, есептер, конспектілер, емтиханға дайындық',
+    'role.teacher': 'Мұғалім',
+    'role.teacherDesc': 'Сабақ жоспарлары, тапсырмалар, бақылау жұмыстары',
+    'roleNames.student': 'Оқушы',
+    'roleNames.teacher': 'Мұғалім',
+    'country.kicker': 'Ел және аймақ',
+    'country.title': 'Елді таңдаңыз',
+    'country.sub': 'Емтихандар, бағдарлама, бағалау критерийлері және интерфейс тілі елге байланысты',
+    'country.geoHint': 'Сіз осы елде жүрген сияқтысыз:',
+    'country.geoTap': '— жалғастыру үшін карточканы басыңыз.',
+    'nav.home': 'Басты бет',
+    'nav.resources': 'Ресурстар',
+    'nav.progress': 'Прогресс',
+    'nav.history': 'Тарих',
+    'nav.settings': 'Баптаулар',
+    'settings.country': 'Ел және тіл',
+    'settings.countryDesc': 'Емтихандар, бағдарлама, интерфейс тілі',
+    'settings.lang': 'Интерфейс тілі',
+    'settings.history': 'Сұраулар тарихы',
+    'settings.historyDesc': 'Барлық алдыңғы сұраулар',
+    'settings.clear': 'Тарихты тазалау',
+    'settings.clearDesc': 'Барлық сақталған сұрауларды жою',
+    'settings.theme': 'Тақырыпты ауыстыру',
+    'settings.privacy': 'Құпиялылық саясаты',
+    'settings.privacyDesc': 'Деректерді қалай өңдейміз',
+    'settings.terms': 'Қолдану шарттары',
+    'settings.termsDesc': 'Сервиспен жұмыс ережелері',
+    'settings.delete': 'Аккаунтты жою',
+    'settings.deleteDesc': 'Барлық деректерді жою және рөлді ауыстыру',
+    'history.title': 'Сұраулар тарихы',
+    'history.desc': 'Барлық алдыңғы сұрауларыңыз осында сақталады',
+    'history.empty': 'Тарих бос',
+    'history.emptyDesc': 'Сұраулар осында сақталады',
+    'common.back': 'Артқа',
+    'common.exitTest': 'Тесттен шығу',
+    'common.write': 'Хабарлама жазыңыз...',
+    'form.queryPh': 'Сұрауыңызды сипаттаңыз...',
+    'form.query': 'Сұрауыңыз',
+    'form.subject': 'Пән',
+    'form.what': 'Не қажет',
+    'form.grade': 'Сынып',
+    'form.level': 'Деңгей',
+    'form.gradeWord': 'сынып',
+    'form.startPrep': 'Дайындықты бастау',
+    'check.taskLabel': 'Есептің шарты',
+    'check.taskPh': 'Есептің шартын қойыңыз...',
+    'check.solutionLabel': 'Оқушының шешімі (сіздің шешіміңіз)',
+    'check.solutionPh': 'Тексерілетін шешімді қойыңыз...',
+    'check.bannerTitle': '🧮 Емтихан критерийлері бойынша тексеру',
+    'check.bannerText': 'NEVIO шешімді қадам бойынша тексереді және ресми критерийлер бойынша бағалайды.',
+    'check.run': 'Шешімді тексеру',
+    'toast.roleStudent': 'Оқушы режимі қосылды',
+    'toast.roleTeacher': 'Мұғалім режимі қосылды',
+    'toast.fillField': 'Сұрау өрісін толтырыңыз',
+    'toast.themeDark': 'Қараңғы тақырып',
+    'toast.themeLight': 'Жарық тақырып',
+    'toast.themeToLight': 'Жарыққа ауыстыру',
+    'toast.themeToDark': 'Қараңғыға ауыстыру',
+    'toast.langChanged': 'Интерфейс тілі өзгертілді',
+    'menu.sec.exams': 'Емтихандарға дайындық',
+    'menu.sec.study': 'Оқу',
+    'menu.sec.plan': 'Сабақты жоспарлау',
+    'menu.sec.materials': 'Оқу материалдары',
+    'menu.sec.class': 'Сынып және аналитика',
+    'resources.sections': 'Бөлімдер',
+    'resources.examInfoBtn': 'Емтихан форматы мен критерийлері',
+    'resources.search': 'Іздеу',
+    'progress.title': 'Прогресс',
+    'progress.noData': 'Әзірге дерек жоқ',
+    'progress.noDataDesc': 'Есептер шығарып, тесттерден өтіңіз — пәндер мен тақырыптар бойынша прогресс осында пайда болады.',
+    'progress.tests': 'тест',
+    'progress.questions': 'сұрақ',
+    'progress.accuracy': 'дәлдік',
+    'progress.actions': 'әрекет',
+    'progress.subjects': 'Пәндер бойынша',
+    'progress.weak': 'Әлсіз тұстар',
+    'progress.weakDesc': 'Қателер көп тақырыптар — оларды жаттықтырыңыз:',
+    'progress.genTasks': '5 тапсырма',
+    'progress.explainTopic': 'Түсіндіру',
+    'progress.subjectTest': 'Пән бойынша тест',
+    'progress.reset': 'Прогресті тазалау',
+    'progress.recent': 'Соңғы әрекеттер',
+    'teacher.title': 'Сынып және аналитика',
+    'teacher.subtitle': 'Сыныпқа тапсырмалар тағайындап, кім орындағанын және қателерді көріңіз',
+    'teacher.classes': 'Менің сыныптарым',
+    'teacher.newClass': 'Жаңа сынып',
+    'teacher.classNamePh': 'Атауы, мысалы «9А»',
+    'teacher.noClasses': 'Сыныптар әлі жоқ',
+    'teacher.noClassesDesc': 'Тапсырма тағайындау үшін сынып құрыңыз',
+    'teacher.studentsJoin': 'Оқушылар код бойынша қосылады',
+    'teacher.assignments': 'Тапсырмалар',
+    'teacher.newAssignment': 'Тапсырма тағайындау',
+    'teacher.assignmentTopic': 'Тапсырма тақырыбы',
+    'teacher.assignmentTopicPh': 'Мысалы: квадрат теңдеулер',
+    'teacher.genQuestions': 'Сұрақтарды генерациялау (ИИ)',
+    'teacher.generating': 'Сұрақтарды генерациялау…',
+    'teacher.preview': 'Сұрақтарды алдын ала қарау',
+    'teacher.saveAssignment': 'Сақтау және сыныпқа тағайындау',
+    'teacher.noAssignments': 'Тапсырмалар әлі жоқ',
+    'teacher.analytics': 'Аналитика',
+    'teacher.analyticsPick': 'Аналитика үшін тапсырманы таңдаңыз',
+    'teacher.whoDone': 'Кім орындады',
+    'teacher.commonMistakes': 'Әдеттегі қателер',
+    'teacher.perQuestion': 'Сұрақтар бойынша дұрыс жауаптар',
+    'teacher.avgScore': 'Орташа нәтиже',
+    'solve.question': 'Сұрақ',
+    'teacher.completed': 'орындалды',
+    'teacher.attempts': 'әрекет',
+    'teacher.demo': 'Сынақ өту',
+    'teacher.demoDesc': 'Аналитиканы тексеру үшін тапсырманы оқушы ретінде осы құрылғыда өтіңіз',
+    'teacher.syncNote': 'Басқа құрылғылардағы оқушылардың нәтижелері тегін синхрондау (Firebase Realtime Database, Spark тарифі) қосылғанда аналитикаға түседі. Онсыз бәрі осы құрылғыда жергілікті жұмыс істейді.',
+    'teacher.copyCode': 'Кодты көшіру',
+    'myTasks.title': 'Мұғалімнің тапсырмалары',
+    'myTasks.subtitle': 'Мұғалім берген кодты енгізіңіз',
+    'myTasks.join': 'Қосылу',
+    'myTasks.codePh': 'Тапсырма коды',
+    'myTasks.nothing': 'Сіз әлі тапсырма орындаған жоқсыз',
+    'myTasks.start': 'Бастау',
+    'myTasks.results': 'Менің нәтижелерім',
+    'myTasks.notFound': 'Мұндай кодпен тапсырма табылмады. Кодты мұғалімнен тексеріңіз.',
+    'myTasks.yourName': 'Атыңыз кім?',
+    'myTasks.namePh': 'Аты-жөніңіз (мұғалімге есеп үшін)',
+    'myTasks.finish': 'Аяқтау және жіберу',
+    'myTasks.sent': 'Нәтиже мұғалімге жіберілді',
+    'common.copy': 'Көшіру',
+    'common.copied': 'Көшірілді',
+    'common.close': 'Жабу',
+    'examInfo.title': 'Формат және критерийлер',
+    'examInfo.static': 'Статикалық анықтама — ИИ сұрауынсыз',
+    'examInfo.subjects': 'Пәндер',
+    'examInfo.criteria': 'Бағалау критерийлері',
+    'examInfo.official': 'Ресми дереккөздер',
+    'examInfo.tips': 'Кеңестер',
+    'examInfo.secondary': '9-сыныптан кейінгі емтихан'
+  },
+  uz: {
+    'app.subtitle': "O'quvdagi aqlli yordamching",
+    'role.welcome': 'Xush kelibsiz!',
+    'role.sub': 'Shaxsiy tajriba uchun rolingizni tanlang',
+    'role.student': "O'quvchi",
+    'role.studentDesc': 'Testlar, masalalar, konspektlar, imtihonga tayyorgarlik',
+    'role.teacher': "O'qituvchi",
+    'role.teacherDesc': 'Dars rejalari, topshiriqlar, nazorat ishlari',
+    'roleNames.student': "O'quvchi",
+    'roleNames.teacher': "O'qituvchi",
+    'country.kicker': 'Mamlakat va hudud',
+    'country.title': 'Mamlakatni tanlang',
+    'country.sub': 'Imtihonlar, dastur, baholash mezonlari va interfeys tili mamlakatga bogʻliq',
+    'country.geoHint': 'Siz shu mamlakatda joylashganga oʻxshaysiz:',
+    'country.geoTap': '— davom etish uchun kartochkani bosing.',
+    'nav.home': 'Bosh sahifa',
+    'nav.resources': 'Resurslar',
+    'nav.progress': 'Taraqqiyot',
+    'nav.history': 'Tarix',
+    'nav.settings': 'Sozlamalar',
+    'settings.country': 'Mamlakat va til',
+    'settings.countryDesc': 'Imtihonlar, dastur, interfeys tili',
+    'settings.lang': 'Interfeys tili',
+    'settings.history': 'Soʻrovlar tarixi',
+    'settings.historyDesc': 'Barcha oldingi soʻrovlar',
+    'settings.clear': 'Tarixni tozalash',
+    'settings.clearDesc': 'Barcha saqlangan soʻrovlarni oʻchirish',
+    'settings.theme': 'Mavzuni almashtirish',
+    'settings.privacy': 'Maxfiylik siyosati',
+    'settings.privacyDesc': 'Maʼlumotlarni qanday qayta ishlaymiz',
+    'settings.terms': 'Foydalanish shartlari',
+    'settings.termsDesc': 'Xizmat bilan ishlash qoidalari',
+    'settings.delete': 'Akkauntni oʻchirish',
+    'settings.deleteDesc': 'Barcha maʼlumotlarni oʻchirish va rolni almashtirish',
+    'history.title': 'Soʻrovlar tarixi',
+    'history.desc': 'Barcha oldingi soʻrovlaringiz shu yerda saqlanadi',
+    'history.empty': 'Tarix boʻsh',
+    'history.emptyDesc': 'Soʻrovlar shu yerda saqlanadi',
+    'common.back': 'Orqaga',
+    'common.exitTest': 'Testdan chiqish',
+    'common.write': 'Xabar yozing...',
+    'form.queryPh': 'Soʻrovingizni tasvirlang...',
+    'form.query': 'Soʻrovingiz',
+    'form.subject': 'Fan',
+    'form.what': 'Nima kerak',
+    'form.grade': 'Sinf',
+    'form.level': 'Daraja',
+    'form.gradeWord': 'sinf',
+    'form.startPrep': 'Tayyorgarlikni boshlash',
+    'check.taskLabel': 'Masala sharti',
+    'check.taskPh': 'Masala shartini kiriting...',
+    'check.solutionLabel': "Oʻquvchining yechimi (sizning yechimingiz)",
+    'check.solutionPh': 'Tekshiriladigan yechimni kiriting...',
+    'check.bannerTitle': '🧮 Imtihon mezonlari boʻyicha tekshirish',
+    'check.bannerText': 'NEVIO yechimni qadamma-qadam tekshiradi va rasmiy mezonlar boʻyicha baholaydi.',
+    'check.run': 'Yechimni tekshirish',
+    'toast.roleStudent': "O'quvchi rejimi yoqildi",
+    'toast.roleTeacher': "O'qituvchi rejimi yoqildi",
+    'toast.fillField': 'Soʻrov maydonini toʻldiring',
+    'toast.themeDark': 'Qorongʻu mavzu',
+    'toast.themeLight': 'Yorugʻ mavzu',
+    'toast.themeToLight': 'Yorugʻga oʻtkazish',
+    'toast.themeToDark': 'Qorongʻuga oʻtkazish',
+    'toast.langChanged': 'Interfeys tili oʻzgartirildi',
+    'menu.sec.exams': 'Imtihonlarga tayyorgarlik',
+    'menu.sec.study': "O'qish",
+    'menu.sec.plan': 'Darsni rejalashtirish',
+    'menu.sec.materials': "O'quv materiallari",
+    'menu.sec.class': 'Sinf va tahlil',
+    'resources.sections': "Bo'limlar",
+    'resources.examInfoBtn': 'Imtihon formati va mezonlari',
+    'resources.search': 'Qidiruv',
+    'progress.title': 'Taraqqiyot',
+    'progress.noData': 'Hozircha maʼlumot yoʻq',
+    'progress.noDataDesc': 'Masalalar yeching va testlardan oʻting — fanlar va mavzular boʻyicha taraqqiyotingiz shu yerda paydo boʻladi.',
+    'progress.tests': 'test',
+    'progress.questions': 'savol',
+    'progress.accuracy': 'aniqlik',
+    'progress.actions': 'amal',
+    'progress.subjects': 'Fanlar boʻyicha',
+    'progress.weak': 'Zaif joylar',
+    'progress.weakDesc': 'Xatolar koʻp mavzular — ularni mashq qiling:',
+    'progress.genTasks': '5 ta topshiriq',
+    'progress.explainTopic': 'Tushuntirish',
+    'progress.subjectTest': 'Fan boʻyicha test',
+    'progress.reset': 'Taraqqiyotni tozalash',
+    'progress.recent': 'Soʻnggi amallar',
+    'teacher.title': 'Sinf va tahlil',
+    'teacher.subtitle': 'Sinfga topshiriqlar tayinlang va kim bajardi, qayerda xatolar — koʻring',
+    'teacher.classes': 'Mening sinflarim',
+    'teacher.newClass': 'Yangi sinf',
+    'teacher.classNamePh': 'Nomi, masalan «9A»',
+    'teacher.noClasses': 'Sinflar hozircha yoʻq',
+    'teacher.noClassesDesc': 'Topshiriq tayinlash uchun sinf yarating',
+    'teacher.studentsJoin': "O'quvchilar kod orqali qoʻshiladi",
+    'teacher.assignments': 'Topshiriqlar',
+    'teacher.newAssignment': 'Topshiriq tayinlash',
+    'teacher.assignmentTopic': 'Topshiriq mavzusi',
+    'teacher.assignmentTopicPh': 'Masalan: kvadrat tenglamalar',
+    'teacher.genQuestions': 'Savollarni generatsiya qilish (AI)',
+    'teacher.generating': 'Savollar generatsiya qilinmoqda…',
+    'teacher.preview': 'Savollarni oldindan koʻrish',
+    'teacher.saveAssignment': 'Saqlash va sinfga tayinlash',
+    'teacher.noAssignments': 'Topshiriqlar hozircha yoʻq',
+    'teacher.analytics': 'Tahlil',
+    'teacher.analyticsPick': 'Tahlil uchun topshiriqni tanlang',
+    'teacher.whoDone': 'Kim bajardi',
+    'teacher.commonMistakes': 'Oddiy xatolar',
+    'teacher.perQuestion': 'Savollar boʻyicha toʻgʻri javoblar',
+    'teacher.avgScore': "O'rtacha natija",
+    'solve.question': 'Savol',
+    'teacher.completed': 'bajarildi',
+    'teacher.attempts': 'urinish',
+    'teacher.demo': 'Sinovdan oʻtish',
+    'teacher.demoDesc': "Tahlilni tekshirish uchun topshiriqni o'quvchi sifatida shu qurilmada bajaring",
+    'teacher.syncNote': "Boshqa qurilmalardagi o'quvchilar natijalari bepul sinxronizatsiya (Firebase Realtime Database, Spark tarifi) yoqilganda tahlilga tushadi. U holda hammasi shu qurilmada lokal ishlaydi.",
+    'teacher.copyCode': 'Kodni nusxalash',
+    'myTasks.title': "O'qituvchining topshiriqlari",
+    'myTasks.subtitle': "O'qituvchi bergan kodni kiriting",
+    'myTasks.join': "Qo'shilish",
+    'myTasks.codePh': 'Topshiriq kodi',
+    'myTasks.nothing': 'Siz hali topshiriq bajarmagansiz',
+    'myTasks.start': 'Boshlash',
+    'myTasks.results': 'Mening natijalarim',
+    'myTasks.notFound': 'Bu kod bilan topshiriq topilmadi. Kodni o’qituvchidan tekshiring.',
+    'myTasks.yourName': 'Ismingiz nima?',
+    'myTasks.namePh': "Ism va familiya (o'qituvchiga hisobot uchun)",
+    'myTasks.finish': 'Yakunlash va yuborish',
+    'myTasks.sent': "Natija o'qituvchiga yuborildi",
+    'common.copy': 'Nusxalash',
+    'common.copied': 'Nusxalandi',
+    'common.close': 'Yopish',
+    'examInfo.title': 'Format va mezonlar',
+    'examInfo.static': 'Statik maʼlumot — AI soʻrovisiz',
+    'examInfo.subjects': 'Fanlar',
+    'examInfo.criteria': 'Baholash mezonlari',
+    'examInfo.official': 'Rasmiy manbalar',
+    'examInfo.tips': 'Maslahatlar',
+    'examInfo.secondary': '9-sinfdan keyingi imtihon'
+  }
+};
+
+function t(key) {
+  const dict = I18N[state.lang] || I18N.ru;
+  return (dict && dict[key]) || (I18N.ru && I18N.ru[key]) || key;
+}
+
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(function (el) {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  const cont = document.getElementById('continueInput');
+  if (cont) cont.placeholder = t('common.write');
+}
+
+function applyLanguage(lang) {
+  state.lang = lang || 'ru';
+  document.documentElement.lang = (state.lang === 'kk' || state.lang === 'uz') ? state.lang : 'ru';
+  applyI18n();
+  updateSettingsCountryLine();
+  renderCountryBadge();
+}
+
+function toggleLanguage() {
+  const c = activeCountry();
+  if (!c || c.langs.length < 2) return;
+  const i = c.langs.indexOf(state.lang);
+  const next = c.langs[(i + 1) % c.langs.length];
+  applyLanguage(next);
+  saveData();
+  if (state.role) loadMainMenu();
+  updateProfile();
+  showToast(t('toast.langChanged'));
+}
+
+function defaultCountryLang(countryId) {
+  const c = NEVIO_COUNTRIES[countryId];
+  if (!c) return 'ru';
+  const tl = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.language_code : '').toLowerCase();
+  if (c.langs.indexOf(tl) !== -1) return tl;
+  return c.defaultLang || 'ru';
+}
+
+function activeCountry() {
+  return NEVIO_COUNTRIES[state.country] || NEVIO_COUNTRIES.BY;
+}
+
+// ---------- Определение страны: язык Telegram → геолокация → ручной выбор ----------
+function detectCountryByTelegram() {
+  const lang = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.language_code : '').toLowerCase();
+  const map = { ru: 'BY', be: 'BY', kk: 'KZ', uz: 'UZ' };
+  return map[lang] || null;
+}
+
+function maybeDetectCountryByGeo() {
+  try {
+    fetchWithTimeout('https://ipapi.co/json/', {}, 3500)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !j.country_code) return;
+        if (NEVIO_COUNTRIES[j.country_code] && !state.country) markSuggestedCountry(j.country_code);
+      })
+      .catch(function () {});
+  } catch (e) {}
+}
+
+function markSuggestedCountry(code) {
+  const el = document.getElementById('countryCard_' + code);
+  const c = NEVIO_COUNTRIES[code];
+  if (!el || !c) return;
+  el.classList.add('suggested');
+  const hint = document.getElementById('countryGeoHint');
+  if (hint) hint.innerHTML = '<i class="fas fa-location-dot"></i> ' + t('country.geoHint') + ' ' + c.flag + ' ' + escapeHtml(c.nameLocal()) + ' ' + t('country.geoTap');
+}
+
+function renderCountryPage(isChange) {
+  const root = document.getElementById('countryRoot');
+  const back = document.getElementById('countryBackBtn');
+  if (back) back.style.display = isChange ? 'flex' : 'none';
+  const cards = Object.keys(NEVIO_COUNTRIES).map(function (id) {
+    const c = NEVIO_COUNTRIES[id];
+    return '<div class="country-card" id="countryCard_' + id + '" onclick="selectCountry(\'' + id + '\',' + (!!isChange) + ')">' +
+      '<div class="c-flag">' + c.flag + '</div>' +
+      '<div class="c-info">' +
+        '<div class="c-name">' + escapeHtml(c.nameLocal()) + '</div>' +
+        '<div class="c-exams">' + escapeHtml(c.examLine()) + '</div>' +
+        '<span class="c-lang">' + escapeHtml(c.langsLabel()) + '</span>' +
+      '</div>' +
+      '<div class="c-check"><i class="fas fa-chevron-right"></i></div>' +
+    '</div>';
+  }).join('');
+  root.innerHTML = cards + '<div class="country-geo-hint" id="countryGeoHint"></div>';
+}
+
+function openCountrySwitch() {
+  renderCountryPage(true);
+  showPage('countryPage');
+}
+
+function selectCountry(id, isChange) {
+  const c = NEVIO_COUNTRIES[id];
+  if (!c) return;
+  state.country = id;
+  try { localStorage.setItem('nevioCountry', id); } catch (e) {}
+  applyLanguage(defaultCountryLang(id));
+  saveData();
+  renderCountryBadge();
+  updateRoleCountryLine();
+  updateSettingsCountryLine();
+  if (isChange) {
+    if (state.role) {
+      loadMainMenu();
+      showPage('mainPage');
+    } else {
+      showPage('roleSelectionPage');
+    }
+    showToast(c.flag + ' ' + c.nameLocal());
+  } else {
+    // Первый запуск: после выбора страны — выбор роли (как раньше)
+    if (state.role) {
+      loadMainMenu();
+      showPage('mainPage');
+    } else {
+      showPage('roleSelectionPage');
+    }
+    showToast(c.flag + ' ' + c.nameLocal());
+  }
+}
+
+function renderCountryBadge() {
+  const el = document.getElementById('countryBadge');
+  const c = activeCountry();
+  if (!el) return;
+  if (!c || !state.country) { el.style.display = 'none'; return; }
+  el.style.display = 'inline-flex';
+  const langPart = state.lang !== 'ru' ? '<span class="sep">·</span><span class="lang">' + state.lang.toUpperCase() + '</span>' : '';
+  el.innerHTML = '<span class="flag">' + c.flag + '</span><span>' + escapeHtml(examShort(c)) + '</span>' + langPart;
+}
+
+function updateSettingsCountryLine() {
+  const v = document.getElementById('settingsCountryValue');
+  const c = activeCountry();
+  if (v) v.textContent = c ? (c.flag + ' ' + c.nameLocal()) : '—';
+  const li = document.getElementById('settingsLangItem');
+  if (li) {
+    li.style.display = (c && c.langs.length > 1) ? 'flex' : 'none';
+    const lv = document.getElementById('settingsLangValue');
+    if (lv) lv.textContent = state.lang.toUpperCase();
+  }
+}
+
+/* =====================================================================
+   КОНФИГУРАЦИИ СТРАН. BY — текущая белорусская версия, обёрнутая в
+   конфиг без изменения логики (строки и поведение те же, что были).
+   RU / KZ / UZ — новые конфиги по тому же контракту.
+   ===================================================================== */
+
+// Критерии оценивания (статичная база — не генерируются ИИ)
+const CRITERIA_BY = 'ЦТ: каждое задание — 1 первичный балл; часть А (выбор ответа) и часть Б (краткий ответ); итог — по 100-балльной шкале, результат действителен 2 года. ЦЭ (11 класс): совмещает выпускной и вступительный — результат идёт в аттестат и учитывается при поступлении; проверка по критериям РИКЗ. Задание с ошибкой (неверный ответ или ход) балл не приносит.';
+const CRITERIA_RU = 'ЕГЭ: часть 1 (краткий ответ) проверяется автоматически; часть 2 (развёрнутый ответ) оценивают эксперты по критериям ФИПИ: верность хода решения, обоснованность шагов, точность вычислений, корректная запись ответа. Первичные баллы переводятся в 100-балльную шкалу; минимальный балл для вуза зависит от предмета. ОГЭ: первичные баллы переводятся в оценку по 5-балльной шкале («3» — минимум).';
+const CRITERIA_KZ = 'ЕНТ: 120 заданий, максимум 140 баллов. Каждое задание оценивается автоматически: История Казахстана — 20 заданий/20 баллов (порог 5), Математическая грамотность — 10/10 (порог 3), Грамотность чтения — 10/10 (порог 3), профильные предметы — по 40 заданий/50 баллов (порог 5). Общий порог — 50 баллов. Ошибка или несколько отмеченных вариантов — 0 баллов за задание.';
+const CRITERIA_UZ = 'Вступительные тесты (2025/2026): 5 экзаменов, 90 заданий, максимум 189 баллов. Обязательные: родной язык, математика, история Узбекистана — по 10 заданий × 1,1 балла (до 33 баллов). Профильные: по 30 заданий — первый × 3,1 балла (до 93), второй × 2,1 балла (до 63). Один верный вариант ответа: верный выбор — балл, ошибка — 0.';
+
+// Единые тексты правил (без привязки к стране); страна добавляет ссылку
+// на свой раздел программы/кодификатор.
+const RULE_BODIES = {
+  math: [
+    { t: 'Формула корней квадратного уравнения', f: 'D = b² − 4ac; x₁,₂ = (−b ± √D)/(2a)' },
+    { t: 'Теорема Виета', f: 'x₁ + x₂ = −b/a; x₁·x₂ = c/a' },
+    { t: 'Основное тригонометрическое тождество', f: 'sin²x + cos²x = 1' },
+    { t: 'Формулы двойного угла', f: 'sin 2x = 2·sin x·cos x' },
+    { t: 'Производная степенной функции', f: '(xⁿ)′ = n·xⁿ⁻¹' },
+    { t: 'Свойства логарифмов', f: 'logₐ(xy) = logₐx + logₐy' },
+    { t: 'Теорема Пифагора', f: 'c² = a² + b²' },
+    { t: 'Теорема косинусов', f: 'c² = a² + b² − 2ab·cos C' },
+    { t: 'Площадь треугольника через синус угла', f: 'S = ½·ab·sin C' },
+    { t: 'Классическая вероятность', f: 'P(A) = m/n' },
+    { t: 'Объёмы тел (стереометрия)', f: 'V конуса = ⅓·πr²h; V шара = 4/3·πr³' }
+  ],
+  physics: [
+    { t: 'Равноускоренное движение', f: 'v = v₀ + at; s = v₀t + at²/2' },
+    { t: 'Второй закон Ньютона', f: 'F = ma' },
+    { t: 'Закон сохранения механической энергии', f: 'Eк + Eп = const' },
+    { t: 'Закон Ома для участка цепи', f: 'I = U/R' },
+    { t: 'Уравнение Менделеева–Клапейрона', f: 'pV = νRT' },
+    { t: 'Первый закон термодинамики', f: 'ΔU = Q − A' },
+    { t: 'Формула тонкой линзы', f: '1/F = 1/d + 1/f' },
+    { t: 'Закон Кулона', f: 'F = k·q₁q₂/r²' }
+  ],
+  chemistry: [
+    { t: 'Количество вещества', f: 'ν = m/M' },
+    { t: 'Молярный объём газа (н.у.)', f: 'V = ν · 22,4 л/моль' },
+    { t: 'Массовая доля вещества в растворе', f: 'ω = m(в-ва)/m(р-ра) · 100%' },
+    { t: 'Строение атома и периодический закон', f: 'протоны = Z; нейтроны = A − Z' },
+    { t: 'Степень окисления и ОВР', f: 'сумма степеней окисления в молекуле = 0' },
+    { t: 'Гидролиз солей', f: 'соль слабой кислоты + сильное основание → щелочная среда' },
+    { t: 'Гомологический ряд алканов', f: 'CₙH₂ₙ₊₂' },
+    { t: 'Выход продукта реакции', f: 'η = m(практ)/m(теор) · 100%' }
+  ],
+  gramot: [
+    { t: 'Проценты и доли', f: 'p% от A = A·p/100' },
+    { t: 'Пропорции', f: 'a/b = c/d → ad = bc' },
+    { t: 'Скорость, время, расстояние', f: 's = v·t' },
+    { t: 'Площадь и периметр простых фигур', f: 'S прямоугольника = a·b' },
+    { t: 'Чтение таблиц и диаграмм', f: '' },
+    { t: 'Простые линейные уравнения', f: 'ax + b = 0 → x = −b/a' }
+  ]
+};
+
+function rulesWithRefs(list, refs) {
+  return (list || []).map(function (r) {
+    return { t: r.t, ref: refs[r.t] || '', f: r.f || '' };
+  });
+}
+
+const RULES_BY = {
+  math: rulesWithRefs(RULE_BODIES.math, {
+    'Формула корней квадратного уравнения': 'Учебная программа по математике (РБ), алгебра, тема «Квадратные уравнения», 8–9 классы',
+    'Теорема Виета': 'Учебная программа по математике (РБ), тема «Квадратные уравнения», 8 класс',
+    'Основное тригонометрическое тождество': 'Учебная программа по математике (РБ), тема «Тригонометрия», 9–10 классы',
+    'Формулы двойного угла': 'Учебная программа по математике (РБ), тема «Тригонометрия», 10 класс',
+    'Производная степенной функции': 'Учебная программа по математике (РБ), тема «Производная», 10–11 классы',
+    'Свойства логарифмов': 'Учебная программа по математике (РБ), тема «Логарифмы», 11 класс',
+    'Теорема Пифагора': 'Учебная программа по математике (РБ), геометрия, тема «Планиметрия», 8 класс',
+    'Теорема косинусов': 'Учебная программа по математике (РБ), геометрия, тема «Планиметрия», 9 класс',
+    'Площадь треугольника через синус угла': 'Учебная программа по математике (РБ), геометрия, тема «Планиметрия», 8–9 классы',
+    'Классическая вероятность': 'Учебная программа по математике (РБ), тема «Элементы комбинаторики и теории вероятностей», 10 класс',
+    'Объёмы тел (стереометрия)': 'Учебная программа по математике (РБ), геометрия, тема «Стереометрия», 10–11 классы'
+  }),
+  physics: rulesWithRefs(RULE_BODIES.physics, {
+    'Равноускоренное движение': 'Учебная программа по физике (РБ), тема «Кинематика», 9 класс',
+    'Второй закон Ньютона': 'Учебная программа по физике (РБ), тема «Динамика», 9 класс',
+    'Закон сохранения механической энергии': 'Учебная программа по физике (РБ), тема «Законы сохранения», 9 класс',
+    'Закон Ома для участка цепи': 'Учебная программа по физике (РБ), тема «Электрический ток», 8 класс',
+    'Уравнение Менделеева–Клапейрона': 'Учебная программа по физике (РБ), тема «Молекулярная физика», 10 класс',
+    'Первый закон термодинамики': 'Учебная программа по физике (РБ), тема «Термодинамика», 10 класс',
+    'Формула тонкой линзы': 'Учебная программа по физике (РБ), тема «Оптика», 11 класс',
+    'Закон Кулона': 'Учебная программа по физике (РБ), тема «Электростатика», 10 класс'
+  }),
+  chemistry: rulesWithRefs(RULE_BODIES.chemistry, {
+    'Количество вещества': 'Учебная программа по химии (РБ), тема «Основные понятия химии», 8 класс',
+    'Молярный объём газа (н.у.)': 'Учебная программа по химии (РБ), тема «Газообразные вещества», 8 класс',
+    'Массовая доля вещества в растворе': 'Учебная программа по химии (РБ), тема «Растворы», 8 класс',
+    'Строение атома и периодический закон': 'Учебная программа по химии (РБ), тема «Строение атома», 8–11 классы',
+    'Степень окисления и ОВР': 'Учебная программа по химии (РБ), тема «Окислительно-восстановительные реакции», 9 класс',
+    'Гидролиз солей': 'Учебная программа по химии (РБ), тема «Растворы и реакции обмена», 9 класс',
+    'Гомологический ряд алканов': 'Учебная программа по химии (РБ), тема «Органическая химия», 10 класс',
+    'Выход продукта реакции': 'Учебная программа по химии (РБ), тема «Расчёты по уравнениям реакций», 9–11 классы'
+  }),
+  lang: [
+    { t: 'Безударные гласные в корне слова', ref: 'Учебная программа по русскому языку (РБ), раздел «Орфография»', f: '' },
+    { t: 'Правописание Н/НН в причастиях и прилагательных', ref: 'Учебная программа по русскому языку (РБ), раздел «Орфография»', f: '' },
+    { t: 'Знаки препинания в сложном предложении', ref: 'Учебная программа по русскому языку (РБ), раздел «Синтаксис и пунктуация»', f: '' },
+    { t: 'Обособление второстепенных членов предложения', ref: 'Учебная программа по русскому языку (РБ), раздел «Синтаксис и пунктуация»', f: '' },
+    { t: 'Тире между подлежащим и сказуемым', ref: 'Учебная программа по русскому языку (РБ), раздел «Синтаксис»', f: '' },
+    { t: 'Состав слова и словообразование', ref: 'Учебная программа по русскому языку (РБ), раздел «Состав слова и словообразование»', f: '' }
+  ],
+  history: [
+    { t: 'Первые княжества на белорусских землях (Полоцкое, X–XII вв.)', ref: 'Программа по истории Беларуси, 6 класс, раздел «Древняя история»', f: '' },
+    { t: 'Кревская уния 1385 г.', ref: 'Программа по истории Беларуси, 7 класс, раздел «Беларусь в составе ВКЛ»', f: '' },
+    { t: 'Грюнвальдская битва 1410 г.', ref: 'Программа по истории Беларуси, 7 класс, раздел «Беларусь в составе ВКЛ»', f: '' },
+    { t: 'Франциск Скорина и начало книгопечатания (1517 г.)', ref: 'Программа по истории Беларуси, 7 класс, раздел «Культура ВКЛ»', f: '' },
+    { t: 'Статут ВКЛ 1588 г.', ref: 'Программа по истории Беларуси, 7 класс, раздел «Политическое развитие ВКЛ»', f: '' },
+    { t: 'Разделы Речи Посполитой (1772, 1793, 1795 гг.)', ref: 'Программа по истории Беларуси, 8 класс, раздел «Беларусь в составе Российской империи»', f: '' },
+    { t: 'Провозглашение БНР и ССРБ (1918–1919 гг.)', ref: 'Программа по истории Беларуси, 9 класс, раздел «Становление государственности»', f: '' },
+    { t: 'Великая Отечественная война на территории Беларуси', ref: 'Программа по истории Беларуси, 9 класс, раздел «Беларусь в годы ВОВ»', f: '' }
+  ],
+  gramot: rulesWithRefs(RULE_BODIES.gramot, {})
+};
+
+const RULES_RU = {
+  math: rulesWithRefs(RULE_BODIES.math, {
+    'Формула корней квадратного уравнения': 'Кодификатор ЕГЭ по математике, раздел 2.1 «Уравнения и неравенства»',
+    'Теорема Виета': 'Кодификатор ЕГЭ по математике, раздел 2.1 «Уравнения и неравенства»',
+    'Основное тригонометрическое тождество': 'Кодификатор ЕГЭ по математике, раздел 1.3 «Тригонометрия»',
+    'Формулы двойного угла': 'Кодификатор ЕГЭ по математике, раздел 1.3 «Тригонометрия»',
+    'Производная степенной функции': 'Кодификатор ЕГЭ по математике, раздел 3.1 «Начала математического анализа»',
+    'Свойства логарифмов': 'Кодификатор ЕГЭ по математике, раздел 1.1 «Преобразования выражений»',
+    'Теорема Пифагора': 'Кодификатор ЕГЭ по математике, раздел 4.1 «Планиметрия»',
+    'Теорема косинусов': 'Кодификатор ЕГЭ по математике, раздел 4.1 «Планиметрия»',
+    'Площадь треугольника через синус угла': 'Кодификатор ЕГЭ по математике, раздел 4.1 «Планиметрия»',
+    'Классическая вероятность': 'Кодификатор ЕГЭ по математике, раздел 5.1 «Вероятность и статистика»',
+    'Объёмы тел (стереометрия)': 'Кодификатор ЕГЭ по математике, раздел 4.3 «Стереометрия»'
+  }),
+  physics: rulesWithRefs(RULE_BODIES.physics, {
+    'Равноускоренное движение': 'Кодификатор ЕГЭ по физике, раздел 1.1 «Механика. Кинематика»',
+    'Второй закон Ньютона': 'Кодификатор ЕГЭ по физике, раздел 1.2 «Динамика»',
+    'Закон сохранения механической энергии': 'Кодификатор ЕГЭ по физике, раздел 1.4 «Законы сохранения в механике»',
+    'Закон Ома для участка цепи': 'Кодификатор ЕГЭ по физике, раздел 3.2 «Электродинамика. Постоянный ток»',
+    'Уравнение Менделеева–Клапейрона': 'Кодификатор ЕГЭ по физике, раздел 2.1 «Молекулярная физика»',
+    'Первый закон термодинамики': 'Кодификатор ЕГЭ по физике, раздел 2.2 «Термодинамика»',
+    'Формула тонкой линзы': 'Кодификатор ЕГЭ по физике, раздел 3.6 «Оптика»',
+    'Закон Кулона': 'Кодификатор ЕГЭ по физике, раздел 3.1 «Электростатика»'
+  }),
+  chemistry: rulesWithRefs(RULE_BODIES.chemistry, {
+    'Количество вещества': 'Кодификатор ЕГЭ по химии, раздел 4.1 «Расчёты»',
+    'Молярный объём газа (н.у.)': 'Кодификатор ЕГЭ по химии, раздел 4.1 «Расчёты»',
+    'Массовая доля вещества в растворе': 'Кодификатор ЕГЭ по химии, раздел 4.1 «Расчёты», тема «Растворы»',
+    'Строение атома и периодический закон': 'Кодификатор ЕГЭ по химии, раздел 1 «Теоретические основы химии»',
+    'Степень окисления и ОВР': 'Кодификатор ЕГЭ по химии, раздел 1 «Теоретические основы химии»',
+    'Гидролиз солей': 'Кодификатор ЕГЭ по химии, раздел 1, тема «Реакции ионного обмена и гидролиз»',
+    'Гомологический ряд алканов': 'Кодификатор ЕГЭ по химии, раздел 3 «Органическая химия»',
+    'Выход продукта реакции': 'Кодификатор ЕГЭ по химии, раздел 4.1 «Расчёты»'
+  }),
+  lang: [
+    { t: 'Безударные гласные в корне слова', ref: 'Кодификатор ЕГЭ по русскому языку, раздел «Орфография» (задания 9–15)', f: '' },
+    { t: 'Правописание Н/НН в причастиях и прилагательных', ref: 'Кодификатор ЕГЭ по русскому языку, раздел «Орфография» (задание 15)', f: '' },
+    { t: 'Знаки препинания в сложном предложении', ref: 'Кодификатор ЕГЭ по русскому языку, раздел «Пунктуация» (задания 16–21)', f: '' },
+    { t: 'Обособление определений и обстоятельств', ref: 'Кодификатор ЕГЭ по русскому языку, раздел «Пунктуация» (задания 16–21)', f: '' },
+    { t: 'Тире между подлежащим и сказуемым', ref: 'Кодификатор ЕГЭ по русскому языку, раздел «Пунктуация» (задание 21)', f: '' },
+    { t: 'Средства связи предложений в тексте', ref: 'Кодификатор ЕГЭ по русскому языку, раздел «Речь. Текст» (задания 1–3, 25)', f: '' }
+  ],
+  history: [
+    { t: 'Образование Древнерусского государства (862, 882 гг.)', ref: 'Кодификатор ЕГЭ по истории, раздел «Древняя Русь»', f: '' },
+    { t: 'Крещение Руси (988 г.)', ref: 'Кодификатор ЕГЭ по истории, раздел «Древняя Русь»', f: '' },
+    { t: 'Монгольское нашествие (1237–1240 гг.)', ref: 'Кодификатор ЕГЭ по истории, раздел «Русские земли в XIII–XV вв.»', f: '' },
+    { t: 'Куликовская битва (1380 г.)', ref: 'Кодификатор ЕГЭ по истории, раздел «Возвышение Москвы»', f: '' },
+    { t: 'Смутное время (1598–1613 гг.)', ref: 'Кодификатор ЕГЭ по истории, раздел «Россия в XVII в.»', f: '' },
+    { t: 'Северная война и Полтавская битва (1700–1721, 1709 гг.)', ref: 'Кодификатор ЕГЭ по истории, раздел «Россия в XVIII в.»', f: '' },
+    { t: 'Отечественная война 1812 года', ref: 'Кодификатор ЕГЭ по истории, раздел «Россия в XIX в.»', f: '' },
+    { t: 'Великая Отечественная война (1941–1945 гг.)', ref: 'Кодификатор ЕГЭ по истории, раздел «СССР в XX в.»', f: '' }
+  ],
+  gramot: rulesWithRefs(RULE_BODIES.gramot, {})
+};
+
+const RULES_KZ = {
+  math: rulesWithRefs(RULE_BODIES.math, {
+    'Формула корней квадратного уравнения': 'Программа ЕНТ «Математика», блок «Уравнения и неравенства»',
+    'Теорема Виета': 'Программа ЕНТ «Математика», блок «Уравнения и неравенства»',
+    'Основное тригонометрическое тождество': 'Программа ЕНТ «Математика», блок «Тригонометрия»',
+    'Формулы двойного угла': 'Программа ЕНТ «Математика», блок «Тригонометрия»',
+    'Производная степенной функции': 'Программа ЕНТ «Математика», блок «Начала анализа»',
+    'Свойства логарифмов': 'Программа ЕНТ «Математика», блок «Преобразования выражений»',
+    'Теорема Пифагора': 'Программа ЕНТ «Математика», блок «Планиметрия»',
+    'Теорема косинусов': 'Программа ЕНТ «Математика», блок «Планиметрия»',
+    'Площадь треугольника через синус угла': 'Программа ЕНТ «Математика», блок «Планиметрия»',
+    'Классическая вероятность': 'Программа ЕНТ «Математика», блок «Вероятность и статистика»',
+    'Объёмы тел (стереометрия)': 'Программа ЕНТ «Математика», блок «Стереометрия»'
+  }),
+  physics: rulesWithRefs(RULE_BODIES.physics, {
+    'Равноускоренное движение': 'Программа ЕНТ «Физика», блок «Механика. Кинематика»',
+    'Второй закон Ньютона': 'Программа ЕНТ «Физика», блок «Механика. Динамика»',
+    'Закон сохранения механической энергии': 'Программа ЕНТ «Физика», блок «Законы сохранения»',
+    'Закон Ома для участка цепи': 'Программа ЕНТ «Физика», блок «Электродинамика»',
+    'Уравнение Менделеева–Клапейрона': 'Программа ЕНТ «Физика», блок «Молекулярная физика»',
+    'Первый закон термодинамики': 'Программа ЕНТ «Физика», блок «Термодинамика»',
+    'Формула тонкой линзы': 'Программа ЕНТ «Физика», блок «Оптика»',
+    'Закон Кулона': 'Программа ЕНТ «Физика», блок «Электростатика»'
+  }),
+  chemistry: rulesWithRefs(RULE_BODIES.chemistry, {
+    'Количество вещества': 'Программа ЕНТ «Химия», блок «Расчёты»',
+    'Молярный объём газа (н.у.)': 'Программа ЕНТ «Химия», блок «Расчёты»',
+    'Массовая доля вещества в растворе': 'Программа ЕНТ «Химия», тема «Растворы»',
+    'Строение атома и периодический закон': 'Программа ЕНТ «Химия», блок «Теоретические основы»',
+    'Степень окисления и ОВР': 'Программа ЕНТ «Химия», блок «Теоретические основы»',
+    'Гидролиз солей': 'Программа ЕНТ «Химия», блок «Реакции в растворах»',
+    'Гомологический ряд алканов': 'Программа ЕНТ «Химия», блок «Органическая химия»',
+    'Выход продукта реакции': 'Программа ЕНТ «Химия», блок «Расчёты»'
+  }),
+  lang: [
+    { t: 'Главная мысль и тема текста', ref: 'Блок ЕНТ «Грамотность чтения», раздел «Понимание текста»', f: '' },
+    { t: 'Типы речи: повествование, описание, рассуждение', ref: 'Блок ЕНТ «Грамотность чтения», раздел «Типы речи»', f: '' },
+    { t: 'Стили речи (художественный, публицистический, научный, официально-деловой, разговорный)', ref: 'Программа по русскому языку (РК), раздел «Стилистика»', f: '' },
+    { t: 'Безударные гласные в корне, правописание Н/НН', ref: 'Программа по русскому языку (РК), раздел «Орфография»', f: '' },
+    { t: 'Знаки препинания в сложном предложении', ref: 'Программа по русскому языку (РК), раздел «Пунктуация»', f: '' },
+    { t: 'Лексическое значение слова, синонимы, антонимы', ref: 'Программа по русскому языку (РК), раздел «Лексика»', f: '' }
+  ],
+  history: [
+    { t: 'Образование Казахского ханства (1465 г., Жанибек и Керей)', ref: 'Программа по истории Казахстана, раздел «Казахское ханство»', f: '' },
+    { t: 'Правление Касым-хана (1511–1523 гг.)', ref: 'Программа по истории Казахстана, раздел «Казахское ханство»', f: '' },
+    { t: 'Абылай хан и борьба с джунгарами (XVIII в.)', ref: 'Программа по истории Казахстана, раздел «Казахстан в XVIII в.»', f: '' },
+    { t: 'Аныракайская битва (1729 г.)', ref: 'Программа по истории Казахстана, раздел «Казахстан в XVIII в.»', f: '' },
+    { t: '«Устав о сибирских киргизах» (1822 г.)', ref: 'Программа по истории Казахстана, раздел «Казахстан в составе России»', f: '' },
+    { t: 'Партия «Алаш» и правительство Алаш-Орды (1917 г.)', ref: 'Программа по истории Казахстана, раздел «Казахстан в начале XX в.»', f: '' },
+    { t: 'Голод 1930-х годов и его последствия', ref: 'Программа по истории Казахстана, раздел «Советский Казахстан»', f: '' },
+    { t: 'Независимость Казахстана (16 декабря 1991 г.)', ref: 'Программа по истории Казахстана, раздел «Независимый Казахстан»', f: '' }
+  ],
+  gramot: rulesWithRefs(RULE_BODIES.gramot, {})
+};
+
+const RULES_UZ = {
+  math: rulesWithRefs(RULE_BODIES.math, {
+    'Формула корней квадратного уравнения': 'Программа по алгебре (Узбекистан), тема «Kvadrat tenglamalar», 8–9 классы',
+    'Теорема Виета': 'Программа по алгебре (Узбекистан), тема «Kvadrat tenglamalar»',
+    'Основное тригонометрическое тождество': 'Программа по алгебре (Узбекистан), тема «Trigonometriya»',
+    'Формулы двойного угла': 'Программа по алгебре (Узбекистан), тема «Trigonometriya»',
+    'Производная степенной функции': 'Программа по алгебре (Узбекистан), тема «Hosila», 10–11 классы',
+    'Свойства логарифмов': 'Программа по алгебре (Узбекистан), тема «Logarifmlar»',
+    'Теорема Пифагора': 'Программа по геометрии (Узбекистан), тема «Pifagor teoremasi», 8 класс',
+    'Теорема косинусов': 'Программа по геометрии (Узбекистан), тема «Planimetriya»',
+    'Площадь треугольника через синус угла': 'Программа по геометрии (Узбекистан), тема «Planimetriya»',
+    'Классическая вероятность': 'Программа по математике (Узбекистан), тема «Ehtimollar nazariyasi»',
+    'Объёмы тел (стереометрия)': 'Программа по геометрии (Узбекистан), тема «Stereometriya»'
+  }),
+  physics: rulesWithRefs(RULE_BODIES.physics, {
+    'Равноускоренное движение': 'Программа по физике (Узбекистан), тема «Kinematika»',
+    'Второй закон Ньютона': 'Программа по физике (Узбекистан), тема «Dinamika»',
+    'Закон сохранения механической энергии': 'Программа по физике (Узбекистан), тема «Saqlanish qonunlari»',
+    'Закон Ома для участка цепи': 'Программа по физике (Узбекистан), тема «Elektr toki»',
+    'Уравнение Менделеева–Клапейрона': 'Программа по физике (Узбекистан), тема «Molekulyar fizika»',
+    'Первый закон термодинамики': 'Программа по физике (Узбекистан), тема «Termodinamika»',
+    'Формула тонкой линзы': 'Программа по физике (Узбекистан), тема «Optika»',
+    'Закон Кулона': 'Программа по физике (Узбекистан), тема «Elektrostatika»'
+  }),
+  chemistry: rulesWithRefs(RULE_BODIES.chemistry, {
+    'Количество вещества': 'Программа по химии (Узбекистан), тема «Modda miqdori»',
+    'Молярный объём газа (н.у.)': 'Программа по химии (Узбекистан), тема «Gazlar»',
+    'Массовая доля вещества в растворе': 'Программа по химии (Узбекистан), тема «Eritmalar»',
+    'Строение атома и периодический закон': 'Программа по химии (Узбекистан), тема «Atom tuzilishi»',
+    'Степень окисления и ОВР': 'Программа по химии (Узбекистан), тема «Oksidlanish-qaytarilish reaksiyalari»',
+    'Гидролиз солей': 'Программа по химии (Узбекистан), тема «Tuzlar gidrolizi»',
+    'Гомологический ряд алканов': 'Программа по химии (Узбекистан), тема «Organik kimyo»',
+    'Выход продукта реакции': 'Программа по химии (Узбекистан), тема «Reaksiya hisoblari»'
+  }),
+  lang: [
+    { t: 'Правописание гласных и согласных (орфография)', ref: 'Учебная программа по родному языку (Узбекистан), раздел «Orfografiya»', f: '' },
+    { t: 'Пунктуация в сложном предложении', ref: 'Учебная программа по родному языку (Узбекистан), раздел «Punktuatsiya»', f: '' },
+    { t: 'Части речи (морфология)', ref: 'Учебная программа по родному языку (Узбекистан), раздел «Morfologiya»', f: '' },
+    { t: 'Словообразование', ref: 'Учебная программа по родному языку (Узбекистан), раздел «Soʻz yasalishi»', f: '' },
+    { t: 'Главная мысль текста', ref: 'Учебная программа по родному языку (Узбекистан), раздел «Matn ustida ishlash»', f: '' },
+    { t: 'Стили речи', ref: 'Учебная программа по родному языку (Узбекистан), раздел «Stilistika»', f: '' }
+  ],
+  history: [
+    { t: 'Государство Саманидов (IX–X вв.)', ref: 'Программа по истории Узбекистана, раздел «Oʻrta asrlar»', f: '' },
+    { t: 'Амир Темур и империя Темуридов (1336–1405 гг.)', ref: 'Программа по истории Узбекистана, раздел «Temuriylar davri»', f: '' },
+    { t: 'Астрономическая школа Улугбека (XV в.)', ref: 'Программа по истории Узбекистана, раздел «Temuriylar davri»', f: '' },
+    { t: 'Бухарское, Хивинское и Кокандское ханства (XVI–XIX вв.)', ref: 'Программа по истории Узбекистана, раздел «Xonliklar davri»', f: '' },
+    { t: 'Завоевание Туркестана Российской империей (1860-е гг.)', ref: 'Программа по истории Узбекистана, раздел «Chor Rossiyasi davri»', f: '' },
+    { t: 'Движение джадидов (начало XX в.)', ref: 'Программа по истории Узбекистана, раздел «Jadidlar harakati»', f: '' },
+    { t: 'Образование Узбекской ССР (1924 г.)', ref: 'Программа по истории Узбекистана, раздел «Sovet davri»', f: '' },
+    { t: 'Независимость Узбекистана (31 августа 1991 г.)', ref: 'Программа по истории Узбекистана, раздел «Mustaqillik davri»', f: '' }
+  ],
+  gramot: rulesWithRefs(RULE_BODIES.gramot, {})
+};
+
+// Дополнительные статичные базы знаний (история по странам)
+const KB_RU_HISTORY = `ИСТОРИЯ РОССИИ — ВАЖНЫЕ ДАТЫ:
+ДРЕВНЯЯ РУСЬ:
+• 862 — призвание варягов
+• 882 — объединение Новгорода и Киева (Олег)
+• 988 — Крещение Руси
+XIII–XV ВЕКА:
+• 1223 — битва на Калке
+• 1237–1240 — монгольское нашествие
+• 1240 — Невская битва; 1242 — Ледовое побоище
+• 1380 — Куликовская битва
+• 1480 — стояние на Угре
+XVI–XVII ВЕКА:
+• 1547 — венчание Ивана IV на царство
+• 1598–1613 — Смутное время
+• 1613 — начало династии Романовых
+XVIII ВЕК:
+• 1700–1721 — Северная война
+• 1709 — Полтавская битва
+• 1755 — основание Московского университета
+XIX ВЕК:
+• 1812 — Отечественная война
+• 1825 — восстание декабристов
+• 1861 — отмена крепостного права
+XX ВЕК:
+• 1917 — Февральская и Октябрьская революции
+• 1922 — образование СССР
+• 1941–1945 — Великая Отечественная война
+• 1961 — полёт Ю. А. Гагарина
+• 1991 — образование Российской Федерации`;
+
+const KB_KZ_HISTORY = `ИСТОРИЯ КАЗАХСТАНА — ВАЖНЫЕ ДАТЫ:
+• 1465 — образование Казахского ханства (Жанибек и Керей)
+• 1511–1523 — правление Касым-хана
+• XVIII в. — Абылай хан, борьба с джунгарами
+• 1726 — курултай в Ордабасы
+• 1729 — Аныракайская битва
+• 1731 — начало присоединения к России
+• 1822 — «Устав о сибирских киргизах»
+• 1917 — партия «Алаш», правительство Алаш-Орды
+• 1920 — Киргизская (Казахская) АССР
+• 1936 — Казахская ССР
+• 1941–1945 — Казахстан в Великой Отечественной войне
+• 16 декабря 1991 — независимость Казахстана`;
+
+const KB_UZ_HISTORY = `ИСТОРИЯ УЗБЕКИСТАНА — ВАЖНЫЕ ДАТЫ:
+• IX–X вв. — государство Саманидов, Бухара — центр культуры
+• 1336–1405 — Амир Темур и империя Темуридов
+• XV в. — обсерватория и астрономическая школа Улугбека
+• XVI в. — Бухарское ханство (Шейбаниды)
+• XVIII–XIX вв. — Хивинское, Бухарское и Кокандское ханства
+• 1860-е — завоевание Туркестана Российской империей
+• Начало XX в. — движение джадидов
+• 1924 — образование Узбекской ССР
+• 31 августа 1991 — независимость Узбекистана`;
+
+const KB_KZ_GRAMOT = `МАТЕМАТИЧЕСКАЯ ГРАМОТНОСТЬ (ЕНТ):
+• Проценты: p% от A = A·p/100
+• Пропорции: a/b = c/d → ad = bc
+• Скорость, время, расстояние: s = v·t
+• Площадь и периметр простых фигур
+• Чтение таблиц, диаграмм и графиков
+• Простые линейные уравнения`;
+
+// Варианты базы формул для других стран: переиспользуем тексты ЦТ,
+// меняя только заголовок (нулевое дублирование, экономия квот).
+function kbVariant(examLabel) {
+  return {
+    math: CT_KNOWLEDGE_BASE.math.replace('МАТЕМАТИКА ЦТ', 'МАТЕМАТИКА ' + examLabel),
+    physics: CT_KNOWLEDGE_BASE.physics.replace('ФИЗИКА ЦТ', 'ФИЗИКА ' + examLabel),
+    chemistry: CT_KNOWLEDGE_BASE.chemistry.replace('ХИМИЯ ЦТ', 'ХИМИЯ ' + examLabel)
+  };
+}
+
+function ruSystemPrompt(role) {
+  if (role === 'teacher') {
+    return 'Ты — NEVIO, профессиональный педагогический ИИ-ассистент.\n\nСПЕЦИАЛИЗАЦИЯ:\n• Российские образовательные стандарты (ФГОС)\n• Форматы ЕГЭ/ОГЭ и критерии ФИПИ\n• Практичные готовые материалы\n\nИСПОЛЬЗУЙ ФОРМУЛЫ в LaTeX для математических примеров.\nДАВАЙ ГОТОВЫЕ материалы которые можно сразу использовать.\nУчитывай возрастные особенности учеников.';
+  }
+  return 'Ты — NEVIO, лучший ИИ-репетитор для российских школьников и абитуриентов.\n\nСПЕЦИАЛИЗАЦИЯ:\n• Эксперт по ЕГЭ и ОГЭ (форматы и критерии ФИПИ)\n• Знаешь все предметы: математика, русский язык, физика, химия, биология, история, обществознание, информатика, литература, география, иностранные языки\n• Формат заданий, критерии оценивания, типичные ошибки, стратегии сдачи\n\nКЛЮЧЕВОЕ ПРАВИЛО — ФОРМУЛЫ:\nИспользуй LaTeX-нотацию для всех математических выражений!\n• inline: $формула$ — внутри текста\n• display: $$\\frac{a}{b}$$ — на отдельной строке\n\nСТИЛЬ ОТВЕТА:\n1. Понятное объяснение (как лучший репетитор)\n2. Все шаги решения с пояснениями "почему"\n3. Формулы — в красивом LaTeX-формате\n4. Примеры из реальной жизни\n5. Советы и типичные ошибки\n\nМОТИВАЦИЯ: Поддерживай ученика, хвали за успехи!';
+}
+
+function kzSystemPrompt(role) {
+  if (role === 'teacher') {
+    return 'Ты — NEVIO, профессиональный педагогический ИИ-ассистент.\n\nСПЕЦИАЛИЗАЦИЯ:\n• Казахстанские образовательные стандарты (ГОСО)\n• Формат ЕНТ Национального центра тестирования\n• Практичные готовые материалы\n\nИСПОЛЬЗУЙ ФОРМУЛЫ в LaTeX для математических примеров.\nДАВАЙ ГОТОВЫЕ материалы которые можно сразу использовать.\nУчитывай возрастные особенности учеников.';
+  }
+  return 'Ты — NEVIO, лучший ИИ-репетитор для казахстанских школьников и абитуриентов.\n\nСПЕЦИАЛИЗАЦИЯ:\n• Эксперт по ЕНТ (формат Национального центра тестирования, testcenter.kz)\n• Знаешь все предметы: математика, математическая грамотность, грамотность чтения, история Казахстана, физика, химия, биология, география, информатика, языки\n• Формат заданий, пороговые баллы, типичные ошибки, стратегии сдачи\n\nКЛЮЧЕВОЕ ПРАВИЛО — ФОРМУЛЫ:\nИспользуй LaTeX-нотацию для всех математических выражений!\n• inline: $формула$ — внутри текста\n• display: $$\\frac{a}{b}$$ — на отдельной строке\n\nСТИЛЬ ОТВЕТА:\n1. Понятное объяснение (как лучший репетитор)\n2. Все шаги решения с пояснениями "почему"\n3. Формулы — в красивом LaTeX-формате\n4. Примеры из реальной жизни\n5. Советы и типичные ошибки\n\nМОТИВАЦИЯ: Поддерживай ученика, хвали за успехи!';
+}
+
+function uzSystemPrompt(role) {
+  if (role === 'teacher') {
+    return 'Ты — NEVIO, профессиональный педагогический ИИ-ассистент.\n\nСПЕЦИАЛИЗАЦИЯ:\n• Образовательные стандарты Узбекистана\n• Формат выпускных экзаменов и вступительных тестов\n• Практичные готовые материалы\n\nИСПОЛЬЗУЙ ФОРМУЛЫ в LaTeX для математических примеров.\nДАВАЙ ГОТОВЫЕ материалы которые можно сразу использовать.\nУчитывай возрастные особенности учеников.';
+  }
+  return 'Ты — NEVIO, лучший ИИ-репетитор для узбекских школьников и абитуриентов.\n\nСПЕЦИАЛИЗАЦИЯ:\n• Эксперт по вступительным тестам (2025/2026: 5 экзаменов, 90 заданий, максимум 189 баллов) и выпускным экзаменам после 9 класса\n• Знаешь все предметы: математика, родной язык, история Узбекистана, физика, химия, биология, география, информатика, иностранные языки\n• Формат заданий, критерии оценивания, типичные ошибки, стратегии подготовки\n\nКЛЮЧЕВОЕ ПРАВИЛО — ФОРМУЛЫ:\nИспользуй LaTeX-нотацию для всех математических выражений!\n• inline: $формула$ — внутри текста\n• display: $$\\frac{a}{b}$$ — на отдельной строке\n\nСТИЛЬ ОТВЕТА:\n1. Понятное объяснение (как лучший репетитор)\n2. Все шаги решения с пояснениями "почему"\n3. Формулы — в красивом LaTeX-формате\n4. Примеры из реальной жизни\n5. Советы и типичные ошибки\n\nМОТИВАЦИЯ: Поддерживай ученика, хвали за успехи!';
+}
+
+/* ---------- Заголовки пунктов меню по странам и языкам ---------- */
+const MENU_T_RU = {
+  ctPrep: { ru: 'Подготовка к ЕГЭ' }, ctPrepD: { ru: 'После 11 класса — все предметы' },
+  exam9: { ru: 'Подготовка к ОГЭ' }, exam9D: { ru: 'Экзамены после 9 класса' },
+  ctTest: { ru: 'Интерактивный тест ЕГЭ' }, ctTestD: { ru: 'Вопросы в формате ЕГЭ с ответами' },
+  examInfo: { ru: 'Формат и критерии ЕГЭ/ОГЭ' }, examInfoD: { ru: 'Структура, баллы, критерии — без ИИ' },
+  solve: { ru: 'Решить задачу' }, solveD: { ru: 'С полным объяснением шагов' },
+  explain: { ru: 'Объяснить тему' }, explainD: { ru: 'Простыми словами с примерами' },
+  summary: { ru: 'Написать конспект' }, summaryD: { ru: 'Структурированный конспект' },
+  schema: { ru: 'Сделать схему' }, schemaD: { ru: 'Визуальная шпаргалка' },
+  oral: { ru: 'Устный экзамен' }, oralD: { ru: 'Потренируйся отвечать устно' },
+  lit: { ru: 'Анализ произведения' }, litD: { ru: 'Герои, темы, идеи' },
+  check: { ru: 'Проверка решения по критериям' }, checkD: { ru: 'Оценка решения по критериям ЕГЭ/ОГЭ' },
+  myTasks: { ru: 'Задания от учителя' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте' },
+  lesson: { ru: 'План урока' }, lessonD: { ru: 'Полный план за 30 секунд' },
+  tasks: { ru: 'Генератор заданий' }, tasksD: { ru: 'Уникальные задачи по теме' },
+  variants: { ru: 'Варианты контрольной' }, variantsD: { ru: 'A/B варианты с ответами' },
+  diff: { ru: 'Дифференциация' }, diffD: { ru: 'Задания для разных уровней' },
+  tExplain: { ru: 'Методика объяснения' }, tExplainD: { ru: 'Как объяснить тему классу' },
+  tSchema: { ru: 'Схема для класса' }, tSchemaD: { ru: 'Визуальный материал' },
+  tSummary: { ru: 'Конспект урока' }, tSummaryD: { ru: 'Структура материала' },
+  tLit: { ru: 'Урок литературы' }, tLitD: { ru: 'Методика разбора произведения' },
+  quiz: { ru: 'Создать тест' }, quizD: { ru: 'Для проверки знаний' },
+  chat: { ru: 'Педагогическая консультация' }, chatD: { ru: 'Совет от ИИ' },
+  classes: { ru: 'Мои классы' }, classesD: { ru: 'Создавайте классы и коды доступа' },
+  assign: { ru: 'Задание классу' }, assignD: { ru: 'Назначайте задания и следите за результатами' },
+  analytics: { ru: 'Аналитика класса' }, analyticsD: { ru: 'Кто справился, где типичные ошибки' }
+};
+
+const MENU_T_KZ = {
+  ctPrep: { ru: 'Подготовка к ЕНТ', kk: 'ҰБТ-ға дайындық' }, ctPrepD: { ru: 'После 11 класса — все предметы', kk: '11-сыныптан кейін — барлық пәндер' },
+  exam9: { ru: 'Итоговые экзамены после 9 класса', kk: '9-сыныптан кейінгі қорытынды емтихандар' }, exam9D: { ru: 'Математика, языки, история', kk: 'Математика, тілдер, тарих' },
+  ctTest: { ru: 'Интерактивный тест ЕНТ', kk: 'ҰБТ интерактивті тесті' }, ctTestD: { ru: 'Вопросы в формате ЕНТ с ответами', kk: 'Жауаптары бар ҰБТ форматындағы сұрақтар' },
+  examInfo: { ru: 'Формат и критерии ЕНТ', kk: 'ҰБТ форматы мен критерийлері' }, examInfoD: { ru: 'Структура, баллы, критерии — без ИИ', kk: 'Құрылым, балдар, критерийлер — ИИ-сіз' },
+  solve: { ru: 'Решить задачу', kk: 'Есеп шығару' }, solveD: { ru: 'С полным объяснением шагов', kk: 'Қадамдарды толық түсіндірумен' },
+  explain: { ru: 'Объяснить тему', kk: 'Тақырыпты түсіндіру' }, explainD: { ru: 'Простыми словами с примерами', kk: 'Қарапайым сөздермен, мысалдармен' },
+  summary: { ru: 'Написать конспект', kk: 'Конспект жазу' }, summaryD: { ru: 'Структурированный конспект', kk: 'Құрылымдық конспект' },
+  schema: { ru: 'Сделать схему', kk: 'Схема жасау' }, schemaD: { ru: 'Визуальная шпаргалка', kk: 'Көрнекі шпаргалка' },
+  oral: { ru: 'Устный экзамен', kk: 'Ауызша емтихан' }, oralD: { ru: 'Потренируйся отвечать устно', kk: 'Ауызша жауап беруді жаттықтыр' },
+  lit: { ru: 'Анализ произведения', kk: 'Шығарманы талдау' }, litD: { ru: 'Герои, темы, идеи', kk: 'Кейіпкерлер, тақырыптар, идеялар' },
+  check: { ru: 'Проверка решения по критериям', kk: 'Шешімді критерийлер бойынша тексеру' }, checkD: { ru: 'Оценка решения по критериям ЕНТ', kk: 'ҰБТ критерийлері бойынша бағалау' },
+  myTasks: { ru: 'Задания от учителя', kk: 'Мұғалімнің тапсырмалары' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', kk: 'Код бойынша қосылып, орындаңыз' },
+  lesson: { ru: 'План урока', kk: 'Сабақ жоспары' }, lessonD: { ru: 'Полный план за 30 секунд', kk: 'Толық жоспар 30 секундта' },
+  tasks: { ru: 'Генератор заданий', kk: 'Тапсырма генераторы' }, tasksD: { ru: 'Уникальные задачи по теме', kk: 'Тақырып бойынша бірегей есептер' },
+  variants: { ru: 'Варианты контрольной', kk: 'Бақылау нұсқалары' }, variantsD: { ru: 'A/B варианты с ответами', kk: 'Жауаптары бар A/B нұсқалары' },
+  diff: { ru: 'Дифференциация', kk: 'Дифференциация' }, diffD: { ru: 'Задания для разных уровней', kk: 'Әртүрлі деңгейге арналған тапсырмалар' },
+  tExplain: { ru: 'Методика объяснения', kk: 'Түсіндіру әдістемесі' }, tExplainD: { ru: 'Как объяснить тему классу', kk: 'Тақырыпты сыныпқа қалай түсіндіру' },
+  tSchema: { ru: 'Схема для класса', kk: 'Сыныпқа схема' }, tSchemaD: { ru: 'Визуальный материал', kk: 'Көрнекі материал' },
+  tSummary: { ru: 'Конспект урока', kk: 'Сабақ конспектісі' }, tSummaryD: { ru: 'Структура материала', kk: 'Материал құрылымы' },
+  tLit: { ru: 'Урок литературы', kk: 'Әдебиет сабағы' }, tLitD: { ru: 'Методика разбора произведения', kk: 'Шығарманы талдау әдістемесі' },
+  quiz: { ru: 'Создать тест', kk: 'Тест құру' }, quizD: { ru: 'Для проверки знаний', kk: 'Білімді тексеру үшін' },
+  chat: { ru: 'Педагогическая консультация', kk: 'Педагогикалық кеңес' }, chatD: { ru: 'Совет от ИИ', kk: 'ИИ кеңесі' },
+  classes: { ru: 'Мои классы', kk: 'Менің сыныптарым' }, classesD: { ru: 'Создавайте классы и коды доступа', kk: 'Сыныптар мен кіру кодтарын құрыңыз' },
+  assign: { ru: 'Задание классу', kk: 'Сыныпқа тапсырма' }, assignD: { ru: 'Назначайте задания и следите за результатами', kk: 'Тапсырмалар тағайындап, нәтижені қадағалаңыз' },
+  analytics: { ru: 'Аналитика класса', kk: 'Сынып аналитикасы' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', kk: 'Кім орындады, қайда қателер бар' }
+};
+
+const MENU_T_UZ = {
+  ctPrep: { ru: 'Подготовка к вступительным тестам', uz: 'Kirish testlariga tayyorgarlik' }, ctPrepD: { ru: 'После 11 класса — все предметы', uz: '11-sinfdan keyin — barcha fanlar' },
+  exam9: { ru: 'Выпускные экзамены после 9 класса', uz: '9-sinfdan keyingi bitiruv imtihonlari' }, exam9D: { ru: 'Родной язык, математика, предметы по выбору', uz: 'Ona tili, matematika, tanlov fanlari' },
+  ctTest: { ru: 'Интерактивный тест', uz: 'Interaktiv test' }, ctTestD: { ru: 'Вопросы в формате тестов с ответами', uz: 'Javoblari bilan test formatidagi savollar' },
+  examInfo: { ru: 'Формат и критерии тестов', uz: 'Test formati va mezonlari' }, examInfoD: { ru: 'Структура, баллы, критерии — без ИИ', uz: 'Tuzilma, ballar, mezonlar — AIsiz' },
+  solve: { ru: 'Решить задачу', uz: 'Masala yechish' }, solveD: { ru: 'С полным объяснением шагов', uz: 'Bosqichlarni toʻliq tushuntirish bilan' },
+  explain: { ru: 'Объяснить тему', uz: 'Mavzuni tushuntirish' }, explainD: { ru: 'Простыми словами с примерами', uz: 'Oddiy soʻzlar bilan, misollar bilan' },
+  summary: { ru: 'Написать конспект', uz: 'Konspekt yozish' }, summaryD: { ru: 'Структурированный конспект', uz: 'Tartibli konspekt' },
+  schema: { ru: 'Сделать схему', uz: 'Sxema tuzish' }, schemaD: { ru: 'Визуальная шпаргалка', uz: 'Koʻrgazmali shpargalka' },
+  oral: { ru: 'Устный экзамен', uz: 'Ogʻzaki imtihon' }, oralD: { ru: 'Потренируйся отвечать устно', uz: 'Ogʻzaki javob berishni mashq qiling' },
+  lit: { ru: 'Анализ произведения', uz: 'Asar tahlili' }, litD: { ru: 'Герои, темы, идеи', uz: 'Qahramonlar, mavzular, gʻoyalar' },
+  check: { ru: 'Проверка решения по критериям', uz: 'Yechimni mezonlar boʻyicha tekshirish' }, checkD: { ru: 'Оценка решения по критериям тестов', uz: 'Test mezonlari boʻyicha baholash' },
+  myTasks: { ru: 'Задания от учителя', uz: 'Oʻqituvchi topshiriqlari' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', uz: 'Kod orqali qoʻshiling va bajaring' },
+  lesson: { ru: 'План урока', uz: 'Dars rejasi' }, lessonD: { ru: 'Полный план за 30 секунд', uz: 'Toʻliq reja 30 soniyada' },
+  tasks: { ru: 'Генератор заданий', uz: 'Topshiriqlar generatori' }, tasksD: { ru: 'Уникальные задачи по теме', uz: 'Mavzu boʻyicha noyob masalalar' },
+  variants: { ru: 'Варианты контрольной', uz: 'Nazorat ishi variantlari' }, variantsD: { ru: 'A/B варианты с ответами', uz: 'Javoblari bilan A/B variantlari' },
+  diff: { ru: 'Дифференциация', uz: 'Differensiallash' }, diffD: { ru: 'Задания для разных уровней', uz: 'Turli darajalar uchun topshiriqlar' },
+  tExplain: { ru: 'Методика объяснения', uz: 'Tushuntirish metodikasi' }, tExplainD: { ru: 'Как объяснить тему классу', uz: 'Mavzuni sinfga qanday tushuntirish' },
+  tSchema: { ru: 'Схема для класса', uz: 'Sinf uchun sxema' }, tSchemaD: { ru: 'Визуальный материал', uz: 'Koʻrgazmali material' },
+  tSummary: { ru: 'Конспект урока', uz: 'Dars konspekti' }, tSummaryD: { ru: 'Структура материала', uz: 'Material tuzilmasi' },
+  tLit: { ru: 'Урок литературы', uz: 'Adabiyot darsi' }, tLitD: { ru: 'Методика разбора произведения', uz: 'Asarni tahlil qilish metodikasi' },
+  quiz: { ru: 'Создать тест', uz: 'Test yaratish' }, quizD: { ru: 'Для проверки знаний', uz: 'Bilimni tekshirish uchun' },
+  chat: { ru: 'Педагогическая консультация', uz: 'Pedagogik maslahat' }, chatD: { ru: 'Совет от ИИ', uz: 'AIdan maslahat' },
+  classes: { ru: 'Мои классы', uz: 'Mening sinflarim' }, classesD: { ru: 'Создавайте классы и коды доступа', uz: 'Sinflar va kirish kodlarini yarating' },
+  assign: { ru: 'Задание классу', uz: 'Sinfga topshiriq' }, assignD: { ru: 'Назначайте задания и следите за результатами', uz: 'Topshiriqlar tayinlang va natijani kuzating' },
+  analytics: { ru: 'Аналитика класса', uz: 'Sinf tahlili' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', uz: 'Kim bajardi, qayerda xatolar' }
+};
+
+/* ---------- КОНФИГУРАЦИИ СТРАН ---------- */
+const NEVIO_COUNTRIES = {
+  BY: {
+    id: 'BY',
+    flag: '🇧🇾',
+    langs: ['ru'],
+    defaultLang: 'ru',
+    nameLocal: function () { return 'Беларусь'; },
+    examLine: function () { return 'ЦТ/ЦЭ (11 класс) · экзамены после 9 класса'; },
+    langsLabel: function () { return 'Русский'; },
+    searchPh: 'Найти на ЕИОР и Аду.бай…',
+    badge: function () { return '11 КЛАСС'; },
+    exam: {
+      primary: { title: 'ЦТ / ЦЭ', short: 'ЦТ/ЦЭ', structure: CT_KNOWLEDGE_BASE.structure, extra: CT_KNOWLEDGE_BASE.ce_structure, criteria: CRITERIA_BY },
+      secondary: { title: 'Экзамены после 9 класса', badge: '9 КЛАСС', desc: 'Математика, языки, история', info: 'Экзамены после 9 класса (выпускные экзамены): математика, русский/белорусский язык, история Беларуси, английский язык. Оценка — по 10-балльной шкале, результат идёт в аттестат.' }
+    },
+    testFormatName: 'белорусского ЦТ',
+    ctSubjects: ['Математика','Физика','Химия','Биология','История Беларуси','Обществоведение','Русский язык','Английский язык'],
+    exam9Subjects: ['Математика','Русский язык','Белорусский язык','История Беларуси','Английский язык'],
+    studySubjects: ['Математика','Физика','Химия','Биология','Русский язык','История','Обществоведение','Английский язык'],
+    ctModes: ['Разбор типичных заданий ЦТ','Разобрать моё задание','Вся теория для ЦТ','Пробный тест ЦТ','Стратегия сдачи ЦТ','Работа над ошибками'],
+    exam9Modes: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+    kbForSubject: function (subject) {
+      const map = {
+        'Математика': CT_KNOWLEDGE_BASE.math,
+        'Физика': CT_KNOWLEDGE_BASE.physics,
+        'Химия': CT_KNOWLEDGE_BASE.chemistry,
+        'История Беларуси': CT_KNOWLEDGE_BASE.history_by
+      };
+      return map[subject] || '';
+    },
+    systemPrompt: function (role) { return systemPrompts[role] || systemPrompts.student; },
+    systemContext: function (base) {
+      return base + '\n\n' +
+        'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n' +
+        '• inline: $формула$\n' +
+        '• display: $$\\int_a^b f(x)dx$$\n\n' +
+        'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics;
+    },
+    ctPrepPrompt: function (data, inputText, ctKnowledge) {
+      return 'Ты — эксперт по ЦТ в Беларуси. Предмет: ' + data.subjectCT + '.\n' +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
+         data.ctMode === 'Вся теория для ЦТ' ? 'Дай всю теорию для ЦТ по ' + data.subjectCT + ' в формате LaTeX!' :
+         data.ctMode === 'Стратегия сдачи ЦТ' ? 'Дай стратегию сдачи ЦТ по ' + data.subjectCT + '!' :
+         'Разбери типичные задания ЦТ по ' + data.subjectCT);
+    },
+    exam9Prompt: function (data, inputText) {
+      return 'Ты — эксперт по выпускным экзаменам после 9 класса в Беларуси. Предмет: ' + data.subjectExam9 + '.\n' +
+        (data.exam9Mode === 'Разбор билета / вопроса' ? 'Разбери подробно билет/вопрос:\n' + inputText + '\nДай план ответа, ключевые факты и формулировки для устного ответа!' :
+         data.exam9Mode === 'Вся теория по предмету' ? 'Дай всю необходимую теорию для экзамена после 9 класса по ' + data.subjectExam9 + ' — структурированно, с примерами, в формате LaTeX для формул.' :
+         data.exam9Mode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к экзамену после 9 класса по ' + data.subjectExam9 + ': план по неделям, приоритетные темы, типичные ошибки.' :
+         'Дай типичные задания экзамена после 9 класса по ' + data.subjectExam9 + ' с разбором решений. Используй LaTeX для формул.');
+    },
+    rules: RULES_BY,
+    official: null, // BY использует существующий «живой» раздел ЕИОР + Аду.бай без изменений
+    tips: [
+      'ЦТ: сначала часть А (выбор ответа) — на неё уходит меньше времени, затем часть Б.',
+      'В части Б балл даётся только за верный ответ — проверяйте вычисления дважды.',
+      'Результат ЦТ действителен 2 года — можно сдавать повторно для лучшего балла.',
+      'Тренируйтесь на заданиях формата РИКЗ: важна не только тема, но и формулировка задания.'
+    ]
+  },
+
+  RU: {
+    id: 'RU',
+    t: MENU_T_RU,
+    flag: '🇷🇺',
+    langs: ['ru'],
+    defaultLang: 'ru',
+    nameLocal: function () { return 'Россия'; },
+    examLine: function () { return 'ЕГЭ (11 класс) · ОГЭ (9 класс)'; },
+    langsLabel: function () { return 'Русский'; },
+    searchPh: 'Найти на ФИПИ и порталах России…',
+    badge: function () { return '11 КЛАСС'; },
+    exam: {
+      primary: {
+        title: 'ЕГЭ', short: 'ЕГЭ',
+        structure: `СТРУКТУРА ЕГЭ (РОССИЯ):
+• Обязательные: русский язык (27 заданий, 100 баллов, 3 ч 30 мин; мин. балл для вуза — 36) и математика: база — 21 задание (оценка по 5-балльной шкале) или профиль — 19 заданий (12 с кратким и 7 с развёрнутым ответом, 100 баллов, 3 ч 55 мин; мин. для вуза — 27)
+• Предметы по выбору: физика, химия, биология, история, обществознание, информатика, литература, география, иностранные языки
+• ШКАЛА: 100 баллов за предмет; результаты действительны 4 года`,
+        criteria: CRITERIA_RU
+      },
+      secondary: {
+        title: 'ОГЭ', badge: '9 КЛАСС', desc: 'Русский, математика + 2 на выбор',
+        info: 'ОГЭ (после 9 класса): 4 экзамена — русский язык и математика обязательные + 2 предмета по выбору. Математика: 25 заданий. Русский язык: сжатое изложение + тестовая часть + сочинение. Первичные баллы переводятся в оценку по 5-балльной шкале, «3» — минимум.'
+      }
+    },
+    testFormatName: 'ЕГЭ (Россия)',
+    ctSubjects: ['Математика','Русский язык','Физика','Химия','Биология','История','Обществознание','Информатика','Литература','География','Английский язык'],
+    exam9Subjects: ['Математика','Русский язык','Обществознание','Физика','Химия','Биология','История','География','Информатика','Английский язык'],
+    studySubjects: ['Математика','Русский язык','Физика','Химия','Биология','История','Обществознание','Информатика','Литература','География','Английский язык'],
+    ctModes: ['Разбор типичных заданий ЕГЭ','Разобрать моё задание','Вся теория для ЕГЭ','Пробный тест ЕГЭ','Стратегия сдачи ЕГЭ','Работа над ошибками'],
+    exam9Modes: ['Разбор задания / варианта','Вся теория по предмету','Типичные задания ОГЭ','Стратегия подготовки'],
+    kbForSubject: function (subject) {
+      const kb = kbVariant('ЕГЭ');
+      const map = { 'Математика': kb.math, 'Физика': kb.physics, 'Химия': kb.chemistry, 'История': KB_RU_HISTORY };
+      return map[subject] || '';
+    },
+    systemPrompt: ruSystemPrompt,
+    systemContext: function (base) {
+      const kb = kbVariant('ЕГЭ');
+      return base + '\n\n' +
+        'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n• inline: $формула$\n• display: $$\\int_a^b f(x)dx$$\n\n' +
+        'БАЗА ЗНАНИЙ:\n' + this.exam.primary.structure + '\n' + kb.math + '\n' + kb.physics;
+    },
+    ctPrepPrompt: function (data, inputText, ctKnowledge) {
+      return 'Ты — эксперт по ЕГЭ (Россия). Предмет: ' + data.subjectCT + '.\n' +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
+         data.ctMode === 'Вся теория для ЕГЭ' ? 'Дай всю теорию для ЕГЭ по ' + data.subjectCT + ' в формате LaTeX!' :
+         data.ctMode === 'Стратегия сдачи ЕГЭ' ? 'Дай стратегию сдачи ЕГЭ по ' + data.subjectCT + ': план подготовки, распределение времени, типичные ошибки.' :
+         'Разбери типичные задания ЕГЭ по ' + data.subjectCT + ' (формат ФИПИ, актуальная демоверсия).');
+    },
+    exam9Prompt: function (data, inputText) {
+      return 'Ты — эксперт по ОГЭ (Россия). Предмет: ' + data.subjectExam9 + '.\n' +
+        (data.exam9Mode === 'Разбор задания / варианта' ? 'Разбери подробно задание/вариант:\n' + inputText + '\nДай план ответа, ключевые факты и формулировки.' :
+         data.exam9Mode === 'Вся теория по предмету' ? 'Дай всю необходимую теорию для ОГЭ по ' + data.subjectExam9 + ' — структурированно, с примерами, в формате LaTeX для формул.' :
+         data.exam9Mode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к ОГЭ по ' + data.subjectExam9 + ': план по неделям, приоритетные темы, типичные ошибки.' :
+         'Дай типичные задания ОГЭ по ' + data.subjectExam9 + ' с разбором решений. Используй LaTeX для формул.');
+    },
+    rules: RULES_RU,
+    official: {
+      title: 'Официальные ресурсы России',
+      desc: 'ФИПИ, Рособрнадзор и порталы образования — через встроенный просмотр или по ссылке.',
+      sections: [
+        { title: 'ФИПИ — демоверсии и критерии', desc: 'Открытый банк заданий, кодификаторы и спецификации ЕГЭ и ОГЭ', url: 'https://fipi.ru/', icon: 'fas fa-file-signature' },
+        { title: 'Рособрнадзор', desc: 'Нормативные документы о государственной итоговой аттестации', url: 'https://obrnadzor.gov.ru/', icon: 'fas fa-gavel' },
+        { title: 'Минпросвещения России', desc: 'Программы и образовательные стандарты', url: 'https://edu.gov.ru/', icon: 'fas fa-university' },
+        { title: 'Навигатор ГИА', desc: 'Всё о ЕГЭ и ОГЭ для выпускников', url: 'https://edu.gov.ru/navigator_gia/', icon: 'fas fa-compass' }
+      ]
+    },
+    tips: [
+      'ЕГЭ: часть 1 (краткие ответы) приносит основную массу баллов — тренируйте её до автоматизма.',
+      'В части 2 баллы даются за ход решения: записывайте каждый шаг, даже если ответ не сошёлся.',
+      'Русский язык и математика обязательны — начните с них, затем добирайте предметы для вуза.',
+      'Ориентируйтесь на демоверсии и кодификаторы ФИПИ текущего года.'
+    ]
+  },
+
+  KZ: {
+    id: 'KZ',
+    t: MENU_T_KZ,
+    flag: '🇰🇿',
+    langs: ['ru', 'kk'],
+    defaultLang: 'ru',
+    nameLocal: function () { return state.lang === 'kk' ? 'Қазақстан' : 'Казахстан'; },
+    examLine: function () { return state.lang === 'kk' ? 'ҰБТ (11-сынып) · 9-сынып емтихандары' : 'ЕНТ (11 класс) · экзамены после 9 класса'; },
+    langsLabel: function () { return state.lang === 'kk' ? 'Қазақша / Русский' : 'Русский / Қазақша'; },
+    searchPh: function () { return state.lang === 'kk' ? 'Testcenter.kz сайтынан іздеу…' : 'Найти на testcenter.kz…'; },
+    badge: function () { return state.lang === 'kk' ? '11 СЫНЫП' : '11 КЛАСС'; },
+    exam: {
+      primary: {
+        title: 'ЕНТ', short: 'ЕНТ',
+        structure: `СТРУКТУРА ЕНТ (КАЗАХСТАН):
+• 5 предметов, 120 заданий, 210 минут
+• Обязательные: История Казахстана (20 заданий, 20 баллов, порог 5), Математическая грамотность (10 заданий, 10 баллов, порог 3), Грамотность чтения — язык обучения (10 заданий, 10 баллов, порог 3)
+• Профильные (2 по выбору): по 40 заданий и 50 баллов (порог 5) — математика, физика, химия, биология, география, информатика, всемирная история, иностранный язык, русский/казахский язык и литература, основы права
+• ШКАЛА: максимум 140 баллов; общий порог — 50 баллов`,
+        criteria: CRITERIA_KZ
+      },
+      secondary: {
+        title: function () { return state.lang === 'kk' ? '9-сыныптан кейінгі емтихандар' : 'Итоговые экзамены после 9 класса'; },
+        badge: '9 КЛАСС',
+        desc: function () { return state.lang === 'kk' ? 'Математика, тілдер, тарих' : 'Математика, языки, история'; },
+        info: 'Итоговые экзамены после 9 класса: письменные экзамены — математика, язык обучения, второй язык (казахский/русский), английский язык. Оценка — по 5-балльной шкале.'
+      }
+    },
+    testFormatName: 'ЕНТ (Казахстан)',
+    ctSubjects: ['Математика','Математическая грамотность','Грамотность чтения','История Казахстана','Физика','Химия','Биология','География','Всемирная история','Английский язык','Информатика','Русский язык','Казахский язык','Основы права'],
+    exam9Subjects: ['Математика','Казахский язык','Русский язык','Английский язык','История Казахстана'],
+    studySubjects: ['Математика','Физика','Химия','Биология','История Казахстана','Всемирная история','География','Английский язык','Информатика','Русский язык','Казахский язык'],
+    ctModes: ['Разбор типичных заданий ЕНТ','Разобрать моё задание','Вся теория для ЕНТ','Пробный тест ЕНТ','Стратегия сдачи ЕНТ','Работа над ошибками'],
+    exam9Modes: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+    kbForSubject: function (subject) {
+      const kb = kbVariant('ЕНТ');
+      const map = {
+        'Математика': kb.math,
+        'Физика': kb.physics,
+        'Химия': kb.chemistry,
+        'История Казахстана': KB_KZ_HISTORY,
+        'Математическая грамотность': KB_KZ_GRAMOT
+      };
+      return map[subject] || '';
+    },
+    systemPrompt: kzSystemPrompt,
+    systemContext: function (base) {
+      const kb = kbVariant('ЕНТ');
+      return base + '\n\n' +
+        'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n• inline: $формула$\n• display: $$\\int_a^b f(x)dx$$\n\n' +
+        'БАЗА ЗНАНИЙ:\n' + this.exam.primary.structure + '\n' + kb.math + '\n' + kb.physics;
+    },
+    ctPrepPrompt: function (data, inputText, ctKnowledge) {
+      return 'Ты — эксперт по ЕНТ (Казахстан). Предмет: ' + data.subjectCT + '.\n' +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
+         data.ctMode === 'Вся теория для ЕНТ' ? 'Дай всю теорию для ЕНТ по ' + data.subjectCT + ' в формате LaTeX!' :
+         data.ctMode === 'Стратегия сдачи ЕНТ' ? 'Дай стратегию сдачи ЕНТ по ' + data.subjectCT + ': распределение времени, пороговые баллы, типичные ошибки.' :
+         'Разбери типичные задания ЕНТ по ' + data.subjectCT + ' (формат Национального центра тестирования).');
+    },
+    exam9Prompt: function (data, inputText) {
+      return 'Ты — эксперт по итоговым экзаменам после 9 класса в Казахстане. Предмет: ' + data.subjectExam9 + '.\n' +
+        (data.exam9Mode === 'Разбор билета / вопроса' ? 'Разбери подробно билет/вопрос:\n' + inputText + '\nДай план ответа, ключевые факты и формулировки.' :
+         data.exam9Mode === 'Вся теория по предмету' ? 'Дай всю необходимую теорию для итогового экзамена после 9 класса по ' + data.subjectExam9 + ' — структурированно, с примерами, в формате LaTeX для формул.' :
+         data.exam9Mode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к итоговому экзамену после 9 класса по ' + data.subjectExam9 + ': план по неделям, приоритетные темы, типичные ошибки.' :
+         'Дай типичные задания итогового экзамена после 9 класса по ' + data.subjectExam9 + ' с разбором решений. Используй LaTeX для формул.');
+    },
+    rules: RULES_KZ,
+    official: {
+      title: function () { return state.lang === 'kk' ? 'Қазақстанның ресми ресурстары' : 'Официальные ресурсы Казахстана'; },
+      desc: 'Национальный центр тестирования и порталы образования.',
+      sections: [
+        { title: 'Национальный центр тестирования', desc: 'ЕНТ: регистрация, демотесты, результаты — testcenter.kz', url: 'https://testcenter.kz/', icon: 'fas fa-file-signature' },
+        { title: 'Министерство просвещения', desc: 'Программы и стандарты образования', url: 'https://www.gov.kz/memleket/entities/edu', icon: 'fas fa-university' },
+        { title: 'Портал eGov', desc: 'Официальные услуги и документы', url: 'https://egov.kz/', icon: 'fas fa-landmark' }
+      ]
+    },
+    tips: [
+      'ЕНТ: следите за пороговыми баллами — по обязательным предметам нельзя опускаться ниже 5/3/3.',
+      'Профильные предметы дают по 50 баллов — распределите время на них с запасом.',
+      'Общий порог 50 баллов: даже сильные профильные не спасут при провале обязательных.',
+      'Тренируйтесь на демотестах testcenter.kz — формат и тайминг совпадают с реальным ЕНТ.'
+    ]
+  },
+
+  UZ: {
+    id: 'UZ',
+    t: MENU_T_UZ,
+    flag: '🇺🇿',
+    langs: ['ru', 'uz'],
+    defaultLang: 'ru',
+    nameLocal: function () { return state.lang === 'uz' ? 'Oʻzbekiston' : 'Узбекистан'; },
+    examLine: function () { return state.lang === 'uz' ? 'Kirish testlari (11-sinf) · 9-sinf imtihonlari' : 'Вступительные тесты (11 класс) · выпускные после 9 класса'; },
+    langsLabel: function () { return state.lang === 'uz' ? 'Oʻzbekcha / Русский' : 'Русский / Oʻzbekcha'; },
+    searchPh: function () { return state.lang === 'uz' ? 'Rasmiy portallardan qidirish…' : 'Найти на официальных порталах…'; },
+    badge: function () { return state.lang === 'uz' ? '11-SINF' : '11 КЛАСС'; },
+    exam: {
+      primary: {
+        title: function () { return state.lang === 'uz' ? 'Kirish testlari' : 'Вступительные тесты'; },
+        short: function () { return state.lang === 'uz' ? 'Testlar' : 'Тесты'; },
+        structure: `СТРУКТУРА ВСТУПИТЕЛЬНЫХ ТЕСТОВ (УЗБЕКИСТАН, 2025/2026):
+• 5 экзаменов, 90 заданий
+• Обязательные: родной язык (узбекский/русский/каракалпакский), математика, история Узбекистана — по 10 заданий × 1,1 балла (до 33 баллов)
+• Профильные (2 по направлению): по 30 заданий — первый × 3,1 балла (до 93), второй × 2,1 балла (до 63)
+• ШКАЛА: максимум 189 баллов; зачисление по сумме баллов`,
+        criteria: CRITERIA_UZ
+      },
+      secondary: {
+        title: function () { return state.lang === 'uz' ? '9-sinfdan keyingi bitiruv imtihonlari' : 'Выпускные экзамены после 9 класса'; },
+        badge: '9 КЛАСС',
+        desc: function () { return state.lang === 'uz' ? 'Ona tili, matematika, tanlov fanlari' : 'Родной язык, математика, предметы по выбору'; },
+        info: 'Выпускные экзамены после 9 класса: родной язык, математика и предметы по выбору (в ряде лет — история Узбекистана, иностранный язык). Оценка — по 5-балльной шкале.'
+      }
+    },
+    testFormatName: 'вступительных тестов (Узбекистан)',
+    ctSubjects: ['Математика','Родной язык','История Узбекистана','Физика','Химия','Биология','География','Английский язык','Информатика','Литература'],
+    exam9Subjects: ['Математика','Родной язык','История Узбекистана','Иностранный язык'],
+    studySubjects: ['Математика','Физика','Химия','Биология','История Узбекистана','Родной язык','География','Английский язык','Информатика'],
+    ctModes: ['Разбор типичных заданий теста','Разобрать моё задание','Вся теория для теста','Пробный тест','Стратегия подготовки','Работа над ошибками'],
+    exam9Modes: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+    kbForSubject: function (subject) {
+      const kb = kbVariant('тестов');
+      const map = {
+        'Математика': kb.math,
+        'Физика': kb.physics,
+        'Химия': kb.chemistry,
+        'История Узбекистана': KB_UZ_HISTORY
+      };
+      return map[subject] || '';
+    },
+    systemPrompt: uzSystemPrompt,
+    systemContext: function (base) {
+      const kb = kbVariant('тестов');
+      return base + '\n\n' +
+        'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n• inline: $формула$\n• display: $$\\int_a^b f(x)dx$$\n\n' +
+        'БАЗА ЗНАНИЙ:\n' + this.exam.primary.structure + '\n' + kb.math + '\n' + kb.physics;
+    },
+    ctPrepPrompt: function (data, inputText, ctKnowledge) {
+      return 'Ты — эксперт по вступительным тестам (Узбекистан). Предмет: ' + data.subjectCT + '.\n' +
+        (ctKnowledge ? 'ИСПОЛЬЗУЙ БАЗУ:\n' + ctKnowledge : '') +
+        (data.ctMode === 'Разобрать моё задание' ? 'Задание ученика:\n' + inputText + '\nРазбери подробно!' :
+         data.ctMode === 'Вся теория для теста' ? 'Дай всю теорию для вступительных тестов по ' + data.subjectCT + ' в формате LaTeX!' :
+         data.ctMode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к вступительным тестам по ' + data.subjectCT + ': план, распределение времени, типичные ошибки.' :
+         'Разбери типичные задания вступительных тестов по ' + data.subjectCT + ' (формат государственных тестовых испытаний).');
+    },
+    exam9Prompt: function (data, inputText) {
+      return 'Ты — эксперт по выпускным экзаменам после 9 класса в Узбекистане. Предмет: ' + data.subjectExam9 + '.\n' +
+        (data.exam9Mode === 'Разбор билета / вопроса' ? 'Разбери подробно билет/вопрос:\n' + inputText + '\nДай план ответа, ключевые факты и формулировки.' :
+         data.exam9Mode === 'Вся теория по предмету' ? 'Дай всю необходимую теорию для выпускного экзамена после 9 класса по ' + data.subjectExam9 + ' — структурированно, с примерами, в формате LaTeX для формул.' :
+         data.exam9Mode === 'Стратегия подготовки' ? 'Дай стратегию подготовки к выпускному экзамену после 9 класса по ' + data.subjectExam9 + ': план по неделям, приоритетные темы, типичные ошибки.' :
+         'Дай типичные задания выпускного экзамена после 9 класса по ' + data.subjectExam9 + ' с разбором решений. Используй LaTeX для формул.');
+    },
+    rules: RULES_UZ,
+    official: {
+      title: function () { return state.lang === 'uz' ? 'Oʻzbekistonning rasmiy resurslari' : 'Официальные ресурсы Узбекистана'; },
+      desc: 'Портал абитуриента и официальные порталы образования.',
+      sections: [
+        { title: 'Портал абитуриента', desc: 'Регистрация и результаты вступительных экзаменов', url: 'https://abiturient.uz/', icon: 'fas fa-file-signature' },
+        { title: 'Министерство школьного образования', desc: 'Программы, учебники, нормативные документы', url: 'https://www.uzedu.uz/', icon: 'fas fa-university' },
+        { title: 'Портал госуслуг my.gov.uz', desc: 'Официальные услуги', url: 'https://my.gov.uz/', icon: 'fas fa-landmark' }
+      ]
+    },
+    tips: [
+      'Вступительные тесты: максимум 189 баллов — 33 обязательных и 156 профильных.',
+      'Профильные предметы дают 93 и 63 балла — распределяйте подготовку по их весу.',
+      'Обязательные предметы (родной язык, математика, история) — по 10 вопросов: это быстрые баллы.',
+      'Тренируйтесь на официальных сборниках тестовых заданий прошлых лет.'
+    ]
+  }
+};
+
+/* ---------- МЕНЮ: строится из конфигурации страны ---------- */
+function byMenu() {
+  // BY: меню текущей версии (те же пункты и тексты) + новые разделы поверх
+  const student = JSON.parse(JSON.stringify(menuConfigs.student));
+  student.sections[0].items.push({ id: 'exam_info', icon: 'fas fa-file-signature', title: 'Формат и критерии ЦТ/ЦЭ', description: 'Структура, баллы и критерии — без запросов к ИИ' });
+  student.sections[1].items.push(
+    { id: 'check_solution', icon: 'fas fa-clipboard-check', title: 'Проверка решения по критериям', description: 'Оценка решения по критериям ЦТ/ЦЭ' },
+    { id: 'my_assignments', icon: 'fas fa-tasks', title: 'Задания от учителя', description: 'Присоединяйтесь по коду и решайте' }
+  );
+  const teacher = JSON.parse(JSON.stringify(menuConfigs.teacher));
+  teacher.sections.push({
+    label: 'Класс и аналитика',
+    items: [
+      { id: 'classes', icon: 'fas fa-users', title: 'Мои классы', description: 'Создавайте классы и коды доступа' },
+      { id: 'assign', icon: 'fas fa-paper-plane', title: 'Задание классу', description: 'Назначайте задания и следите за результатами' },
+      { id: 'class_analytics', icon: 'fas fa-chart-bar', title: 'Аналитика класса', description: 'Кто справился, где типичные ошибки' }
+    ]
+  });
+  return { student: student, teacher: teacher };
+}
+
+function buildMenuFor(c) {
+  const L = state.lang;
+  const pick = function (o) { return (o && (o[L] || o.ru)) || ''; };
+  const study = [
+    { id: 'solve', icon: 'fas fa-calculator', title: pick(c.t.solve), description: pick(c.t.solveD) },
+    { id: 'explain', icon: 'fas fa-lightbulb', title: pick(c.t.explain), description: pick(c.t.explainD) },
+    { id: 'summary', icon: 'fas fa-book', title: pick(c.t.summary), description: pick(c.t.summaryD) },
+    { id: 'schema', icon: 'fas fa-project-diagram', title: pick(c.t.schema), description: pick(c.t.schemaD) },
+    { id: 'oral_exam', icon: 'fas fa-microphone-alt', title: pick(c.t.oral), description: pick(c.t.oralD) },
+    { id: 'lit_analysis', icon: 'fas fa-book-open', title: pick(c.t.lit), description: pick(c.t.litD) },
+    { id: 'check_solution', icon: 'fas fa-clipboard-check', title: pick(c.t.check), description: pick(c.t.checkD) },
+    { id: 'my_assignments', icon: 'fas fa-tasks', title: pick(c.t.myTasks), description: pick(c.t.myTasksD) }
+  ];
+  const examItems = [
+    { id: 'ct_prep', icon: 'fas fa-trophy', title: pick(c.t.ctPrep), description: pick(c.t.ctPrepD), badge: c.badge(), highlight: true },
+    { id: 'exam9', icon: 'fas fa-graduation-cap', title: pick(c.t.exam9), description: pick(c.t.exam9D), badge: '9 ' + (L === 'kk' ? 'СЫНЫП' : (L === 'uz' ? 'SINF' : 'КЛАСС')), highlight: true },
+    { id: 'ct_test', icon: 'fas fa-check-circle', title: pick(c.t.ctTest), description: pick(c.t.ctTestD), highlight: true },
+    { id: 'exam_info', icon: 'fas fa-file-signature', title: pick(c.t.examInfo), description: pick(c.t.examInfoD) }
+  ];
+  const plan = [
+    { id: 'lesson', icon: 'fas fa-chalkboard-user', title: pick(c.t.lesson), description: pick(c.t.lessonD) },
+    { id: 'tasks', icon: 'fas fa-tasks', title: pick(c.t.tasks), description: pick(c.t.tasksD) },
+    { id: 'variants', icon: 'fas fa-copy', title: pick(c.t.variants), description: pick(c.t.variantsD) },
+    { id: 'differentiation', icon: 'fas fa-layer-group', title: pick(c.t.diff), description: pick(c.t.diffD) }
+  ];
+  const materials = [
+    { id: 'explain', icon: 'fas fa-lightbulb', title: pick(c.t.tExplain), description: pick(c.t.tExplainD) },
+    { id: 'schema', icon: 'fas fa-project-diagram', title: pick(c.t.tSchema), description: pick(c.t.tSchemaD) },
+    { id: 'summary', icon: 'fas fa-book', title: pick(c.t.tSummary), description: pick(c.t.tSummaryD) },
+    { id: 'lit_analysis', icon: 'fas fa-book-open', title: pick(c.t.tLit), description: pick(c.t.tLitD) },
+    { id: 'generate_quiz', icon: 'fas fa-question-circle', title: pick(c.t.quiz), description: pick(c.t.quizD) },
+    { id: 'chat', icon: 'fas fa-comments', title: pick(c.t.chat), description: pick(c.t.chatD) }
+  ];
+  const classSec = [
+    { id: 'classes', icon: 'fas fa-users', title: pick(c.t.classes), description: pick(c.t.classesD) },
+    { id: 'assign', icon: 'fas fa-paper-plane', title: pick(c.t.assign), description: pick(c.t.assignD) },
+    { id: 'class_analytics', icon: 'fas fa-chart-bar', title: pick(c.t.analytics), description: pick(c.t.analyticsD) }
+  ];
+  return {
+    student: { sections: [
+      { label: t('menu.sec.exams'), items: examItems },
+      { label: t('menu.sec.study'), items: study }
+    ] },
+    teacher: { sections: [
+      { label: t('menu.sec.plan'), items: plan },
+      { label: t('menu.sec.materials'), items: materials },
+      { label: t('menu.sec.class'), items: classSec }
+    ] }
+  };
+}
+
+function activeMenu() {
+  const c = activeCountry();
+  if (c.id === 'BY') return byMenu();
+  return buildMenuFor(c);
+}
+
+/* ---------- ДОВЕРИЕ: база правил + критерии (задача 2) ---------- */
+const RULE_SUBJECT_GROUPS = {
+  math: ['Математика'],
+  physics: ['Физика'],
+  chemistry: ['Химия'],
+  gramot: ['Математическая грамотность'],
+  lang: ['Русский язык', 'Казахский язык', 'Белорусский язык', 'Родной язык', 'Грамотность чтения'],
+  history: ['История Беларуси', 'История', 'История России', 'История Казахстана', 'История Узбекистана', 'Всемирная история']
+};
+
+function ruleGroupFor(c, subject) {
+  const s = subject || '';
+  if (RULE_SUBJECT_GROUPS.math.indexOf(s) !== -1) return 'math';
+  if (RULE_SUBJECT_GROUPS.physics.indexOf(s) !== -1) return 'physics';
+  if (RULE_SUBJECT_GROUPS.chemistry.indexOf(s) !== -1) return 'chemistry';
+  if (RULE_SUBJECT_GROUPS.gramot.indexOf(s) !== -1) return 'gramot';
+  if (RULE_SUBJECT_GROUPS.lang.indexOf(s) !== -1) return 'lang';
+  if (RULE_SUBJECT_GROUPS.history.indexOf(s) !== -1) return 'history';
+  return null;
+}
+
+function examTitle(c) {
+  return (typeof c.exam.primary.title === 'function') ? c.exam.primary.title() : c.exam.primary.title;
+}
+function examShort(c) {
+  return (typeof c.exam.primary.short === 'function') ? c.exam.primary.short() : c.exam.primary.short;
+}
+
+function trustBlockFor(c, subject) {
+  const g = ruleGroupFor(c, subject);
+  const rules = g ? (c.rules || {})[g] : null;
+  if (!rules || !rules.length) return '';
+  const list = rules.map(function (r, i) {
+    return (i + 1) + ') ' + r.t + (r.f ? ' — ' + r.f : '') + ' | ' + r.ref;
+  }).join('\n');
+  return '\n\nОБЯЗАТЕЛЬНО — РАЗДЕЛЫ ДОВЕРИЯ В КОНЦЕ ОТВЕТА:\n' +
+    '1) Добавь раздел «📚 Опора на программу»: перечисли 2–4 правила из БАЗЫ ПРАВИЛ ниже, которые реально использованы в решении, с указанием раздела программы (используй формулировки из базы).\n' +
+    '2) Добавь раздел «🧮 Оценка по критериям»: оцени это решение по критериям экзамена (' + examTitle(c) + '): за что полный балл, где можно потерять баллы, какой результат получит ученик.\n' +
+    '3) Если использовано правило не из базы — укажи его и раздел программы самостоятельно.\n\n' +
+    'БАЗА ПРАВИЛ (' + c.nameLocal() + ', ' + subject + '):\n' + list + '\n\n' +
+    'КРИТЕРИИ ОЦЕНИВАНИЯ (' + examTitle(c) + '):\n' + c.exam.primary.criteria;
+}
+
+function buildCheckSolutionPrompt(c, data) {
+  let p = 'Ты — эксперт-экзаменатор по ' + examTitle(c) + ' (' + c.nameLocal() + ').\n\n' +
+    'УСЛОВИЕ ЗАДАЧИ (' + data.subject + (data.grade ? ', ' + data.grade : '') + '):\n' + (data.task || '(условие не указано)') + '\n\n' +
+    'РЕШЕНИЕ УЧЕНИКА:\n' + (data.solution || '(ученик не привёл решение — покажи эталонное решение и поясни, как оно оценивается)') + '\n\n' +
+    'СДЕЛАЙ:\n' +
+    '1) Проверь решение шаг за шагом: что верно, где ошибка и почему именно это ошибка.\n' +
+    '2) Дай исправленное (эталонное) решение.\n' +
+    '3) В конце — раздел «📚 Опора на программу» (правила из базы ниже, которые использованы в решении) и раздел «🧮 Оценка по критериям»: какой балл получает решение ученика по критериям экзамена и за что именно сняты/начислены баллы.\n' +
+    'Используй LaTeX для формул.';
+  const trust = trustBlockFor(c, data.subject);
+  if (trust) p += trust;
+  return p;
+}
+
+/* ---------- Формат экзамена: статичная справка (без запросов к ИИ) ---------- */
+function openExamInfo() {
+  const c = activeCountry();
+  state.currentActionId = 'exam_info';
+  const cfg = getAllItems().find(function (m) { return m.id === 'exam_info'; });
+  document.getElementById('actionTitle').innerHTML = '<i class="' + (cfg ? cfg.icon : 'fas fa-file-signature') + '"></i> ' + (cfg ? cfg.title : c.exam.primary.title);
+  document.getElementById('actionDescription').textContent = cfg ? cfg.description : '';
+  document.getElementById('actionForm').innerHTML = '';
+  document.getElementById('chatMessages').innerHTML = renderExamInfo(c);
+  document.getElementById('continueChatArea').style.display = 'none';
+  showPage('actionPage');
+}
+
+function renderExamInfo(c) {
+  const e = c.exam;
+  const subjects = c.ctSubjects.map(function (s) {
+    return '<span class="subject-chip" style="cursor:default;">' + escapeHtml(s) + '</span>';
+  }).join(' ');
+  const tips = (c.tips || []).map(function (tp) { return '<li>' + escapeHtml(tp) + '</li>'; }).join('');
+  let officialBtns = '';
+  if (c.official && c.official.sections && c.official.sections.length) {
+    officialBtns = c.official.sections.map(function (s) {
+      return '<button class="btn btn-secondary" style="margin-top:8px;" onclick="openExternal(\'' + s.url + '\')"><i class="' + s.icon + '"></i> ' + escapeHtml(s.title) + '</button>';
+    }).join('');
+  } else {
+    officialBtns = '<button class="btn btn-secondary" style="margin-top:8px;" onclick="openOfficialBrowse(\'' + EIOR_CT + '\')"><i class="fas fa-landmark"></i> ЦТ на ЕИОР</button>' +
+      '<button class="btn btn-secondary" style="margin-top:8px;" onclick="openOfficial()"><i class="fas fa-landmark"></i> Официальные ресурсы</button>';
+  }
+  return '<div class="message ai"><div class="message-label">NEVIO</div><div class="message-bubble ai-content">' +
+    '<div class="q-preview" style="margin-top:0;"><strong>' + c.flag + ' ' + escapeHtml(c.nameLocal()) + ' · ' + escapeHtml(examTitle(c)) + '</strong><br>' +
+    '<span style="font-size:11px;color:var(--text-muted);">' + escapeHtml(t('examInfo.static')) + '</span></div>' +
+    '<h3 style="margin:10px 0 6px;font-size:15px;">📋 ' + escapeHtml(t('examInfo.title')) + ': ' + escapeHtml(examTitle(c)) + '</h3>' +
+    '<div class="q-preview" style="white-space:pre-wrap;">' + escapeHtml(e.primary.structure) + '</div>' +
+    '<h3 style="margin:10px 0 6px;font-size:15px;">🧮 ' + escapeHtml(t('examInfo.criteria')) + '</h3>' +
+    '<div class="q-preview">' + escapeHtml(e.primary.criteria) + '</div>' +
+    '<h3 style="margin:10px 0 6px;font-size:15px;">🏫 ' + escapeHtml(t('examInfo.secondary')) + '</h3>' +
+    '<div class="q-preview">' + escapeHtml(e.secondary.info || (typeof e.secondary.desc === 'function' ? e.secondary.desc() : e.secondary.desc)) + '</div>' +
+    '<h3 style="margin:10px 0 6px;font-size:15px;">📚 ' + escapeHtml(t('examInfo.subjects')) + '</h3>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;">' + subjects + '</div>' +
+    (tips ? '<h3 style="margin:12px 0 6px;font-size:15px;">💡 ' + escapeHtml(t('examInfo.tips')) + '</h3><ul style="margin-left:18px;font-size:13px;line-height:1.7;">' + tips + '</ul>' : '') +
+    '<h3 style="margin:12px 0 6px;font-size:15px;">🌐 ' + escapeHtml(t('examInfo.official')) + '</h3>' +
+    '<div style="display:flex;flex-direction:column;">' + officialBtns + '</div>' +
+    '</div></div>';
+}
+
+/* ---------- Официальные ресурсы для стран RU/KZ/UZ ---------- */
+function renderCountryResourcesHub() {
+  const c = activeCountry();
+  const cards = (c.official && c.official.sections ? c.official.sections : []).map(function (s) {
+    return '<button type="button" class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  }).join('');
+  return officialSearchHtml() +
+    crumb([{ label: t('nav.resources') }]) +
+    '<div class="adu-hero-mini"><div class="official-kicker">' + c.flag + ' ' + escapeHtml(c.nameLocal()) + '</div>' +
+    '<h2>' + escapeHtml(c.official ? (typeof c.official.title === 'function' ? c.official.title() : c.official.title) : t('nav.resources')) + '</h2><p>' + escapeHtml(c.official ? c.official.desc : '') + '</p></div>' +
+    '<div class="official-actions">' +
+      '<button class="btn btn-primary" onclick="openExamInfo()"><i class="fas fa-file-signature"></i> ' + t('resources.examInfoBtn') + '</button>' +
+    '</div>' +
+    '<div class="section-label">' + t('resources.sections') + '</div>' + cards;
+}
+
+function renderCountryResourcesSearch() {
+  const c = activeCountry();
+  const q = officialState.query.trim().toLowerCase();
+  const hits = (c.official && c.official.sections ? c.official.sections : []).filter(function (s) {
+    return (s.title + ' ' + s.desc).toLowerCase().indexOf(q) !== -1;
+  });
+  let html = officialSearchHtml() + crumb([{ label: t('nav.resources'), fn: 'officialGo(\'country_hub\')' }, { label: t('resources.search') }]);
+  if (!hits.length) {
+    html += '<div class="empty-state"><div class="icon"><i class="fas fa-search"></i></div><h3>' + t('history.empty') + '</h3><p>' + t('progress.noData') + '</p></div>';
+    html += '<button class="btn btn-primary" onclick="officialGo(\'country_hub\')">' + t('nav.resources') + '</button>';
+    return html;
+  }
+  hits.forEach(function (s) {
+    html += '<button class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  });
+  return html;
+}
+
+/* =====================================================================
+   ПРОГРЕСС И ПЕРСОНАЛИЗАЦИЯ (задача 3)
+   Сохраняем историю тем/заданий и тип ошибок, считаем слабые места,
+   генерируем персональные рекомендации. Всё локально (localStorage),
+   без платных сервисов.
+   ===================================================================== */
+const PROGRESS_KEY = 'nevioProgress_v1';
+let progressData = loadProgressData();
+
+function loadProgressData() {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p && typeof p === 'object') return p;
+    }
+  } catch (e) {}
+  return {};
+}
+
+function saveProgressData() {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progressData)); } catch (e) {}
+}
+
+function countryProgress() {
+  const id = state.country || 'BY';
+  if (!progressData[id]) progressData[id] = { skills: {}, tests: [], actions: [] };
+  return progressData[id];
+}
+
+// Статичный классификатор тем по ключевым словам (без ИИ — экономия квот)
+const TOPIC_KEYWORDS = {
+  math: [
+    { topic: 'Тригонометрия', re: /тригонометр|sin|cos|tg|ctg|tan|угол|радиан/i },
+    { topic: 'Квадратные уравнения', re: /квадратн|дискриминант|виета|ax2|b2.?4ac/i },
+    { topic: 'Уравнения и неравенства', re: /уравнен|неравенств|корень уравнения|систем/i },
+    { topic: 'Производная и интеграл', re: /производн|интеграл|касательн|первообразн|f.?\(x\)/i },
+    { topic: 'Логарифмы и степени', re: /логарифм|log|степен|показател|экспонент/i },
+    { topic: 'Функции и графики', re: /функци|график|парабол|гипербол|область определения/i },
+    { topic: 'Планиметрия', re: /треугольник|окружност|площадь|периметр|пифагор|косинусов|синусов|четырёхугольник|четырехугольник|трапеци/i },
+    { topic: 'Стереометрия', re: /призма|пирамида|конус|цилиндр|шар|сфера|объём|объем|параллелепипед|сечение/i },
+    { topic: 'Вероятность и комбинаторика', re: /вероятност|комбинатор|перестановк|сочетан|случайн/i },
+    { topic: 'Прогрессии и последовательности', re: /прогресси|арифметическ|геометрическ|последовательност/i }
+  ],
+  physics: [
+    { topic: 'Механика', re: /скорост|ускорен|сила|ньютон|импульс|энерги|мощност|равновеси|рычаг/i },
+    { topic: 'Электричество', re: /ток|напряжени|сопротивлен|ом|конденсатор|заряд|кулон|мощность|электр/i },
+    { topic: 'Магнетизм и индукция', re: /магнит|индукци|лоренц|ампер|электромагнит/i },
+    { topic: 'Молекулярная физика и термодинамика', re: /молекул|термодинам|температур|тепло|энтропи|кпд|газ/i },
+    { topic: 'Оптика и волны', re: /оптик|линза|волн|свет|преломлен|отражени|интерференц|дифракци/i },
+    { topic: 'Квантовая и ядерная физика', re: /квант|фотоэффект|радиоактивн|ядерн|атом|энергия связи/i }
+  ],
+  chemistry: [
+    { topic: 'Строение атома и Периодический закон', re: /атом|протон|нейтрон|электрон|периодическ|менделеев|валентн/i },
+    { topic: 'ОВР и электролиз', re: /окислител|восстановител|степень окисления|электролиз|овр/i },
+    { topic: 'Растворы и гидролиз', re: /раствор|растворимост|гидролиз|концентраци|массовая доля/i },
+    { topic: 'Органическая химия', re: /орган|алкан|алкен|алкин|спирт|кислот|углеводород|бензол|амино/i },
+    { topic: 'Расчёты по уравнениям', re: /моль|молярн|выход|количество вещества|ν|объём газа|объем газа/i },
+    { topic: 'Неорганическая химия', re: /оксид|основани|соль|металл|неметалл|реакци/i }
+  ],
+  lang: [
+    { topic: 'Орфография', re: /орфограф|правописан|безударн|нн|приставк|корн/i },
+    { topic: 'Пунктуация', re: /пунктуац|запят|тире|двоеточ|знаки препинани|обособлен/i },
+    { topic: 'Синтаксис', re: /синтаксис|предложени|словосочетан|грамматическ/i },
+    { topic: 'Морфология', re: /морфолог|часть речи|существител|глагол|причасти|деепричасти/i },
+    { topic: 'Работа с текстом', re: /текст|главная мысль|тема|стиль речи|изложени|сочинен/i },
+    { topic: 'Лексика', re: /лексик|синоним|антоним|фразеолог|значение слова/i }
+  ],
+  history: [
+    { topic: 'Древний мир и Средневековье', re: /древн|средневеков|княжеств|ханств|полоцк|русь|орда|вече|удел/i },
+    { topic: 'Новое время', re: /реформац|просвещени|уния|раздел|импери|война 1812|декабрист|смутн/i },
+    { topic: 'XX век', re: /революц|советск|ссср|асср|неп|индустриализац|коллективизац|репресси/i },
+    { topic: 'Войны и битвы', re: /войн|битва|сражени|оборон|освобожден|победа|нашеств/i },
+    { topic: 'Культура и наука', re: /культур|просветител|книгопечатан|писател|художник|наук|академ/i },
+    { topic: 'Независимость и современность', re: /независимост|суверенитет|конституци|республик|современн/i }
+  ],
+  biology: [
+    { topic: 'Клетка и обмен веществ', re: /клетк|митохондр|фотосинтез|днк|рнк|белок|фермент/i },
+    { topic: 'Генетика', re: /генетик|наследствен|генотип|фенотип|мутаци|скрещиван/i },
+    { topic: 'Анатомия человека', re: /человек|сердц|кров|мозг|мышц|скелет|нервн|пищевар/i },
+    { topic: 'Экология', re: /эколог|экосистем|пищевая цеп|биосфер|популяци/i },
+    { topic: 'Ботаника и зоология', re: /растени|животн|классификаци|вид|род|семейств/i }
+  ]
+};
+
+function topicGroupFor(subject) {
+  const s = subject || '';
+  if (/матем/i.test(s)) return 'math';
+  if (/физик/i.test(s)) return 'physics';
+  if (/хими/i.test(s)) return 'chemistry';
+  if (/язык|грамотность|літаратура|мова/i.test(s) && !/иностранн|англ/i.test(s)) return 'lang';
+  if (/истори/i.test(s)) return 'history';
+  if (/биолог/i.test(s)) return 'biology';
+  return null;
+}
+
+function tagTopic(subject, text) {
+  const group = topicGroupFor(subject);
+  if (!group || !TOPIC_KEYWORDS[group]) return null;
+  const t = String(text || '').toLowerCase();
+  const found = TOPIC_KEYWORDS[group].find(function (k) { return k.re.test(t); });
+  return found ? found.topic : null;
+}
+
+function recordSkill(subject, topic, ok) {
+  if (!subject) return;
+  const cp = countryProgress();
+  const key = subject + '|' + (topic || 'Общее');
+  if (!cp.skills[key]) cp.skills[key] = { n: 0, ok: 0, subject: subject, topic: topic || 'Общее' };
+  cp.skills[key].n++;
+  if (ok) cp.skills[key].ok++;
+  saveProgressData();
+}
+
+function recordTestQuestion(subject, question, ok) {
+  recordSkill(subject, tagTopic(subject, question), ok);
+}
+
+function recordTestResult(subject, score, total) {
+  const cp = countryProgress();
+  cp.tests.push({ subject: subject, score: score, total: total, at: Date.now() });
+  if (cp.tests.length > 100) cp.tests.shift();
+  saveProgressData();
+}
+
+function trackAction(actionId, subject, input) {
+  if (!subject) return;
+  const cp = countryProgress();
+  cp.actions.push({ type: actionId, subject: subject, input: String(input || '').slice(0, 120), at: Date.now() });
+  if (cp.actions.length > 100) cp.actions.shift();
+  const topic = tagTopic(subject, input);
+  recordSkill(subject, topic, null); // факт работы над темой (без оценки)
+  saveProgressData();
+}
+
+function resetProgress() {
+  progressData = {};
+  saveProgressData();
+  renderProgressPage();
+  showToast(t('progress.reset'));
+}
+
+function showProgress() {
+  renderProgressPage();
+  showPage('progressPage');
+}
+
+function weakTopics() {
+  const cp = countryProgress();
+  const rows = Object.keys(cp.skills).map(function (k) {
+    const s = cp.skills[k];
+    return { subject: s.subject, topic: s.topic, n: s.n, ok: s.ok, acc: s.n ? (s.ok / s.n) : 1 };
+  }).filter(function (r) { return r.topic !== 'Общее'; });
+  rows.sort(function (a, b) {
+    if (a.acc !== b.acc) return a.acc - b.acc;
+    return b.n - a.n;
+  });
+  return rows.filter(function (r) { return r.acc < 0.75; }).slice(0, 4);
+}
+
+function renderProgressPage() {
+  const root = document.getElementById('progressRoot');
+  if (!root) return;
+  const cp = countryProgress();
+  const qTotal = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].n; }, 0);
+  const qOk = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].ok; }, 0);
+  const acc = qTotal ? Math.round((qOk / qTotal) * 100) : null;
+
+  let html = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(t('nav.progress')) + '</div><h1>' + escapeHtml(t('progress.title')) + '</h1><p>' + escapeHtml(activeCountry().flag + ' ' + activeCountry().nameLocal()) + '</p></div>';
+
+  if (!qTotal && !cp.tests.length && !cp.actions.length) {
+    html += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-chart-line"></i></div><h3>' + t('progress.noData') + '</h3><p>' + t('progress.noDataDesc') + '</p></div></div>';
+    root.innerHTML = html;
+    return;
+  }
+
+  html += '<div class="prog-stats">' +
+    '<div class="prog-stat"><b>' + (acc === null ? '—' : acc + '%') + '</b><span>' + t('progress.accuracy') + '</span></div>' +
+    '<div class="prog-stat"><b>' + qTotal + '</b><span>' + t('progress.questions') + '</span></div>' +
+    '<div class="prog-stat"><b>' + cp.tests.length + '</b><span>' + t('progress.tests') + '</span></div>' +
+    '<div class="prog-stat"><b>' + cp.actions.length + '</b><span>' + t('progress.actions') + '</span></div>' +
+    '</div>';
+
+  // По предметам
+  const bySubject = {};
+  Object.keys(cp.skills).forEach(function (k) {
+    const s = cp.skills[k];
+    if (!bySubject[s.subject]) bySubject[s.subject] = { n: 0, ok: 0 };
+    bySubject[s.subject].n += s.n;
+    bySubject[s.subject].ok += s.ok;
+  });
+  const subjRows = Object.keys(bySubject).map(function (s) {
+    const r = bySubject[s];
+    return { subject: s, acc: r.n ? Math.round((r.ok / r.n) * 100) : 100, n: r.n };
+  }).sort(function (a, b) { return b.n - a.n; });
+
+  html += '<div class="section-label">' + t('progress.subjects') + '</div>';
+  subjRows.forEach(function (r) {
+    const warn = r.acc < 60 ? ' warn' : '';
+    html += '<div class="prog-bar-row"><div class="prog-bar-head"><span>' + escapeHtml(r.subject) + '</span><span class="pct">' + r.acc + '% · ' + r.n + '</span></div>' +
+      '<div class="prog-bar-track"><div class="prog-bar-fill' + warn + '" style="width:' + r.acc + '%;"></div></div></div>';
+  });
+
+  // Слабые места + рекомендации
+  const weak = weakTopics();
+  if (weak.length) {
+    html += '<div class="section-label">' + t('progress.weak') + '</div><p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">' + t('progress.weakDesc') + '</p>';
+    weak.forEach(function (w) {
+      html += '<div class="weak-topic">' +
+        '<div style="flex:1;min-width:120px;"><div class="wt-name">' + escapeHtml(w.topic) + '</div><div class="wt-sub">' + escapeHtml(w.subject) + ' · ' + w.n + ' ' + t('progress.questions').toLowerCase() + '</div></div>' +
+        '<div class="wt-acc">' + Math.round(w.acc * 100) + '%</div>' +
+        '<div class="wt-btns">' +
+          '<button class="btn btn-primary" onclick="practiceWeakTopic(\'' + escapeAttr(w.subject) + '\',\'' + escapeAttr(w.topic) + '\')">' + t('progress.genTasks') + '</button>' +
+          '<button class="btn btn-secondary" onclick="explainWeakTopic(\'' + escapeAttr(w.subject) + '\',\'' + escapeAttr(w.topic) + '\')">' + t('progress.explainTopic') + '</button>' +
+          '<button class="btn btn-secondary" onclick="testWeakSubject(\'' + escapeAttr(w.subject) + '\')">' + t('progress.subjectTest') + '</button>' +
+        '</div></div>';
+    });
+  }
+
+  html += '<div style="display:flex;gap:8px;margin-top:14px;">' +
+    '<button class="btn btn-secondary" style="flex:1;" onclick="resetProgress()"><i class="fas fa-eraser"></i> ' + t('progress.reset') + '</button>' +
+    '</div>';
+  root.innerHTML = html;
+}
+
+function escapeAttr(s) {
+  return String(s ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\"/g, '&quot;');
+}
+
+function practiceWeakTopic(subject, topic) {
+  testState = { questions: [], currentQ: 0, score: 0, subject: subject + ' — ' + topic, answered: false, fromProgress: true };
+  showPage('testPage');
+  document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:48px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:12px;color:var(--text-secondary);">' + escapeHtml(t('teacher.generating')) + '</p></div>';
+  (async function () {
+    try {
+      const questions = await generateTestQuestions(subject + ' — ' + topic, 5, 'смешанный');
+      if (!questions.length) throw new Error('ИИ не вернул вопросы');
+      testState.questions = questions;
+      renderCurrentQuestion();
+    } catch (e) {
+      document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:36px;"><h3>⚠️</h3><p style="color:var(--text-secondary);">' + escapeHtml(e.message) + '</p><button class="btn btn-primary" onclick="showProgress()">Назад</button></div>';
+    }
+  })();
+}
+
+function explainWeakTopic(subject, topic) {
+  const cfg = getAllItems().find(function (m) { return m.id === 'explain'; });
+  if (!cfg) return;
+  state.currentActionId = 'explain';
+  state.conversationHistory = [];
+  document.getElementById('actionTitle').innerHTML = '<i class="' + cfg.icon + '"></i> ' + cfg.title;
+  document.getElementById('actionDescription').textContent = cfg.description;
+  document.getElementById('actionForm').innerHTML = '';
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('continueChatArea').style.display = 'none';
+  const form = document.getElementById('actionForm');
+  const subjectsAll = activeCountry().studySubjects;
+  form.innerHTML = '<div class="form-group"><label>' + t('form.subject') + '</label><select id="subjectSelect">' + subjectsAll.map(function (s) { return '<option' + (s === subject ? ' selected' : '') + '>' + escapeHtml(s) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('form.query') + '</label><textarea id="inputText" rows="4" placeholder="' + t('form.queryPh') + '">' + escapeHtml(topic) + '</textarea></div>' +
+    '<div class="form-group"><label>' + t('form.level') + '</label><select id="levelSelect"><option>Для новичка</option><option>Обычное объяснение</option><option>Подробно с доказательствами</option></select></div>' +
+    '<button class="btn btn-primary" onclick="processAction()"><i class="fas fa-lightbulb"></i> ' + t('form.startPrep') + '</button>';
+  showPage('actionPage');
+}
+
+function testWeakSubject(subject) {
+  const c = activeCountry();
+  if (c.ctSubjects.indexOf(subject) === -1) {
+    showToast(subject);
+    return;
+  }
+  testState.subject = subject;
+  openCTTest();
+  // сразу подсветить предмет
+  setTimeout(function () {
+    const chips = document.querySelectorAll('.subject-chip');
+    chips.forEach(function (ch) {
+      if (ch.textContent === subject) {
+        ch.classList.add('active');
+        const btn = document.getElementById('startTestBtn');
+        if (btn) btn.disabled = false;
+      }
+    });
+  }, 50);
+}
+
+/* =====================================================================
+   РЕЖИМ УЧИТЕЛЯ: классы, задания, агрегированная аналитика (задача 4).
+   Работает поверх существующих учительских фич (не заменяя их).
+   Без сервера: локальное хранение + опциональная бесплатная
+   синхронизация Firebase Realtime Database (тариф Spark, бесплатный).
+   ===================================================================== */
+const TEACHER_KEY = 'nevioTeacher_v1';
+const TEACHER_FIREBASE_DB = ''; // ← владелец может вписать URL Firebase Realtime Database (бесплатный Spark), чтобы включить синхронизацию между устройствами
+
+let teacherData = loadTeacherData();
+
+function loadTeacherData() {
+  try {
+    const raw = localStorage.getItem(TEACHER_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (d && typeof d === 'object') return Object.assign({ classes: [], assignments: [], attempts: [] }, d);
+    }
+  } catch (e) {}
+  return { classes: [], assignments: [], attempts: [] };
+}
+function saveTeacherData() {
+  try { localStorage.setItem(TEACHER_KEY, JSON.stringify(teacherData)); } catch (e) {}
+}
+
+function teacherSyncEnabled() { return !!String(TEACHER_FIREBASE_DB || '').trim(); }
+function syncBase() { return String(TEACHER_FIREBASE_DB || '').trim().replace(/\/+$/, ''); }
+
+async function syncPut(path, data) {
+  if (!teacherSyncEnabled()) return null;
+  try {
+    const r = await fetchWithTimeout(syncBase() + '/' + path + '.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }, 8000);
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+async function syncGet(path) {
+  if (!teacherSyncEnabled()) return null;
+  try {
+    const r = await fetchWithTimeout(syncBase() + '/' + path + '.json', {}, 8000);
+    if (!r.ok) return null;
+    const text = await r.text();
+    return text && text !== 'null' ? JSON.parse(text) : null;
+  } catch (e) { return null; }
+}
+function syncPutAssignment(a) { return syncPut('nevio/assignments/' + a.code, a); }
+function syncGetAssignment(code) { return syncGet('nevio/assignments/' + code); }
+async function syncPushAttempt(code, attempt) {
+  if (!teacherSyncEnabled()) return null;
+  const list = (await syncGet('nevio/attempts/' + code)) || [];
+  if (!list.some(function (x) { return x.id === attempt.id; })) list.push(attempt);
+  return syncPut('nevio/attempts/' + code, list);
+}
+function syncGetAttempts(code) { return syncGet('nevio/attempts/' + code); }
+
+function randomCode(len) {
+  const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for (let i = 0; i < (len || 6); i++) out += abc[Math.floor(Math.random() * abc.length)];
+  return out;
+}
+
+function copyTextToClipboard(text, btn) {
+  const done = function () {
+    if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> ' + t('common.copied'); setTimeout(function () { btn.innerHTML = '<i class="fas fa-copy"></i> ' + t('common.copy'); }, 1500); }
+    showToast(t('common.copied'));
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () {
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink) Telegram.WebApp.openLink('https://t.me/share/url?url=' + encodeURIComponent(text));
+    });
+  } else {
+    done();
+  }
+}
+
+function teacherShell(title, subtitle, body) {
+  return '<div class="teacher-hero"><div class="th-flag">' + activeCountry().flag + '</div><h2>' + escapeHtml(title) + '</h2><p>' + escapeHtml(subtitle || '') + '</p></div>' + body;
+}
+
+function openTeacher(view) {
+  state.currentActionId = view;
+  showPage('teacherPage');
+  renderTeacher(view);
+}
+
+function renderTeacher(view) {
+  const root = document.getElementById('teacherRoot');
+  if (!root) return;
+  const map = {
+    classes: renderTeacherClasses,
+    class: renderTeacherClass,
+    assign_new: renderTeacherAssignNew,
+    assignment: renderTeacherAssignment,
+    analytics: renderTeacherAnalytics
+  };
+  root.innerHTML = (map[view] || renderTeacherClasses)();
+}
+
+function renderTeacherClasses() {
+  let body = '';
+  if (!teacherData.classes.length) {
+    body += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-users"></i></div><h3>' + t('teacher.noClasses') + '</h3><p>' + t('teacher.noClassesDesc') + '</p></div></div>';
+  } else {
+    body += '<div class="section-label">' + t('teacher.classes') + '</div>';
+    teacherData.classes.forEach(function (cl) {
+      const cnt = teacherData.assignments.filter(function (a) { return a.classId === cl.id; }).length;
+      body += '<div class="class-card" onclick="openTeacherView(\'class\',\'' + cl.id + '\')">' +
+        '<div class="cc-head"><h3>' + escapeHtml(cl.name) + '</h3><span class="code-pill" style="font-size:11px;">' + escapeHtml(cl.code) + '</span></div>' +
+        '<p>' + escapeHtml(cl.subject + ' · ' + cl.grade + ' · ' + cnt + ' ' + t('teacher.assignments').toLowerCase()) + '</p>' +
+        '</div>';
+    });
+  }
+  body += '<div class="card"><div class="form-group"><label>' + t('teacher.newClass') + '</label><input type="text" id="newClassName" placeholder="' + t('teacher.classNamePh') + '"></div>' +
+    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="newClassSubject">' + activeCountry().studySubjects.map(function (s) { return '<option>' + escapeHtml(s) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('form.grade') + '</label><select id="newClassGrade">' + [5,6,7,8,9,10,11].map(function (g) { return '<option>' + g + ' ' + t('form.gradeWord') + '</option>'; }).join('') + '</select></div>' +
+    '<button class="btn btn-primary" onclick="createClass()"><i class="fas fa-plus"></i> ' + t('teacher.newClass') + '</button></div>';
+  if (teacherData.classes.length) {
+    body += '<div class="section-label">' + t('teacher.assignments') + '</div><div style="display:flex;gap:8px;">' +
+      '<button class="btn btn-secondary" style="flex:1;" onclick="openTeacher(\'assign_new\')"><i class="fas fa-paper-plane"></i> ' + t('teacher.newAssignment') + '</button>' +
+      '<button class="btn btn-secondary" style="flex:1;" onclick="openTeacher(\'analytics\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button></div>';
+  }
+  return teacherShell(t('teacher.title'), t('teacher.subtitle'), body);
+}
+
+function createClass() {
+  const name = (document.getElementById('newClassName')?.value || '').trim();
+  const subject = document.getElementById('newClassSubject')?.value || '';
+  const grade = document.getElementById('newClassGrade')?.value || '';
+  if (!name) { showToast(t('toast.fillField')); return; }
+  teacherData.classes.push({ id: 'cl_' + Date.now(), name: name, subject: subject, grade: grade, code: randomCode(6), createdAt: Date.now() });
+  saveTeacherData();
+  renderTeacher('classes');
+  showToast('✓ ' + name);
+}
+
+function openTeacherView(view, id) {
+  teacherViewId = id;
+  openTeacher(view);
+}
+let teacherViewId = null;
+
+function renderTeacherClass() {
+  const cl = teacherData.classes.find(function (x) { return x.id === teacherViewId; });
+  if (!cl) return renderTeacherClasses();
+  const as = teacherData.assignments.filter(function (a) { return a.classId === cl.id; });
+  let body = '<div class="card" style="text-align:center;">' +
+    '<h3 style="font-size:18px;">' + escapeHtml(cl.name) + '</h3>' +
+    '<p style="font-size:12.5px;color:var(--text-secondary);margin:6px 0 12px;">' + escapeHtml(cl.subject + ' · ' + cl.grade) + '</p>' +
+    '<div class="code-pill">' + escapeHtml(cl.code) + '</div>' +
+    '<div style="margin-top:10px;"><button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="copyTextToClipboard(\'' + cl.code + '\',this)"><i class="fas fa-copy"></i> ' + t('teacher.copyCode') + '</button></div>' +
+    '<p style="font-size:11.5px;color:var(--text-muted);margin-top:10px;">' + t('teacher.studentsJoin') + '</p></div>';
+  if (as.length) {
+    body += '<div class="section-label">' + t('teacher.assignments') + '</div>';
+    as.forEach(function (a) {
+      const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; }).length;
+      body += '<div class="class-card" onclick="openTeacherView(\'assignment\',\'' + a.code + '\')"><div class="cc-head"><h3>' + escapeHtml(a.title) + '</h3><span class="code-pill" style="font-size:11px;">' + escapeHtml(a.code) + '</span></div><p>' + escapeHtml(a.subject + ' · ' + a.questions.length + ' ' + t('progress.questions') + ' · ' + attempts + ' ' + t('teacher.attempts')) + '</p></div>';
+    });
+  } else {
+    body += '<div class="card"><div class="empty-state"><h3>' + t('teacher.noAssignments') + '</h3></div></div>';
+  }
+  body += '<div style="display:flex;gap:8px;margin-top:8px;">' +
+    '<button class="btn btn-primary" style="flex:1;" onclick="openTeacherView(\'assign_new\',\'' + cl.id + '\')"><i class="fas fa-paper-plane"></i> ' + t('teacher.newAssignment') + '</button>' +
+    '<button class="btn btn-secondary" style="flex:1;" onclick="openTeacher(\'classes\')"><i class="fas fa-arrow-left"></i> ' + t('teacher.classes') + '</button></div>';
+  return teacherShell(cl.name, cl.subject + ' · ' + cl.grade, body);
+}
+
+let assignDraft = { classId: null, subject: '', topic: '', questions: null, generating: false };
+
+function renderTeacherAssignNew() {
+  const cl = teacherData.classes.find(function (x) { return x.id === (assignDraft.classId || teacherViewId); });
+  if (!teacherData.classes.length) return renderTeacherClasses();
+  assignDraft.classId = cl ? cl.id : teacherData.classes[0].id;
+  const cls = cl || teacherData.classes[0];
+  let body = '<div class="card">' +
+    '<div class="form-group"><label>' + t('teacher.classes') + '</label><select id="assignClassId" onchange="assignDraft.classId=this.value">' +
+    teacherData.classes.map(function (x) { return '<option value="' + x.id + '"' + (x.id === assignDraft.classId ? ' selected' : '') + '>' + escapeHtml(x.name) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('form.subject') + '</label><select id="assignSubject">' + activeCountry().studySubjects.map(function (s) { return '<option>' + escapeHtml(s) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-group"><label>' + t('teacher.assignmentTopic') + '</label><input type="text" id="assignTopic" placeholder="' + t('teacher.assignmentTopicPh') + '" value="' + escapeHtml(assignDraft.topic) + '"></div>' +
+    '<div class="form-group"><label>' + t('form.what') + '</label><select id="assignCount"><option value="5">5</option><option value="10">10</option></select></div>' +
+    '<button class="btn btn-primary" id="assignGenBtn" onclick="generateAssignmentQuestions()"><i class="fas fa-wand-magic-sparkles"></i> ' + t('teacher.genQuestions') + '</button></div>';
+  if (assignDraft.generating) {
+    body += '<div class="card" style="text-align:center;padding:30px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:10px;color:var(--text-secondary);font-size:12.5px;">' + t('teacher.generating') + '</p></div>';
+  } else if (assignDraft.questions) {
+    body += '<div class="section-label">' + t('teacher.preview') + ' · ' + assignDraft.questions.length + '</div>';
+    assignDraft.questions.forEach(function (q, i) {
+      body += '<div class="q-preview"><span class="q-num">' + (i + 1) + '.</span> ' + escapeHtml(q.question) +
+        '<div style="margin:6px 0 0 18px;font-size:11.5px;color:var(--text-secondary);">' + q.options.map(function (o, j) { return escapeHtml(o); }).join(' · ') + '</div>' +
+        '<div class="q-ans">✓ ' + escapeHtml(q.options[q.correctIndex]) + '</div></div>';
+    });
+    body += '<button class="btn btn-primary" onclick="saveAssignment(\'' + cls.id + '\')"><i class="fas fa-save"></i> ' + t('teacher.saveAssignment') + '</button>';
+  }
+  body += '<div class="sync-note" style="margin-top:12px;"><strong>ℹ️</strong> ' + t('teacher.syncNote') + '</div>';
+  return teacherShell(t('teacher.newAssignment'), cls.name, body);
+}
+
+async function generateAssignmentQuestions() {
+  if (assignDraft.generating) return;
+  const topic = (document.getElementById('assignTopic')?.value || '').trim();
+  if (!topic) { showToast(t('toast.fillField')); return; }
+  const subject = document.getElementById('assignSubject')?.value || '';
+  const count = parseInt(document.getElementById('assignCount')?.value || '5', 10);
+  assignDraft.subject = subject;
+  assignDraft.topic = topic;
+  assignDraft.questions = null;
+  assignDraft.generating = true;
+  renderTeacher('assign_new');
+  try {
+    const questions = await generateTestQuestions(subject + ' — ' + topic, count, 'смешанный');
+    if (!questions.length) throw new Error('ИИ не вернул вопросы');
+    assignDraft.questions = questions;
+  } catch (e) {
+    showToast(e.message || 'Ошибка');
+  } finally {
+    assignDraft.generating = false;
+    renderTeacher('assign_new');
+  }
+}
+
+function saveAssignment(classId) {
+  if (!assignDraft.questions || !assignDraft.questions.length) return;
+  const code = randomCode(6);
+  const a = {
+    id: 'as_' + Date.now(),
+    classId: classId,
+    code: code,
+    title: assignDraft.topic,
+    subject: assignDraft.subject,
+    questions: assignDraft.questions,
+    createdAt: Date.now()
+  };
+  teacherData.assignments.push(a);
+  saveTeacherData();
+  syncPutAssignment(a).catch(function () {});
+  assignDraft = { classId: classId, subject: '', topic: '', questions: null, generating: false };
+  teacherViewId = classId;
+  renderTeacher('class');
+  showToast('✓ ' + code);
+}
+
+function renderTeacherAssignment() {
+  const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
+  if (!a) return renderTeacherClasses();
+  const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; });
+  let body = '<div class="card" style="text-align:center;"><h3 style="font-size:17px;">' + escapeHtml(a.title) + '</h3>' +
+    '<p style="font-size:12.5px;color:var(--text-secondary);margin:6px 0 12px;">' + escapeHtml(a.subject + ' · ' + a.questions.length + ' ' + t('progress.questions')) + '</p>' +
+    '<div class="code-pill">' + escapeHtml(a.code) + '</div>' +
+    '<div style="margin-top:10px;"><button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="copyTextToClipboard(\'' + a.code + '\',this)"><i class="fas fa-copy"></i> ' + t('teacher.copyCode') + '</button></div></div>';
+  body += '<div class="section-label">' + t('teacher.preview') + '</div>';
+  a.questions.forEach(function (q, i) {
+    body += '<div class="q-preview"><span class="q-num">' + (i + 1) + '.</span> ' + escapeHtml(q.question) +
+      '<div class="q-ans">✓ ' + escapeHtml(q.options[q.correctIndex]) + '</div>' +
+      (q.explanation ? '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">💡 ' + escapeHtml(q.explanation) + '</div>' : '') + '</div>';
+  });
+  body += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">' +
+    '<button class="btn btn-primary" style="flex:1;" onclick="startDemoAssignment(\'' + a.code + '\')"><i class="fas fa-user-graduate"></i> ' + t('teacher.demo') + '</button>' +
+    '<button class="btn btn-secondary" style="flex:1;" onclick="openTeacherView(\'analytics\',\'' + a.code + '\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button></div>' +
+    '<p style="font-size:11px;color:var(--text-muted);margin-top:8px;">' + t('teacher.demoDesc') + '</p>' +
+    '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="openTeacherView(\'class\',\'' + a.classId + '\')"><i class="fas fa-arrow-left"></i> ' + t('common.back') + '</button>';
+  return teacherShell(a.title, a.subject, body);
+}
+
+function renderTeacherAnalytics() {
+  const picked = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
+  if (!teacherData.assignments.length) return renderTeacherClasses();
+  let body = '<div class="card"><div class="form-group"><label>' + t('teacher.analyticsPick') + '</label><select id="analyticsPick" onchange="openTeacherView(\'analytics\',this.value)">' +
+    teacherData.assignments.map(function (a) {
+      return '<option value="' + a.code + '"' + ((picked && picked.code === a.code) ? ' selected' : '') + '>' + escapeHtml(a.title + ' (' + a.code + ')') + '</option>';
+    }).join('') + '</select></div></div>';
+  if (picked) {
+    body += renderAnalyticsForAssignment(picked);
+  } else {
+    openTeacherView('analytics', teacherData.assignments[0].code);
+    return '';
+  }
+  return teacherShell(t('teacher.analytics'), t('teacher.subtitle'), body);
+}
+
+function renderAnalyticsForAssignment(a) {
+  const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; });
+  let html = '';
+  if (!attempts.length) {
+    html += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-hourglass-half"></i></div><h3>' + t('teacher.attempts') + ': 0</h3><p>' + t('teacher.demoDesc') + '</p></div></div>';
+    html += '<button class="btn btn-primary" onclick="startDemoAssignment(\'' + a.code + '\')"><i class="fas fa-user-graduate"></i> ' + t('teacher.demo') + '</button>';
+    html += '<div class="sync-note" style="margin-top:12px;"><strong>ℹ️</strong> ' + t('teacher.syncNote') + '</div>';
+    return html;
+  }
+  const avg = Math.round(attempts.reduce(function (s, x) { return s + (x.score / x.total); }, 0) / attempts.length * 100);
+  html += '<div class="prog-stats">' +
+    '<div class="prog-stat"><b>' + attempts.length + '</b><span>' + t('teacher.attempts') + '</span></div>' +
+    '<div class="prog-stat"><b>' + avg + '%</b><span>' + t('teacher.avgScore') + '</span></div>' +
+    '</div>';
+  html += '<div class="section-label">' + t('teacher.whoDone') + '</div><div class="card">';
+  attempts.slice().sort(function (x, y) { return y.at - x.at; }).forEach(function (at) {
+    const pct = Math.round((at.score / at.total) * 100);
+    const cls = pct >= 75 ? 'good' : (pct >= 50 ? 'mid' : 'bad');
+    html += '<div class="attempt-row"><div style="min-width:0;"><div style="font-weight:700;">' + escapeHtml(at.name) + '</div><div style="font-size:10.5px;color:var(--text-muted);">' + formatDate(at.at) + '</div></div><div class="sc ' + cls + '">' + at.score + '/' + at.total + ' (' + pct + '%)</div></div>';
+  });
+  html += '</div>';
+  html += '<div class="section-label">' + t('teacher.perQuestion') + '</div><div class="card">';
+  a.questions.forEach(function (q, i) {
+    const right = attempts.filter(function (at) { return at.answers[i] && at.answers[i].selected === q.correctIndex; }).length;
+    const pct = Math.round((right / attempts.length) * 100);
+    html += '<div class="an-bar-row"><div class="an-bar-head"><b>' + (i + 1) + '. ' + escapeHtml(String(q.question).slice(0, 60)) + (String(q.question).length > 60 ? '…' : '') + '</b><span>' + pct + '%</span></div>' +
+      '<div class="an-bar-track"><div class="an-bar-fill' + (pct < 60 ? ' low' : '') + '" style="width:' + pct + '%;"></div></div></div>';
+  });
+  html += '</div>';
+  html += '<div class="section-label">' + t('teacher.commonMistakes') + '</div>';
+  const mistakes = a.questions.map(function (q, i) {
+    const wrong = attempts.filter(function (at) { return at.answers[i] && at.answers[i].selected !== q.correctIndex; });
+    const pct = Math.round((wrong.length / attempts.length) * 100);
+    return { q: q, wrong: wrong, pct: pct };
+  }).filter(function (m) { return m.pct > 0; }).sort(function (x, y) { return y.pct - x.pct; }).slice(0, 5);
+  if (!mistakes.length) {
+    html += '<div class="card"><div class="empty-state"><h3>✅</h3><p>' + t('progress.noData') + '</p></div></div>';
+  }
+  mistakes.forEach(function (m, idx) {
+    html += '<div class="q-preview"><span class="q-num">' + (idx + 1) + '.</span> ' + escapeHtml(m.q.question) +
+      '<div style="margin-top:6px;font-size:11.5px;">' + escapeHtml(m.pct + '% ' + t('teacher.attempts') + ' — неверный ответ') + '</div>' +
+      '<div class="q-ans">✓ ' + escapeHtml(m.q.options[m.q.correctIndex]) + '</div>' +
+      (m.q.explanation ? '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">💡 ' + escapeHtml(m.q.explanation) + '</div>' : '') + '</div>';
+  });
+  html += '<div class="sync-note" style="margin-top:12px;"><strong>ℹ️</strong> ' + t('teacher.syncNote') + '</div>';
+  return html;
+}
+
+/* ---- Прохождение задания (учитель-демо и ученик) ---- */
+let solveState = { assignment: null, index: 0, answers: [], name: '', demo: false };
+
+function startDemoAssignment(code) {
+  const a = teacherData.assignments.find(function (x) { return x.code === code; });
+  if (!a) return;
+  startAssignmentSolve(a, 'Учитель (пробный)', true);
+}
+
+function startAssignmentSolve(assignment, name, demo) {
+  solveState = { assignment: assignment, index: 0, answers: [], name: name || 'Ученик', demo: !!demo };
+  renderSolveQuestion();
+}
+
+function renderSolveQuestion() {
+  const root = document.getElementById(demoSolveRootId());
+  if (!root) return;
+  const a = solveState.assignment;
+  const i = solveState.index;
+  if (i >= a.questions.length) { finishSolve(); return; }
+  const q = a.questions[i];
+  const progress = Math.round((i / a.questions.length) * 100);
+  root.innerHTML = '<div class="test-progress"><div><div class="test-score">' + t('progress.questions').charAt(0).toUpperCase() + t('progress.questions').slice(1) + ' <strong>' + (i + 1) + '</strong> / ' + a.questions.length + '</div></div><div style="font-size:16px;color:var(--gold);font-weight:800;">' + progress + '%</div></div>' +
+    '<div style="background:var(--border);border-radius:4px;height:6px;margin-bottom:16px;"><div style="width:' + progress + '%;height:100%;background:var(--gradient-gold);border-radius:4px;transition:width 0.4s;"></div></div>' +
+    '<div class="test-question-card"><div class="test-question-num">' + escapeHtml(a.subject) + ' · ' + t('solve.question') + ' ' + (i + 1) + '/' + a.questions.length + '</div>' +
+    '<div class="test-question-text">' + escapeHtml(q.question) + '</div>' +
+    '<div class="test-options">' + q.options.map(function (o, j) {
+      return '<button class="test-option" onclick="solveAnswer(' + j + ')">' + LETTERS[j] + ') ' + escapeHtml(o) + '</button>';
+    }).join('') + '</div></div>';
+  window.scrollTo(0, 0);
+}
+
+function demoSolveRootId() {
+  // единый корень для режима учителя и ученика
+  return state.currentActionId === 'my_assignments' ? 'myTasksRoot' : 'teacherRoot';
+}
+
+function solveAnswer(selected) {
+  const a = solveState.assignment;
+  const i = solveState.index;
+  const q = a.questions[i];
+  solveState.answers.push({ q: i, selected: selected, correct: q.correctIndex });
+  solveState.index++;
+  renderSolveQuestion();
+}
+
+function finishSolve() {
+  const a = solveState.assignment;
+  const root = document.getElementById(demoSolveRootId());
+  if (!root) return;
+  const score = solveState.answers.filter(function (x) { return x.selected === x.correct; }).length;
+  const total = a.questions.length;
+  const pct = Math.round((score / total) * 100);
+  const attempt = { id: 'at_' + Date.now() + '_' + Math.floor(Math.random() * 9999), code: a.code, name: solveState.name, score: score, total: total, answers: solveState.answers, at: Date.now() };
+  teacherData.attempts.push(attempt);
+  if (teacherData.attempts.length > 500) teacherData.attempts.shift();
+  saveTeacherData();
+  syncPushAttempt(a.code, attempt).catch(function () {});
+  let emoji = '😔', label = '';
+  if (pct >= 90) { emoji = '🏆'; label = 'Отличный результат!'; }
+  else if (pct >= 70) { emoji = '🎯'; label = 'Хороший результат!'; }
+  else if (pct >= 50) { emoji = '📚'; label = 'Неплохо, но есть куда расти'; }
+  else label = 'Нужно больше практики';
+  root.innerHTML = '<div class="card"><div class="test-result"><div style="font-size:72px;margin-bottom:12px;">' + emoji + '</div>' +
+    '<div class="test-result-score">' + score + '/' + total + '</div><div class="test-result-label">' + label + '</div>' +
+    '<div style="margin:24px 0;"><div style="font-size:32px;font-weight:800;color:var(--gold);">' + pct + '%</div><div style="font-size:13px;color:var(--text-muted);">' + t('progress.accuracy') + '</div></div>' +
+    '<div class="info-banner" style="text-align:left;"><strong>📊 ' + escapeHtml(solveState.name) + '</strong><br>' + t('myTasks.sent') + '.</div></div>' +
+    (solveState.demo
+      ? '<button class="btn btn-primary" onclick="openTeacherView(\'analytics\',\'' + a.code + '\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button>'
+      : '<button class="btn btn-primary" onclick="openMyAssignments()"><i class="fas fa-arrow-left"></i> ' + t('myTasks.title') + '</button>') +
+    '</div>';
+  if (!solveState.demo) saveMyAttempt(attempt); // демо-прохождение учителя не попадает в «Мои результаты» ученика
+}
+
+/* ---- Сторона ученика: задания от учителя ---- */
+const MY_ATTEMPTS_KEY = 'nevioMyAttempts_v1';
+const MY_PROFILE_KEY = 'nevioStudentProfile_v1';
+
+function loadMyAttempts() {
+  try { return JSON.parse(localStorage.getItem(MY_ATTEMPTS_KEY) || '[]'); } catch (e) { return []; }
+}
+function saveMyAttempt(attempt) {
+  const list = loadMyAttempts();
+  list.push(attempt);
+  try { localStorage.setItem(MY_ATTEMPTS_KEY, JSON.stringify(list.slice(-100))); } catch (e) {}
+}
+function myProfile() {
+  try { return JSON.parse(localStorage.getItem(MY_PROFILE_KEY) || 'null'); } catch (e) { return null; }
+}
+function saveMyProfile(p) {
+  try { localStorage.setItem(MY_PROFILE_KEY, JSON.stringify(p)); } catch (e) {}
+}
+
+function openMyAssignments() {
+  state.currentActionId = 'my_assignments';
+  showPage('myAssignmentsPage');
+  renderMyAssignments();
+}
+
+function renderMyAssignments() {
+  const root = document.getElementById('myTasksRoot');
+  if (!root) return;
+  const my = loadMyAttempts();
+  let html = '<div class="country-hero"><div class="country-kicker">📚</div><h1>' + t('myTasks.title') + '</h1><p>' + t('myTasks.subtitle') + '</p></div>' +
+    '<div class="card"><div class="form-group"><label>' + t('myTasks.codePh') + '</label><input type="text" id="joinCode" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:2px;"></div>' +
+    '<button class="btn btn-primary" onclick="joinAssignment()"><i class="fas fa-sign-in-alt"></i> ' + t('myTasks.join') + '</button></div>';
+  if (my.length) {
+    html += '<div class="section-label">' + t('myTasks.results') + '</div>';
+    my.slice().reverse().slice(0, 10).forEach(function (m) {
+      const pct = Math.round((m.score / m.total) * 100);
+      html += '<div class="attempt-row" style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:6px;border-bottom:none;"><div><div style="font-weight:700;">' + escapeHtml(m.name) + '</div><div style="font-size:10.5px;color:var(--text-muted);">' + formatDate(m.at) + '</div></div><div class="sc ' + (pct >= 75 ? 'good' : (pct >= 50 ? 'mid' : 'bad')) + '">' + m.score + '/' + m.total + '</div></div>';
+    });
+  } else {
+    html += '<div class="card"><div class="empty-state"><div class="icon"><i class="fas fa-tasks"></i></div><h3>' + t('myTasks.nothing') + '</h3></div></div>';
+  }
+  root.innerHTML = html;
+}
+
+const joinedCache = {};
+
+async function joinAssignment() {
+  const code = (document.getElementById('joinCode')?.value || '').trim().toUpperCase();
+  if (!code) { showToast(t('toast.fillField')); return; }
+  let a = teacherData.assignments.find(function (x) { return x.code === code; }) || null;
+  if (!a && teacherSyncEnabled()) {
+    a = await syncGetAssignment(code);
+  }
+  if (!a || !a.questions || !a.questions.length) {
+    showToast(t('myTasks.notFound'));
+    return;
+  }
+  joinedCache[code] = a;
+  renderJoinableAssignment(a);
+}
+
+function renderJoinableAssignment(a) {
+  const root = document.getElementById('myTasksRoot');
+  if (!root) return;
+  const profile = myProfile();
+  let nameBlock = '';
+  if (!profile || !profile.name) {
+    nameBlock = '<div class="card"><div class="form-group"><label>' + t('myTasks.yourName') + '</label><input type="text" id="studentName" placeholder="' + t('myTasks.namePh') + '" value="' + escapeHtml(((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? [tg.initDataUnsafe.user.first_name, tg.initDataUnsafe.user.last_name].filter(Boolean).join(' ') : '')) + '"></div></div>';
+  }
+  root.innerHTML = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(a.code) + '</div><h1>' + escapeHtml(a.title) + '</h1><p>' + escapeHtml(a.subject + ' · ' + a.questions.length + ' ' + t('progress.questions')) + '</p></div>' +
+    nameBlock +
+    '<button class="btn btn-primary" onclick="startJoinedAssignment(\'' + a.code + '\')"><i class="fas fa-play"></i> ' + t('myTasks.start') + '</button>' +
+    '<button class="btn btn-secondary" style="margin-top:8px;" onclick="openMyAssignments()"><i class="fas fa-arrow-left"></i> ' + t('common.back') + '</button>';
+}
+
+function startJoinedAssignment(code) {
+  const nameEl = document.getElementById('studentName');
+  let profile = myProfile() || {};
+  if (nameEl && nameEl.value.trim()) {
+    profile.name = nameEl.value.trim();
+    saveMyProfile(profile);
+  }
+  const a = teacherData.assignments.find(function (x) { return x.code === code; }) || joinedCache[code] || null;
+  if (!a) { showToast(t('myTasks.notFound')); return; }
+  startAssignmentSolve(a, profile.name || ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? [tg.initDataUnsafe.user.first_name, tg.initDataUnsafe.user.last_name].filter(Boolean).join(' ') : '') || 'Ученик', false);
+}
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
