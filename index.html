@@ -1088,6 +1088,31 @@
     .kv-row:last-child { border-bottom:none; }
     .kv-row .k { color:var(--text-secondary); }
     .kv-row .v { font-weight:700; text-align:right; }
+    
+    /* Кнопка переключения языка */
+    .lang-switch-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:10px;
+      padding:6px 14px;
+      background:var(--surface);
+      border:1.5px solid var(--border);
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      color:var(--text-secondary);
+      cursor:pointer;
+      transition:all 0.25s;
+    }
+    .lang-switch-btn:hover {
+      border-color:var(--gold);
+      color:var(--gold);
+      background:rgba(232,177,62,0.08);
+    }
+    .lang-switch-btn i {
+      font-size:14px;
+    }
   </style>
 </head>
 <body>
@@ -1134,6 +1159,9 @@
   <div class="header">
     <h1>NEVIO</h1>
     <p data-i18n="app.subtitle">Твой умный помощник в учёбе</p>
+    <div id="langSwitchBtn" class="lang-switch-btn" style="display:none;" onclick="toggleLanguage()" title="Переключить язык">
+      <i class="fas fa-language"></i> <span id="langSwitchLabel"></span>
+    </div>
   </div>
   <div id="menuContainer"></div>
 </div>
@@ -1559,6 +1587,16 @@ const systemPrompts = {
 • Эксперт по белорусскому ЦТ/ЦЭ (РИКЗ)
 • Знаешь все предметы: математика, физика, химия, биология, история, языки
 • Формат заданий, типичные ошибки, стратегии сдачи
+• Понимаешь систему образования Беларуси: структура школ, программы, требования
+
+СИСТЕМА ОБРАЗОВАНИЯ БЕЛАРУСИ:
+• Начальная школа: 1-4 классы
+• Базовая школа: 5-9 классы (экзамены после 9 класса)
+• Средняя школа: 10-11 классы (ЦТ/ЦЭ)
+• ЦТ — централизованное тестирование (после 11 класса для поступления)
+• ЦЭ — централизованный экзамен (совмещает выпускной и вступительный)
+• Формат ЦТ: часть А (выбор ответа) + часть Б (краткий ответ)
+• Шкала: 100 баллов максимум, результат действителен 2 года
 
 КЛЮЧЕВОЕ ПРАВИЛО — ФОРМУЛЫ:
 Используй LaTeX-нотацию для всех математических выражений!
@@ -1584,8 +1622,9 @@ const systemPrompts = {
 
 СПЕЦИАЛИЗАЦИЯ:
 • Белорусские образовательные стандарты
-• Программы МОИРО
+• Программы Национального института образования (НИО/Аду.бай)
 • Практичные готовые материалы
+• Понимаешь систему образования Беларуси и требования к педагогам
 
 ИСПОЛЬЗУЙ ФОРМУЛЫ в LaTeX для математических примеров.
 ДАВАЙ ГОТОВЫЕ материалы которые можно сразу использовать.
@@ -2295,6 +2334,11 @@ function generateForm(actionId) {
     case 'chat':
       html = ta('inputText', 4) + btn('fas fa-paper-plane', 'Отправить');
       break;
+    case 'study_advisor':
+      html = `<div class="info-banner"><strong>🎓 Советник по учёбе</strong><br>Задай любой вопрос по учёбе, экзаменам, подготовке к ЦТ/ЦЭ. Например: "Я не понимаю физику, но хочу её сдавать. Что нужно учить?", "Как подготовиться к ЦЭ по математике?", "Какие предметы выбрать для поступления?"</div>`
+        + ta('inputText', 5)
+        + btn('fas fa-user-graduate', 'Спросить советника');
+      break;
     case 'lesson':
       html = ta('inputText', 3)
         + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
@@ -2343,7 +2387,7 @@ async function processAction() {
   }
   const data = collectFormData();
   
-  if (!inputText && !['ct_prep'].includes(state.currentActionId)) {
+  if (!inputText && !['ct_prep', 'study_advisor'].includes(state.currentActionId)) {
     showToast(t('toast.fillField'));
     return;
   }
@@ -2703,6 +2747,20 @@ ${inputText}
     
     chat: inputText,
     
+    study_advisor: `Ты — опытный советник по учёбе для школьников и абитуриентов ${c.nameLocal()}. Ты знаешь всё о системе образования, экзаменах (${examTitle(c)}), предметах, поступлении и подготовке.
+
+ВОПРОС УЧЕНИКА:
+${inputText}
+
+ДАЙ:
+1) Чёткий и понятный ответ на вопрос
+2) Конкретные рекомендации: что делать, с чего начать
+3) Если вопрос про экзамены — расскажи про структуру ${examTitle(c)}, какие предметы нужны, как готовиться
+4) Если вопрос про выбор предметов — помоги определить направление и необходимые экзамены
+5) Дай практические советы по подготовке и мотивации
+
+Будь дружелюбным, поддерживающим и конкретным. Используй примеры из реальной учебной практики.`,
+    
     lesson: `План урока ${data.duration} по "${inputText}" (${data.subject}, ${data.grade}).`,
     
     tasks: `${data.count} заданий по "${inputText}" (${data.subject}, ${data.grade}).`,
@@ -2739,6 +2797,7 @@ function buildUserMessage(actionId, inputText, data) {
     schema: `Схема: ${inputText.substring(0, 50)}...`,
     lit_analysis: `Анализ: ${data.litTitle}`,
     chat: inputText.substring(0, 100),
+    study_advisor: `Советник: ${inputText.substring(0, 100)}...`,
     lesson: `Урок: ${inputText.substring(0, 50)}...`,
     tasks: `Задания: ${inputText.substring(0, 50)}...`,
     variants: `Контрольная: ${inputText.substring(0, 50)}...`,
@@ -3672,6 +3731,50 @@ const EIOR_SECTIONS = [
   { id: 'contacts', title: 'Контакты ЕИОР', desc: 'ГИАЦ Министерства образования', url: 'https://eior.by/kontakty/', icon: 'fas fa-phone' }
 ];
 
+// НОВЫЕ РЕСУРСЫ: Академия образования, Министерство образования, Институт развития
+const MINISTRY_SECTIONS = [
+  { 
+    id: 'minedu', 
+    title: 'Министерство образования РБ', 
+    desc: 'Официальный сайт Министерства образования Республики Беларусь', 
+    url: 'https://edu.gov.by/', 
+    icon: 'fas fa-university',
+    category: 'ministry'
+  },
+  { 
+    id: 'academy', 
+    title: 'Академия образования', 
+    desc: 'Национальный институт образования, повышение квалификации педагогов', 
+    url: 'https://academy.edu.by/', 
+    icon: 'fas fa-graduation-cap',
+    category: 'academy'
+  },
+  { 
+    id: 'iro', 
+    title: 'Институт развития образования', 
+    desc: 'Развитие содержания образования, методическая поддержка', 
+    url: 'https://iro.by/', 
+    icon: 'fas fa-seedling',
+    category: 'development'
+  },
+  { 
+    id: 'riko', 
+    title: 'РИКЗ', 
+    desc: 'Республиканский институт контроля знаний — ЦТ/ЦЭ', 
+    url: 'https://rikc.by/', 
+    icon: 'fas fa-file-alt',
+    category: 'testing'
+  },
+  { 
+    id: 'niio', 
+    title: 'НИО (Аду.бай)', 
+    desc: 'Национальный институт образования — программы и учебники', 
+    url: 'https://adu.by/', 
+    icon: 'fas fa-book-reader',
+    category: 'education'
+  }
+];
+
 const ADU_PRIM = ADU_BASE + '/uchebnye-predmety-i-iv-klassy';
 const ADU_SEC = ADU_BASE + '/uchebnye-predmety-v-xi-klassy';
 function aduM(t, d) { return { t: t, d: d || '' }; }
@@ -4493,6 +4596,10 @@ function renderOfficialHub() {
   const aduCards = ADU_CATS.slice(0, 4).map(function (s) {
     return '<button type="button" class="adu-item" onclick="openAduCat(\'' + s.id + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
   }).join('');
+  // Новые министерские ресурсы
+  const ministryCards = MINISTRY_SECTIONS.map(function (s) {
+    return '<button type="button" class="adu-item" onclick="openOfficialBrowse(\'' + s.url + '\')"><div class="adu-ico"><i class="' + s.icon + '"></i></div><div><h3>' + escapeHtml(s.title) + '</h3><p>' + escapeHtml(s.desc) + '</p></div></button>';
+  }).join('');
   return officialSearchHtml() +
     '<div class="official-hero">' +
       '<div class="official-kicker">ЕИОР и Аду.бай</div>' +
@@ -4503,6 +4610,7 @@ function renderOfficialHub() {
       '<div class="source-card eior" onclick="officialGo(\'eior\')"><div class="src-ico"><i class="fas fa-play-circle"></i></div><h3>ЕИОР</h3><p>Живой каталог: класс → предмет → видео и тест с сайта</p><span class="src-tag">eior.by</span></div>' +
       '<div class="source-card adu" onclick="officialGo(\'adu\')"><div class="src-ico"><i class="fas fa-university"></i></div><h3>Аду.бай</h3><p>Календарь, программы, экзамены и олимпиады — сразу в NEVIO</p><span class="src-tag">adu.by</span></div>' +
     '</div>' +
+    '<div class="section-label">Министерство и институты образования</div>' + ministryCards +
     '<div class="section-label">ЕИОР сейчас</div>' + eiorCards +
     '<div class="section-label">Аду.бай сейчас</div>' + aduCards +
     '<div class="section-label">Быстрый вход</div>' +
@@ -5314,6 +5422,7 @@ const I18N = {
     'menu.sec.plan': 'Планирование уроков',
     'menu.sec.materials': 'Учебные материалы',
     'menu.sec.class': 'Класс и аналитика',
+    'menu.sec.advisor': 'Советник',
     'resources.sections': 'Разделы',
     'resources.examInfoBtn': 'Формат и критерии экзамена',
     'resources.search': 'Поиск',
@@ -5525,6 +5634,7 @@ const I18N = {
     'menu.sec.plan': 'Сабақты жоспарлау',
     'menu.sec.materials': 'Оқу материалдары',
     'menu.sec.class': 'Сынып және аналитика',
+    'menu.sec.advisor': 'Кеңесші',
     'resources.sections': 'Бөлімдер',
     'resources.examInfoBtn': 'Емтихан форматы мен критерийлері',
     'resources.search': 'Іздеу',
@@ -5736,6 +5846,7 @@ const I18N = {
     'menu.sec.plan': 'Darsni rejalashtirish',
     'menu.sec.materials': "O'quv materiallari",
     'menu.sec.class': 'Sinf va tahlil',
+    'menu.sec.advisor': 'Maslahatchi',
     'resources.sections': "Bo'limlar",
     'resources.examInfoBtn': 'Imtihon formati va mezonlari',
     'resources.search': 'Qidiruv',
@@ -5894,7 +6005,7 @@ function applyI18n() {
 
 function applyLanguage(lang) {
   state.lang = lang || 'ru';
-  document.documentElement.lang = (state.lang === 'kk' || state.lang === 'uz') ? state.lang : 'ru';
+  document.documentElement.lang = (state.lang === 'kk' || state.lang === 'uz' || state.lang === 'be') ? state.lang : 'ru';
   applyI18n();
   updateThemeUI(document.body.classList.contains('dark-theme'));
   updateSettingsCountryLine();
@@ -6052,11 +6163,26 @@ function selectCountry(id, isChange) {
 function renderCountryBadge() {
   const el = document.getElementById('countryBadge');
   const c = activeCountry();
-  if (!el) return;
-  if (!c || !state.country) { el.style.display = 'none'; return; }
-  el.style.display = 'inline-flex';
-  const langPart = state.lang !== 'ru' ? '<span class="sep">·</span><span class="lang">' + state.lang.toUpperCase() + '</span>' : '';
-  el.innerHTML = '<span class="flag">' + c.flag + '</span><span>' + escapeHtml(examShort(c)) + '</span>' + langPart;
+  if (el) {
+    if (!c || !state.country) { el.style.display = 'none'; }
+    else {
+      el.style.display = 'inline-flex';
+      const langPart = state.lang !== 'ru' ? '<span class="sep">·</span><span class="lang">' + state.lang.toUpperCase() + '</span>' : '';
+      el.innerHTML = '<span class="flag">' + c.flag + '</span><span>' + escapeHtml(examShort(c)) + '</span>' + langPart;
+    }
+  }
+  // Обновляем кнопку переключения языка в шапке
+  const langBtn = document.getElementById('langSwitchBtn');
+  const langLabel = document.getElementById('langSwitchLabel');
+  if (langBtn && langLabel) {
+    if (c && c.langs.length > 1) {
+      langBtn.style.display = 'inline-flex';
+      const nextLang = c.langs[(c.langs.indexOf(state.lang) + 1) % c.langs.length];
+      langLabel.textContent = nextLang.toUpperCase();
+    } else {
+      langBtn.style.display = 'none';
+    }
+  }
 }
 
 function updateSettingsCountryLine() {
@@ -6068,6 +6194,8 @@ function updateSettingsCountryLine() {
     li.style.display = (c && c.langs.length > 1) ? 'flex' : 'none';
     const lv = document.getElementById('settingsLangValue');
     if (lv) lv.textContent = state.lang.toUpperCase();
+    const ld = document.getElementById('settingsLangDesc');
+    if (ld && c) ld.textContent = typeof c.langsLabel === 'function' ? c.langsLabel() : c.langsLabel;
   }
 }
 
@@ -6477,7 +6605,8 @@ const MENU_T_RU = {
   chat: { ru: 'Педагогическая консультация' }, chatD: { ru: 'Совет от ИИ' },
   classes: { ru: 'Мои классы' }, classesD: { ru: 'Создавайте классы и коды доступа' },
   assign: { ru: 'Задание классу' }, assignD: { ru: 'Назначайте задания и следите за результатами' },
-  analytics: { ru: 'Аналитика класса' }, analyticsD: { ru: 'Кто справился, где типичные ошибки' }
+  analytics: { ru: 'Аналитика класса' }, analyticsD: { ru: 'Кто справился, где типичные ошибки' },
+  advisor: { ru: 'Советник по учёбе' }, advisorD: { ru: 'Задай любой вопрос по учёбе, экзаменам, подготовке' }
 };
 
 const MENU_T_KZ = {
@@ -6506,7 +6635,8 @@ const MENU_T_KZ = {
   chat: { ru: 'Педагогическая консультация', kk: 'Педагогикалық кеңес' }, chatD: { ru: 'Совет от ИИ', kk: 'ИИ кеңесі' },
   classes: { ru: 'Мои классы', kk: 'Менің сыныптарым' }, classesD: { ru: 'Создавайте классы и коды доступа', kk: 'Сыныптар мен кіру кодтарын құрыңыз' },
   assign: { ru: 'Задание классу', kk: 'Сыныпқа тапсырма' }, assignD: { ru: 'Назначайте задания и следите за результатами', kk: 'Тапсырмалар тағайындап, нәтижені қадағалаңыз' },
-  analytics: { ru: 'Аналитика класса', kk: 'Сынып аналитикасы' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', kk: 'Кім орындады, қайда қателер бар' }
+  analytics: { ru: 'Аналитика класса', kk: 'Сынып аналитикасы' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', kk: 'Кім орындады, қайда қателер бар' },
+  advisor: { ru: 'Советник по учёбе', kk: 'Оқу бойынша кеңесші' }, advisorD: { ru: 'Задай любой вопрос по учёбе, экзаменам, подготовке', kk: 'Кез келген оқу, емтихан, дайындық сұрағын қойыңыз' }
 };
 
 const MENU_T_UZ = {
@@ -6535,7 +6665,8 @@ const MENU_T_UZ = {
   chat: { ru: 'Педагогическая консультация', uz: 'Pedagogik maslahat' }, chatD: { ru: 'Совет от ИИ', uz: 'AIdan maslahat' },
   classes: { ru: 'Мои классы', uz: 'Mening sinflarim' }, classesD: { ru: 'Создавайте классы и коды доступа', uz: 'Sinflar va kirish kodlarini yarating' },
   assign: { ru: 'Задание классу', uz: 'Sinfga topshiriq' }, assignD: { ru: 'Назначайте задания и следите за результатами', uz: 'Topshiriqlar tayinlang va natijani kuzating' },
-  analytics: { ru: 'Аналитика класса', uz: 'Sinf tahlili' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', uz: 'Kim bajardi, qayerda xatolar' }
+  analytics: { ru: 'Аналитика класса', uz: 'Sinf tahlili' }, analyticsD: { ru: 'Кто справился, где типичные ошибки', uz: 'Kim bajardi, qayerda xatolar' },
+  advisor: { ru: 'Советник по учёбе', uz: 'Oʻqish boʻyicha maslahatchi' }, advisorD: { ru: 'Задай любой вопрос по учёбе, экзаменам, подготовке', uz: 'Oʻqish, imtihonlar, tayyorgarlik boʻyicha har qanday savol bering' }
 };
 
 /* ---------- КОНФИГУРАЦИИ СТРАН ----------
@@ -6558,23 +6689,41 @@ const NEVIO_COUNTRIES = {
   BY: {
     id: 'BY',
     flag: '🇧🇾',
-    langs: ['ru'],
+    langs: ['ru', 'be'],
     defaultLang: 'ru',
     nameLocal: function () { return 'Беларусь'; },
-    examLine: function () { return 'ЦТ/ЦЭ (11 класс) · экзамены после 9 класса'; },
-    langsLabel: function () { return 'Русский'; },
-    searchPh: 'Найти на ЕИОР и Аду.бай…',
-    badge: function () { return '11 КЛАСС'; },
+    examLine: function () { return state.lang === 'be' ? 'ЦТ/ЦЭ (11 клас) · экзамены пасля 9 класа' : 'ЦТ/ЦЭ (11 класс) · экзамены после 9 класса'; },
+    langsLabel: function () { return state.lang === 'be' ? 'Беларуская / Русский' : 'Русский / Беларуская'; },
+    searchPh: function () { return state.lang === 'be' ? 'Знайсці на ЕІАР і Аду.бай…' : 'Найти на ЕИОР и Аду.бай…'; },
+    badge: function () { return state.lang === 'be' ? '11 КЛАС' : '11 КЛАСС'; },
     exam: {
       primary: { title: 'ЦТ / ЦЭ', short: 'ЦТ/ЦЭ', structure: CT_KNOWLEDGE_BASE.structure, extra: CT_KNOWLEDGE_BASE.ce_structure, criteria: CRITERIA_BY },
-      secondary: { title: 'Экзамены после 9 класса', badge: '9 КЛАСС', desc: 'Математика, языки, история', info: 'Экзамены после 9 класса (выпускные экзамены): математика, русский/белорусский язык, история Беларуси, английский язык. Оценка — по 10-балльной шкале, результат идёт в аттестат.' }
+      secondary: { title: function () { return state.lang === 'be' ? 'Экзамены пасля 9 класа' : 'Экзамены после 9 класса'; }, badge: function () { return state.lang === 'be' ? '9 КЛАС' : '9 КЛАСС'; }, desc: function () { return state.lang === 'be' ? 'Матэматыка, мовы, гісторыя' : 'Математика, языки, история'; }, info: 'Экзамены после 9 класса (выпускные экзамены): математика, русский/белорусский язык, история Беларуси, английский язык. Оценка — по 10-балльной шкале, результат идёт в аттестат.' }
     },
-    testFormatName: 'белорусского ЦТ',
+    testFormatName: function () { return state.lang === 'be' ? 'беларускага ЦТ' : 'белорусского ЦТ'; },
     ctSubjects: ['Математика','Физика','Химия','Биология','История Беларуси','Обществоведение','Русский язык','Английский язык'],
     exam9Subjects: ['Математика','Русский язык','Белорусский язык','История Беларуси','Английский язык'],
     studySubjects: ['Математика','Физика','Химия','Биология','Русский язык','История','Обществоведение','Английский язык'],
-    ctModes: ['Разбор типичных заданий ЦТ','Разобрать моё задание','Вся теория для ЦТ','Пробный тест ЦТ','Стратегия сдачи ЦТ','Работа над ошибками'],
-    exam9Modes: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+    subjects: { be: {
+      'Математика': 'Матэматыка',
+      'Физика': 'Фізіка',
+      'Химия': 'Хімія',
+      'Биология': 'Біялогія',
+      'История Беларуси': 'Гісторыя Беларусі',
+      'Обществоведение': 'Грамадазнаўства',
+      'Русский язык': 'Руская мова',
+      'Белорусский язык': 'Беларуская мова',
+      'Английский язык': 'Англійская мова',
+      'История': 'Гісторыя'
+    } },
+    ctModes: {
+      ru: ['Разбор типичных заданий ЦТ','Разобрать моё задание','Вся теория для ЦТ','Пробный тест ЦТ','Стратегия сдачи ЦТ','Работа над ошибками'],
+      be: ['Разбор тыповых заданняў ЦТ','Разбраць маё заданне','Уся тэорыя для ЦТ','Пробны тэст ЦТ','Стратэгія здачы ЦТ','Праца над памылкамі']
+    },
+    exam9Modes: {
+      ru: ['Разбор билета / вопроса','Вся теория по предмету','Типичные задания экзамена','Стратегия подготовки'],
+      be: ['Разбор білета / пытання','Уся тэорыя па прадмеце','Тыповыя заданні экзамену','Стратэгія падрыхтоўкі']
+    },
     kbForSubject: function (subject) {
       const map = {
         'Математика': CT_KNOWLEDGE_BASE.math,
@@ -6586,11 +6735,10 @@ const NEVIO_COUNTRIES = {
     },
     systemPrompt: function (role) { return systemPrompts[role] || systemPrompts.student; },
     systemContext: function (base) {
-      return base + '\n\n' +
-        'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n' +
-        '• inline: $формула$\n' +
-        '• display: $$\\int_a^b f(x)dx$$\n\n' +
-        'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics;
+      const langInstr = state.lang === 'be'
+        ? '\n\nВАЖНА: Адказвай на беларускай мове! Выкарыстоўвай правільную беларускую літаратурную мову, а не русізмы. Правільныя словы: "вучань" (не "учанік"), "настаўнік" (не "учыцель"), "клас" (не "класc"), "пытанне" (не "вопрос"), "адказ" (не "ответ"), "рашэнне" (не "рашенне"), "задача" (не "заданне"), "тэорыя" (не "теория").\n'
+        : '';
+      return base + langInstr + '\n\n' +
     },
     ctPrepPrompt: function (data, inputText, ctKnowledge) {
       return 'Ты — эксперт по ЦТ в Беларуси. Предмет: ' + data.subjectCT + '.\n' +
@@ -6929,6 +7077,13 @@ function byMenu() {
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: 'Проверка решения по критериям', description: 'Оценка решения по критериям ЦТ/ЦЭ' },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: 'Задания от учителя', description: 'Присоединяйтесь по коду и решайте' }
   );
+  // Добавляем чат-советник по учёбе
+  student.sections.push({
+    label: 'Советник',
+    items: [
+      { id: 'study_advisor', icon: 'fas fa-user-graduate', title: 'Советник по учёбе', description: 'Задай любой вопрос по учёбе, экзаменам, подготовке', highlight: true }
+    ]
+  });
   const teacher = JSON.parse(JSON.stringify(menuConfigs.teacher));
   teacher.sections.push({
     label: 'Класс и аналитика',
@@ -6980,10 +7135,14 @@ function buildMenuFor(c) {
     { id: 'assign', icon: 'fas fa-paper-plane', title: pick(c.t.assign), description: pick(c.t.assignD) },
     { id: 'class_analytics', icon: 'fas fa-chart-bar', title: pick(c.t.analytics), description: pick(c.t.analyticsD) }
   ];
+  const advisor = [
+    { id: 'study_advisor', icon: 'fas fa-user-graduate', title: pick(c.t.advisor) || (L === 'kk' ? 'Оқу бойынша кеңесші' : (L === 'uz' ? 'Oʻqish boʻyicha maslahatchi' : 'Советник по учёбе')), description: pick(c.t.advisorD) || (L === 'kk' ? 'Кез келген оқу сұрағын қойыңыз' : (L === 'uz' ? 'Oʻqish boʻyicha har qanday savol bering' : 'Задай любой вопрос по учёбе, экзаменам, подготовке')), highlight: true }
+  ];
   return {
     student: { sections: [
       { label: t('menu.sec.exams'), items: examItems },
-      { label: t('menu.sec.study'), items: study }
+      { label: t('menu.sec.study'), items: study },
+      { label: t('menu.sec.advisor') || 'Советник', items: advisor }
     ] },
     teacher: { sections: [
       { label: t('menu.sec.plan'), items: plan },
