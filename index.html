@@ -1088,7 +1088,193 @@
     .kv-row:last-child { border-bottom:none; }
     .kv-row .k { color:var(--text-secondary); }
     .kv-row .v { font-weight:700; text-align:right; }
-    
+
+    /* ===== ФИНАЛЬНАЯ ДОРАБОТКА: карточка-приветствие, дневник, ошибки, сканер, презентации, Plus ===== */
+    /* Одинаковые «баблы» прогресса — единый размер для всех стат-плиток */
+    .prog-stats .prog-stat { min-height:86px; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+
+    /* Персональная карточка «Доброе утро / Добрый вечер» (Главная) */
+    .greet-card {
+      position:relative; background:var(--card); border:1.5px solid var(--border);
+      border-radius:18px; padding:14px 16px 12px; margin-bottom:16px;
+      box-shadow:0 6px 22px var(--shadow-soft); transition:border-color .3s;
+    }
+    .greet-card.open { border-color:rgba(232,177,62,0.45); }
+    .greet-card::before {
+      content:''; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+      background:radial-gradient(120px 60px at 85% -10px, var(--glow-gold), transparent 70%);
+      opacity:0; transition:opacity .4s;
+    }
+    .greet-card.open::before { opacity:1; }
+    .greet-top { display:flex; align-items:flex-start; gap:11px; }
+    .greet-emoji { font-size:25px; line-height:1.15; flex-shrink:0; }
+    .greet-brand { font-size:10px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+    .greet-hi { font-size:16px; font-weight:800; line-height:1.25; }
+    .greet-sub { font-size:12px; color:var(--text-secondary); margin-top:4px; line-height:1.5; }
+    .greet-more { max-height:0; overflow:hidden; opacity:0; transition:max-height .45s ease, opacity .3s ease; }
+    .greet-card.open .greet-more { max-height:760px; opacity:1; }
+    .greet-lines { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+    .greet-line { display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-secondary); line-height:1.45; }
+    .greet-line i { width:15px; text-align:center; color:var(--gold); flex-shrink:0; font-size:11.5px; }
+    .greet-line b { color:var(--text); font-weight:700; }
+    .greet-rec {
+      margin-top:11px; background:rgba(232,177,62,0.07); border:1px solid rgba(232,177,62,0.22);
+      border-radius:14px; padding:10px 12px; font-size:12.5px; line-height:1.55; color:var(--text-secondary);
+    }
+    .greet-rec-name { font-size:9.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+    .greet-btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+    .greet-btns .btn { flex:1; min-width:128px; margin-top:0; padding:9px 12px; font-size:12px; }
+    .greet-toggle {
+      display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:4px 2px;
+      background:none; border:none; color:var(--gold); font-weight:700; font-size:12.5px; cursor:pointer; font-family:inherit;
+    }
+    .greet-toggle i { transition:transform .35s; font-size:11px; }
+    .greet-card.open .greet-toggle i { transform:rotate(180deg); }
+    .greet-exam-set { display:flex; gap:6px; align-items:center; margin-top:9px; flex-wrap:wrap; font-size:11.5px; color:var(--text-muted); }
+    .greet-exam-set input[type=date] {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:10px; color:var(--text);
+      font-family:inherit; font-size:12px; padding:6px 8px; color-scheme:light;
+    }
+    body.dark-theme .greet-exam-set input[type=date] { color-scheme:dark; }
+    .greet-exam-set a { color:var(--gold); cursor:pointer; font-weight:700; }
+
+    /* Дневник оценок (Прогресс) */
+    .diary-tabs { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+    .diary-tab {
+      flex:1 1 0; min-width:44px; max-width:80px; padding:7px 4px; border-radius:12px;
+      border:1.5px solid var(--border); background:var(--card); color:var(--text-secondary);
+      font-size:11.5px; font-weight:700; text-align:center; cursor:pointer; transition:all .2s; font-family:inherit;
+    }
+    .diary-tab.active { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.08); }
+    .diary-row {
+      display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border);
+      border-radius:14px; padding:9px 12px; margin-bottom:7px;
+    }
+    .diary-subj { flex:1; min-width:0; font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .diary-grades { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+    .diary-g, .diary-add {
+      width:26px; height:26px; border-radius:50%; flex-shrink:0;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:800; font-family:inherit;
+    }
+    .diary-g { background:rgba(232,177,62,0.12); color:var(--gold-dark); border:1px solid rgba(232,177,62,0.3); cursor:pointer; transition:all .15s; }
+    body.dark-theme .diary-g { color:var(--gold-light); }
+    .diary-g.low { background:rgba(248,113,113,0.1); color:#f87171; border-color:rgba(248,113,113,0.25); }
+    .diary-avg { min-width:40px; text-align:right; font-size:13px; font-weight:800; color:var(--gold); flex-shrink:0; }
+    .diary-add { border:1.5px dashed var(--border); background:none; color:var(--text-muted); cursor:pointer; transition:all .2s; font-size:12px; }
+    .diary-add:hover { border-color:var(--gold); color:var(--gold); }
+    .diary-sheet { display:none; flex-wrap:wrap; gap:6px; justify-content:center; margin:-2px 0 9px; padding:9px 10px; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; }
+    .diary-sheet.show { display:flex; }
+    .diary-sheet .dg {
+      width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--card);
+      font-size:13px; font-weight:800; cursor:pointer; color:var(--text); font-family:inherit; transition:all .15s;
+      display:inline-flex; align-items:center; justify-content:center;
+    }
+    .diary-sheet .dg:hover { border-color:var(--gold); color:var(--gold); transform:scale(1.08); }
+    .diary-empty { font-size:12px; color:var(--text-muted); text-align:center; padding:12px 8px 14px; line-height:1.5; }
+    .diary-pick { display:flex; gap:8px; margin-top:9px; }
+    .diary-pick select { flex:1; }
+
+    /* Разбор ошибок (ошибка → объяснение → тренировка) */
+    .mistake-row {
+      display:flex; align-items:flex-start; gap:10px; background:var(--card); border:1.5px solid var(--border);
+      border-radius:14px; padding:12px 14px; margin-bottom:8px;
+    }
+    .mistake-ico { width:30px; height:30px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; background:rgba(248,113,113,0.12); color:#f87171; }
+    .mistake-row.done .mistake-ico { background:rgba(74,222,128,0.12); color:#4ade80; }
+    .mistake-main { flex:1; min-width:0; }
+    .mistake-q { font-size:12.5px; font-weight:600; line-height:1.45; color:var(--text); }
+    .mistake-meta { font-size:11px; color:var(--text-secondary); margin-top:3px; }
+    .mistake-btns { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+    .mistake-btns .btn { flex:1; min-width:104px; margin-top:0; padding:8px 8px; font-size:11px; }
+    .mistake-row.done { opacity:.6; }
+
+    /* Чипы-действия под ответами ИИ */
+    .ai-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+    .ai-chip {
+      display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1.5px solid var(--border);
+      border-radius:999px; padding:7px 13px; font-size:11.5px; font-weight:700; color:var(--text-secondary);
+      cursor:pointer; transition:all .2s; font-family:inherit;
+    }
+    .ai-chip:hover { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.05); }
+    .ai-chip i { font-size:10.5px; }
+    .ai-chip.gold { border-color:rgba(232,177,62,0.4); color:var(--gold); }
+
+    /* Сканер заданий */
+    .scan-zone { border:1.5px dashed var(--border); border-radius:16px; padding:16px 12px; text-align:center; margin-bottom:10px; }
+    .scan-zone .btn { margin-top:0; }
+    .scan-btns { display:flex; gap:8px; }
+    .scan-btns .btn { flex:1; padding:10px 8px; font-size:12px; }
+    .scan-preview { max-width:100%; max-height:230px; border-radius:14px; margin:0 auto 10px; display:none; border:1.5px solid var(--border); }
+    .scan-status { font-size:11.5px; color:var(--text-muted); text-align:center; margin-bottom:8px; min-height:16px; line-height:1.5; }
+    .scan-status i { color:var(--gold); }
+    .scan-actions-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:7px; margin-top:10px; }
+    .scan-actions-grid .btn { margin-top:0; padding:10px 6px; font-size:11.5px; }
+
+    /* Презентации */
+    .slide-mini { background:var(--card); border:1.5px solid var(--border); border-radius:14px; padding:11px 13px; margin-bottom:7px; }
+    .slide-mini h4 { font-size:12.5px; font-weight:800; color:var(--text); margin-bottom:4px; }
+    .slide-mini h4 .sm-num { color:var(--gold); margin-right:6px; font-size:11px; }
+    .slide-mini li { font-size:11.5px; color:var(--text-secondary); line-height:1.5; margin-left:14px; margin-top:2px; }
+    .slide-mini .sm-note { font-size:10.5px; color:var(--text-muted); margin-top:5px; font-style:italic; }
+    .deck-viewer {
+      position:fixed; inset:0; z-index:1200; background:rgba(12,11,9,0.96); display:none; flex-direction:column;
+    }
+    .deck-viewer.open { display:flex; animation:fadeIn .25s ease; }
+    .deck-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; gap:8px; }
+    .deck-bar .deck-title { color:rgba(255,255,255,0.75); font-size:11.5px; font-weight:700; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+    .deck-nav-btn, .deck-close-btn {
+      width:36px; height:36px; border-radius:12px; flex-shrink:0; border:1px solid rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.07); color:#fff; font-size:14px; cursor:pointer; transition:all .2s;
+    }
+    .deck-nav-btn:hover, .deck-close-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .deck-slide {
+      flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+      padding:26px 22px; overflow:auto; animation:fadeIn .3s ease;
+    }
+    .deck-slide .ds-kicker { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); font-weight:800; margin-bottom:10px; }
+    .deck-slide h2 { color:#fff; font-size:22px; font-weight:800; line-height:1.3; margin-bottom:16px; max-width:640px; }
+    .deck-slide ul { list-style:none; max-width:620px; }
+    .deck-slide li { font-size:14.5px; color:rgba(255,255,255,0.9); line-height:1.6; margin:9px 0; padding-left:18px; position:relative; text-align:left; }
+    .deck-slide li::before { content:''; position:absolute; left:0; top:9px; width:7px; height:7px; border-radius:50%; background:var(--gradient-gold); }
+    .deck-slide .ds-note { margin-top:16px; font-size:11.5px; color:rgba(255,255,255,0.45); font-style:italic; max-width:600px; line-height:1.5; }
+    .deck-foot { display:flex; align-items:center; justify-content:center; gap:14px; padding:10px 14px 18px; }
+    .deck-count { color:rgba(255,255,255,0.55); font-size:12px; font-weight:700; min-width:52px; text-align:center; }
+    .deck-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .deck-actions .btn { flex:1; min-width:120px; margin-top:0; padding:9px 10px; font-size:12px; }
+
+    /* Подписка NEVIO Plus / Free */
+    .plan-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 6px; }
+    .plan-card {
+      background:var(--card); border:1.5px solid var(--border); border-radius:18px;
+      padding:16px 13px; text-align:center; display:flex; flex-direction:column;
+    }
+    .plan-card.plus { border-color:rgba(232,177,62,0.5); background:linear-gradient(160deg,rgba(232,177,62,0.09),var(--card) 55%); }
+    .plan-name { font-size:10px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--text-secondary); }
+    .plan-card.plus .plan-name { color:var(--gold); }
+    .plan-price { font-size:22px; font-weight:800; color:var(--gold); margin:8px 0 2px; }
+    .plan-per { font-size:10.5px; color:var(--text-muted); }
+    .plan-list { text-align:left; margin-top:12px; }
+    .plan-list li { list-style:none; font-size:11.5px; color:var(--text-secondary); line-height:1.5; margin:7px 0; padding-left:18px; position:relative; }
+    .plan-list li i { position:absolute; left:0; top:2px; font-size:10px; color:var(--gold); }
+    .plan-list li.na { opacity:.45; }
+    .plan-list li.na i { color:var(--text-muted); }
+    .plus-badge {
+      display:inline-flex; align-items:center; gap:4px; font-size:8.5px; font-weight:800; letter-spacing:.8px;
+      color:var(--gold); background:rgba(232,177,62,0.12); border:1px solid rgba(232,177,62,0.35);
+      border-radius:999px; padding:2px 7px; margin-left:6px; vertical-align:middle; white-space:nowrap;
+    }
+    .plus-teaser {
+      position:relative; background:var(--card); border:1.5px dashed rgba(232,177,62,0.4);
+      border-radius:16px; padding:14px; text-align:center;
+    }
+    .plus-teaser .pt-title { font-size:13px; font-weight:800; }
+    .plus-teaser .pt-sub { font-size:11.5px; color:var(--text-secondary); margin:5px 0 10px; line-height:1.5; }
+    .weekly-chart { display:flex; align-items:flex-end; gap:6px; height:76px; padding:4px 6px 0; }
+    .weekly-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
+    .weekly-bar { width:100%; border-radius:6px 6px 3px 3px; background:var(--gradient-gold); min-height:3px; opacity:.9; }
+    .weekly-lab { font-size:9px; color:var(--text-muted); font-weight:700; }
+    .weekly-val { font-size:9px; color:var(--gold); font-weight:800; }
   </style>
 </head>
 <body>
@@ -1198,6 +1384,10 @@
         <div class="settings-item-left"><div class="settings-item-icon" id="themeIcon"><i class="fas fa-moon"></i></div><div class="settings-item-text"><h4 data-i18n="settings.theme">Сменить тему</h4><p id="themeText">Светлая / тёмная</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
       </div>
+      <div class="settings-item" onclick="openPlus()">
+        <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-crown"></i></div><div class="settings-item-text"><h4>NEVIO Plus</h4><p data-i18n="settings.plusDesc">Тарифы: Free и Plus</p></div></div>
+        <div class="settings-item-right"><span class="settings-value" id="settingsPlanValue">Free</span><i class="fas fa-chevron-right"></i></div>
+      </div>
       <div class="settings-item" onclick="showPrivacy()">
         <div class="settings-item-left"><div class="settings-item-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-item-text"><h4 data-i18n="settings.privacy">Политика конфиденциальности</h4><p data-i18n="settings.privacyDesc">Как мы обрабатываем данные</p></div></div>
         <div class="settings-item-right"><i class="fas fa-chevron-right"></i></div>
@@ -1231,6 +1421,7 @@
 <div class="page" id="progressPage">
   <div class="action-container">
     <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div id="greetRoot"></div>
     <div id="progressRoot"></div>
   </div>
 </div>
@@ -1248,6 +1439,14 @@
   <div class="action-container">
     <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
     <div id="myTasksRoot"></div>
+  </div>
+</div>
+
+<!-- NEVIO PLUS: тарифы Free / Plus (без платных сервисов: оплата подключается отдельно) -->
+<div class="page" id="plusPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div id="plusRoot"></div>
   </div>
 </div>
 
@@ -1342,6 +1541,21 @@
 
 <div class="toast" id="toast"></div>
 <div id="confetti-container"></div>
+
+<!-- ПРОСМОТР ПРЕЗЕНТАЦИИ (рендерится локально, без внешних сервисов) -->
+<div class="deck-viewer" id="deckViewer">
+  <div class="deck-bar">
+    <button class="deck-close-btn" onclick="deckClose()"><i class="fas fa-xmark"></i></button>
+    <div class="deck-title" id="deckTitle"></div>
+    <button class="deck-nav-btn" onclick="deckDownload()" title="HTML"><i class="fas fa-download"></i></button>
+  </div>
+  <div class="deck-slide" id="deckSlide"></div>
+  <div class="deck-foot">
+    <button class="deck-nav-btn" onclick="deckPrev()"><i class="fas fa-chevron-left"></i></button>
+    <div class="deck-count" id="deckCount"></div>
+    <button class="deck-nav-btn" onclick="deckNext()"><i class="fas fa-chevron-right"></i></button>
+  </div>
+</div>
 
 <script>
 const tg = window.Telegram?.WebApp;
@@ -1522,6 +1736,8 @@ const menuConfigs = {
           { id: 'schema', icon: 'fas fa-project-diagram', title: 'Сделать схему', description: 'Визуальная шпаргалка' },
           { id: 'oral_exam', icon: 'fas fa-microphone-alt', title: 'Устный экзамен', description: 'Потренируйся отвечать устно' },
           { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Анализ произведения', description: 'Герои, темы, идеи' },
+          { id: 'scan', icon: 'fas fa-camera', title: 'Сканер заданий', description: 'Фото задачи или тетради: объяснить, решить, проверить' },
+          { id: 'presentation', icon: 'fas fa-photo-film', title: 'Презентация', description: 'Слайды по теме — для урока или доклада' },
         ]
       }
     ]
@@ -1531,9 +1747,10 @@ const menuConfigs = {
       {
         label: 'Планирование уроков',
         items: [
+          { id: 'quick_lesson', icon: 'fas fa-bolt', title: 'Быстрый урок', description: 'Тема → план, вопросы, практика, тест и ДЗ' },
           { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'План урока', description: 'Полный план за 30 секунд' },
           { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
-          { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'A/B варианты с ответами' },
+          { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'Уникальные варианты с ответами' },
           { id: 'differentiation', icon: 'fas fa-layer-group', title: 'Дифференциация', description: 'Задания для разных уровней' },
         ]
       },
@@ -1545,6 +1762,8 @@ const menuConfigs = {
           { id: 'summary', icon: 'fas fa-book', title: 'Конспект урока', description: 'Структура материала' },
           { id: 'lit_analysis', icon: 'fas fa-book-open', title: 'Урок литературы', description: 'Методика разбора произведения' },
           { id: 'generate_quiz', icon: 'fas fa-question-circle', title: 'Создать тест', description: 'Для проверки знаний' },
+          { id: 'presentation', icon: 'fas fa-photo-film', title: 'Презентация для урока', description: 'Готовые слайды за минуту' },
+          { id: 'scan', icon: 'fas fa-camera', title: 'Сканер тетрадей', description: 'Фото работы ученика — проверка и поиск ошибок' },
           { id: 'chat', icon: 'fas fa-comments', title: 'Педагогическая консультация', description: 'Совет от ИИ' },
         ]
       }
@@ -1924,8 +2143,12 @@ function answerQuestion(selectedIndex, btn) {
   const isCorrect = selectedIndex === q.correctIndex;
   if (isCorrect) testState.score++;
   
-  // Трекинг прогресса: сохраняем результат вопроса и тип ошибки
-  recordTestQuestion(testState.subject, q.question, isCorrect);
+  // Трекинг прогресса: сохраняем результат вопроса и тип ошибки.
+  // Во время тренировки по ошибке ответы засчитываются в исходный предмет и тему —
+  // так цикл «ошибка → объяснение → тренировка → обновление понимания» замыкается.
+  const prac = testState.practiceInfo;
+  recordTestQuestion(prac ? prac.subject : testState.subject, q.question, isCorrect, prac ? prac.topic : undefined);
+  if (!isCorrect) noteTestMistake(testState, q, selectedIndex);
 
   document.querySelectorAll('.test-option').forEach(opt => {
     const idx = parseInt(opt.getAttribute('data-index'));
@@ -1936,8 +2159,18 @@ function answerQuestion(selectedIndex, btn) {
 
   document.getElementById('testExplanation').classList.add('show');
 
+  // Цикл «ошибка → объяснение → тренировка»: под неверным ответом предлагаем разбор
+  let mistakeRow = '';
+  if (!isCorrect) {
+    mistakeRow = `<div class="ai-chips" style="justify-content:flex-start;margin-top:12px;">
+      <button class="ai-chip gold" onclick="explainCurrentMistake()"><i class="fas fa-lightbulb"></i> ${escapeHtml(t('mist.explain'))}</button>
+      <button class="ai-chip" onclick="practiceCurrentMistake()"><i class="fas fa-dumbbell"></i> ${escapeHtml(t('mist.practice'))}</button>
+    </div>`;
+  }
+
   const isLast = testState.currentQ >= testState.questions.length - 1;
   document.getElementById('nextBtnContainer').innerHTML = `
+    ${mistakeRow}
     <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
       <div style="flex:1;font-size:15px;font-weight:700;color:${isCorrect ? '#4ade80' : '#f87171'}">
         ${isCorrect ? t('test.correctWord') : `${t('test.wrongAnswer')} ${LETTERS[q.correctIndex]}`}
@@ -1981,6 +2214,7 @@ function renderTestResult() {
           ${pct >= 75 ? t('test.goodPrep') : t('test.repeat')}<br>
           <span style="font-size:12px;">${t('test.notOfficial')}</span>
         </div>
+        ${renderPracticeFeedback()}
       </div>
       <button class="btn btn-primary" onclick="startInteractiveTest()"><i class="fas fa-redo"></i> ${t('test.again')}</button>
       <button class="btn btn-secondary" onclick="openCTTest()"><i class="fas fa-exchange-alt"></i> ${t('test.otherSubject')}</button>
@@ -2033,6 +2267,8 @@ function init() {
       state.history = p.history || [];
       state.country = p.country || null;
       state.lang = p.lang || null;
+      state.grade = p.grade || null;   // учебный контекст: выбранный класс запоминается
+      state.plan = p.plan || 'free';   // тариф: free | plus (по умолчанию — всегда free)
     } catch(e) {}
   }
   
@@ -2077,6 +2313,8 @@ function init() {
   }
   updateProfile();
   renderCountryBadge();
+  updatePlusUI();
+  startNevioActivityTracking(); // учёт активных минут для карточки-приветствия (локально, без сетей)
 }
 
 function selectRole(role) {
@@ -2124,6 +2362,7 @@ function openAction(actionId) {
   if (actionId === 'assign') { openTeacher('assign_new'); return; }
   if (actionId === 'class_analytics') { openTeacher('analytics'); return; }
   if (actionId === 'my_assignments') { openMyAssignments(); return; }
+  if (actionId === 'scan') { openScan(); return; }
   
   const config = getAllItems().find(m => m.id === actionId);
   if (!config) return;
@@ -2254,7 +2493,8 @@ function generateForm(actionId) {
   const btn = (icon, text) => `<button class="btn btn-primary" onclick="processAction()"><i class="${icon}"></i> ${text}</button>`;
 
   const subjectsAll = c.studySubjects;
-  const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option${g===11?' selected':''}>${g} ${t('form.gradeWord')}</option>`).join('');
+  const prefGrade = parseInt(state.grade, 10) || 11; // Nevio запоминает выбранный класс
+  const gradeOpts = [5,6,7,8,9,10,11].map(g => `<option${g===prefGrade?' selected':''}>${g} ${t('form.gradeWord')}</option>`).join('');
 
   let html = '';
   switch(actionId) {
@@ -2339,11 +2579,33 @@ function generateForm(actionId) {
         + btn('fas fa-tasks', 'Создать задания');
       break;
     case 'variants':
+      html = `<div class="form-group"><label>${t('form.query')}</label><textarea id="inputText" placeholder="${t('form.queryPh')}" rows="3">${escapeHtml(t('variants.topicPh'))}</textarea></div>`
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + sel('variantCount', t('variants.count'), `<option>2 ${t('variants.unit')}</option><option>4 ${t('variants.unit')}</option><option>6 ${t('variants.unit')} · Plus</option><option>8 ${t('variants.unit')} · Plus</option>`)
+        + sel('varQuestions', t('variants.perVariant'), `<option>5</option><option selected>10</option><option>15</option>`)
+        + `<div class="info-banner"><strong>${t('variants.bannerTitle')}</strong><br>${t('variants.bannerText')}</div>`
+        + btn('fas fa-copy', t('variants.run'));
+      break;
+    case 'presentation':
       html = ta('inputText', 3)
         + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
-        + sel('variantCount', 'Вариантов', `<option>2 варианта</option><option>4 варианта</option>`)
-        + btn('fas fa-copy', 'Создать контрольную');
+        + sel('presSlides', t('pres.slides'), presSlideOptions())
+        + sel('presLevel', t('form.level'), `<option value="${t('level.basic')}">${t('level.basic')}</option><option value="${t('level.medium')}">${t('level.medium')}</option><option value="${t('level.deep')}">${t('level.deep')}</option>`)
+        + (state.role === 'teacher' ? `<label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;cursor:pointer;"><input type="checkbox" id="presQuestions" checked style="width:auto;"> ${t('pres.withQuestions')}</label>` : '')
+        + `<button class="btn btn-primary" onclick="runPresentation()"><i class="fas fa-photo-film"></i> ${t('pres.run')}</button>`;
+      break;
+    case 'scan':
+      html = scanFormHtml();
+      break;
+    case 'quick_lesson':
+      html = ta('inputText', 3)
+        + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
+        + sel('gradeSelect', 'Класс', gradeOpts)
+        + sel('duration', 'Длительность', `<option selected>45 минут</option><option>90 минут</option>`)
+        + `<div class="info-banner"><strong>⚡ ${t('ql.bannerTitle')}</strong><br>${t('ql.bannerText')}</div>`
+        + btn('fas fa-bolt', t('ql.run'));
       break;
     case 'generate_quiz':
       html = ta('inputText', 6)
@@ -2371,9 +2633,11 @@ async function processAction() {
     inputText = document.getElementById('taskInput')?.value?.trim() || '';
   }
   const data = collectFormData();
-  
-  if (!inputText && !['ct_prep', 'study_advisor'].includes(state.currentActionId)) {
-    showToast(t('toast.fillField'));
+
+  // Plus-лимит только на «больше вариантов» — базовые 2/4 варианта всегда бесплатны
+  if (state.currentActionId === 'variants' && !isPlus() && parseInt(String(data.variantCount || '2'), 10) > 4) {
+    showToast(t('plus.locked'));
+    openPlus();
     return;
   }
   
@@ -2392,6 +2656,13 @@ async function processAction() {
     state.conversationHistory.push({ role: 'assistant', content: response });
     saveToHistory({ type: state.currentActionId, input: userMsg, result: response, timestamp: new Date().toISOString() });
     trackAction(state.currentActionId, data.subject || data.subjectCT || data.subjectExam9 || '', userMsg);
+    // После «Быстрого урока» — кнопки добора комплекта; после проверки решения — работа над ошибками
+    if (state.currentActionId === 'quick_lesson') {
+      state.lastLesson = { topic: inputText, subject: data.subject, grade: data.grade };
+      attachQuickLessonChips();
+    }
+    if (state.currentActionId === 'variants') state.lastVariantsText = response;
+    if (state.currentActionId === 'check_solution') attachSolutionMistakeChip(inputText, data.subject, response);
     showContinueChat();
   } catch(error) {
     removeLoadingMessage(loadingId);
@@ -2450,11 +2721,12 @@ function handleContinueKey(event) {
 async function callGroqWithStream(messages, loadingId) {
   const c = activeCountry();
   const baseSystem = c.systemPrompt ? c.systemPrompt(state.role) : (systemPrompts[state.role] || systemPrompts.student);
-  const enrichedSystem = c.systemContext ? c.systemContext(baseSystem) : (baseSystem + '\n\n' +
+  const enrichedSystem = (c.systemContext ? c.systemContext(baseSystem) : (baseSystem + '\n\n' +
     'ВАЖНО: Для всех математических выражений используй LaTeX-формат!\n' +
     '• inline: $формула$\n' +
     '• display: $$\\int_a^b f(x)dx$$\n\n' +
-    'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics);
+    'БАЗА ЗНАНИЙ:\n' + CT_KNOWLEDGE_BASE.structure + '\n' + CT_KNOWLEDGE_BASE.math + '\n' + CT_KNOWLEDGE_BASE.physics))
+    + nevioBehaviorPolicy() + nevioStudentContext();
 
   const response = await callProxy({
     messages: [{ role: 'system', content: enrichedSystem }, ...messages],
@@ -2520,6 +2792,34 @@ async function callGroqWithStream(messages, loadingId) {
     });
   };
   messageDiv.appendChild(copyBtn);
+
+  // «Объясни проще» — дополнительный шаг, а не режим по умолчанию:
+  // тот же материал, но simpler words, аналогии и короткие предложения.
+  const simplerBtn = document.createElement('button');
+  simplerBtn.className = 'copy-btn';
+  simplerBtn.style.marginLeft = '8px';
+  simplerBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> ' + t('simple.btn');
+  simplerBtn.onclick = () => {
+    if (state.isLoading) return;
+    simplerBtn.disabled = true;
+    state.conversationHistory.push({ role: 'user', content: SIMPLER_ASK });
+    addChatMessage(t('simple.userMsg'), true);
+    (async function () {
+      const lid = addLoadingMessage();
+      state.isLoading = true;
+      try {
+        const r = await callGroqWithStream(state.conversationHistory, lid);
+        state.conversationHistory.push({ role: 'assistant', content: r });
+      } catch (e) {
+        removeLoadingMessage(lid);
+        addChatMessage('❌ ' + t('errors.aiFailed') + ': ' + e.message, false);
+      } finally {
+        state.isLoading = false;
+        simplerBtn.disabled = false;
+      }
+    })();
+  };
+  messageDiv.appendChild(simplerBtn);
   document.getElementById('chatMessages').scrollTop = 99999;
   
   return fullText;
@@ -2688,6 +2988,9 @@ function collectFormData() {
     quizType: g('quizType'),
     duration: g('duration'),
     variantCount: g('variantCount'),
+    varQuestions: g('varQuestions'),
+    presSlides: g('presSlides'),
+    presQuestions: document.getElementById('presQuestions') ? (document.getElementById('presQuestions').checked ? 'yes' : '') : '',
     task: g('taskInput'),
     solution: g('solutionInput'),
   };
@@ -2747,13 +3050,31 @@ ${inputText}
 Будь дружелюбным, поддерживающим и конкретным. Используй примеры из реальной учебной практики.`,
     
     lesson: `План урока ${data.duration} по "${inputText}" (${data.subject}, ${data.grade}).`,
-    
+
+    quick_lesson: `Собери БЫСТРЫЙ УРОК: комплект материалов на ${data.duration || '45 минут'} по теме "${inputText}" (${data.subject}, ${data.grade}).
+СТРОГО такая структура (заголовки через ###):
+1) Цель и план урока — тайминг по этапам на ${data.duration || '45'} минут.
+2) Объяснение новой темы — кратко, с ключевыми определениями и одной аналогией из жизни.
+3) 4–5 вопросов классу для проверки понимания (с ожидаемыми ответами в скобках).
+4) Практическое задание на уроке (1–2 задания с ответом).
+5) Мини-тест на 5 вопросов с вариантами и правильными ответами.
+6) Домашнее задание (с разного уровня: базовое + одно повышенной сложности).
+7) Что сделать после урока учителю — чек-лист из 3 пунктов.
+Формулы — LaTeX. Материал должен быть готов к использованию сразу.`,
+
     tasks: `${data.count} заданий по "${inputText}" (${data.subject}, ${data.grade}).`,
-    
-    variants: `${data.variantCount} варианта контрольной по "${inputText}" (${data.subject}, ${data.grade}).`,
-    
+
+    variants: `Создай ${data.variantCount} варианта контрольной работы по теме "${inputText}" (${data.subject}, ${data.grade}), по ${data.varQuestions || 10} заданий в каждом.
+ПРАВИЛА: во всех вариантах одинаковая тема, одинаковая структура и одинаковая сложность, НО разные числа, условия и сюжеты — так, чтобы списать было нельзя (задание №3 одного варианта должно решаться так же по методу, но с другими данными).
+Оформи ответ так:
+### Вариант 1
+(задания)
+### Вариант 2
+...
+После всех вариантов — блок «Ответы и критерии оценивания» по каждому варианту. Формулы — LaTeX.`,
+
     generate_quiz: `${data.quizCount} вопросов (${data.quizType}) по тексту:\n${inputText}`,
-    
+
     differentiation: `Разноуровневые задания по "${inputText}" (${data.subject}, ${data.grade}).`
   };
   
@@ -2784,10 +3105,16 @@ function buildUserMessage(actionId, inputText, data) {
     chat: inputText.substring(0, 100),
     study_advisor: `Советник: ${inputText.substring(0, 100)}...`,
     lesson: `Урок: ${inputText.substring(0, 50)}...`,
+    quick_lesson: `⚡ Быстрый урок: ${inputText.substring(0, 50)}...`,
     tasks: `Задания: ${inputText.substring(0, 50)}...`,
-    variants: `Контрольная: ${inputText.substring(0, 50)}...`,
+    variants: `Контрольная (${data.variantCount || 'варианты'}): ${inputText.substring(0, 50)}...`,
     generate_quiz: `Вопросы по тексту`,
-    differentiation: `Дифференциация: ${inputText.substring(0, 50)}...`
+    differentiation: `Дифференциация: ${inputText.substring(0, 50)}...`,
+    presentation: `🎞 Презентация: ${inputText.substring(0, 60)}`,
+    scan: `📷 Сканер: ${inputText.substring(0, 60)}`,
+    scan_check: `📷 Проверка работы`,
+    mistake_explain: `🧩 Разбор ошибки`,
+    mistake_deep: `🧩 Глубокий разбор ошибки`
   };
   return types[actionId] || inputText;
 }
@@ -2962,6 +3289,8 @@ function showPage(pageId) {
     document.getElementById('nav-settings')?.classList.add('active');
   }
   if (pageId === 'settingsPage') updateSettingsCountryLine();
+  if (pageId === 'settingsPage') updatePlusUI();
+  if (pageId === 'progressPage' && window.renderGreetCard) renderGreetCard();
   window.scrollTo(0, 0);
 }
 
@@ -2989,10 +3318,16 @@ function getActionName(id) {
     lit_analysis: 'Литература',
     chat: 'Чат',
     lesson: 'План урока',
+    quick_lesson: 'Быстрый урок',
     tasks: 'Задания',
     variants: 'Контрольная',
     generate_quiz: 'Тест',
     differentiation: 'Дифференциация',
+    presentation: 'Презентация',
+    scan: 'Сканер',
+    scan_check: 'Проверка работы',
+    mistake_explain: 'Разбор ошибки',
+    mistake_deep: 'Глубокий разбор',
     eior_explain: 'ЕИОР · объяснение',
     eior_summary: 'ЕИОР · конспект',
     check_solution: 'Проверка решения',
@@ -3025,7 +3360,9 @@ function saveData() {
       role: state.role,
       history: state.history,
       country: state.country,
-      lang: state.lang
+      lang: state.lang,
+      grade: state.grade,
+      plan: state.plan
     }));
   } catch(e) {}
 }
@@ -4743,8 +5080,9 @@ async function enhanceAduItemLive() {
       return l.title && l.title.length > 10 && /pdf|doc|программ|факультат|рекомендац|пособи/i.test(l.title + ' ' + l.href);
     }).slice(0, 12);
     if (!extras.length) return;
+    // Ссылку-URL пользователю не показываем — только название документа; переход работает как раньше
     box.innerHTML = '<div class="section-label">Документы со страницы</div>' + extras.map(function (l) {
-      return '<button type="button" class="mat-item" onclick="openExternal(\'' + l.href + '\')"><i class="fas fa-file-arrow-down"></i><div><h4>' + escapeHtml(l.title) + '</h4><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 56)) + '</p></div></button>';
+      return '<button type="button" class="mat-item" onclick="openExternal(\'' + l.href + '\')"><i class="fas fa-file-arrow-down"></i><div><h4>' + escapeHtml(l.title) + '</h4></div></button>';
     }).join('');
   } catch (e) {}
 }
@@ -5204,7 +5542,7 @@ function renderBrowsePage(page) {
   const items = contentLinks.map(function (l) {
     const inner = sameOfficial(l.href);
     const click = inner ? 'openOfficialBrowse(\'' + l.href + '\')' : 'openExternal(\'' + l.href + '\')';
-    return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="fas fa-file-lines"></i></div><div><h3>' + escapeHtml(l.title) + '</h3><p>' + escapeHtml(l.href.replace(/^https?:\/\//, '').slice(0, 60)) + '</p></div></button>';
+    return '<button type="button" class="adu-item" onclick="' + click + '"><div class="adu-ico"><i class="fas fa-file-lines"></i></div><div><h3>' + escapeHtml(l.title) + '</h3></div></button>';
   }).join('');
   let media = '';
   collectOfficialVideos(page).slice(0, 2).forEach(function (v) {
@@ -6003,6 +6341,8 @@ function applyLanguage(lang) {
   updateThemeUI(document.body.classList.contains('dark-theme'));
   updateSettingsCountryLine();
   renderCountryBadge();
+  if (window.renderGreetCard && document.getElementById('greetRoot')) renderGreetCard();
+  if (window.renderPlusUI) renderPlusUI();
 }
 
 function toggleLanguage() {
@@ -6589,8 +6929,13 @@ const MENU_T_RU = {
   myTasks: { ru: 'Задания от учителя' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте' },
   lesson: { ru: 'План урока' }, lessonD: { ru: 'Полный план за 30 секунд' },
   tasks: { ru: 'Генератор заданий' }, tasksD: { ru: 'Уникальные задачи по теме' },
-  variants: { ru: 'Варианты контрольной' }, variantsD: { ru: 'A/B варианты с ответами' },
+  variants: { ru: 'Варианты контрольной' }, variantsD: { ru: 'Уникальные варианты с ответами' },
   diff: { ru: 'Дифференциация' }, diffD: { ru: 'Задания для разных уровней' },
+  scan: { ru: 'Сканер заданий' }, scanD: { ru: 'Фото задачи или тетради: объяснить, решить, проверить' },
+  scanT: { ru: 'Сканер тетрадей' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок' },
+  pres: { ru: 'Презентация' }, presD: { ru: 'Слайды по теме — для урока или доклада' },
+  presT: { ru: 'Презентация для урока' }, presTD: { ru: 'Готовые слайды за минуту' },
+  quickLesson: { ru: 'Быстрый урок' }, quickLessonD: { ru: 'Тема → план, вопросы, практика, тест и ДЗ' },
   tExplain: { ru: 'Методика объяснения' }, tExplainD: { ru: 'Как объяснить тему классу' },
   tSchema: { ru: 'Схема для класса' }, tSchemaD: { ru: 'Визуальный материал' },
   tSummary: { ru: 'Конспект урока' }, tSummaryD: { ru: 'Структура материала' },
@@ -6619,8 +6964,13 @@ const MENU_T_KZ = {
   myTasks: { ru: 'Задания от учителя', kk: 'Мұғалімнің тапсырмалары' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', kk: 'Код бойынша қосылып, орындаңыз' },
   lesson: { ru: 'План урока', kk: 'Сабақ жоспары' }, lessonD: { ru: 'Полный план за 30 секунд', kk: 'Толық жоспар 30 секундта' },
   tasks: { ru: 'Генератор заданий', kk: 'Тапсырма генераторы' }, tasksD: { ru: 'Уникальные задачи по теме', kk: 'Тақырып бойынша бірегей есептер' },
-  variants: { ru: 'Варианты контрольной', kk: 'Бақылау нұсқалары' }, variantsD: { ru: 'A/B варианты с ответами', kk: 'Жауаптары бар A/B нұсқалары' },
+  variants: { ru: 'Варианты контрольной', kk: 'Бақылау нұсқалары' }, variantsD: { ru: 'Уникальные варианты с ответами', kk: 'Бірегей нұсқалар, жауаптары бар' },
   diff: { ru: 'Дифференциация', kk: 'Дифференциация' }, diffD: { ru: 'Задания для разных уровней', kk: 'Әртүрлі деңгейге арналған тапсырмалар' },
+  scan: { ru: 'Сканер заданий', kk: 'Тапсырма сканері' }, scanD: { ru: 'Фото задачи или тетради: объяснить, решить, проверить', kk: 'Есеп немесе дәптер фотосы: түсіндіру, шығару, тексеру' },
+  scanT: { ru: 'Сканер тетрадей', kk: 'Дәптер сканері' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок', kk: 'Оқушы жұмысының фотосы — тексеру және қателерді табу' },
+  pres: { ru: 'Презентация', kk: 'Презентация' }, presD: { ru: 'Слайды по теме — для урока или доклада', kk: 'Тақырып бойынша слайдтар — сабаққа немесе баяндамаға' },
+  presT: { ru: 'Презентация для урока', kk: 'Сабаққа презентация' }, presTD: { ru: 'Готовые слайды за минуту', kk: 'Дайын слайдтар бір минутта' },
+  quickLesson: { ru: 'Быстрый урок', kk: 'Жылдам сабақ' }, quickLessonD: { ru: 'Тема → план, вопросы, практика, тест и ДЗ', kk: 'Тақырып → жоспар, сұрақтар, практика, тест және үй тапсырмасы' },
   tExplain: { ru: 'Методика объяснения', kk: 'Түсіндіру әдістемесі' }, tExplainD: { ru: 'Как объяснить тему классу', kk: 'Тақырыпты сыныпқа қалай түсіндіру' },
   tSchema: { ru: 'Схема для класса', kk: 'Сыныпқа схема' }, tSchemaD: { ru: 'Визуальный материал', kk: 'Көрнекі материал' },
   tSummary: { ru: 'Конспект урока', kk: 'Сабақ конспектісі' }, tSummaryD: { ru: 'Структура материала', kk: 'Материал құрылымы' },
@@ -6649,8 +6999,13 @@ const MENU_T_UZ = {
   myTasks: { ru: 'Задания от учителя', uz: 'Oʻqituvchi topshiriqlari' }, myTasksD: { ru: 'Присоединяйтесь по коду и решайте', uz: 'Kod orqali qoʻshiling va bajaring' },
   lesson: { ru: 'План урока', uz: 'Dars rejasi' }, lessonD: { ru: 'Полный план за 30 секунд', uz: 'Toʻliq reja 30 soniyada' },
   tasks: { ru: 'Генератор заданий', uz: 'Topshiriqlar generatori' }, tasksD: { ru: 'Уникальные задачи по теме', uz: 'Mavzu boʻyicha noyob masalalar' },
-  variants: { ru: 'Варианты контрольной', uz: 'Nazorat ishi variantlari' }, variantsD: { ru: 'A/B варианты с ответами', uz: 'Javoblari bilan A/B variantlari' },
+  variants: { ru: 'Варианты контрольной', uz: 'Nazorat ishi variantlari' }, variantsD: { ru: 'Уникальные варианты с ответами', uz: 'Noyob variantlar, javoblari bilan' },
   diff: { ru: 'Дифференциация', uz: 'Differensiallash' }, diffD: { ru: 'Задания для разных уровней', uz: 'Turli darajalar uchun topshiriqlar' },
+  scan: { ru: 'Сканер заданий', uz: 'Topshiriq skaneri' }, scanD: { ru: 'Фото задачи или тетради: объяснить, решить, проверить', uz: 'Masala yoki daftar fotosi: tushuntirish, yechish, tekshirish' },
+  scanT: { ru: 'Сканер тетрадей', uz: 'Daftar skaneri' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок', uz: 'Oʻquvchi ishi fotosi — tekshirish va xatolarni topish' },
+  pres: { ru: 'Презентация', uz: 'Taqdimot' }, presD: { ru: 'Слайды по теме — для урока или доклада', uz: 'Mavzu boʻyicha slaydlar — dars yoki maʼruza uchun' },
+  presT: { ru: 'Презентация для урока', uz: 'Dars uchun taqdimot' }, presTD: { ru: 'Готовые слайды за минуту', uz: 'Tayyor slaydlar bir daqiqada' },
+  quickLesson: { ru: 'Быстрый урок', uz: 'Tezkor dars' }, quickLessonD: { ru: 'Тема → план, вопросы, практика, тест и ДЗ', uz: 'Mavzu → reja, savollar, amaliyot, test va uy vazifasi' },
   tExplain: { ru: 'Методика объяснения', uz: 'Tushuntirish metodikasi' }, tExplainD: { ru: 'Как объяснить тему классу', uz: 'Mavzuni sinfga qanday tushuntirish' },
   tSchema: { ru: 'Схема для класса', uz: 'Sinf uchun sxema' }, tSchemaD: { ru: 'Визуальный материал', uz: 'Koʻrgazmali material' },
   tSummary: { ru: 'Конспект урока', uz: 'Dars konspekti' }, tSummaryD: { ru: 'Структура материала', uz: 'Material tuzilmasi' },
@@ -7089,13 +7444,10 @@ function byMenu() {
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: 'Проверка решения по критериям', description: 'Оценка решения по критериям ЦТ/ЦЭ' },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: 'Задания от учителя', description: 'Присоединяйтесь по коду и решайте' }
   );
-  // Добавляем чат-советник по учёбе
-  student.sections.push({
-    label: 'Советник',
-    items: [
-      { id: 'study_advisor', icon: 'fas fa-user-graduate', title: 'Советник по учёбе', description: 'Задай любой вопрос по учёбе, экзаменам, подготовке', highlight: true }
-    ]
-  });
+  // Советник по учёбе — в общую сетку функций «Учёба» (без отдельного раздела)
+  student.sections[1].items.push(
+    { id: 'study_advisor', icon: 'fas fa-user-graduate', title: 'Советник по учёбе', description: 'Задай любой вопрос по учёбе, экзаменам, подготовке', highlight: true }
+  );
   const teacher = JSON.parse(JSON.stringify(menuConfigs.teacher));
   teacher.sections.push({
     label: 'Класс и аналитика',
@@ -7120,6 +7472,8 @@ function buildMenuFor(c) {
     { id: 'lit_analysis', icon: 'fas fa-book-open', title: pick(c.t.lit), description: pick(c.t.litD) },
     { id: 'formula_book', icon: 'fas fa-square-root-alt', title: pick(c.t.formulas), description: pick(c.t.formulasD) },
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: pick(c.t.check), description: pick(c.t.checkD) },
+    { id: 'scan', icon: 'fas fa-camera', title: pick(c.t.scan), description: pick(c.t.scanD) },
+    { id: 'presentation', icon: 'fas fa-photo-film', title: pick(c.t.pres), description: pick(c.t.presD) },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: pick(c.t.myTasks), description: pick(c.t.myTasksD) }
   ];
   const examItems = [
@@ -7129,6 +7483,7 @@ function buildMenuFor(c) {
     { id: 'exam_info', icon: 'fas fa-file-signature', title: pick(c.t.examInfo), description: pick(c.t.examInfoD) }
   ];
   const plan = [
+    { id: 'quick_lesson', icon: 'fas fa-bolt', title: pick(c.t.quickLesson), description: pick(c.t.quickLessonD) },
     { id: 'lesson', icon: 'fas fa-chalkboard-user', title: pick(c.t.lesson), description: pick(c.t.lessonD) },
     { id: 'tasks', icon: 'fas fa-tasks', title: pick(c.t.tasks), description: pick(c.t.tasksD) },
     { id: 'variants', icon: 'fas fa-copy', title: pick(c.t.variants), description: pick(c.t.variantsD) },
@@ -7140,6 +7495,8 @@ function buildMenuFor(c) {
     { id: 'summary', icon: 'fas fa-book', title: pick(c.t.tSummary), description: pick(c.t.tSummaryD) },
     { id: 'lit_analysis', icon: 'fas fa-book-open', title: pick(c.t.tLit), description: pick(c.t.tLitD) },
     { id: 'generate_quiz', icon: 'fas fa-question-circle', title: pick(c.t.quiz), description: pick(c.t.quizD) },
+    { id: 'presentation', icon: 'fas fa-photo-film', title: pick(c.t.presT), description: pick(c.t.presTD) },
+    { id: 'scan', icon: 'fas fa-camera', title: pick(c.t.scanT), description: pick(c.t.scanTD) },
     { id: 'chat', icon: 'fas fa-comments', title: pick(c.t.chat), description: pick(c.t.chatD) }
   ];
   const classSec = [
@@ -7147,14 +7504,13 @@ function buildMenuFor(c) {
     { id: 'assign', icon: 'fas fa-paper-plane', title: pick(c.t.assign), description: pick(c.t.assignD) },
     { id: 'class_analytics', icon: 'fas fa-chart-bar', title: pick(c.t.analytics), description: pick(c.t.analyticsD) }
   ];
-  const advisor = [
+  study.push(
     { id: 'study_advisor', icon: 'fas fa-user-graduate', title: pick(c.t.advisor) || (L === 'kk' ? 'Оқу бойынша кеңесші' : (L === 'uz' ? 'Oʻqish boʻyicha maslahatchi' : 'Советник по учёбе')), description: pick(c.t.advisorD) || (L === 'kk' ? 'Кез келген оқу сұрағын қойыңыз' : (L === 'uz' ? 'Oʻqish boʻyicha har qanday savol bering' : 'Задай любой вопрос по учёбе, экзаменам, подготовке')), highlight: true }
-  ];
+  );
   return {
     student: { sections: [
       { label: t('menu.sec.exams'), items: examItems },
-      { label: t('menu.sec.study'), items: study },
-      { label: t('menu.sec.advisor') || 'Советник', items: advisor }
+      { label: t('menu.sec.study'), items: study }
     ] },
     teacher: { sections: [
       { label: t('menu.sec.plan'), items: plan },
@@ -7420,8 +7776,15 @@ function recordSkill(subject, topic, ok) {
   saveProgressData();
 }
 
-function recordTestQuestion(subject, question, ok) {
-  recordSkill(subject, tagTopic(subject, question), ok);
+function recordTestQuestion(subject, question, ok, topicOverride) {
+  const topic = topicOverride || tagTopic(subject, question);
+  recordSkill(subject, topic, ok);
+  // Дневник статистики за день (для карточки-приветствия) + закрытие отработанных ошибок
+  const cp = countryProgress();
+  cpDaily(cp).answers++;
+  if (ok) { cpDaily(cp).correct++; resolveMistakes(cp, subject, topic); }
+  else cpDaily(cp).mistakes++;
+  saveProgressData();
 }
 
 function recordTestResult(subject, score, total) {
@@ -7436,6 +7799,8 @@ function trackAction(actionId, subject, input) {
   const cp = countryProgress();
   cp.actions.push({ type: actionId, subject: subject, input: String(input || '').slice(0, 120), at: Date.now() });
   if (cp.actions.length > 100) cp.actions.shift();
+  cpDaily(cp).tasks++;
+  if (actionId === 'scan' || actionId === 'scan_check') cpDaily(cp).scans++;
   // Активность по темам ведём отдельно от точности: действие (решить/объяснить)
   // не является ответом на вопрос и не должно понижать процент верных.
   const topic = tagTopic(subject, input);
@@ -7504,6 +7869,8 @@ function renderMascot(acc, qTotal, weak) {
 function renderProgressPage() {
   const root = document.getElementById('progressRoot');
   if (!root) return;
+  // карточка-приветствие живёт в этом разделе — обновляем вместе со статистикой
+  if (window.renderGreetCard) renderGreetCard();
   const cp = countryProgress();
   const qTotal = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].n; }, 0);
   const qOk = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].ok; }, 0);
@@ -7512,9 +7879,11 @@ function renderProgressPage() {
 
   let html = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(t('nav.progress')) + '</div><h1>' + escapeHtml(t('progress.title')) + '</h1><p>' + escapeHtml(activeCountry().flag + ' ' + activeCountry().nameLocal()) + '</p></div>';
   html += renderMascot(acc, qTotal, weak);
+  // Дневник оценок доступен всегда — даже когда статистики ещё нет
+  html += renderDiarySection();
 
   if (!qTotal && !cp.tests.length && !cp.actions.length) {
-    root.innerHTML = html;
+    root.innerHTML = html + renderMistakesSection();
     return;
   }
 
@@ -7545,6 +7914,9 @@ function renderProgressPage() {
       '<div class="prog-bar-track"><div class="prog-bar-fill' + warn + '" style="width:' + r.acc + '%;"></div></div></div>';
   });
 
+  // Разбор ошибок: ошибка → объяснение → тренировка → прогресс
+  html += renderMistakesSection();
+
   // Слабые места + рекомендации
   if (weak.length) {
     html += '<div class="section-label">' + t('progress.weak') + '</div><p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">' + t('progress.weakDesc') + '</p>';
@@ -7559,6 +7931,9 @@ function renderProgressPage() {
         '</div></div>';
     });
   }
+
+  // Расширенная недельная статистика — возможности NEVIO Plus
+  html += renderWeeklyStatsSection();
 
   html += '<div style="display:flex;gap:8px;margin-top:14px;">' +
     '<button class="btn btn-secondary" style="flex:1;" onclick="resetProgress()"><i class="fas fa-eraser"></i> ' + t('progress.reset') + '</button>' +
@@ -7794,17 +8169,24 @@ function unpackJson(body) {
   return JSON.parse(body[0] === 'c' ? lzDecompress(body.slice(1)) : b64ToUtf8(body.slice(1)));
 }
 
-function encodeAssignmentPayload(a) {
+// variantIdx: передать число — код содержит только этот вариант (отправка конкретному ученику);
+// без параметра — в код кладутся все варианты, ученику выдаётся автоматически по имени.
+function encodeAssignmentPayload(a, variantIdx) {
+  const mapQ = function (list) {
+    return (list || []).map(function (q) {
+      return { q: q.question, o: q.options || [], c: q.correctIndex, e: q.explanation || '' };
+    });
+  };
   const data = {
     v: 1,
     title: a.title || '',
     subject: a.subject || '',
     grade: a.grade || '',
     code: a.code || '',
-    questions: (a.questions || []).map(function (q) {
-      return { q: q.question, o: q.options || [], c: q.correctIndex, e: q.explanation || '' };
-    })
+    questions: mapQ(typeof variantIdx === 'number' && a.vars && a.vars[variantIdx] ? a.vars[variantIdx] : a.questions)
   };
+  if (typeof variantIdx === 'number') data.vi = variantIdx;
+  if (typeof variantIdx !== 'number' && a.vars && a.vars.length > 1) data.vars = a.vars.map(mapQ);
   return ASSIGN_MAGIC + '.' + packJson(data);
 }
 function decodeAssignmentPayload(code) {
@@ -7813,14 +8195,19 @@ function decodeAssignmentPayload(code) {
     if (s.indexOf(ASSIGN_MAGIC + '.') !== 0) return null;
     const d = unpackJson(s.slice(ASSIGN_MAGIC.length + 1));
     if (!d || !Array.isArray(d.questions) || !d.questions.length) return null;
+    const mapQ = function (list) {
+      return (list || []).map(function (x) {
+        return { question: String(x.q || ''), options: (x.o || []).map(String), correctIndex: x.c | 0, explanation: x.e || '' };
+      });
+    };
     return {
       code: d.code || ('CODE' + s.slice(5, 13)),
       title: d.title || 'Задание',
       subject: d.subject || '',
       grade: d.grade || '',
-      questions: d.questions.map(function (x) {
-        return { question: String(x.q || ''), options: (x.o || []).map(String), correctIndex: x.c | 0, explanation: x.e || '' };
-      })
+      fixedVariant: typeof d.vi === 'number' ? d.vi : null,
+      vars: Array.isArray(d.vars) && d.vars.length > 1 ? d.vars.map(mapQ) : null,
+      questions: mapQ(d.questions)
     };
   } catch (e) { return null; }
 }
@@ -7833,6 +8220,7 @@ function encodeResultPayload(attempt) {
     score: attempt.score,
     total: attempt.total,
     at: attempt.at,
+    vr: attempt.varIdx || 0,
     answers: (attempt.answers || []).map(function (x) { return { q: x.q, s: x.selected }; })
   };
   return RESULT_MAGIC + '.' + packJson(data);
@@ -8011,19 +8399,47 @@ function renderTeacherAssignNew() {
     '<div class="form-group"><label>' + t('form.subject') + '</label><select id="assignSubject">' + activeCountry().studySubjects.map(function (s) { return '<option value="' + s + '"' + (s === (assignDraft.subject || cls.subject) ? ' selected' : '') + '>' + escapeHtml(subjectName(s)) + '</option>'; }).join('') + '</select></div>' +
     '<div class="form-group"><label>' + t('teacher.assignmentTopic') + '</label><input type="text" id="assignTopic" placeholder="' + t('teacher.assignmentTopicPh') + '" value="' + escapeHtml(assignDraft.topic) + '"></div>' +
     '<div class="form-group"><label>' + t('teacher.assignmentCount') + '</label><select id="assignCount"><option value="5">5</option><option value="10">10</option></select></div>' +
+    '<div class="form-group"><label>' + t('teacher.uniqueVariants') + '</label><select id="assignVariants">' +
+      '<option value="1">1 (' + t('teacher.singleVariant') + ')</option>' +
+      '<option value="2">2</option><option value="4">4</option>' +
+      '<option value="6">6 · Plus</option><option value="8">8 · Plus</option>' +
+    '</select><p style="font-size:11px;color:var(--text-secondary);margin-top:5px;line-height:1.5;">' + t('teacher.uniqueVariantsDesc') + '</p></div>' +
     '<button class="btn btn-primary" id="assignGenBtn" onclick="generateAssignmentQuestions()"><i class="fas fa-wand-magic-sparkles"></i> ' + t('teacher.genQuestions') + '</button></div>';
   if (assignDraft.generating) {
     body += '<div class="card" style="text-align:center;padding:30px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:10px;color:var(--text-secondary);font-size:12.5px;">' + t('teacher.generating') + '</p></div>';
   } else if (assignDraft.questions) {
-    body += '<div class="section-label">' + t('teacher.preview') + ' · ' + assignDraft.questions.length + '</div>';
-    assignDraft.questions.forEach(function (q, i) {
-      body += '<div class="q-preview"><span class="q-num">' + (i + 1) + '.</span> ' + escapeHtml(q.question) +
-        '<div style="margin:6px 0 0 18px;font-size:11.5px;color:var(--text-secondary);">' + q.options.map(function (o, j) { return escapeHtml(o); }).join(' · ') + '</div>' +
-        '<div class="q-ans">✓ ' + escapeHtml(q.options[q.correctIndex]) + '</div></div>';
-    });
+    const previewSets = assignDraft.variants && assignDraft.variants.length > 1
+      ? assignDraft.variants
+      : [assignDraft.questions];
+    if (previewSets.length > 1) {
+      body += '<div class="diary-tabs">' + previewSets.map(function (v, vi) {
+        return '<div class="diary-tab' + (vi === 0 ? ' active' : '') + '" onclick="assignPreviewVariant(' + vi + ', this)">' + t('teacher.variantN').replace('{n}', vi + 1) + '</div>';
+      }).join('') + '</div>';
+    }
+    body += '<div class="section-label">' + t('teacher.preview') + ' · ' + previewSets[0].length + (previewSets.length > 1 ? ' × ' + previewSets.length + ' ' + t('teacher.variantsWord') : '') + '</div>';
+    body += '<div id="assignPreview">' + renderAssignPreviewList(previewSets[0]) + '</div>';
     body += '<button class="btn btn-primary" onclick="saveAssignment()"><i class="fas fa-save"></i> ' + t('teacher.saveAssignment') + '</button>';
   }
   return teacherShell(t('teacher.newAssignment'), cls.name + ' · ' + cls.grade, body);
+}
+
+function renderAssignPreviewList(qs) {
+  let s = '';
+  qs.forEach(function (q, i) {
+    s += '<div class="q-preview" data-qprev><span class="q-num">' + (i + 1) + '.</span> ' + escapeHtml(q.question) +
+      '<div style="margin:6px 0 0 18px;font-size:11.5px;color:var(--text-secondary);">' + q.options.map(function (o, j) { return escapeHtml(o); }).join(' · ') + '</div>' +
+      '<div class="q-ans">✓ ' + escapeHtml(q.options[q.correctIndex]) + '</div></div>';
+  });
+  return s;
+}
+
+function assignPreviewVariant(vi, tabEl) {
+  const box = document.getElementById('assignPreview');
+  const sets = (assignDraft.variants && assignDraft.variants.length > 1) ? assignDraft.variants : [assignDraft.questions];
+  if (!box || !sets[vi]) return;
+  box.innerHTML = renderAssignPreviewList(sets[vi]);
+  document.querySelectorAll('.diary-tab').forEach(function (el) { el.classList.remove('active'); });
+  if (tabEl) tabEl.classList.add('active');
 }
 
 async function generateAssignmentQuestions() {
@@ -8032,24 +8448,80 @@ async function generateAssignmentQuestions() {
   if (!topic) { showToast(t('toast.fillField')); return; }
   const subject = document.getElementById('assignSubject')?.value || '';
   const count = parseInt(document.getElementById('assignCount')?.value || '5', 10);
+  let vcount = parseInt(document.getElementById('assignVariants')?.value || '1', 10);
+  if (vcount > 4 && !isPlus()) { showToast(t('plus.locked')); openPlus(); return; }
+  if (vcount < 1) vcount = 1;
   // Класс задания: ИИ учитывает класс, чтобы подобрать сложность вопросов
   const cl = teacherData.classes.find(function (x) { return x.id === assignDraft.classId; }) || teacherData.classes[0];
   const difficulty = (cl && cl.grade) ? (cl.grade + ', базовый уровень') : 'смешанный';
   assignDraft.subject = subject;
   assignDraft.topic = topic;
   assignDraft.questions = null;
+  assignDraft.variants = null;
+  assignDraft.variantCount = vcount;
   assignDraft.generating = true;
   renderTeacher('assign_new');
   try {
-    const questions = await generateTestQuestions(subject + ' — ' + topic, count, difficulty);
-    if (!questions.length) throw new Error(t('errors.noQuestions'));
-    assignDraft.questions = questions;
+    if (vcount > 1) {
+      const vars = await generateVariantQuestions(subject + ' — ' + topic, count, difficulty, vcount);
+      if (!vars || !vars.length) throw new Error(t('errors.noQuestions'));
+      assignDraft.variants = vars;
+      assignDraft.questions = vars[0];
+    } else {
+      const questions = await generateTestQuestions(subject + ' — ' + topic, count, difficulty);
+      if (!questions.length) throw new Error(t('errors.noQuestions'));
+      assignDraft.questions = questions;
+    }
   } catch (e) {
     showToast(e.message || 'Ошибка');
   } finally {
     assignDraft.generating = false;
     renderTeacher('assign_new');
   }
+}
+
+// Уникальные варианты для одного класса: та же тема и сложность — разные числа/условия.
+// Вопросы генерируются ИИ один раз и раздаются ученикам офлайн (код NEV1…), — без дополнительных запросов.
+async function generateVariantQuestions(theme, count, difficulty, n) {
+  const c = activeCountry();
+  const prompt = answerLangLine() +
+    'Создай ' + n + ' вариант(ов) теста по "' + theme + '" в формате ' + c.testFormatName + '. Сложность: ' + difficulty + '.\n' +
+    'Правила: в каждом варианте ровно ' + count + ' вопросов; структура и сложность вариантов одинаковые, но числа, условия и сюжеты — разные (чтобы нельзя было списать). Вопрос №i во всех вариантах проверяет один и тот же навык.\n\n' +
+    'Ответь СТРОГО валидным JSON без markdown:\n' +
+    '{"variants":[{"questions":[{"question":"текст","options":["А","Б","В","Г"],"correctIndex":0,"explanation":"объяснение"}]}]} — массив variants длиной ' + n + '.';
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const response = await callProxy({
+      messages: [
+        { role: 'system', content: (c.systemPrompt ? c.systemPrompt('teacher') : systemPrompts.teacher) + answerLangLine() },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 8000,
+      stream: false
+    });
+    const data = await response.json();
+    const raw = data.choices?.[0]?.message?.content || '';
+    const vars = parseVariantsJSON(raw, n, count);
+    if (vars.length) return vars;
+  }
+  return [];
+}
+
+function parseVariantsJSON(text, expectedN, expectedCount) {
+  let cleaned = String(text || '').trim().replace(/```json\s*/i, '').replace(/```\s*$/, '');
+  let obj;
+  try { obj = JSON.parse(cleaned); } catch (e) {
+    const m = cleaned.match(/\{[\s\S]*\}/);
+    if (!m) return [];
+    try { obj = JSON.parse(m[0]); } catch (e2) { return []; }
+  }
+  const list = Array.isArray(obj && obj.variants) ? obj.variants : [];
+  const out = [];
+  for (let v = 0; v < list.length && out.length < (expectedN || 8); v++) {
+    const qs = parseTestQuestionsJSON(JSON.stringify({ questions: (list[v] && list[v].questions) || [] }));
+    if (qs.length >= Math.max(3, Math.floor((expectedCount || 5) / 2))) out.push(qs);
+  }
+  return out;
 }
 
 function saveAssignment() {
@@ -8067,10 +8539,12 @@ function saveAssignment() {
     questions: assignDraft.questions,
     createdAt: Date.now()
   };
+  // Уникальные варианты: questions = вариант 1 (обратная совместимость), vars — все варианты
+  if (assignDraft.variants && assignDraft.variants.length > 1) a.vars = assignDraft.variants;
   teacherData.assignments.push(a);
   saveTeacherData();
   syncPutAssignment(a).catch(function () {});
-  assignDraft = { classId: cl.id, subject: '', topic: '', questions: null, generating: false };
+  assignDraft = { classId: cl.id, subject: '', topic: '', questions: null, variants: null, variantCount: 1, generating: false };
   teacherViewId = cl.id;
   renderTeacher('class');
   showToast('✓ ' + code);
@@ -8091,7 +8565,18 @@ function renderTeacherAssignment() {
         '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="copyTextToClipboard(document.getElementById(\'shareCodeBox\').value,this)"><i class="fas fa-copy"></i> ' + t('teacher.copyShare') + '</button>' +
         '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="shareAssignmentCode(this)"><i class="fas fa-share-nodes"></i> ' + t('common.share') + '</button>' +
       '</div></div>';
-  body += '<div class="section-label">' + t('teacher.preview') + '</div>';
+  // Раздача уникальных вариантов: можно отправить весь код (вариант выдаётся по имени)
+  // или скопировать код конкретного варианта конкретному ученику
+  if (a.vars && a.vars.length > 1) {
+    body += '<div class="card"><div class="form-group"><label>' + t('teacher.giveVariant') + '</label>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">' +
+      a.vars.map(function (v, vi) {
+        return '<button class="btn btn-secondary" style="flex:1;min-width:84px;margin-top:0;padding:8px 6px;font-size:11.5px;" onclick="copyTextToClipboard(composeVariantShareText(' + vi + '),this)"><i class="fas fa-user"></i> ' + t('teacher.variantN').replace('{n}', vi + 1) + ' · ' + v.length + '</button>';
+      }).join('') + '</div>' +
+      '<p style="font-size:11px;color:var(--text-secondary);margin-top:7px;line-height:1.5;">' + t('teacher.giveVariantDesc') + '</p>' +
+      '</div></div>';
+  }
+  body += '<div class="section-label">' + t('teacher.preview') + (a.vars && a.vars.length > 1 ? ' · ' + t('teacher.variantN').replace('{n}', '1') : '') + '</div>';
   a.questions.forEach(function (q, i) {
     body += '<div class="q-preview"><span class="q-num">' + (i + 1) + '.</span> ' + escapeHtml(q.question) +
       '<div class="q-ans">✓ ' + escapeHtml(q.options[q.correctIndex]) + '</div>' +
@@ -8114,10 +8599,22 @@ function plainText(s) {
 }
 function composeAssignmentShareText(a) {
   const line = (plainText(a.subject) || '') + (a.grade ? ' · ' + plainText(a.grade) : '');
-  return t('teacher.shareMsg')
+  let msg = t('teacher.shareMsg')
     .replace('{title}', plainText(a.title))
     .replace('{line}', line)
     .replace('{code}', encodeAssignmentPayload(a));
+  if (a.vars && a.vars.length > 1) msg += '\n' + t('teacher.autoVariantNote').replace('{n}', String(a.vars.length));
+  return msg;
+}
+// Отправка конкретного варианта конкретному ученику
+function composeVariantShareText(vi) {
+  const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
+  if (!a || !a.vars || !a.vars[vi]) return '';
+  const line = (plainText(a.subject) || '') + (a.grade ? ' · ' + plainText(a.grade) : '');
+  return t('teacher.shareMsg')
+    .replace('{title}', plainText(a.title) + ' · ' + t('teacher.variantN').replace('{n}', vi + 1))
+    .replace('{line}', line)
+    .replace('{code}', encodeAssignmentPayload(a, vi));
 }
 function shareAssignmentCode(btn) {
   const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
@@ -8161,29 +8658,45 @@ function renderAnalyticsForAssignment(a) {
   attempts.slice().sort(function (x, y) { return y.at - x.at; }).forEach(function (at) {
     const pct = Math.round((at.score / at.total) * 100);
     const cls = pct >= 75 ? 'good' : (pct >= 50 ? 'mid' : 'bad');
-    html += '<div class="attempt-row"><div style="min-width:0;"><div style="font-weight:700;">' + escapeHtml(at.name) + '</div><div style="font-size:10.5px;color:var(--text-muted);">' + formatDate(at.at) + '</div></div><div class="sc ' + cls + '">' + at.score + '/' + at.total + ' (' + pct + '%)</div></div>';
+    const vtag = (a.vars && a.vars.length > 1) ? ' · ' + t('teacher.variantN').replace('{n}', String((at.varIdx | 0) + 1)) : '';
+    html += '<div class="attempt-row"><div style="min-width:0;"><div style="font-weight:700;">' + escapeHtml(at.name) + escapeHtml(vtag) + '</div><div style="font-size:10.5px;color:var(--text-muted);">' + formatDate(at.at) + '</div></div><div class="sc ' + cls + '">' + at.score + '/' + at.total + ' (' + pct + '%)</div></div>';
   });
   html += '</div>';
-  html += '<div class="section-label">' + t('teacher.perQuestion') + '</div><div class="card">';
-  a.questions.forEach(function (q, i) {
-    const right = attempts.filter(function (at) { return at.answers[i] && at.answers[i].selected === q.correctIndex; }).length;
-    const pct = Math.round((right / attempts.length) * 100);
-    html += '<div class="an-bar-row"><div class="an-bar-head"><b>' + (i + 1) + '. ' + escapeHtml(String(q.question).slice(0, 60)) + (String(q.question).length > 60 ? '…' : '') + '</b><span>' + pct + '%</span></div>' +
-      '<div class="an-bar-track"><div class="an-bar-fill' + (pct < 60 ? ' low' : '') + '" style="width:' + pct + '%;"></div></div></div>';
+  // По вопросам и типичные ошибки — отдельно по каждому варианту (если их несколько)
+  const vSets = (a.vars && a.vars.length > 1)
+    ? a.vars.map(function (qs, vi) { return { label: t('teacher.variantN').replace('{n}', vi + 1), questions: qs, attempts: attempts.filter(function (at) { return (at.varIdx | 0) === vi; }) }; })
+    : [{ label: '', questions: a.questions, attempts: attempts }];
+  vSets.forEach(function (set) {
+    if (!set.attempts.length && vSets.length > 1) return;
+    html += '<div class="section-label">' + t('teacher.perQuestion') + (set.label ? ' · ' + set.label + ' · ' + set.attempts.length + '' : '') + '</div><div class="card">';
+    if (!set.attempts.length && vSets.length === 1) {
+      html += '<p style="font-size:12px;color:var(--text-muted);">' + escapeHtml(t('progress.noData')) + '</p>';
+    }
+    set.questions.forEach(function (q, i) {
+      const right = set.attempts.filter(function (at) { return at.answers[i] && at.answers[i].selected === q.correctIndex; }).length;
+      const pct = set.attempts.length ? Math.round((right / set.attempts.length) * 100) : 0;
+      html += '<div class="an-bar-row"><div class="an-bar-head"><b>' + (i + 1) + '. ' + escapeHtml(String(q.question).slice(0, 60)) + (String(q.question).length > 60 ? '…' : '') + '</b><span>' + pct + '%</span></div>' +
+        '<div class="an-bar-track"><div class="an-bar-fill' + (pct < 60 ? ' low' : '') + '" style="width:' + pct + '%;"></div></div></div>';
+    });
+    html += '</div>';
   });
-  html += '</div>';
   html += '<div class="section-label">' + t('teacher.commonMistakes') + '</div>';
-  const mistakes = a.questions.map(function (q, i) {
-    const wrong = attempts.filter(function (at) { return at.answers[i] && at.answers[i].selected !== q.correctIndex; });
-    const pct = Math.round((wrong.length / attempts.length) * 100);
-    return { q: q, wrong: wrong, pct: pct };
-  }).filter(function (m) { return m.pct > 0; }).sort(function (x, y) { return y.pct - x.pct; }).slice(0, 5);
+  let mistakes = [];
+  vSets.forEach(function (set) {
+    if (!set.attempts.length) return;
+    set.questions.forEach(function (q, i) {
+      const wrong = set.attempts.filter(function (at) { return at.answers[i] && at.answers[i].selected !== q.correctIndex; });
+      const pct = Math.round((wrong.length / set.attempts.length) * 100);
+      mistakes.push({ q: q, wrong: wrong, pct: pct, variant: set.label });
+    });
+  });
+  mistakes = mistakes.filter(function (m) { return m.pct > 0; }).sort(function (x, y) { return y.pct - x.pct; }).slice(0, 5);
   if (!mistakes.length) {
     html += '<div class="card"><div class="empty-state"><h3>✅</h3><p>' + t('progress.noData') + '</p></div></div>';
   }
   mistakes.forEach(function (m, idx) {
     html += '<div class="q-preview"><span class="q-num">' + (idx + 1) + '.</span> ' + escapeHtml(m.q.question) +
-      '<div style="margin-top:6px;font-size:11.5px;">' + escapeHtml(m.pct + '% ' + t('teacher.attempts') + ' — неверный ответ') + '</div>' +
+      '<div style="margin-top:6px;font-size:11.5px;">' + escapeHtml(m.pct + '% ' + t('teacher.attempts') + ' — неверный ответ') + (m.variant ? ' · ' + escapeHtml(m.variant) : '') + '</div>' +
       '<div class="q-ans">✓ ' + escapeHtml(m.q.options[m.q.correctIndex]) + '</div>' +
       (m.q.explanation ? '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">💡 ' + escapeHtml(m.q.explanation) + '</div>' : '') + '</div>';
   });
@@ -8204,8 +8717,10 @@ function importStudentResult() {
     score: d.score | 0,
     total: d.total | 0,
     at: d.at || Date.now(),
+    varIdx: d.vr | 0,
     answers: (d.answers || []).map(function (x) {
-      const q = a.questions[x.q];
+      const qs = (a.vars && a.vars[d.vr | 0]) ? a.vars[d.vr | 0] : a.questions;
+      const q = qs[x.q];
       return { q: x.q, selected: x.s, correct: q ? q.correctIndex : -1 };
     })
   };
@@ -8230,7 +8745,10 @@ function startDemoAssignment(code) {
 }
 
 function startAssignmentSolve(assignment, name, demo) {
-  solveState = { assignment: assignment, index: 0, answers: [], name: name || 'Ученик', demo: !!demo };
+  solveState = { assignment: assignment, index: 0, answers: [], name: name || 'Ученик', demo: !!demo, varIdx: assignment.varIdx || 0 };
+  if (!demo && assignment.varTotal > 1) {
+    showToast('🎲 ' + t('teacher.yourVariant') + ' ' + ((assignment.varIdx || 0) + 1) + ' / ' + assignment.varTotal);
+  }
   renderSolveQuestion();
 }
 
@@ -8273,7 +8791,7 @@ function finishSolve() {
   const score = solveState.answers.filter(function (x) { return x.selected === x.correct; }).length;
   const total = a.questions.length;
   const pct = Math.round((score / total) * 100);
-  const attempt = { id: 'at_' + Date.now() + '_' + Math.floor(Math.random() * 9999), code: a.code, name: solveState.name, score: score, total: total, answers: solveState.answers, at: Date.now() };
+  const attempt = { id: 'at_' + Date.now() + '_' + Math.floor(Math.random() * 9999), code: a.code, name: solveState.name, score: score, total: total, varIdx: (a.varIdx || solveState.varIdx) || 0, answers: solveState.answers, at: Date.now() };
   teacherData.attempts.push(attempt);
   if (teacherData.attempts.length > 500) teacherData.attempts.shift();
   saveTeacherData();
@@ -8419,9 +8937,1379 @@ function startJoinedAssignment(code) {
     profile.name = nameEl.value.trim();
     saveMyProfile(profile);
   }
-  const a = teacherData.assignments.find(function (x) { return x.code === code; }) || joinedCache[code] || null;
-  if (!a) { showToast(t('myTasks.notFound')); return; }
-  startAssignmentSolve(a, profile.name || ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? [tg.initDataUnsafe.user.first_name, tg.initDataUnsafe.user.last_name].filter(Boolean).join(' ') : '') || 'Ученик', false);
+  const a0 = teacherData.assignments.find(function (x) { return x.code === code; }) || joinedCache[code] || null;
+  if (!a0) { showToast(t('myTasks.notFound')); return; }
+  const sname = profile.name || ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? [tg.initDataUnsafe.user.first_name, tg.initDataUnsafe.user.last_name].filter(Boolean).join(' ') : '') || 'Ученик';
+  // Раздача уникальных вариантов: если в коде несколько вариантов и учитель не зафиксировал
+  // конкретный — вариант выбирается детерминированно по имени ученика (у каждого свой).
+  const a = applyVariantAssignment(a0, sname);
+  startAssignmentSolve(a, sname, false);
+}
+
+// Возвращает «рабочую» копию задания с вопросом одного варианта + индексом варианта
+function applyVariantAssignment(a, name) {
+  if (!a || !Array.isArray(a.vars) || a.vars.length < 2) return a;
+  const fixed = (typeof a.fixedVariant === 'number') ? a.fixedVariant : null;
+  let idx = fixed;
+  if (idx === null) {
+    let h = 0;
+    const s = String(name || '');
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    idx = h % a.vars.length;
+  }
+  return Object.assign({}, a, {
+    questions: a.vars[idx] || a.questions,
+    varIdx: idx,
+    varTotal: a.vars.length,
+    title: a.title + ' · ' + t('teacher.variantN').replace('{n}', idx + 1)
+  });
+}
+
+
+/* =====================================================================
+   ФИНАЛЬНАЯ ДОРАБОТКА (без редизайна, поверх существующей архитектуры):
+   1) персональная карточка-приветствие на Главной (только реальные данные);
+   2) дневник оценок и разбор ошибок в «Прогресс»;
+   3) цикл «ошибка → объяснение → тренировка → обновление понимания»;
+   4) «Объясни проще» в ответах ИИ;
+   5) сканер заданий/тетрадей (камера → распознавание → действия);
+   6) презентации — генерация ИИ + просмотрщик и скачивание .html (всё локально,
+      никаких платных сервисов: ни генераторов, ни OCR-подписок);
+   7) тарифы NEVIO Free / NEVIO Plus (без платных API для владельца);
+   8) учебный контекст (класс, страна, слабые темы) подмешивается в промпты.
+   Всё хранится локально в localStorage — как и раньше, без серверов.
+   ===================================================================== */
+
+/* ---------- Тексты интерфейса (ru/kk/uz; для be — русский, как в остальных ключах) ---------- */
+(function extendI18N() {
+  const ru = {
+    'greet.morning': 'Доброе утро 👋', 'greet.day': 'Добрый день 👋', 'greet.evening': 'Добрый вечер 👋', 'greet.night': 'Доброй ночи 🌙',
+    'greet.open': 'Открыть', 'greet.close': 'Закрыть',
+    'greet.today': 'Сегодня в Nevio',
+    'greet.noStats': 'Начни заниматься — Nevio будет собирать твою статистику.',
+    'greet.minutes': '{n} мин обучения', 'greet.tasks': '{n} выполненных заданий',
+    'greet.answers': '{n} ответов ({ok} верных)',
+    'greet.attention': '«{s}» требует внимания',
+    'greet.rec': 'Рекомендация Nevio',
+    'greet.recReview': 'Сегодня стоит повторить тему «{topic}».',
+    'greet.recMistakes': 'У тебя {n} неразобранных ошибок — начни с разбора одной.',
+    'greet.recTeacher': 'Хороший момент, чтобы подготовить урок или тест для класса.',
+    'greet.recGo': 'Потренироваться', 'greet.recExplain': 'Объяснить',
+    'greet.examIn': 'До экзамена — {n} дн.',
+    'greet.examSet': 'Указать дату экзамена', 'greet.examClear': 'Убрать',
+    'greet.examHint': 'Дату экзамена можно задать свою — Nevio посчитает дни только по ней.',
+    'diary.title': 'Мой дневник',
+    'diary.desc': 'Оценки по предметам — средний балл считается сразу',
+    'diary.empty': 'Пока пусто. Нажми «+» напротив предмета и добавь первую оценку.',
+    'diary.add': 'Добавить предмет',
+    'diary.avg': 'Средний балл · {q}', 'diary.yearAvg': 'Средний за год',
+    'diary.gradesN': 'Оценок', 'diary.subjectsN': 'Предметов',
+    'diary.removed': 'Оценка убрана',
+    'diary.qI': 'I', 'diary.qII': 'II', 'diary.qIII': 'III', 'diary.qIV': 'IV', 'diary.qYear': 'Год',
+    'mist.title': 'Разбор ошибок',
+    'mist.desc': 'Найди ошибку → пойми её → закрепь похожими заданиями',
+    'mist.explain': 'Объяснить ошибку', 'mist.practice': 'Потренироваться',
+    'mist.deep': 'Глубокий разбор', 'mist.none': 'Ошибок нет — отличная работа!',
+    'mist.userLabel': 'Разбери мою ошибку', 'mist.explainTitle': 'Разбор ошибки',
+    'mist.progress': 'Понимание обновлено',
+    'mist.practiceTopic': 'Тренировка: {topic}',
+    'mist.new': 'Неразобранных: {n}',
+    'simple.btn': 'Объясни проще',
+    'simple.userMsg': 'Объясни проще',
+    'scan.photo': 'Сфотографировать', 'scan.upload': 'Загрузить фото',
+    'scan.recognize': 'Распознать', 'scan.status.ready': 'Фото готово — нажми «Распознать»',
+    'scan.status.vision': 'Узнаю содержимое…', 'scan.status.ocr': 'Читаю текст (резервный режим)…',
+    'scan.status.done': 'Распознано! Проверь текст ниже — его можно исправить, затем выбери действие.',
+    'scan.status.fail': 'Не удалось распознать автоматически. Впиши текст задания вручную — действия ниже работают и с ним.',
+    'scan.actExplain': 'Объяснить', 'scan.actSolve': 'Решить', 'scan.actCheck': 'Проверить мою работу',
+    'scan.actTest': 'Сделать тест', 'scan.actSummary': 'Сделать конспект', 'scan.actErrors': 'Найти ошибки',
+    'scan.checkTitle': 'Проверка работы', 'scan.errorsTitle': 'Поиск ошибок',
+    'scan.saveTopics': 'Записать темы в «Разбор ошибок»', 'scan.saved': 'Темы добавлены в разбор ошибок',
+    'pres.slides': 'Слайдов', 'pres.slidesUnit': 'слайд(ов)', 'pres.run': 'Создать презентацию',
+    'pres.withQuestions': 'Добавить вопросы и задания для класса',
+    'pres.building': 'Собираю презентацию…', 'pres.show': 'Показать слайды',
+    'pres.download': 'Скачать .html', 'pres.deckTitle': 'Презентация готова',
+    'ql.bannerTitle': '⚡ Быстрый урок', 'ql.bannerText': 'Nevio соберёт комплект сразу: структура, объяснение, вопросы классу, практика, мини-тест и домашка.',
+    'ql.run': 'Собрать урок', 'ql.chipPres': '🎞 Презентация к уроку', 'ql.chipTest': '🧪 Тест для класса',
+    'variants.topicPh': 'Например: квадратные уравнения', 'variants.count': 'Вариантов', 'variants.unit': 'варианта(ов)',
+    'variants.perVariant': 'Заданий в варианте', 'variants.run': 'Создать варианты',
+    'variants.bannerTitle': '🎯 Разные задания — одна сложность',
+    'variants.bannerText': 'Nevio делает варианты с разными числами и условиями, но одинаковой структуры: списать друг у друга не получится.',
+    'plus.locked': 'Это возможность NEVIO Plus', 'plus.title': 'Тарифы NEVIO',
+    'plus.freeName': 'NEVIO Free', 'plus.plusName': 'NEVIO Plus',
+    'plus.perMonth': '/ мес', 'plus.current': 'Текущий тариф',
+    'plus.activate': 'Активировать', 'plus.codePh': 'Код активации', 'plus.deactivate': 'Отключить Plus',
+    'plus.weekly': 'Активность за 7 дней', 'plus.weeklyTeaser': 'График активности по дням — в NEVIO Plus',
+    'plus.note': 'Оплата подключается отдельно и без расходов для владельца: Telegram Stars или локальные платёжные системы (см. docs/MONETIZATION.md). До запуска онлайн-оплаты активация — по коду от поддержки (support@nevio.app).',
+    'settings.plusDesc': 'Тарифы: Free и Plus',
+    'teacher.uniqueVariants': 'Уникальные варианты', 'teacher.singleVariant': 'один на всех',
+    'teacher.uniqueVariantsDesc': 'Nevio сгенерирует варианты одинаковой сложности с разными числами и выдаст каждому ученику свой — по коду задания.',
+    'teacher.variantN': 'Вариант {n}', 'teacher.variantsWord': 'вар.',
+    'teacher.giveVariant': 'Раздать варианты', 'teacher.giveVariantDesc': 'Скопируй код конкретного варианта и отправь ученику. В общем коде варианты распределяются по именам автоматически.',
+    'teacher.autoVariantNote': 'В этом коде {n} вариантов — ученикам выдаются автоматически по именам.',
+    'teacher.yourVariant': 'Твой вариант:'
+  };
+  const kk = {
+    'greet.morning': 'Қайырлы таң 👋', 'greet.day': 'Қайырлы күн 👋', 'greet.evening': 'Қайырлы кеш 👋', 'greet.night': 'Түніңіз қайырлы 🌙',
+    'greet.open': 'Ашу', 'greet.close': 'Жабу', 'greet.today': 'Бүгін Nevio-да',
+    'greet.noStats': 'Оқуды баста — Nevio статистикаңды жинайды.',
+    'greet.minutes': '{n} мин оқу', 'greet.tasks': '{n} орындалған тапсырма', 'greet.answers': '{n} жауап ({ok} дұрыс)',
+    'greet.rec': 'Nevio ұсынысы', 'greet.examIn': 'Емтиханға дейін — {n} күн',
+    'diary.title': 'Күнделігім', 'mist.title': 'Қателерді талдау', 'simple.btn': 'Қарапайым түсіндір',
+    'pres.slides': 'Слайд саны', 'variants.count': 'Нұсқалар саны', 'teacher.uniqueVariants': 'Бірегей нұсқалар'
+  };
+  const uz = {
+    'greet.morning': 'Xayrli tong 👋', 'greet.day': 'Xayrli kun 👋', 'greet.evening': 'Xayrli kech 👋', 'greet.night': 'Xayrli tun 🌙',
+    'greet.open': 'Ochish', 'greet.close': 'Yopish', 'greet.today': 'Bugun Nevio\'da',
+    'greet.noStats': 'Mashg\'ulotni boshlang — Nevio statistikangizni yig\'adi.',
+    'greet.minutes': '{n} daqiqa o\'qish', 'greet.tasks': '{n} bajarilgan topshiriq', 'greet.answers': '{n} javob ({ok} to\'g\'ri)',
+    'greet.rec': 'Nevio tavsiyasi', 'greet.examIn': 'Imtihonga — {n} kun',
+    'diary.title': 'Kundaligim', 'mist.title': 'Xatolarni tahlil', 'simple.btn': 'Soddaroq tushuntir',
+    'pres.slides': 'Slaydlar soni', 'variants.count': 'Variantlar soni', 'teacher.uniqueVariants': 'Noyob variantlar'
+  };
+  Object.assign(I18N.ru, ru);
+  Object.assign(I18N.kk, kk || {});
+  Object.assign(I18N.uz, uz || {});
+})();
+
+const SIMPLER_ASK = 'Объясни проще: тот же материал, но максимально простыми словами, короткими предложениями, с понятными аналогиями из жизни. Без сложной терминологии, без повторов — сохрани все ключевые факты и формулы (LaTeX).';
+
+/* ---------- Поведение ИИ и учебный контекст (задачи 14–15) ---------- */
+function nevioBehaviorPolicy() {
+  return '\n\nПЕДАГОГИЧЕСКИЙ ПОДХОД NEVIO: если пользователь решает учебную задачу, не выдавай только готовый ответ: 1) объясни идею; 2) покажи ход решения по шагам; 3) задай 1 короткий вопрос на проверку понимания; 4) предложи одно похожее задание (кратко). Если пользователь явно просит только ответ или это не учебная задача — отвечай прямо.';
+}
+function nevioStudentContext() {
+  if (state.role !== 'student') return '';
+  try {
+    const c = activeCountry();
+    const bits = [];
+    if (state.grade) bits.push(state.grade);
+    bits.push(c.flag + ' ' + c.nameLocal() + ' · ' + examTitle(c));
+    const cp = countryProgress();
+    const wk = weakTopics().slice(0, 2);
+    if (wk.length) bits.push('слабые темы: ' + wk.map(function (w) { return w.topic + ' (' + w.subject + ')'; }).join(', '));
+    return '\n\nКОНТЕКСТ УЧЕНИКА (' + bits.join('; ') + '). Учитывай это при объяснениях и подборе примеров, но не переспрашивай лишний раз.';
+  } catch (e) { return ''; }
+}
+document.addEventListener('change', function (e) {
+  const el = e.target;
+  if (el && el.id === 'gradeSelect' && el.value) {
+    const m = String(el.value).match(/^(\d+)/);
+    if (m) { state.grade = m[1] + ' ' + t('form.gradeWord'); saveData(); }
+  }
+}, true);
+
+/* ---------- Учёт «сегодня» и карточка-приветствие (задачи 2–3) ---------- */
+function nevioDayStr(ts) {
+  const d = new Date(ts || Date.now());
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function cpDaily(cp) {
+  const k = nevioDayStr();
+  if (!cp.daily) cp.daily = {};
+  if (!cp.daily[k]) cp.daily[k] = { secs: 0, tasks: 0, answers: 0, correct: 0, mistakes: 0, scans: 0 };
+  return cp.daily[k];
+}
+
+let nevLastActive = Date.now();
+function startNevioActivityTracking() {
+  if (startNevioActivityTracking.started) return;
+  startNevioActivityTracking.started = true;
+  setInterval(nevActiveFlush, 30000);
+  document.addEventListener('visibilitychange', function () {
+    nevActiveFlush();
+    nevLastActive = Date.now();
+  });
+}
+function nevActiveFlush() {
+  const now = Date.now();
+  const secs = Math.min(Math.round((now - nevLastActive) / 1000), 60);
+  nevLastActive = now;
+  if (secs < 10 || !state.role || document.visibilityState !== 'visible') return;
+  try {
+    const cp = countryProgress();
+    cpDaily(cp).secs += secs;
+    saveProgressData();
+  } catch (e) {}
+}
+
+function nevioGreetingKey() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'greet.morning';
+  if (h >= 12 && h < 17) return 'greet.day';
+  if (h >= 17 && h < 23) return 'greet.evening';
+  return 'greet.night';
+}
+
+function nevioExamStore() {
+  try { return JSON.parse(localStorage.getItem('nevioExam_v1') || '{}'); } catch (e) { return {}; }
+}
+function nevioExamDate() {
+  const s = nevioExamStore()[state.country || 'BY'];
+  return (s && s.date) || '';
+}
+function nevioExamDaysLeft() {
+  const raw = nevioExamDate();
+  if (!raw) return null;
+  const d = new Date(raw + 'T09:00:00');
+  if (isNaN(d.getTime())) return null;
+  return Math.ceil((d.getTime() - Date.now()) / 86400000);
+}
+function setGreetExamDate(v) {
+  const all = nevioExamStore();
+  const id = state.country || 'BY';
+  if (v) all[id] = { date: v }; else delete all[id];
+  try { localStorage.setItem('nevioExam_v1', JSON.stringify(all)); } catch (e) {}
+  renderGreetCard();
+}
+
+let greetOpen = localStorage.getItem('nevioGreetOpen') === '1';
+function greetToggle() {
+  greetOpen = !greetOpen;
+  try { localStorage.setItem('nevioGreetOpen', greetOpen ? '1' : '0'); } catch (e) {}
+  const card = document.querySelector('.greet-card');
+  if (card) card.classList.toggle('open', greetOpen);
+}
+
+function greetTodaySummary() {
+  const cp = countryProgress();
+  const day = cp.daily && cp.daily[nevioDayStr()];
+  const out = { minutes: 0, tasks: 0, answers: 0, correct: 0, hasAny: false, attention: null };
+  if (day) {
+    out.minutes = Math.round((day.secs || 0) / 60);
+    out.tasks = day.tasks || 0;
+    out.answers = day.answers || 0;
+    out.correct = day.correct || 0;
+  }
+  out.hasAny = out.minutes > 0 || out.tasks > 0 || out.answers > 0;
+  // «предмет требует внимания» — только по реальным данным (>=3 ответов и точность <60%)
+  try {
+    const bySubj = {};
+    Object.keys(cp.skills).forEach(function (k) {
+      const s = cp.skills[k];
+      if (!s || s.topic === 'Общее' || s.n < 3) return;
+      if (!bySubj[s.subject]) bySubj[s.subject] = { n: 0, ok: 0 };
+      bySubj[s.subject].n += s.n; bySubj[s.subject].ok += s.ok;
+    });
+    let worst = null;
+    Object.keys(bySubj).forEach(function (k) {
+      const acc = bySubj[k].ok / bySubj[k].n;
+      if (acc < 0.6 && (!worst || acc < worst.acc)) worst = { subject: k, acc: acc };
+    });
+    out.attention = worst ? worst.subject : null;
+  } catch (e) {}
+  return out;
+}
+
+function renderGreetCard() {
+  const root = document.getElementById('greetRoot');
+  if (!root || !state.role) return;
+  const c = activeCountry();
+  const sum = greetTodaySummary();
+  const hi = t(nevioGreetingKey());
+  const days = nevioExamDaysLeft();
+
+  // Краткая строка в закрытом состоянии — только реальные данные
+  let brief;
+  if (days !== null && days >= 0) brief = t('greet.examIn').replace('{n}', String(days));
+  else if (sum.hasAny) {
+    const parts = [];
+    if (sum.minutes > 0) parts.push(t('greet.minutes').replace('{n}', String(sum.minutes)));
+    if (sum.tasks > 0) parts.push(t('greet.tasks').replace('{n}', String(sum.tasks)));
+    brief = t('greet.today') + ' · ' + (parts.join(' · ') || t('greet.noStats'));
+  } else brief = t('greet.noStats');
+
+  // Раскрытое состояние — детали (ничего не выдумываем: строки есть только если есть данные)
+  let lines = '';
+  const add = function (icon, html) { lines += '<div class="greet-line"><i class="' + icon + '"></i><span>' + html + '</span></div>'; };
+  if (days !== null && days >= 0) add('fas fa-hourglass-half', t('greet.examIn').replace('{n}', '<b>' + days + '</b>') + ' · ' + escapeHtml(examShort(c)));
+  if (sum.minutes > 0) add('fas fa-stopwatch', t('greet.minutes').replace('{n}', '<b>' + sum.minutes + '</b>'));
+  if (sum.tasks > 0) add('fas fa-list-check', t('greet.tasks').replace('{n}', '<b>' + sum.tasks + '</b>'));
+  if (sum.answers > 0) add('fas fa-circle-check', t('greet.answers').replace('{n}', '<b>' + sum.answers + '</b>').replace('{ok}', String(sum.correct)));
+  if (sum.attention) add('fas fa-triangle-exclamation', t('greet.attention').replace('{s}', escapeHtml(subjectName(sum.attention))));
+  if (!lines) lines = '<div class="greet-line"><i class="fas fa-seedling"></i><span>' + escapeHtml(t('greet.noStats')) + '</span></div>';
+
+  // Рекомендация — из реального состояния: неразобранные ошибки → слабые темы → старт
+  const cp = countryProgress();
+  const openM = (cp.mistakes || []).filter(function (m) { return m.status === 'new'; });
+  const weak = weakTopics();
+  let recText = '', recBtns = '';
+  if (state.role === 'teacher') {
+    recText = escapeHtml(t('greet.recTeacher'));
+    recBtns = '<button class="btn btn-primary" onclick="openAction(\'quick_lesson\')"><i class="fas fa-bolt"></i> ' + escapeHtml(t('quickLesson') || 'Быстрый урок') + '</button>' +
+      '<button class="btn btn-secondary" onclick="openAction(\'generate_quiz\')"><i class="fas fa-question-circle"></i> ' + escapeHtml(t('quiz') || 'Тест') + '</button>';
+  } else if (openM.length) {
+    recText = escapeHtml(t('greet.recMistakes').replace('{n}', String(openM.length)));
+    recBtns = '<button class="btn btn-primary" onclick="showProgress()"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('mist.explain')) + '</button>';
+  } else if (weak.length) {
+    recText = t('greet.recReview').replace('{topic}', '«' + escapeHtml(weak[0].topic) + '»');
+    recBtns = '<button class="btn btn-primary" onclick="practiceWeakTopic(\'' + escapeAttr(weak[0].subject) + '\',\'' + escapeAttr(weak[0].topic) + '\')"><i class="fas fa-dumbbell"></i> ' + escapeHtml(t('greet.recGo')) + '</button>' +
+      '<button class="btn btn-secondary" onclick="explainWeakTopic(\'' + escapeAttr(weak[0].subject) + '\',\'' + escapeAttr(weak[0].topic) + '\')"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('greet.recExplain')) + '</button>';
+  }
+
+  const examEditor = days === null
+    ? '<div class="greet-exam-set"><i class="fas fa-calendar-day" style="color:var(--gold)"></i><span>' + escapeHtml(t('greet.examHint')) + '</span></div>' +
+      '<div class="greet-exam-set"><input type="date" id="greetExamDate" min="2024-01-01" max="2035-12-31" onchange="setGreetExamDate(this.value)"></div>'
+    : '<div class="greet-exam-set"><input type="date" value="' + escapeHtml(nevioExamDate()) + '" max="2035-12-31" onchange="setGreetExamDate(this.value)"> <a onclick="setGreetExamDate(\'\')">' + escapeHtml(t('greet.examClear')) + '</a></div>';
+
+  root.innerHTML =
+    '<div class="greet-card' + (greetOpen ? ' open' : '') + '">' +
+      '<div class="greet-top"><div style="min-width:0;flex:1;">' +
+        '<div class="greet-brand">Nevio — ' + escapeHtml(t('app.subtitle')) + '</div>' +
+        '<div class="greet-hi">' + escapeHtml(hi) + '</div>' +
+        '<div class="greet-sub">' + escapeHtml(brief) + '</div>' +
+      '</div></div>' +
+      '<div class="greet-more">' +
+        '<div class="section-label" style="margin:12px 0 6px;">' + escapeHtml(t('greet.today')) + '</div>' +
+        '<div class="greet-lines">' + lines + '</div>' +
+        (recText ? '<div class="greet-rec"><div class="greet-rec-name">' + escapeHtml(t('greet.rec')) + '</div>' + recText + (recBtns ? '<div class="greet-btns">' + recBtns + '</div>' : '') + '</div>' : '') +
+        examEditor +
+        '<div style="text-align:right;margin-top:10px;"><button class="greet-toggle" style="margin-top:0;" onclick="greetToggle()">' + escapeHtml(t('greet.close')) + ' <i class="fas fa-chevron-up"></i></button></div>' +
+      '</div>' +
+      (greetOpen ? '' : '<button class="greet-toggle" onclick="greetToggle()">' + escapeHtml(t('greet.open')) + ' <i class="fas fa-chevron-down"></i></button>') +
+    '</div>';
+}
+
+/* ---------- Дневник ошибок: ошибка → объяснение → тренировка (задача 5) ---------- */
+function addMistake(cp, rec) {
+  if (!cp.mistakes) cp.mistakes = [];
+  const recent = cp.mistakes.slice(-6).some(function (m) { return m.status === 'new' && m.q === rec.q; });
+  if (recent) { cp.mistakes.forEach(function (m) { if (m.status === 'new' && m.q === rec.q) m.at = rec.at; }); return rec.id; }
+  cp.mistakes.push(rec);
+  if (cp.mistakes.length > 40) cp.mistakes.shift();
+  return rec.id;
+}
+function noteTestMistake(ts, q, selectedIndex) {
+  try {
+    if (!ts || !q) return;
+    const prac = ts.practiceInfo;
+    const subject = prac ? prac.subject : ts.subject;
+    const topic = prac ? prac.topic : (tagTopic(ts.subject, q.question) || 'Общее');
+    if (prac) { recordSkill(subject, topic, false); }
+    const cp = countryProgress();
+    const rec = {
+      id: 'm' + Date.now() + Math.floor(Math.random() * 999),
+      subject: subject, topic: topic,
+      q: String(q.question || '').slice(0, 220),
+      your: String((q.options && q.options[selectedIndex]) || '').slice(0, 120),
+      correct: String((q.options && q.options[q.correctIndex]) || '').slice(0, 120),
+      explanation: String(q.explanation || '').slice(0, 320),
+      src: prac ? 'practice' : 'test', at: Date.now(), status: 'new'
+    };
+    addMistake(cp, rec);
+    saveProgressData();
+    ts.lastMistakeId = rec.id;
+  } catch (e) {}
+}
+function resolveMistakes(cp, subject, topic) {
+  if (!cp.mistakes || !cp.mistakes.length) return;
+  cp.mistakes.forEach(function (m) {
+    if (m.status === 'new' && m.subject === subject && m.topic === topic) { m.status = 'done'; m.resolvedAt = Date.now(); }
+  });
+}
+function findMistake(id) {
+  const cp = countryProgress();
+  return (cp.mistakes || []).find(function (m) { return m.id === id; }) || null;
+}
+
+function mistakeExplain(id, deep) {
+  const m = findMistake(id);
+  if (!m) return;
+  openMistakeExplain({
+    subject: m.subject, topic: m.topic, ids: [m.id],
+    q: m.q, your: m.your, correct: m.correct, explanation: m.explanation, deep: !!deep
+  });
+}
+function explainCurrentMistake() {
+  const q = testState.questions[testState.currentQ];
+  if (!q) return;
+  const prac = testState.practiceInfo;
+  const subject = prac ? prac.subject : testState.subject;
+  const topic = prac ? prac.topic : (tagTopic(testState.subject, q.question) || 'Общее');
+  const selectedBtn = document.querySelector('.test-option.wrong');
+  const yourText = selectedBtn ? String(selectedBtn.textContent || '').replace(/^[А-ЯЁ]\)\s*/i, '') : '';
+  openMistakeExplain({
+    subject: subject, topic: topic,
+    ids: testState.lastMistakeId ? [testState.lastMistakeId] : [],
+    q: q.question,
+    your: yourText,
+    correct: (q.options && q.options[q.correctIndex]) || '',
+    explanation: q.explanation || ''
+  });
+}
+
+let mistakeCtx = null;
+function escapeAttrSafe(s) { return String(s || '').replace(/[«»"'`\\]/g, '').slice(0, 60); }
+function openMistakeExplain(o) {
+  if (o.deep && !isPlus()) { showToast(t('plus.locked')); openPlus(); return; }
+  const c = activeCountry();
+  const topicLine = (o.topic && o.topic !== 'Общее') ? ' по теме «' + o.topic + '»' : '';
+  mistakeCtx = { subject: o.subject, topic: o.topic || 'Общее', ids: o.ids || [] };
+  const prompt =
+    'Ученик (' + (state.grade || 'школа') + ', ' + c.flag + ' ' + c.nameLocal() + ' · ' + examTitle(c) + ') ошибся в задании' + topicLine + ' (' + o.subject + ').\n\n' +
+    'ЗАДАНИЕ:\n' + (o.q || '(не записан)') + '\n' +
+    'ОТВЕТ УЧЕНИКА: ' + (o.your || '(неизвестен)') + '\n' +
+    'ПРАВИЛЬНЫЙ ОТВЕТ: ' + (o.correct || '(неизвестен — сначала реши задание правильно и покажи ход решения)') + '\n' +
+    (o.explanation ? 'ПОЯСНЕНИЕ ИЗ ТЕСТА: ' + o.explanation + '\n' : '') +
+    '\nЗАДАЧА: разбери одну ошибку так, чтобы ученик понял причину и больше не ошибся.\n' +
+    '1) В чём суть ошибки: из-за какого неверного шага или представления она возникла.\n' +
+    '2) Правильное правило — просто, 2–4 предложения, с одной аналогией из жизни.\n' +
+    '3) Как проверять себя при решении (1–2 приёма).\n' +
+    '4) Мини-задание для самопроверки: условие, а в самом конце — строка «Ответ для самопроверки: …».' +
+    (o.deep ? '\n5) ГЛУБОКИЙ РАЗБОР: перечисли смежные темы, которые ученику нужно подтянуть вместе с этой, и составь план закрытия пробела на 20 минут по пунктам.' : '') +
+    '\nФормулы — LaTeX. Пиши коротко и по делу. Последней строкой напиши: Тема: ' + escapeAttrSafe(o.topic || 'Общее');
+  runChatFlow({
+    actionId: o.deep ? 'mistake_deep' : 'mistake_explain',
+    icon: o.deep ? 'fas fa-microscope' : 'fas fa-lightbulb',
+    title: t('mist.explainTitle'),
+    desc: t('mist.desc'),
+    userLabel: t('mist.userLabel') + (o.topic && o.topic !== 'Общее' ? ' — ' + o.topic : ''),
+    prompt: prompt,
+    subject: o.subject,
+    chips: [{ icon: 'fas fa-dumbbell', label: t('mist.practice'), fn: 'practiceFromMistakeCtx', gold: true }]
+  });
+}
+function practiceFromMistakeCtx() {
+  if (!mistakeCtx) return;
+  startMistakePractice(mistakeCtx.subject, mistakeCtx.topic, mistakeCtx.ids);
+}
+function practiceCurrentMistake() {
+  const q = testState.questions[testState.currentQ];
+  if (!q) return;
+  const prac = testState.practiceInfo;
+  const subject = prac ? prac.subject : testState.subject;
+  const topic = prac ? prac.topic : (tagTopic(testState.subject, q.question) || 'Общее');
+  startMistakePractice(subject, topic, testState.lastMistakeId ? [testState.lastMistakeId] : []);
+}
+function startMistakePractice(subject, topic, ids) {
+  if (!subject) subject = 'Общее';
+  testState = {
+    questions: [], currentQ: 0, score: 0,
+    subject: subject + ' — ' + (topic || 'Общее'),
+    answered: false, fromProgress: true, count: 5, difficulty: 'смешанный',
+    practiceInfo: { subject: subject, topic: topic || 'Общее', mistakeIds: ids || [] }
+  };
+  showPage('testPage');
+  document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:48px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:12px;color:var(--text-secondary);">' + escapeHtml(t('mist.practiceTopic').replace('{topic}', topic || '')) + ' · ' + escapeHtml(t('teacher.generating')) + '</p></div>';
+  (async function () {
+    try {
+      const questions = await generateTestQuestions(subject + ' — ' + (topic || ''), 5, 'смешанный');
+      if (!questions.length) throw new Error(t('errors.noQuestions'));
+      testState.questions = questions;
+      renderCurrentQuestion();
+    } catch (e) {
+      document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:36px;"><h3>⚠️</h3><p style="color:var(--text-secondary);">' + escapeHtml(e.message) + '</p><button class="btn btn-primary" onclick="showProgress()">Назад</button></div>';
+    }
+  })();
+}
+function renderPracticeFeedback() {
+  if (!testState || !testState.practiceInfo) return '';
+  try {
+    const p = testState.practiceInfo;
+    const cp = countryProgress();
+    (p.mistakeIds || []).forEach(function (id) {
+      const m = (cp.mistakes || []).find(function (x) { return x.id === id; });
+      if (m && m.status === 'new') { m.status = 'done'; m.resolvedAt = Date.now(); }
+    });
+    saveProgressData();
+    const s = cp.skills[p.subject + '|' + p.topic];
+    if (!s || !s.n) return '';
+    const accNow = Math.round((s.ok / s.n) * 100);
+    return '<div class="info-banner" style="text-align:left;margin-top:14px;"><strong>🧩 ' + escapeHtml(t('mist.progress')) + '</strong><br>' +
+      escapeHtml(p.topic) + ': ' + accNow + '% · ' + s.n + ' ' + escapeHtml(t('progress.questions')) + '</div>';
+  } catch (e) { return ''; }
+}
+
+function renderMistakesSection() {
+  let html = '';
+  try {
+    const cp = countryProgress();
+    const open = (cp.mistakes || []).filter(function (m) { return m.status === 'new'; });
+    const doneN = (cp.mistakes || []).filter(function (m) { return m.status === 'done'; }).length;
+    if (!open.length && !doneN) return '';
+    html += '<div class="section-label">' + escapeHtml(t('mist.title')) + (open.length ? ' · ' + escapeHtml(t('mist.new').replace('{n}', String(open.length))) : ' · ✓') + '</div>';
+    html += '<p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">' + escapeHtml(t('mist.desc')) + '</p>';
+    if (!open.length) html += '<div class="card" style="text-align:center;padding:14px;font-size:12.5px;color:var(--text-secondary);">✅ ' + escapeHtml(t('mist.none')) + '</div>';
+    open.slice(-3).reverse().forEach(function (m) {
+      html += '<div class="mistake-row">' +
+        '<div class="mistake-ico"><i class="fas fa-triangle-exclamation"></i></div>' +
+        '<div class="mistake-main">' +
+          '<div class="mistake-q">' + escapeHtml(String(m.q).slice(0, 140)) + (String(m.q).length > 140 ? '…' : '') + '</div>' +
+          '<div class="mistake-meta">' + escapeHtml(m.subject) + (m.topic && m.topic !== 'Общее' ? ' · ' + escapeHtml(m.topic) : '') + ' · ' + formatDate(m.at) + '</div>' +
+          '<div class="mistake-btns">' +
+            '<button class="btn btn-primary" onclick="mistakeExplain(\'' + m.id + '\')"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('mist.explain')) + '</button>' +
+            '<button class="btn btn-secondary" onclick="startMistakePractice(\'' + escapeAttr(m.subject) + '\',\'' + escapeAttr(m.topic || '') + '\',[ \'' + m.id + '\'])"><i class="fas fa-dumbbell"></i> ' + escapeHtml(t('mist.practice')) + '</button>' +
+            '<button class="btn btn-secondary" onclick="mistakeExplain(\'' + m.id + '\', true)"><i class="fas fa-microscope"></i> ' + escapeHtml(t('mist.deep')) + '<span class="plus-badge">PLUS</span></button>' +
+          '</div>' +
+        '</div></div>';
+    });
+  } catch (e) {}
+  return html;
+}
+
+/* ---------- Дневник оценок (задача 4) — минимализм, всё локально ---------- */
+const DIARY_KEY = 'nevioDiary_v1';
+let diaryTab = null;
+let diarySheet = null;
+
+function diaryAll() { try { return JSON.parse(localStorage.getItem(DIARY_KEY) || '{}'); } catch (e) { return {}; } }
+function nevioCurrentQuarter() {
+  const m = new Date().getMonth() + 1;
+  if (m === 9 || m === 10) return 'I';
+  if (m === 11 || m === 12) return 'II';
+  if (m === 1 || m === 2 || m === 3) return 'III';
+  return 'IV';
+}
+// единая рабочая копия дневника текущей страны: читать -> менять -> diarySave()
+let diaryCache = null;
+function diaryCur() {
+  if (diaryCache && diaryCache._country === (state.country || 'BY')) return diaryCache;
+  const all = diaryAll();
+  const id = state.country || 'BY';
+  if (!all[id]) all[id] = { q: nevioCurrentQuarter(), byQ: {} };
+  if (!all[id].byQ) all[id].byQ = {};
+  all[id]._country = id;
+  diaryCache = all[id];
+  return diaryCache;
+}
+function diarySave() {
+  const all = diaryAll();
+  const d = diaryCur();
+  delete d._country;
+  all[state.country || 'BY'] = JSON.parse(JSON.stringify(d));
+  d._country = state.country || 'BY';
+  try { localStorage.setItem(DIARY_KEY, JSON.stringify(all)); } catch (e) {}
+}
+function diarySubjects(q) {
+  const d = diaryCur();
+  if (q === 'year') {
+    const set = {};
+    Object.keys(d.byQ).forEach(function (qq) { Object.keys(d.byQ[qq] || {}).forEach(function (s) { set[s] = 1; }); });
+    return Object.keys(set);
+  }
+  const bag = d.byQ[q] || {};
+  return Object.keys(bag);
+}
+function diaryGrades(q, subject) {
+  const d = diaryCur();
+  if (q === 'year') {
+    let all = [];
+    Object.keys(d.byQ).forEach(function (qq) { all = all.concat((d.byQ[qq] && d.byQ[qq][subject]) || []); });
+    return all;
+  }
+  return (d.byQ[q] && d.byQ[q][subject]) || [];
+}
+function diaryAvg(list) {
+  if (!list || !list.length) return null;
+  return list.reduce(function (a, b) { return a + b; }, 0) / list.length;
+}
+function diaryActiveQuarter() {
+  if (typeof diaryTab === 'string' && diaryTab !== 'year') return diaryTab;
+  const d = diaryCur();
+  return d.q || nevioCurrentQuarter();
+}
+function diarySetQ(q) { diaryTab = q; diarySheet = null; renderProgressPage(); }
+function diaryToggleSheet(subject) {
+  diarySheet = (diarySheet === subject) ? null : subject;
+  renderProgressPage();
+}
+function diaryAddGrade(subject, grade) {
+  const d = diaryCur();
+  const q = diaryActiveQuarter();
+  if (!d.byQ[q]) d.byQ[q] = {};
+  if (!d.byQ[q][subject]) d.byQ[q][subject] = [];
+  d.byQ[q][subject].push(grade | 0);
+  diarySheet = subject; // панель остаётся открытой: можно добавить несколько оценок подряд
+  diarySave();
+  renderProgressPage();
+}
+function diaryRemoveGrade(subject, idx) {
+  const d = diaryCur();
+  const q = diaryActiveQuarter();
+  const bag = (d.byQ[q] && d.byQ[q][subject]) || [];
+  bag.splice(idx, 1);
+  if (d.byQ[q]) d.byQ[q][subject] = bag;
+  diarySave();
+  renderProgressPage();
+  showToast(t('diary.removed'));
+}
+function diaryAddSubject(v) {
+  if (!v) return;
+  const d = diaryCur();
+  const q = diaryActiveQuarter();
+  if (!d.byQ[q]) d.byQ[q] = {};
+  if (!d.byQ[q][v]) d.byQ[q][v] = [];
+  diarySave();
+  renderProgressPage();
+}
+
+function renderDiarySection() {
+  try {
+    const d = diaryCur();
+    if (!diaryTab) diaryTab = d.q || nevioCurrentQuarter();
+    const q = diaryTab;
+    const tabs = ['I', 'II', 'III', 'IV', 'year'];
+    let html = '<div class="section-label">' + escapeHtml(t('diary.title')) + '</div>';
+    html += '<div class="diary-tabs">' + tabs.map(function (qq) {
+      const lab = qq === 'year' ? t('diary.qYear') : t('diary.q' + qq);
+      return '<button class="diary-tab' + (q === qq ? ' active' : '') + '" onclick="diarySetQ(\'' + qq + '\')">' + escapeHtml(lab) + '</button>';
+    }).join('') + '</div>';
+    const qForData = q;
+    const subs = diarySubjects(qForData);
+    if (!subs.length) {
+      html += '<div class="card"><div class="diary-empty">' + escapeHtml(t('diary.empty')) + '</div>';
+    } else {
+      html += '<div>';
+      subs.forEach(function (s) {
+        const gs = diaryGrades(qForData, s);
+        const avg = diaryAvg(gs);
+        html += '<div class="diary-row">' +
+          '<div class="diary-subj" title="' + escapeHtml(subjectName(s)) + '">' + escapeHtml(subjectName(s)) + '</div>' +
+          '<div class="diary-grades">' +
+            gs.map(function (g, i) {
+              return '<button class="diary-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryRemoveGrade(\'' + escapeAttr(s) + '\',' + i + ')">' + (g | 0) + '</button>';
+            }).join('') +
+            '<button class="diary-add" onclick="diaryToggleSheet(\'' + escapeAttr(s) + '\')"><i class="fas fa-plus"></i></button>' +
+          '</div>' +
+          '<div class="diary-avg">' + (avg === null ? '—' : avg.toFixed(1)) + '</div>' +
+        '</div>';
+        if (diarySheet === s) {
+          html += '<div class="diary-sheet show">' + [1,2,3,4,5,6,7,8,9,10].map(function (n) {
+            return '<button class="dg" onclick="diaryAddGrade(\'' + escapeAttr(s) + '\',' + n + ')">' + n + '</button>';
+          }).join('') + '</div>';
+        }
+      });
+      html += '</div>';
+    }
+    // добавление предмета — только из списка предметов страны
+    const c = activeCountry();
+    const rest = c.studySubjects.filter(function (s) { return subs.indexOf(s) === -1; });
+    if (rest.length) {
+      html += '<div class="diary-pick"><select id="diaryPickSel" onchange="if(this.value){diaryAddSubject(this.value);}">' +
+        '<option value="">' + escapeHtml(t('diary.add')) + '…</option>' +
+        rest.map(function (s) { return '<option value="' + escapeAttr(s) + '">' + escapeHtml(subjectName(s)) + '</option>'; }).join('') +
+        '</select></div>';
+    }
+    if (!subs.length) html += '</div>';
+    // Средний балл — те же баблы, что и в статистике (одинаковые по размеру)
+    const allAvg = diaryAvg(subs.map(function (s) { return diaryAvg(diaryGrades(qForData, s)) || 0; }).filter(function (x) { return x > 0; }));
+    const yearSubjects = diarySubjects('year');
+    const yearAvg = diaryAvg(yearSubjects.map(function (s) { return diaryAvg(diaryGrades('year', s)) || 0; }).filter(function (x) { return x > 0; }));
+    const totalGrades = yearSubjects.reduce(function (n, s) { return n + diaryGrades('year', s).length; }, 0);
+    if (totalGrades > 0) {
+      const qLab = qForData === 'year' ? t('diary.yearAvg') : t('diary.avg').replace('{q}', t('diary.q' + qForData));
+      html += '<div class="prog-stats" style="margin-top:10px;">' +
+        '<div class="prog-stat"><b>' + (allAvg === null ? '—' : allAvg.toFixed(1)) + '</b><span>' + escapeHtml(qLab) + '</span></div>' +
+        '<div class="prog-stat"><b>' + (yearAvg === null ? '—' : yearAvg.toFixed(1)) + '</b><span>' + escapeHtml(t('diary.yearAvg')) + '</span></div>' +
+        '<div class="prog-stat"><b>' + totalGrades + '</b><span>' + escapeHtml(t('diary.gradesN')) + '</span></div>' +
+        '<div class="prog-stat"><b>' + subs.length + '</b><span>' + escapeHtml(t('diary.subjectsN')) + '</span></div>' +
+        '</div>';
+    }
+    return html;
+  } catch (e) { return ''; }
+}
+
+/* ---------- Универсальный чат-флоу (разбор ошибок, проверка скана) ---------- */
+function runChatFlow(opts) {
+  state.currentActionId = opts.actionId;
+  state.conversationHistory = [];
+  document.getElementById('actionTitle').innerHTML = '<i class="' + (opts.icon || 'fas fa-robot') + '"></i> ' + escapeHtml(opts.title || 'NEVIO');
+  document.getElementById('actionDescription').textContent = opts.desc || '';
+  document.getElementById('actionForm').innerHTML = '';
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('continueChatArea').style.display = 'none';
+  showPage('actionPage');
+  state.conversationHistory.push({ role: 'user', content: opts.prompt });
+  addChatMessage(opts.userLabel || '', true);
+  (async function () {
+    const lid = addLoadingMessage();
+    state.isLoading = true;
+    try {
+      const r = await callGroqWithStream(state.conversationHistory, lid);
+      state.conversationHistory.push({ role: 'assistant', content: r });
+      saveToHistory({ type: opts.actionId, input: opts.userLabel || opts.title, result: r, timestamp: new Date().toISOString() });
+      trackAction(opts.actionId, opts.subject || '', opts.userLabel || opts.title);
+      if (opts.chips && opts.chips.length) attachChatChips(opts.chips);
+      if (opts.after) opts.after(r);
+      showContinueChat();
+    } catch (e) {
+      removeLoadingMessage(lid);
+      addChatMessage('❌ ' + t('errors.aiFailed') + ': ' + e.message, false);
+    } finally { state.isLoading = false; }
+  })();
+}
+
+function attachChatChips(chips) {
+  const cont = document.getElementById('chatMessages');
+  if (!cont) return;
+  const div = document.createElement('div');
+  div.className = 'ai-chips';
+  chips.forEach(function (ch) {
+    const b = document.createElement('button');
+    b.className = 'ai-chip' + (ch.gold ? ' gold' : '');
+    b.innerHTML = '<i class="' + ch.icon + '"></i> ' + escapeHtml(ch.label);
+    if (typeof ch.fn === 'function') b.onclick = ch.fn; else b.onclick = function () { window[ch.fn] && window[ch.fn](); };
+    div.appendChild(b);
+  });
+  cont.appendChild(div);
+  cont.scrollTop = 99999;
+}
+
+/* Чипы после «Быстрого урока» — добрать презентацию и тест одним нажатием */
+function attachQuickLessonChips() {
+  const L = state.lastLesson || {};
+  attachChatChips([
+    { icon: 'fas fa-photo-film', label: t('ql.chipPres'), fn: function () { prefillPresentation(L); } },
+    { icon: 'fas fa-question-circle', label: t('ql.chipTest'), fn: function () { prefillQuizFromLesson(L); } }
+  ]);
+}
+function prefillPresentation(L) {
+  openAction('presentation');
+  if (L.topic) { const el = document.getElementById('inputText'); if (el) el.value = L.topic; }
+  if (L.subject) { const s = document.getElementById('subjectSelect'); if (s) s.value = L.subject; }
+  if (L.grade) { const g = document.getElementById('gradeSelect'); if (g) g.value = L.grade; }
+}
+function prefillQuizFromLesson(L) {
+  openAction('generate_quiz');
+  const el = document.getElementById('inputText');
+  if (el) el.value = (L.subject || '') + ', ' + (L.grade || '') + ' — тема: ' + (L.topic || '');
+}
+/* После «Проверки решения по критериям» — превратить найденную ошибку в тренировку */
+function attachSolutionMistakeChip(task, subject, response) {
+  if (!/ошибк|неверн|исправл|неточн/i.test(String(response || ''))) return;
+  const topic = tagTopic(subject, task || response) || 'Общее';
+  attachChatChips([
+    { icon: 'fas fa-book-bookmark', label: t('mist.title'), fn: function () {
+      const cp = countryProgress();
+      const rec = { id: 'm' + Date.now(), subject: subject || 'Общее', topic: topic, q: String(task || '').slice(0, 220) || 'Проверка решения', your: '', correct: '', explanation: '', src: 'check', at: Date.now(), status: 'new' };
+      addMistake(cp, rec); saveProgressData();
+      showToast('✓ ' + t('scan.saved'));
+    } },
+    { icon: 'fas fa-dumbbell', label: t('mist.practice'), gold: true, fn: function () { startMistakePractice(subject, topic, []); } }
+  ]);
+}
+
+/* ---------- Сканер заданий и тетрадей (задача 6) ----------
+   Распознавание: 1) бесплатная vision-модель через OpenRouter (:free, 0 ₽);
+   2) резерв — Tesseract.js прямо в браузере (бесплатный open-source, без ключей).
+   Платных OCR-сервисов не используем. */
+const VISION_MODELS = [
+  'openrouter/free',
+  'google/gemma-4-31b-it:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'google/gemma-3-27b-it:free',
+  'microsoft/phi-4:free'
+];
+
+function openScan() {
+  const cfg = getAllItems().find(function (m) { return m.id === 'scan'; });
+  state.currentActionId = 'scan';
+  state.conversationHistory = [];
+  state.scanImg = null;
+  document.getElementById('actionTitle').innerHTML = '<i class="' + (cfg ? cfg.icon : 'fas fa-camera') + '"></i> ' + (cfg ? cfg.title : t('scan.checkTitle'));
+  document.getElementById('actionDescription').textContent = cfg ? cfg.description : '';
+  document.getElementById('actionForm').innerHTML = scanFormHtml();
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('continueChatArea').style.display = 'none';
+  showPage('actionPage');
+}
+
+function scanFormHtml() {
+  const c = activeCountry();
+  const subjects = c.studySubjects;
+  const prefGrade = parseInt(state.grade, 10) || 11;
+  const gradeOpts = [5,6,7,8,9,10,11].map(function (g) {
+    return '<option' + (g === prefGrade ? ' selected' : '') + '>' + g + ' ' + t('form.gradeWord') + '</option>';
+  }).join('');
+  return '<div class="form-group"><label>' + t('form.subject') + '</label><select id="scanSubject">' +
+      subjects.map(function (s) { return '<option value="' + escapeAttr(s) + '">' + escapeHtml(subjectName(s)) + '</option>'; }).join('') +
+    '</select></div>' +
+    '<div class="form-group"><label>' + t('form.grade') + '</label><select id="scanGrade">' + gradeOpts + '</select></div>' +
+    '<div class="scan-zone">' +
+      '<div class="scan-btns">' +
+        '<button type="button" class="btn btn-primary" onclick="scanPick(true)"><i class="fas fa-camera"></i> ' + escapeHtml(t('scan.photo')) + '</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="scanPick(false)"><i class="fas fa-image"></i> ' + escapeHtml(t('scan.upload')) + '</button>' +
+      '</div>' +
+      '<input type="file" id="scanCamInput" accept="image/*" capture="environment" style="display:none" onchange="scanHandleFile(this)">' +
+      '<input type="file" id="scanFileInput" accept="image/*" style="display:none" onchange="scanHandleFile(this)">' +
+    '</div>' +
+    '<img id="scanPreview" class="scan-preview" alt="">' +
+    '<div class="scan-status" id="scanStatus"></div>' +
+    '<button type="button" id="scanGoBtn" class="btn btn-primary" style="display:none;" onclick="scanRecognize()"><i class="fas fa-wand-magic-sparkles"></i> ' + escapeHtml(t('scan.recognize')) + '</button>' +
+    '<div id="scanResult" style="display:none;">' +
+      '<div class="form-group"><label>' + t('form.query') + '</label><textarea id="scanText" rows="6" placeholder="' + escapeHtml(t('form.queryPh')) + '"></textarea></div>' +
+      '<div class="scan-actions-grid">' +
+        '<button type="button" class="btn btn-secondary" onclick="scanRun(\'explain\')"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('scan.actExplain')) + '</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="scanRun(\'solve\')"><i class="fas fa-calculator"></i> ' + escapeHtml(t('scan.actSolve')) + '</button>' +
+        '<button type="button" class="btn btn-primary" onclick="scanRun(\'check\')"><i class="fas fa-clipboard-check"></i> ' + escapeHtml(t('scan.actCheck')) + '</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="scanRun(\'test\')"><i class="fas fa-question-circle"></i> ' + escapeHtml(t('scan.actTest')) + '</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="scanRun(\'summary\')"><i class="fas fa-book"></i> ' + escapeHtml(t('scan.actSummary')) + '</button>' +
+        '<button type="button" class="btn btn-primary" onclick="scanRun(\'errors\')"><i class="fas fa-magnifying-glass"></i> ' + escapeHtml(t('scan.actErrors')) + '</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function scanPick(capture) {
+  const el = document.getElementById(capture ? 'scanCamInput' : 'scanFileInput');
+  if (el) el.click();
+}
+function scanStatus(msg, icon) {
+  const s = document.getElementById('scanStatus');
+  if (s) s.innerHTML = (icon ? '<i class="' + icon + '"></i> ' : '') + msg;
+}
+function scanHandleFile(input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  scanStatus('…');
+  nevioCompressImage(file, 1500).then(function (dataUrl) {
+    state.scanImg = dataUrl;
+    const pv = document.getElementById('scanPreview');
+    if (pv) { pv.src = dataUrl; pv.style.display = 'block'; }
+    const go = document.getElementById('scanGoBtn');
+    if (go) go.style.display = 'inline-flex';
+    scanStatus(t('scan.status.ready'));
+  }).catch(function () { scanStatus('⚠️ ' + t('scan.status.fail')); });
+}
+function nevioCompressImage(file, maxDim) {
+  return new Promise(function (resolve, reject) {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = function () {
+      try {
+        const k = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(img.width * k));
+        cv.height = Math.max(1, Math.round(img.height * k));
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        const out = cv.toDataURL('image/jpeg', 0.86);
+        URL.revokeObjectURL(url);
+        resolve(out);
+      } catch (e) { URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('read')); };
+    img.src = url;
+  });
+}
+function nevioLoadScript(src) {
+  return new Promise(function (resolve, reject) {
+    const ex = document.querySelector('script[src="' + src + '"]');
+    if (ex) {
+      if (ex.dataset.ok === '1') return resolve();
+      ex.addEventListener('load', function () { resolve(); });
+      ex.addEventListener('error', function () { reject(new Error('cdn')); });
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = function () { s.dataset.ok = '1'; resolve(); };
+    s.onerror = function () { reject(new Error('cdn')); };
+    document.head.appendChild(s);
+  });
+}
+async function nevioVisionComplete(promptText, imageDataUrl, systemText, maxTokens) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + String(OPENROUTER_API_KEY || '').trim(),
+    'HTTP-Referer': 'https://nevio.app',
+    'X-Title': 'NEVIO App'
+  };
+  const content = [{ type: 'text', text: promptText }];
+  if (imageDataUrl) content.push({ type: 'image_url', image_url: { url: imageDataUrl } });
+  let lastErr = null;
+  for (const model of VISION_MODELS) {
+    try {
+      const r = await fetchWithTimeout(OPENROUTER_API_URL, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemText || 'Ты — NEVIO, учебный ассистент. Отвечай на языке пользователя.' },
+            { role: 'user', content: content }
+          ],
+          temperature: 0.2, max_tokens: maxTokens || 2000, stream: false
+        })
+      }, 35000);
+      if (!r.ok) { lastErr = new Error('HTTP ' + r.status); continue; }
+      const d = await r.json();
+      const msg = d.choices && d.choices[0] && d.choices[0].message;
+      const txt = msg && typeof msg.content === 'string' ? msg.content : '';
+      if (txt && txt.trim().length > 15) return txt.trim();
+      lastErr = new Error('empty');
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('vision unavailable');
+}
+async function nevioOcr(dataUrl) {
+  await nevioLoadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+  if (typeof Tesseract === 'undefined') throw new Error('tesseract unavailable');
+  const worker = await Tesseract.createWorker('rus+eng', 1, {
+    logger: function (m) {
+      if (m && m.status === 'recognizing text') scanStatus(t('scan.status.ocr') + ' ' + Math.round((m.progress || 0) * 100) + '%');
+    }
+  });
+  try {
+    const res = await worker.recognize(dataUrl);
+    const text = ((res && res.data && res.data.text) || '').trim();
+    if (!text || text.length < 8) throw new Error('empty ocr');
+    return text;
+  } finally { try { await worker.terminate(); } catch (e) {} }
+}
+async function scanRecognize() {
+  if (!state.scanImg || state.isLoading) return;
+  const go = document.getElementById('scanGoBtn');
+  if (go) go.style.display = 'none';
+  state.isLoading = true;
+  try {
+    scanStatus(t('scan.status.vision'), 'fas fa-brain');
+    let text = '';
+    try {
+      text = await nevioVisionComplete(
+        'Распознай изображение: учебное задание, страницу учебника, конспект или рукописную работу ученика. Верни ТОЛЬКО распознанный текст с сохранением структуры (задачи, номера; формулы запиши в LaTeX $...$). Без комментариев и решений.',
+        state.scanImg,
+        'Ты — NEVIO. Точно переносишь текст с фото/скана в текст. Не решай и не объясняй — только распознавай.'
+      );
+    } catch (e1) {
+      scanStatus(t('scan.status.ocr'), 'fas fa-font');
+      text = await nevioOcr(state.scanImg);
+    }
+    const res = document.getElementById('scanResult');
+    const ta = document.getElementById('scanText');
+    if (res) res.style.display = 'block';
+    if (ta) ta.value = String(text || '').slice(0, 4000);
+    scanStatus(t('scan.status.done'), 'fas fa-circle-check');
+    const cp = countryProgress();
+    cpDaily(cp).scans++;
+    saveProgressData();
+  } catch (e) {
+    const res = document.getElementById('scanResult');
+    if (res) res.style.display = 'block';
+    scanStatus(t('scan.status.fail'), 'fas fa-triangle-exclamation');
+  } finally {
+    state.isLoading = false;
+    if (go) { go.style.display = 'inline-flex'; }
+  }
+}
+function scanRun(kind) {
+  const text = (document.getElementById('scanText') ? document.getElementById('scanText').value : '').trim();
+  if (!text) { showToast(t('toast.fillField')); return; }
+  const subject = document.getElementById('scanSubject') ? document.getElementById('scanSubject').value : '';
+  const grade = document.getElementById('scanGrade') ? document.getElementById('scanGrade').value : '';
+  if (kind === 'test') { scanMakeTest(text, subject); return; }
+  if (kind === 'check' || kind === 'errors') { runScanCheck(kind, text, subject, grade); return; }
+  // explain / solve / summary — через существующие формы с автозаполнением
+  openAction(kind);
+  const set = function (id, v) { const el = document.getElementById(id); if (el && v !== undefined && v !== '') el.value = v; };
+  set('subjectSelect', subject);
+  set('gradeSelect', grade);
+  set('inputText', text.slice(0, 3000));
+  processAction();
+}
+function scanMakeTest(text, subject) {
+  const topicLine = String(text || '').split('\n').find(function (l) { return l.trim().length > 8; }) || '';
+  testState = {
+    questions: [], currentQ: 0, score: 0,
+    subject: (subject || t('scan.checkTitle')) + ' — ' + topicLine.slice(0, 60),
+    answered: false, count: 7, difficulty: 'смешанный', fromScan: true
+  };
+  showPage('testPage');
+  document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:48px;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:12px;color:var(--text-secondary);">' + escapeHtml(t('teacher.generating')) + '</p></div>';
+  (async function () {
+    try {
+      const questions = await generateTestQuestions((subject || '') + ' — ' + String(text).slice(0, 1200), 7, 'смешанный');
+      if (!questions.length) throw new Error(t('errors.noQuestions'));
+      testState.questions = questions;
+      renderCurrentQuestion();
+    } catch (e) {
+      document.getElementById('testContainer').innerHTML = '<div class="card" style="text-align:center;padding:36px;"><h3>⚠️</h3><p style="color:var(--text-secondary);">' + escapeHtml(e.message) + '</p><button class="btn btn-primary" onclick="openScan()">Назад</button></div>';
+    }
+  })();
+}
+function runScanCheck(mode, text, subject, grade) {
+  const c = activeCountry();
+  const isCheck = mode === 'check';
+  const prompt =
+    'Ты — NEVIO, репетитор (' + c.flag + ' ' + c.nameLocal() + ' · ' + examTitle(c) + '). Ниже — текст задания или работы ученика, распознанный со скана/фото' +
+    (subject ? ' по предмету «' + subject + '»' : '') + (grade ? ', ' + grade : '') + '.\n\nРАСПОЗНАННЫЙ ТЕКСТ:\n' + text.slice(0, 3500) + '\n\n' +
+    (isCheck
+      ? 'РЕЖИМ «ПРОВЕРЬ МОЮ РАБОТУ»: не просто дай правильный ответ, а разбери работу ученика шаг за шагом:\n1) что решено верно;\n2) где именно ошибка (цифра, знак, пропущенный шаг, неверная формулировка);\n3) почему возникла эта ошибка (какое правило не выучено или какое представление неверное);\n4) как исправить — правильное решение по шагам.\n'
+      : 'РЕЖИМ «НАЙДИ ОШИБКИ»: перечисли все найденные ошибки списком: где, в чём, чем вызвана. Если это условие задачи без решения — предложи план решения и укажи темы, которые понадобятся.\n') +
+    'В конце добавь блок «🎯 Что повторить», где каждой строкой напиши: Тема: <название темы>.\nИспользуй LaTeX для формул.' +
+    (subject ? trustBlockFor(c, subject) : '');
+  window.__scanCheckText = text;
+  window.__scanCheckSubject = subject;
+  runChatFlow({
+    actionId: 'scan_check',
+    icon: isCheck ? 'fas fa-clipboard-check' : 'fas fa-magnifying-glass',
+    title: isCheck ? t('scan.checkTitle') : t('scan.errorsTitle'),
+    desc: t('mist.desc'),
+    userLabel: (isCheck ? '📷 ' + t('scan.actCheck') : '📷 ' + t('scan.actErrors')) + ' · ' + String(text).slice(0, 40) + '…',
+    prompt: prompt,
+    subject: subject,
+    after: function (r) { attachScanResultChips(r); }
+  });
+}
+function parseScanTopics(response, subject) {
+  const out = [];
+  const seen = {};
+  String(response || '').split('\n').forEach(function (line) {
+    const m = line.match(/Тема\s*[:：—-]\s*(.+)$/i);
+    if (!m) return;
+    let topic = String(m[1]).replace(/^[«"'`]+|[»"'`.,;]+$/g, '').replace(/[*_#>]/g, '').trim().slice(0, 50);
+    if (!topic || seen[topic.toLowerCase()]) return;
+    seen[topic.toLowerCase()] = 1;
+    out.push(tagTopic(subject, topic) || topic);
+  });
+  if (!out.length && subject) { const tg = tagTopic(subject, window.__scanCheckText || ''); if (tg) out.push(tg); }
+  return out.slice(0, 5);
+}
+function attachScanResultChips(response) {
+  const topics = parseScanTopics(response, window.__scanCheckSubject || '');
+  if (!topics.length) return;
+  window.__scanCheckTopics = topics;
+  attachChatChips([
+    { icon: 'fas fa-book-bookmark', label: t('scan.saveTopics'), fn: 'scanSaveTopics' },
+    { icon: 'fas fa-dumbbell', label: t('mist.practice'), gold: true, fn: 'scanPracticeFirstTopic' }
+  ]);
+}
+function scanSaveTopics() {
+  const cp = countryProgress();
+  const topics = window.__scanCheckTopics || [];
+  topics.forEach(function (topic) {
+    addMistake(cp, { id: 'm' + Date.now() + Math.floor(Math.random() * 999), subject: window.__scanCheckSubject || 'Общее', topic: topic, q: String(window.__scanCheckText || '').slice(0, 200), your: '', correct: '', explanation: '', src: 'scan', at: Date.now(), status: 'new' });
+  });
+  saveProgressData();
+  showToast('✓ ' + t('scan.saved'));
+}
+function scanPracticeFirstTopic() {
+  const topics = window.__scanCheckTopics || [];
+  startMistakePractice(window.__scanCheckSubject || '', topics[0] || 'Общее', []);
+}
+
+/* ---------- Презентации (задача 8): генерация ИИ + локальный просмотрщик ----------
+   Без Google Slides/Gamma и любых платных API: структуру собирает та же бесплатная
+   модель, а просмотрщик и скачиваемый .html-файл — собственный код Nevio. */
+let deckStore = {};
+let deckSeq = 0;
+function presSlideOptions() {
+  const plus = isPlus();
+  return [5, 8, 10, 12, 16, 20].map(function (n) {
+    const lock = n > 12 && !plus;
+    return '<option value="' + n + '"' + (n === 8 ? ' selected' : '') + '>' + n + ' ' + t('pres.slidesUnit') + (lock ? ' · Plus' : '') + '</option>';
+  }).join('');
+}
+async function runPresentation() {
+  if (state.isLoading) return;
+  const topic = (document.getElementById('inputText') ? document.getElementById('inputText').value : '').trim();
+  if (!topic) { showToast(t('toast.fillField')); return; }
+  const subject = document.getElementById('subjectSelect') ? document.getElementById('subjectSelect').value : '';
+  const grade = document.getElementById('gradeSelect') ? document.getElementById('gradeSelect').value : (state.grade || '');
+  const level = document.getElementById('presLevel') ? document.getElementById('presLevel').value : '';
+  const n = parseInt(document.getElementById('presSlides') ? document.getElementById('presSlides').value : '8', 10);
+  const withQ = !!(document.getElementById('presQuestions') && document.getElementById('presQuestions').checked);
+  if (n > 12 && !isPlus()) { showToast(t('plus.locked')); openPlus(); return; }
+  const c = activeCountry();
+  state.isLoading = true;
+  if (typeof disableForm === 'function') disableForm(true);
+  addChatMessage(t('pres.run') + ': ' + topic.slice(0, 60) + (subject ? ' · ' + subjectName(subject) : '') + ' · ' + n + ' ' + t('pres.slidesUnit'), true);
+  const lid = addLoadingMessage();
+  try {
+    const sys = (c.systemPrompt ? c.systemPrompt(state.role) : systemPrompts[state.role]) + '\n\n' + answerLangLine() +
+      'Формат ответа: СТРОГО валидный JSON без markdown, без пояснений до и после. Без LaTeX и знаков $ — формулы пиши обычными символами (x^2, √, /, ·).\n{"title":"…","subtitle":"…","slides":[{"title":"…","bullets":["…","…"],"note":"…"}]}';
+    const up = 'Создай презентацию «' + topic + '»' +
+      (subject ? ' по предмету «' + subject + '»' : '') + (grade ? ' (' + grade + ')' : '') + (level ? ', уровень: ' + level : '') + '.\n' +
+      'Требования:\n• ровно ' + n + ' слайдов, одинаковой плотности;\n• 1-й слайд — титульный: title = тема, subtitle = предмет/класс/автор;\n• на каждом слайде 3–5 коротких пунктов и пример; включи выводы;\n• ' +
+      (withQ || state.role === 'teacher'
+        ? 'добавь слайд с вопросами классу и итоговое задание/мини-тест, а в полях note — заметки спикера;\n• '
+        : 'в поле note каждого слайда — короткая заметка докладчика;\n• ') +
+      'структура: введение → теория → примеры → практика → выводы. Аудитория: ' + (state.role === 'teacher' ? 'школьный класс' : 'ученик и класс') + '.' +
+      (subject ? trustBlockFor(c, subject) : '');
+    const response = await callProxy({
+      messages: [{ role: 'system', content: sys }, { role: 'user', content: up }],
+      temperature: 0.6, max_tokens: 6000, stream: false
+    });
+    const data = await response.json();
+    const raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
+    removeLoadingMessage(lid);
+    const deck = parsePresentationJSON(raw, topic, subject, grade);
+    if (deck) {
+      deck._id = ++deckSeq;
+      deckStore[deck._id] = deck;
+      state.lastDeckId = deck._id;
+      saveData();
+      addChatMessage('', false, renderDeckBubble(deck));
+      saveToHistory({ type: 'presentation', input: '🎞 ' + topic, result: JSON.stringify({ title: deck.title, slides: deck.slides.length }), timestamp: new Date().toISOString() });
+      trackAction('presentation', subject || topic, topic);
+      showContinueChat();
+    } else if (raw) {
+      // если JSON не собрался — показываем обычный конспект, не теряя работу
+      addChatMessage(raw, false);
+      showToast(t('pres.deckTitle'));
+      showContinueChat();
+    } else {
+      removeLoadingMessage(lid);
+      addChatMessage(t('errors.emptyResponse'), false);
+    }
+  } catch (e) {
+    removeLoadingMessage(lid);
+    addChatMessage('❌ ' + t('errors.aiFailed') + ': ' + e.message, false);
+  } finally {
+    state.isLoading = false;
+    if (typeof disableForm === 'function') disableForm(false);
+  }
+}
+function parsePresentationJSON(raw, topic, subject, grade) {
+  let s = String(raw || '').trim();
+  const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fence) s = fence[1].trim();
+  const start = s.indexOf('{'), end = s.lastIndexOf('}');
+  let obj = null;
+  if (start !== -1 && end > start) {
+    try { obj = JSON.parse(s.slice(start, end + 1)); } catch (e) { obj = null; }
+  }
+  if (obj && Array.isArray(obj.slides) && obj.slides.length >= 2) {
+    return {
+      title: String(obj.title || topic || 'Презентация').slice(0, 160),
+      subtitle: String(obj.subtitle || ((subject ? subjectName(subject) : '') + (grade ? ' · ' + grade : ''))).slice(0, 160),
+      subject: subject || '',
+      slides: obj.slides.slice(0, 24).map(function (sl) {
+        sl = sl || {};
+        const bullets = Array.isArray(sl.bullets) ? sl.bullets.map(function (b) { return String(b).slice(0, 300); }).filter(Boolean).slice(0, 7) : [];
+        return {
+          title: String(sl.title || '').slice(0, 160),
+          bullets: bullets.length ? bullets : [String(sl.content || sl.text || '').slice(0, 300)].filter(Boolean),
+          note: String(sl.note || '').slice(0, 400)
+        };
+      }).filter(function (sl) { return sl.title || sl.bullets.length; })
+    };
+  }
+  // резерв: собрать слайды из markdown («## Заголовок» / «Слайд N»)
+  const parts = s.split(/\n\s*(?:#{1,3}\s*|Слайд\s*\d+\s*[:—–-]?\s*)/i).map(function (p) { return p.trim(); }).filter(function (p) { return p.length > 3; });
+  if (parts.length >= 3) {
+    const slides = parts.map(function (p) {
+      const lines = p.split('\n').map(function (l) { return l.replace(/^[-•*]\s*/, '').trim(); }).filter(Boolean);
+      return { title: lines[0] || '', bullets: lines.slice(1, 6), note: '' };
+    });
+    return { title: topic, subtitle: (subject ? subjectName(subject) : '') + (grade ? ' · ' + grade : ''), subject: subject || '', slides: slides.slice(0, 24) };
+  }
+  return null;
+}
+function renderDeckBubble(deck) {
+  const minis = deck.slides.map(function (sl, i) {
+    return '<div class="slide-mini"><h4><span class="sm-num">' + (i + 1) + '</span>' + escapeHtml(sl.title || '') + '</h4>' +
+      (sl.bullets.length ? '<ul>' + sl.bullets.map(function (b) { return '<li>' + escapeHtml(b) + '</li>'; }).join('') + '</ul>' : '') +
+      (sl.note ? '<div class="sm-note">🎤 ' + escapeHtml(sl.note) + '</div>' : '') + '</div>';
+  }).join('');
+  return '<div class="message ai"><div class="message-label">NEVIO</div><div class="message-bubble ai-content" style="width:100%;max-width:100%;">' +
+    '<div class="q-preview" style="margin-top:0;"><strong>🎞 ' + escapeHtml(deck.title) + '</strong><br>' +
+    '<span style="font-size:11.5px;color:var(--text-muted);">' + escapeHtml(deck.subtitle || '') + ' · ' + deck.slides.length + ' ' + escapeHtml(t('pres.slidesUnit')) + '</span></div>' +
+    minis +
+    '<div class="deck-actions">' +
+      '<button class="btn btn-primary" onclick="deckOpen(' + deck._id + ')"><i class="fas fa-play"></i> ' + escapeHtml(t('pres.show')) + '</button>' +
+      '<button class="btn btn-secondary" onclick="deckDownload(' + deck._id + ')"><i class="fas fa-download"></i> ' + escapeHtml(t('pres.download')) + '</button>' +
+    '</div>' +
+    '<div style="font-size:10px;color:var(--text-muted);margin-top:8px;">NEVIO · всё локально — файл открывается в любом браузере</div>' +
+  '</div></div>';
+}
+let deckViewerIdx = 0, deckViewerId = 0;
+function deckOpen(id) {
+  const deck = deckStore[id] || (state.lastDeckId ? deckStore[state.lastDeckId] : null);
+  if (!deck) return;
+  deckViewerId = deck._id || id;
+  deckViewerIdx = 0;
+  document.getElementById('deckTitle').textContent = deck.title || '';
+  document.getElementById('deckViewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderDeckSlide();
+}
+function renderDeckSlide() {
+  const deck = deckStore[deckViewerId];
+  if (!deck) return;
+  const sl = deck.slides[deckViewerIdx] || { title: '', bullets: [] };
+  const kicker = deckViewerIdx === 0 ? 'NEVIO · ' + escapeHtml(deck.subject ? subjectName(deck.subject) : '') : (deckViewerIdx + 1) + ' / ' + deck.slides.length;
+  const html = '<div class="ds-kicker">' + kicker + '</div>' +
+    (sl.title ? '<h2>' + escapeHtml(sl.title) + '</h2>' : '') +
+    (deckViewerIdx === 0 && deck.subtitle ? '<div class="ds-note" style="margin:0 0 14px;">' + escapeHtml(deck.subtitle) + '</div>' : '') +
+    (sl.bullets.length ? '<ul>' + sl.bullets.map(function (b) { return '<li>' + escapeHtml(b) + '</li>'; }).join('') + '</ul>' : '') +
+    (sl.note ? '<div class="ds-note">🎤 ' + escapeHtml(sl.note) + '</div>' : '');
+  const box = document.getElementById('deckSlide');
+  box.innerHTML = html;
+  box.style.animation = 'none'; void box.offsetWidth; box.style.animation = '';
+  document.getElementById('deckCount').textContent = (deckViewerIdx + 1) + ' / ' + deck.slides.length;
+}
+function deckNext() { const d = deckStore[deckViewerId]; if (!d) return; if (deckViewerIdx < d.slides.length - 1) { deckViewerIdx++; renderDeckSlide(); } }
+function deckPrev() { if (deckViewerIdx > 0) { deckViewerIdx--; renderDeckSlide(); } }
+function deckClose() {
+  const v = document.getElementById('deckViewer');
+  if (v) v.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function (e) {
+  const v = document.getElementById('deckViewer');
+  if (!v || !v.classList.contains('open')) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') deckNext();
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') deckPrev();
+  if (e.key === 'Escape') deckClose();
+});
+(function deckTouch() {
+  let sx = 0;
+  document.addEventListener('touchstart', function (e) { if (e.touches && e.touches[0]) sx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    const v = document.getElementById('deckViewer');
+    if (!v || !v.classList.contains('open') || !e.changedTouches || !e.changedTouches[0]) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    if (dx < -40) deckNext(); else if (dx > 40) deckPrev();
+  }, { passive: true });
+})();
+function buildDeckHtml(deck) {
+  const esc = function (s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  const payload = JSON.stringify({
+    title: deck.title, subtitle: deck.subtitle || '',
+    slides: deck.slides.map(function (sl) { return { title: esc(sl.title), bullets: sl.bullets.map(esc), note: esc(sl.note || '') }; })
+  }).replace(/</g, '\\u003c');
+  return '<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>' + esc(deck.title) + ' · NEVIO</title><style>' +
+    '*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0c0b09;color:#fff;overflow:hidden}' +
+    '.s{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8vh 6vw}' +
+    '.k{font-size:11px;letter-spacing:3px;color:#e8b13e;font-weight:800;margin-bottom:14px}' +
+    'h1{font-size:clamp(24px,4.5vw,44px);margin-bottom:12px;max-width:900px}' +
+    'ul{list-style:none;max-width:820px}li{font-size:clamp(14px,2vw,20px);line-height:1.7;margin:10px 0;padding-left:20px;position:relative;text-align:left}' +
+    'li:before{content:"";position:absolute;left:0;top:.7em;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#f5cc6e,#c4911a)}' +
+    '.n{margin-top:22px;font-size:12px;color:rgba(255,255,255,.45);font-style:italic;max-width:720px}' +
+    '.c{position:fixed;right:14px;bottom:12px;font-size:12px;color:rgba(255,255,255,.5)}' +
+    '</style></head><body><div id="app"></div><div class="c" id="cc"></div>' +
+    '<script>var D=' + payload + ';var i=0;' +
+    'function r(){var s=D.slides[i]||{bullets:[]};var h=\'<div class="s"><div class="k">NEVIO · \'+(i+1)+\'/\'+D.slides.length+\'</div>\';' +
+    'h+=(i===0?\'<h1>\'+D.title+\'</h1>\':(s.title?\'<h1>\'+s.title+\'</h1>\':\'\'));' +
+    'if(i===0&&D.subtitle)h+=\'<div class="n">\'+D.subtitle+\'</div>\';' +
+    'if(s.bullets&&s.bullets.length){h+=\'<ul>\'+s.bullets.map(function(b){return \'<li>\'+b+\'</li>\'}).join(\'\')+\'</ul>\';}' +
+    'if(s.note)h+=\'<div class="n">\'+s.note+\'</div>\';h+=\'</div>\';document.getElementById(\'app\').innerHTML=h;document.getElementById(\'cc\').textContent=\'← → листать\';}' +
+    'document.addEventListener(\'keydown\',function(e){if((e.key===\'ArrowRight\'||e.key===\' \')&&i<D.slides.length-1){i++;r()}if(e.key===\'ArrowLeft\'&&i>0){i--;r()}});' +
+    'var x=0;document.addEventListener(\'touchstart\',function(e){x=e.touches[0].clientX});document.addEventListener(\'touchend\',function(e){var d=e.changedTouches[0].clientX-x;if(d<-40&&i<D.slides.length-1){i++;r()}if(d>40&&i>0){i--;r()}});r();' +
+    '<\/script></body></html>';
+}
+function deckDownload(id) {
+  const deck = deckStore[id || deckViewerId] || (state.lastDeckId ? deckStore[state.lastDeckId] : null);
+  if (!deck) return;
+  try {
+    const htmlDoc = buildDeckHtml(deck);
+    const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nevio-' + String(deck.title || 'presentation').toLowerCase().replace(/[^a-zа-яё0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40) + '.html';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
+  } catch (e) { showToast('⚠️'); }
+}
+
+/* ---------- NEVIO Free / NEVIO Plus (задачи 9–10) ----------
+   Никаких платных API и сервисов: тариф — локальный флаг + список возможностей.
+   Онлайн-оплата подключается владельцем отдельно (docs/MONETIZATION.md); до её
+   запуска активация — кодом поддержки. За Plus спрятаны только «расширения»:
+   все базовые функции (AI-помощник, тесты, прогресс, задания, персонализация,
+   сканирование, материалы, дневник ошибок, презентации до 12 слайдов) — бесплатны. */
+const NEVIO_PLUS_CODES = ['NEVIO-PLUS']; // коды активации от поддержки (заменяет владелец)
+function isPlus() { return state.plan === 'plus'; }
+function updatePlusUI() {
+  const el = document.getElementById('settingsPlanValue');
+  if (el) { el.textContent = isPlus() ? 'Plus' : 'Free'; el.style.color = isPlus() ? 'var(--gold)' : ''; }
+}
+function openPlus() { renderPlusUI(); showPage('plusPage'); }
+function renderPlusUI() {
+  const root = document.getElementById('plusRoot');
+  if (!root) return;
+  const li = function (ok, text, badge) {
+    return '<li class="' + (ok ? '' : 'na') + '"><i class="fas ' + (ok ? 'fa-check' : 'fa-lock') + '"></i>' + escapeHtml(text) + (badge ? ' <span class="plus-badge">PLUS</span>' : '') + '</li>';
+  };
+  const freeList = [
+    li(true, 'AI-ассистент: задачи, темы, конспекты, схемы'),
+    li(true, 'Интерактивные тесты и подготовка к экзамену страны'),
+    li(true, 'Проверка решений по критериям экзамена'),
+    li(true, 'Сканер заданий: объяснить, решить, проверить, найти ошибки'),
+    li(true, 'Разбор ошибок и тренировка по теме'),
+    li(true, 'Дневник оценок, прогресс и статистика'),
+    li(true, 'Презентации до 12 слайдов'),
+    li(true, 'Задания для класса и 2–4 варианта контрольных'),
+    li(false, 'Глубокий разбор ошибок с планом', true),
+    li(false, '16–20 слайдов, 6–8 вариантов, недельная статистика', true)
+  ].join('');
+  const plusList = [
+    li(true, 'Всё из NEVIO Free'),
+    li(true, 'Глубокий анализ ошибок + план закрытия пробелов'),
+    li(true, 'Расширенная статистика: активность по дням'),
+    li(true, 'Больше генераций: 16–20 слайдов, до 8 вариантов'),
+    li(true, 'Расширенные учебные планы и материалы'),
+    li(true, 'Ранний доступ к новым AI-инструментам')
+  ].join('');
+  const pricePlus = state.role === 'teacher' ? '€2,99' : '€1,99';
+  const cur = isPlus();
+  root.innerHTML =
+    '<div class="country-hero"><div class="country-kicker">' + escapeHtml(activeCountry().flag + ' ' + activeCountry().nameLocal()) + '</div><h1>' + escapeHtml(t('plus.title')) + '</h1>' +
+    '<p>' + escapeHtml(t('app.subtitle')) + '</p></div>' +
+    '<div class="plan-grid">' +
+      '<div class="plan-card"><div class="plan-name">' + escapeHtml(t('plus.freeName')) + '</div><div class="plan-price">€0</div><div class="plan-per">' + escapeHtml(t('plus.perMonth')) + '</div>' +
+      '<ul class="plan-list">' + freeList + '</ul>' +
+      (cur ? '' : '<div style="margin-top:auto;padding-top:12px;"><span class="settings-value">' + escapeHtml(t('plus.current')) + '</span></div>') + '</div>' +
+      '<div class="plan-card plus"><div class="plan-name">' + escapeHtml(t('plus.plusName')) + '</div><div class="plan-price">' + pricePlus + '</div>' +
+      '<div class="plan-per">' + escapeHtml(t('plus.perMonth')) + ' · ' + escapeHtml(t('role.student')) + ' €1,99 · ' + escapeHtml(t('role.teacher')) + ' €2,99</div>' +
+      '<ul class="plan-list">' + plusList + '</ul>' +
+      '<div style="margin-top:auto;">' + (cur
+        ? '<span class="settings-value" style="display:inline-block;margin-top:12px;">✓ ' + escapeHtml(t('plus.current')) + ' · <a style="cursor:pointer;" onclick="setPlan(\'free\')">' + escapeHtml(t('plus.deactivate')) + '</a></span>'
+        : '<button class="btn btn-primary" style="margin-top:12px;" onclick="document.getElementById(\'plusCodeInput\').focus()"><i class="fas fa-crown"></i> ' + escapeHtml(t('plus.activate')) + '</button>') +
+      '</div></div>' +
+    '</div>' +
+    '<div class="card" style="margin-top:12px;"><div class="form-group" style="margin-bottom:0;"><label>' + escapeHtml(t('plus.activate')) + '</label>' +
+      '<div class="diary-pick" style="margin-top:0;"><input type="text" id="plusCodeInput" placeholder="' + escapeHtml(t('plus.codePh')) + '" style="flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:13px;">' +
+      '<button class="btn btn-primary" style="flex:0 0 auto;padding:10px 14px;margin-top:0;" onclick="checkPlusCode()">' + escapeHtml(t('plus.activate')) + '</button></div>' +
+      '<p style="font-size:11px;color:var(--text-muted);line-height:1.6;margin-top:8px;">' + escapeHtml(t('plus.note')) + '</p>' +
+    '</div></div>';
+}
+function checkPlusCode() {
+  const el = document.getElementById('plusCodeInput');
+  const code = ((el && el.value) || '').trim().toUpperCase();
+  if (NEVIO_PLUS_CODES.indexOf(code) !== -1) { setPlan('plus'); showToast('✓ NEVIO Plus'); }
+  else showToast('✕ ' + t('plus.codePh'));
+}
+function setPlan(p) {
+  state.plan = p;
+  saveData();
+  updatePlusUI();
+  renderPlusUI();
+  if (window.renderGreetCard) renderGreetCard();
+  if (typeof renderProgressPage === 'function' && document.getElementById('progressPage') && document.getElementById('progressPage').classList.contains('active')) renderProgressPage();
+}
+
+/* ---------- Расширенная недельная статистика (Plus) ---------- */
+function renderWeeklyStatsSection() {
+  let html = '';
+  try {
+    const cp = countryProgress();
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const k = nevioDayStr(d.getTime());
+      const rec = (cp.daily && cp.daily[k]) || { secs: 0, answers: 0, tasks: 0 };
+      days.push({ lab: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'][d.getDay()], mins: Math.round((rec.secs || 0) / 60), ans: (rec.answers || 0) + (rec.tasks || 0) });
+    }
+    const hasData = days.some(function (x) { return x.mins > 0 || x.ans > 0; });
+    if (!hasData) return '';
+    if (isPlus()) {
+      const max = Math.max(1, ...days.map(function (x) { return Math.max(x.mins, x.ans); }));
+      html += '<div class="section-label">' + escapeHtml(t('plus.weekly')) + '</div><div class="card">' +
+        '<div class="weekly-chart">' + days.map(function (x) {
+          const h = Math.round((Math.max(x.mins, x.ans) / max) * 58) + 3;
+          return '<div class="weekly-col"><span class="weekly-val">' + (x.mins ? x.mins + '′' : (x.ans || '')) + '</span><div class="weekly-bar" style="height:' + h + 'px;"></div><span class="weekly-lab">' + x.lab + '</span></div>';
+        }).join('') + '</div></div>';
+    } else {
+      html += '<div class="section-label">' + escapeHtml(t('plus.weekly')) + '</div>' +
+        '<div class="plus-teaser"><div class="pt-title">👑 ' + escapeHtml(t('plus.weeklyTeaser')) + '</div>' +
+        '<div class="pt-sub">' + escapeHtml(t('plus.plusName')) + ' · €' + (state.role === 'teacher' ? '2,99' : '1,99') + escapeHtml(t('plus.perMonth')) + '</div>' +
+        '<button class="btn btn-secondary" style="max-width:260px;margin:0 auto;" onclick="openPlus()"><i class="fas fa-crown"></i> ' + escapeHtml(t('plus.title')) + '</button></div>';
+    }
+  } catch (e) {}
+  return html;
 }
 
 document.addEventListener('DOMContentLoaded', init);
