@@ -231,6 +231,65 @@ console.log('\n--- File size check ---');
 check(content.length > 400000, `File size >400KB: ${content.length}`);
 check(content.length < 1000000, `File size <1MB: ${content.length}`);
 
+// 12. Финальная полировка: карточка-приветствие, дневник, ошибки, сканер, презентации, Plus, варианты
+console.log('\n--- Final polish checks ---');
+check(content.includes('id="greetRoot"'), 'Greeting card mount on main page');
+check(content.includes('greet-brand') && content.includes("t('app.subtitle')"), 'Card titled with Nevio subtitle');
+check(content.includes('function renderGreetCard'), 'renderGreetCard defined');
+check(content.includes("t(nevioGreetingKey())") || content.includes("'greet.morning'"), 'Time-based greetings');
+check(content.includes('Начни заниматься — Nevio будет собирать твою статистику'), 'Empty-state text (no fake stats)');
+check(content.includes("localStorage.setItem('nevioExam_v1'") || content.includes("'nevioExam_v1'"), 'User-set exam date only');
+check(content.includes("const PROGRESS_KEY = 'nevioProgress_v1'") && content.includes('cp.daily'), 'Daily activity store');
+check(content.includes('function startNevioActivityTracking'), 'Activity heartbeat tracker');
+check(content.includes("const DIARY_KEY = 'nevioDiary_v1'"), 'Grade diary store');
+check(content.includes('renderDiarySection'), 'Diary renderer');
+check(content.includes('diaryActiveQuarter'), 'Diary quarter helper');
+check(content.includes("t('diary.yearAvg')"), 'Quarter/year average');
+check(content.includes('function addMistake') && content.includes('function resolveMistakes'), 'Mistake ledger add/resolve');
+check(content.includes("if (!isCorrect) noteTestMistake(testState, q, selectedIndex)"), 'Wrong test answer → mistake record');
+check(content.includes('function startMistakePractice'), 'Practice-from-mistake generator');
+check(content.includes("if (!ok) cpDaily(cp).mistakes++;") || content.includes('cpDaily(cp).mistakes++'), 'Mistake daily counter');
+check(content.includes('renderPracticeFeedback()'), 'Understanding-updated feedback');
+check(content.includes("function openMistakeExplain") && content.includes("mistake_explain"), 'Error explanation flow');
+check(content.includes("t('mist.deep')") && content.includes('mistake_deep'), 'Deep analysis (Plus)');
+check(content.includes("'Объясни проще'") || content.includes("'simple.btn'") && content.includes('SIMPLER_ASK'), 'Simpler explanation button');
+check(content.includes('function nevioBehaviorPolicy'), 'Behavior policy: explain→steps→check→similar');
+check(content.includes('function nevioStudentContext'), 'Student context into AI prompts');
+check(content.includes("state.grade = m[1] + ' ' + t('form.gradeWord')") || content.includes("state.grade = m[1] + ' '"), 'Preferred grade persisted');
+check(content.includes('function openScan') && content.includes('function scanFormHtml'), 'Smart scanner UI');
+check(content.includes('capture="environment"'), 'Scanner camera mode');
+check(content.includes('function nevioVisionComplete') && content.includes('function nevioOcr'), 'Vision + free OCR fallback chain');
+check(content.includes('tesseract.min.js'), 'Tesseract.js free OCR backup');
+check(/scanRun\('explain'\)|scanRun\(\\'explain\\'\)/.test(content) || content.includes("scanRun(\\'explain\\')"), 'Scan action: explain');
+check(content.includes("scanRun(\\'check\\')"), 'Scan action: check my work');
+check(content.includes("scanRun(\\'test\\')"), 'Scan action: make test');
+check(content.includes("scanRun(\\'summary\\')"), 'Scan action: summary');
+check(content.includes("scanRun(\\'errors\\')"), 'Scan action: find errors');
+check(content.includes('function runScanCheck') && content.includes('parseScanTopics'), 'Scan check → mistake topics');
+check(content.includes('function runPresentation') && content.includes('function parsePresentationJSON'), 'Presentation generation');
+check(content.includes('function buildDeckHtml') && content.includes('function deckDownload'), 'Own slide viewer + .html export (zero cost)');
+check(content.includes('id="deckViewer"'), 'Deck viewer markup');
+check(content.includes('function presSlideOptions'), 'Slide count selector');
+check(content.includes("if (n > 12 && !isPlus())"), 'Only 16-20 slides gated by Plus');
+check(content.includes('function isPlus') && content.includes("state.plan === 'plus'"), 'Plan flag');
+check(content.includes('NEVIO Free') && content.includes('NEVIO Plus'), 'Both plans described');
+check(content.includes('€1,99') && content.includes('€2,99'), 'Pricing 1.99/2.99');
+check(content.includes('function renderWeeklyStatsSection'), 'Weekly stats section');
+check(content.includes('function renderPlusUI') && content.includes('id="plusRoot"'), 'Plus page wired');
+check(content.includes('id="settingsPlanValue"'), 'Settings shows plan');
+check(content.includes("'quick_lesson'") && content.includes('attachQuickLessonChips'), 'Quick lesson kit + follow-up chips');
+check(content.includes('function generateVariantQuestions'), 'Teacher unique variants generator');
+check(content.includes('function applyVariantAssignment'), 'Variants assigned by student name');
+check(content.includes('a.vars') || content.includes('.vars['), 'Variants stored in assignment');
+check((content.match(/title=\\"?https/g) || []).length === 0, 'No raw https URL in titles');
+check(!(content.split('class="adu-item"')[1] || '').includes("href.replace('https://','')"), 'Browse list: raw URL hidden');
+check(!(content.match(/function enhanceAduItemLive[\s\S]{0,4000}/) || [''])[0].includes("' + href + '"), 'adu.by live list: raw URL hidden');
+// Free tier keeps core functions unlocked:
+for (const fn of ['processAction', 'startInteractiveTest', 'openScan', 'runPresentation', 'renderProgressPage', 'openTeacher']) {
+  check(content.includes('function ' + fn), `Core function present: ${fn}`);
+}
+check(content.includes("'BY'") && content.includes("'RU'") && content.includes("'KZ'") && content.includes("'UZ'"), 'All 4 countries kept');
+
 console.log('\n=== SUMMARY ===');
 console.log(`Passed: ${passed}`);
 console.log(`Failed: ${failed}`);
