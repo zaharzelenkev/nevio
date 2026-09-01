@@ -208,27 +208,17 @@
       padding:16px 14px;
       text-align:center;
       cursor:pointer;
-      transition:all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      /* спокойная реакция: только лёгкая подсветка рамки, без «прыжков» и масштабирования */
+      transition:border-color 0.2s ease, box-shadow 0.2s ease;
       border:2px solid var(--border);
       position:relative;
       overflow:hidden;
     }
-    .menu-card::before {
-      content:'';
-      position:absolute;
-      top:0; left:0; right:0; bottom:0;
-      background:var(--gradient-gold);
-      opacity:0;
-      transition:opacity 0.3s;
-      z-index:0;
-    }
-    .menu-card:hover::before { opacity:0.08; }
     .menu-card:hover {
-      border-color:var(--gold);
-      transform:translateY(-6px) scale(1.02);
-      box-shadow:0 15px 40px var(--shadow-strong);
+      border-color:rgba(232,177,62,0.42);
+      box-shadow:0 2px 10px var(--shadow-soft);
     }
-    .menu-card:active { transform:scale(0.96); }
+    .menu-card:active { border-color:rgba(232,177,62,0.55); box-shadow:none; }
     .menu-card .icon { font-size:27px; margin-bottom:10px; display:block; color:var(--gold); position:relative; z-index:1; }
     .menu-card h3 { font-size:13px; font-weight:700; position:relative; z-index:1; line-height:1.3; }
     .menu-card p { font-size:10px; color:var(--text-secondary); margin-top:3px; line-height:1.4; position:relative; z-index:1; }
@@ -1112,7 +1102,7 @@
     .greet-hi { font-size:16px; font-weight:800; line-height:1.25; }
     .greet-sub { font-size:12px; color:var(--text-secondary); margin-top:4px; line-height:1.5; }
     .greet-more { max-height:0; overflow:hidden; opacity:0; transition:max-height .45s ease, opacity .3s ease; }
-    .greet-card.open .greet-more { max-height:760px; opacity:1; }
+    .greet-card.open .greet-more { max-height:1100px; opacity:1; }
     .greet-lines { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
     .greet-line { display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-secondary); line-height:1.45; }
     .greet-line i { width:15px; text-align:center; color:var(--gold); flex-shrink:0; font-size:11.5px; }
@@ -1138,42 +1128,106 @@
     body.dark-theme .greet-exam-set input[type=date] { color-scheme:dark; }
     .greet-exam-set a { color:var(--gold); cursor:pointer; font-weight:700; }
 
-    /* Дневник оценок (Прогресс) */
-    .diary-tabs { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+    /* Дневник оценок — выноска в «Прогресс»: треугольник + иконка дневника */
+    .diary-note {
+      background:var(--card); border:1.5px solid var(--border); border-left:3px solid rgba(232,177,62,0.55);
+      border-radius:14px; margin:2px 0 14px; overflow:hidden;
+    }
+    .diary-note.open { border-color:rgba(232,177,62,0.35); border-left-color:var(--gold); }
+    .diary-head {
+      width:100%; display:flex; align-items:center; gap:9px; padding:11px 13px; background:none; border:none;
+      cursor:pointer; font-family:inherit; text-align:left; color:var(--text);
+    }
+    .diary-caret { width:10px; flex-shrink:0; font-size:11px; color:var(--text-muted); transition:transform .2s ease, color .2s ease; }
+    .diary-note.open .diary-caret { transform:rotate(90deg); color:var(--gold); }
+    .diary-ico { color:var(--gold); font-size:14px; flex-shrink:0; width:16px; text-align:center; }
+    .diary-head-title { flex:1; min-width:0; font-size:13px; font-weight:700; }
+    .diary-head-meta { font-size:11px; font-weight:600; color:var(--text-muted); white-space:nowrap; }
+    .diary-body { padding:1px 13px 13px; }
+    .diary-tabs { display:flex; gap:6px; margin:2px 0 11px; }
     .diary-tab {
-      flex:1 1 0; min-width:44px; max-width:80px; padding:7px 4px; border-radius:12px;
-      border:1.5px solid var(--border); background:var(--card); color:var(--text-secondary);
-      font-size:11.5px; font-weight:700; text-align:center; cursor:pointer; transition:all .2s; font-family:inherit;
+      flex:1 1 0; padding:6px 2px; border-radius:10px;
+      border:1.5px solid var(--border); background:none; color:var(--text-muted);
+      font-size:11.5px; font-weight:700; text-align:center; cursor:pointer;
+      transition:border-color .2s ease, color .2s ease, background .2s ease; font-family:inherit;
     }
-    .diary-tab.active { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.08); }
+    .diary-tab.active { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.07); }
+    /* Предмет — длинный прямоугольник на всю ширину: оценки внутри, средний балл напротив */
     .diary-row {
-      display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border);
-      border-radius:14px; padding:9px 12px; margin-bottom:7px;
+      display:block; background:var(--surface); border:1.5px solid var(--border);
+      border-radius:13px; padding:10px 12px; margin-bottom:7px;
     }
+    .diary-row-top { display:flex; align-items:baseline; gap:10px; }
     .diary-subj { flex:1; min-width:0; font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .diary-grades { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+    .diary-avg { font-size:15px; font-weight:800; color:var(--gold); flex-shrink:0; }
+    .diary-avg.none { color:var(--text-muted); font-size:12.5px; font-weight:700; }
+    .diary-grades { display:flex; gap:5px; flex-wrap:wrap; align-items:center; margin-top:8px; }
     .diary-g, .diary-add {
       width:26px; height:26px; border-radius:50%; flex-shrink:0;
       display:inline-flex; align-items:center; justify-content:center;
       font-size:12px; font-weight:800; font-family:inherit;
     }
-    .diary-g { background:rgba(232,177,62,0.12); color:var(--gold-dark); border:1px solid rgba(232,177,62,0.3); cursor:pointer; transition:all .15s; }
+    .diary-g { background:rgba(232,177,62,0.12); color:var(--gold-dark); border:1px solid rgba(232,177,62,0.3); cursor:pointer; transition:opacity .15s ease; }
     body.dark-theme .diary-g { color:var(--gold-light); }
     .diary-g.low { background:rgba(248,113,113,0.1); color:#f87171; border-color:rgba(248,113,113,0.25); }
-    .diary-avg { min-width:40px; text-align:right; font-size:13px; font-weight:800; color:var(--gold); flex-shrink:0; }
-    .diary-add { border:1.5px dashed var(--border); background:none; color:var(--text-muted); cursor:pointer; transition:all .2s; font-size:12px; }
+    .diary-add { border:1.5px dashed var(--border); background:none; color:var(--text-muted); cursor:pointer; transition:border-color .2s ease, color .2s ease; font-size:11px; }
     .diary-add:hover { border-color:var(--gold); color:var(--gold); }
-    .diary-sheet { display:none; flex-wrap:wrap; gap:6px; justify-content:center; margin:-2px 0 9px; padding:9px 10px; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; }
-    .diary-sheet.show { display:flex; }
-    .diary-sheet .dg {
-      width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--card);
-      font-size:13px; font-weight:800; cursor:pointer; color:var(--text); font-family:inherit; transition:all .15s;
-      display:inline-flex; align-items:center; justify-content:center;
+    .diary-no-grades { font-size:11.5px; color:var(--text-muted); }
+    .diary-empty { font-size:12px; color:var(--text-muted); padding:8px 2px 11px; line-height:1.55; }
+    .diary-total {
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:11px;
+      padding:10px 13px; background:rgba(232,177,62,0.07); border:1px solid rgba(232,177,62,0.22); border-radius:13px;
     }
-    .diary-sheet .dg:hover { border-color:var(--gold); color:var(--gold); transform:scale(1.08); }
-    .diary-empty { font-size:12px; color:var(--text-muted); text-align:center; padding:12px 8px 14px; line-height:1.5; }
-    .diary-pick { display:flex; gap:8px; margin-top:9px; }
-    .diary-pick select { flex:1; }
+    .diary-total-label { font-size:11.5px; font-weight:600; color:var(--text-secondary); line-height:1.4; }
+    .diary-total-label small { display:block; font-size:10.5px; color:var(--text-muted); font-weight:500; margin-top:2px; }
+    .diary-total-value { font-size:21px; font-weight:800; color:var(--gold); flex-shrink:0; }
+    .diary-total-value.none { font-size:13px; color:var(--text-muted); }
+    .diary-note-hint { font-size:10.5px; color:var(--text-muted); margin-top:8px; line-height:1.5; }
+    /* Окно дневника — по центру экрана */
+    .diary-modal {
+      position:fixed; inset:0; z-index:1300; background:rgba(12,11,9,0.5);
+      display:none; align-items:center; justify-content:center; padding:16px;
+    }
+    .diary-modal.open { display:flex; animation:fadeIn .18s ease; }
+    .diary-modal-card {
+      width:100%; max-width:420px; max-height:86vh; overflow:auto;
+      background:var(--card); border:1.5px solid var(--border); border-radius:18px;
+      padding:15px 15px 14px; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    }
+    .dm-head { display:flex; align-items:center; gap:9px; }
+    .dm-title { flex:1; min-width:0; font-size:14px; font-weight:800; }
+    .dm-close {
+      width:28px; height:28px; border-radius:9px; flex-shrink:0; border:1.5px solid var(--border);
+      background:none; color:var(--text-muted); cursor:pointer; font-size:11px; font-family:inherit;
+    }
+    .dm-sub { font-size:11.5px; color:var(--text-muted); margin:4px 0 11px; line-height:1.5; }
+    .dm-chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .dm-chip {
+      padding:7px 12px; border-radius:11px; border:1.5px solid var(--border); background:var(--surface);
+      color:var(--text-secondary); font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;
+      transition:border-color .2s ease, color .2s ease;
+    }
+    .dm-chip:hover { border-color:var(--gold); color:var(--gold); }
+    .dm-own { display:flex; gap:7px; margin-top:10px; }
+    .dm-own input { flex:1; min-width:0; margin:0; }
+    .dm-own .btn { flex-shrink:0; margin-top:0; padding:9px 13px; font-size:12px; }
+    .dm-keypad { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; margin:10px 0 11px; }
+    .dm-key {
+      height:38px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface);
+      color:var(--text); font-size:14px; font-weight:800; cursor:pointer; font-family:inherit;
+      transition:border-color .2s ease, color .2s ease;
+    }
+    .dm-key:hover { border-color:var(--gold); color:var(--gold); }
+    .dm-picked { display:flex; flex-wrap:wrap; gap:6px; align-items:center; min-height:28px; }
+    .dm-picked-empty { font-size:11.5px; color:var(--text-muted); }
+    .dm-foot { display:flex; gap:8px; margin-top:14px; }
+    .dm-foot .btn { flex:1; margin-top:0; padding:10px 12px; font-size:12.5px; }
+    .dm-drop { margin-top:10px; text-align:center; }
+    .dm-drop a { font-size:11.5px; color:var(--text-muted); cursor:pointer; text-decoration:underline; }
+    @media (max-width:380px) {
+      .dm-keypad { grid-template-columns:repeat(5,1fr); gap:6px; }
+      .dm-key { height:34px; font-size:13px; }
+    }
 
     /* Разбор ошибок (ошибка → объяснение → тренировка) */
     .mistake-row {
@@ -1747,8 +1801,7 @@ const menuConfigs = {
       {
         label: 'Планирование уроков',
         items: [
-          { id: 'quick_lesson', icon: 'fas fa-bolt', title: 'Быстрый урок', description: 'Тема → план, вопросы, практика, тест и ДЗ' },
-          { id: 'lesson', icon: 'fas fa-chalkboard-user', title: 'План урока', description: 'Полный план за 30 секунд' },
+          { id: 'quick_lesson', icon: 'fas fa-bolt', title: 'Быстрый урок', description: 'План урока + объяснение, практика, тест и ДЗ' },
           { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
           { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'Уникальные варианты с ответами' },
           { id: 'differentiation', icon: 'fas fa-layer-group', title: 'Дифференциация', description: 'Задания для разных уровней' },
@@ -2600,11 +2653,11 @@ function generateForm(actionId) {
       html = scanFormHtml();
       break;
     case 'quick_lesson':
+      // единая функция учителя: план урока + весь комплект материалов одним заходом
       html = ta('inputText', 3)
         + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + sel('duration', 'Длительность', `<option selected>45 минут</option><option>90 минут</option>`)
-        + `<div class="info-banner"><strong>⚡ ${t('ql.bannerTitle')}</strong><br>${t('ql.bannerText')}</div>`
         + btn('fas fa-bolt', t('ql.run'));
       break;
     case 'generate_quiz':
@@ -3051,14 +3104,14 @@ ${inputText}
     
     lesson: `План урока ${data.duration} по "${inputText}" (${data.subject}, ${data.grade}).`,
 
-    quick_lesson: `Собери БЫСТРЫЙ УРОК: комплект материалов на ${data.duration || '45 минут'} по теме "${inputText}" (${data.subject}, ${data.grade}).
+    quick_lesson: `Собери урок под ключ на ${data.duration || '45 минут'} по теме "${inputText}" (${data.subject}, ${data.grade}): полный план урока и сразу весь комплект материалов к нему.
 СТРОГО такая структура (заголовки через ###):
-1) Цель и план урока — тайминг по этапам на ${data.duration || '45'} минут.
+1) План урока — цели (образовательная, развивающая, воспитательная), оборудование и тайминг по этапам на ${data.duration || '45'} минут.
 2) Объяснение новой темы — кратко, с ключевыми определениями и одной аналогией из жизни.
 3) 4–5 вопросов классу для проверки понимания (с ожидаемыми ответами в скобках).
 4) Практическое задание на уроке (1–2 задания с ответом).
 5) Мини-тест на 5 вопросов с вариантами и правильными ответами.
-6) Домашнее задание (с разного уровня: базовое + одно повышенной сложности).
+6) Домашнее задание (разного уровня: базовое + одно повышенной сложности).
 7) Что сделать после урока учителю — чек-лист из 3 пунктов.
 Формулы — LaTeX. Материал должен быть готов к использованию сразу.`,
 
@@ -3291,6 +3344,8 @@ function showPage(pageId) {
   if (pageId === 'settingsPage') updateSettingsCountryLine();
   if (pageId === 'settingsPage') updatePlusUI();
   if (pageId === 'progressPage' && window.renderGreetCard) renderGreetCard();
+  // окно дневника относится к «Прогрессу» — при уходе со страницы закрываем его
+  if (pageId !== 'progressPage' && typeof diaryModal !== 'undefined' && diaryModal) diaryCloseModal();
   window.scrollTo(0, 0);
 }
 
@@ -5782,7 +5837,7 @@ const I18N = {
     'progress.mascotBtnSolve': 'Решим задачу',
     'progress.mascotBtnWeak': 'Потренируем слабое место',
     'progress.mascotBtnQuiz': 'Создадим тест',
-    'progress.mascotBtnLesson': 'Составим план урока',
+    'progress.mascotBtnLesson': 'Соберём урок',
     'teacher.title': 'Класс и аналитика',
     'teacher.subtitle': 'Назначайте задания классу и смотрите, кто справился и где ошибки',
     'teacher.classes': 'Мои классы',
@@ -5994,7 +6049,7 @@ const I18N = {
     'progress.mascotBtnSolve': 'Есеп шығарайық',
     'progress.mascotBtnWeak': 'Әлсіз тұсты жаттықтырайық',
     'progress.mascotBtnQuiz': 'Тест құрайық',
-    'progress.mascotBtnLesson': 'Сабақ жоспарын құрайық',
+    'progress.mascotBtnLesson': 'Сабақ жинайық',
     'teacher.title': 'Сынып және аналитика',
     'teacher.subtitle': 'Сыныпқа тапсырмалар тағайындап, кім орындағанын және қателерді көріңіз',
     'teacher.classes': 'Менің сыныптарым',
@@ -6206,7 +6261,7 @@ const I18N = {
     'progress.mascotBtnSolve': 'Masala yechamiz',
     'progress.mascotBtnWeak': 'Zaif joyni mashq qilamiz',
     'progress.mascotBtnQuiz': 'Test tuzamiz',
-    'progress.mascotBtnLesson': 'Dars rejasini tuzamiz',
+    'progress.mascotBtnLesson': 'Dars yigʻamiz',
     'teacher.title': 'Sinf va tahlil',
     'teacher.subtitle': 'Sinfga topshiriqlar tayinlang va kim bajardi, qayerda xatolar — koʻring',
     'teacher.classes': 'Mening sinflarim',
@@ -6935,7 +6990,7 @@ const MENU_T_RU = {
   scanT: { ru: 'Сканер тетрадей' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок' },
   pres: { ru: 'Презентация' }, presD: { ru: 'Слайды по теме — для урока или доклада' },
   presT: { ru: 'Презентация для урока' }, presTD: { ru: 'Готовые слайды за минуту' },
-  quickLesson: { ru: 'Быстрый урок' }, quickLessonD: { ru: 'Тема → план, вопросы, практика, тест и ДЗ' },
+  quickLesson: { ru: 'Быстрый урок' }, quickLessonD: { ru: 'План урока + объяснение, практика, тест и ДЗ' },
   tExplain: { ru: 'Методика объяснения' }, tExplainD: { ru: 'Как объяснить тему классу' },
   tSchema: { ru: 'Схема для класса' }, tSchemaD: { ru: 'Визуальный материал' },
   tSummary: { ru: 'Конспект урока' }, tSummaryD: { ru: 'Структура материала' },
@@ -6970,7 +7025,7 @@ const MENU_T_KZ = {
   scanT: { ru: 'Сканер тетрадей', kk: 'Дәптер сканері' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок', kk: 'Оқушы жұмысының фотосы — тексеру және қателерді табу' },
   pres: { ru: 'Презентация', kk: 'Презентация' }, presD: { ru: 'Слайды по теме — для урока или доклада', kk: 'Тақырып бойынша слайдтар — сабаққа немесе баяндамаға' },
   presT: { ru: 'Презентация для урока', kk: 'Сабаққа презентация' }, presTD: { ru: 'Готовые слайды за минуту', kk: 'Дайын слайдтар бір минутта' },
-  quickLesson: { ru: 'Быстрый урок', kk: 'Жылдам сабақ' }, quickLessonD: { ru: 'Тема → план, вопросы, практика, тест и ДЗ', kk: 'Тақырып → жоспар, сұрақтар, практика, тест және үй тапсырмасы' },
+  quickLesson: { ru: 'Быстрый урок', kk: 'Жылдам сабақ' }, quickLessonD: { ru: 'План урока + объяснение, практика, тест и ДЗ', kk: 'Сабақ жоспары + түсіндірме, практика, тест және үй тапсырмасы' },
   tExplain: { ru: 'Методика объяснения', kk: 'Түсіндіру әдістемесі' }, tExplainD: { ru: 'Как объяснить тему классу', kk: 'Тақырыпты сыныпқа қалай түсіндіру' },
   tSchema: { ru: 'Схема для класса', kk: 'Сыныпқа схема' }, tSchemaD: { ru: 'Визуальный материал', kk: 'Көрнекі материал' },
   tSummary: { ru: 'Конспект урока', kk: 'Сабақ конспектісі' }, tSummaryD: { ru: 'Структура материала', kk: 'Материал құрылымы' },
@@ -7005,7 +7060,7 @@ const MENU_T_UZ = {
   scanT: { ru: 'Сканер тетрадей', uz: 'Daftar skaneri' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок', uz: 'Oʻquvchi ishi fotosi — tekshirish va xatolarni topish' },
   pres: { ru: 'Презентация', uz: 'Taqdimot' }, presD: { ru: 'Слайды по теме — для урока или доклада', uz: 'Mavzu boʻyicha slaydlar — dars yoki maʼruza uchun' },
   presT: { ru: 'Презентация для урока', uz: 'Dars uchun taqdimot' }, presTD: { ru: 'Готовые слайды за минуту', uz: 'Tayyor slaydlar bir daqiqada' },
-  quickLesson: { ru: 'Быстрый урок', uz: 'Tezkor dars' }, quickLessonD: { ru: 'Тема → план, вопросы, практика, тест и ДЗ', uz: 'Mavzu → reja, savollar, amaliyot, test va uy vazifasi' },
+  quickLesson: { ru: 'Быстрый урок', uz: 'Tezkor dars' }, quickLessonD: { ru: 'План урока + объяснение, практика, тест и ДЗ', uz: 'Dars rejasi + tushuntirish, amaliyot, test va uy vazifasi' },
   tExplain: { ru: 'Методика объяснения', uz: 'Tushuntirish metodikasi' }, tExplainD: { ru: 'Как объяснить тему классу', uz: 'Mavzuni sinfga qanday tushuntirish' },
   tSchema: { ru: 'Схема для класса', uz: 'Sinf uchun sxema' }, tSchemaD: { ru: 'Визуальный материал', uz: 'Koʻrgazmali material' },
   tSummary: { ru: 'Конспект урока', uz: 'Dars konspekti' }, tSummaryD: { ru: 'Структура материала', uz: 'Material tuzilmasi' },
@@ -7484,7 +7539,6 @@ function buildMenuFor(c) {
   ];
   const plan = [
     { id: 'quick_lesson', icon: 'fas fa-bolt', title: pick(c.t.quickLesson), description: pick(c.t.quickLessonD) },
-    { id: 'lesson', icon: 'fas fa-chalkboard-user', title: pick(c.t.lesson), description: pick(c.t.lessonD) },
     { id: 'tasks', icon: 'fas fa-tasks', title: pick(c.t.tasks), description: pick(c.t.tasksD) },
     { id: 'variants', icon: 'fas fa-copy', title: pick(c.t.variants), description: pick(c.t.variantsD) },
     { id: 'differentiation', icon: 'fas fa-layer-group', title: pick(c.t.diff), description: pick(c.t.diffD) }
@@ -7848,7 +7902,7 @@ function renderMascot(acc, qTotal, weak) {
   const actions = [];
   if (state.role === 'teacher') {
     actions.push('<button class="btn btn-primary" onclick="openAction(\'generate_quiz\')"><i class="fas fa-question-circle"></i> ' + t('progress.mascotBtnQuiz') + '</button>');
-    actions.push('<button class="btn btn-secondary" onclick="openAction(\'lesson\')"><i class="fas fa-chalkboard-user"></i> ' + t('progress.mascotBtnLesson') + '</button>');
+    actions.push('<button class="btn btn-secondary" onclick="openAction(\'quick_lesson\')"><i class="fas fa-bolt"></i> ' + t('progress.mascotBtnLesson') + '</button>');
   } else {
     actions.push('<button class="btn btn-primary" onclick="openCTTest()"><i class="fas fa-trophy"></i> ' + t('progress.mascotBtnTest') + ' · ' + escapeHtml(examShort(c)) + '</button>');
     actions.push('<button class="btn btn-secondary" onclick="openAction(\'summary\')"><i class="fas fa-book"></i> ' + t('progress.mascotBtnSummary') + '</button>');
@@ -7871,6 +7925,8 @@ function renderProgressPage() {
   if (!root) return;
   // карточка-приветствие живёт в этом разделе — обновляем вместе со статистикой
   if (window.renderGreetCard) renderGreetCard();
+  // окно дневника живёт вне страницы (по центру экрана) — держим его в актуальном состоянии
+  if (window.renderDiaryModal) renderDiaryModal();
   const cp = countryProgress();
   const qTotal = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].n; }, 0);
   const qOk = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].ok; }, 0);
@@ -8992,20 +9048,42 @@ function applyVariantAssignment(a, name) {
     'greet.attention': '«{s}» требует внимания',
     'greet.rec': 'Рекомендация Nevio',
     'greet.recReview': 'Сегодня стоит повторить тему «{topic}».',
-    'greet.recMistakes': 'У тебя {n} неразобранных ошибок — начни с разбора одной.',
-    'greet.recTeacher': 'Хороший момент, чтобы подготовить урок или тест для класса.',
+    'greet.recMistakes': 'Неразобранных ошибок: {n} — начни с разбора одной.',
+    'greet.recDiary': 'В дневнике по предмету «{s}» средний балл {avg} — ниже среднего за {q} ({qavg}).',
+    'greet.recStart': 'Данных пока мало: пройди пару заданий — и Nevio подскажет, что повторить.',
+    'greet.recTClass': 'Создай класс — ученики присоединятся по коду, и появится аналитика.',
+    'greet.recTAssign': 'Класс «{c}» создан, а заданий ещё нет. Назначь первое.',
+    'greet.recTAnalytics': 'Попыток по заданиям класса: {n} — посмотри, на каких вопросах ошибаются чаще всего.',
+    'greet.recTLesson': 'Собери урок: план, объяснение, практика, мини-тест и ДЗ за один заход.',
     'greet.recGo': 'Потренироваться', 'greet.recExplain': 'Объяснить',
+    'greet.recDiaryBtn': 'Открыть дневник', 'greet.recStartBtn': 'Пройти задания',
+    'greet.recTClassBtn': 'Создать класс', 'greet.recTAssignBtn': 'Назначить задание',
+    'greet.recTAnalyticsBtn': 'Аналитика класса', 'greet.recTLessonBtn': 'Собрать урок',
     'greet.examIn': 'До экзамена — {n} дн.',
     'greet.examSet': 'Указать дату экзамена', 'greet.examClear': 'Убрать',
     'greet.examHint': 'Дату экзамена можно задать свою — Nevio посчитает дни только по ней.',
     'diary.title': 'Мой дневник',
     'diary.desc': 'Оценки по предметам — средний балл считается сразу',
-    'diary.empty': 'Пока пусто. Нажми «+» напротив предмета и добавь первую оценку.',
+    'diary.empty': 'Нажми «Добавить предмет», выбери предмет и поставь оценки — Nevio сразу посчитает средний балл.',
+    'diary.emptyYear': 'За год оценок пока нет — добавь предметы в четвертях.',
     'diary.add': 'Добавить предмет',
-    'diary.avg': 'Средний балл · {q}', 'diary.yearAvg': 'Средний за год',
+    'diary.addSub': 'Выбери предмет из списка или впиши свой',
+    'diary.allAdded': 'Все предметы твоей страны уже в дневнике — можно вписать свой.',
+    'diary.ownPh': 'Свой предмет', 'diary.ownBtn': 'Добавить',
+    'diary.emptyName': 'Впиши название предмета',
+    'diary.gradesTitle': 'Оценки',
+    'diary.gradesSub': 'Нажимай на балл — оценка добавится. Нажми на оценку, чтобы убрать её.',
+    'diary.apply': 'Применить', 'diary.cancel': 'Отмена', 'diary.dropSubject': 'Убрать предмет',
+    'diary.avg': 'Средний балл · {q}', 'diary.yearAvg': 'Средний за год', 'diary.avgOf': 'Средний балл',
     'diary.gradesN': 'Оценок', 'diary.subjectsN': 'Предметов',
+    'diary.noGrades': 'нет оценок', 'diary.noGradesShort': 'оценок пока нет',
+    'diary.hint': 'Клик по оценке убирает её, «+» — добавить ещё.',
+    'diary.yearNote': '«Год» собирает оценки из всех четвертей. Чтобы добавить — выбери четверть.',
     'diary.removed': 'Оценка убрана',
-    'diary.qI': 'I', 'diary.qII': 'II', 'diary.qIII': 'III', 'diary.qIV': 'IV', 'diary.qYear': 'Год',
+    'diary.saved': 'Оценки сохранены',
+    'diary.subjectRemoved': 'Предмет убран',
+    'diary.qI': '1', 'diary.qII': '2', 'diary.qIII': '3', 'diary.qIV': '4', 'diary.qYear': 'Год',
+    'diary.qWord': 'четверть',
     'mist.title': 'Разбор ошибок',
     'mist.desc': 'Найди ошибку → пойми её → закрепь похожими заданиями',
     'mist.explain': 'Объяснить ошибку', 'mist.practice': 'Потренироваться',
@@ -9029,7 +9107,6 @@ function applyVariantAssignment(a, name) {
     'pres.withQuestions': 'Добавить вопросы и задания для класса',
     'pres.building': 'Собираю презентацию…', 'pres.show': 'Показать слайды',
     'pres.download': 'Скачать .html', 'pres.deckTitle': 'Презентация готова',
-    'ql.bannerTitle': '⚡ Быстрый урок', 'ql.bannerText': 'Nevio соберёт комплект сразу: структура, объяснение, вопросы классу, практика, мини-тест и домашка.',
     'ql.run': 'Собрать урок', 'ql.chipPres': '🎞 Презентация к уроку', 'ql.chipTest': '🧪 Тест для класса',
     'variants.topicPh': 'Например: квадратные уравнения', 'variants.count': 'Вариантов', 'variants.unit': 'варианта(ов)',
     'variants.perVariant': 'Заданий в варианте', 'variants.run': 'Создать варианты',
@@ -9056,6 +9133,30 @@ function applyVariantAssignment(a, name) {
     'greet.minutes': '{n} мин оқу', 'greet.tasks': '{n} орындалған тапсырма', 'greet.answers': '{n} жауап ({ok} дұрыс)',
     'greet.rec': 'Nevio ұсынысы', 'greet.examIn': 'Емтиханға дейін — {n} күн',
     'diary.title': 'Күнделігім', 'mist.title': 'Қателерді талдау', 'simple.btn': 'Қарапайым түсіндір',
+    'diary.add': 'Пән қосу', 'diary.addSub': 'Тізімнен пән таңда немесе өз пәніңді жаз',
+    'diary.ownPh': 'Өз пәнің', 'diary.ownBtn': 'Қосу', 'diary.emptyName': 'Пән атын жаз',
+    'diary.gradesSub': 'Балды бас — баға қосылады. Бағаны бассаң — жойылады.',
+    'diary.apply': 'Қолдану', 'diary.cancel': 'Болдырмау', 'diary.dropSubject': 'Пәнді жою',
+    'diary.avg': 'Орташа балл · {q}', 'diary.yearAvg': 'Жылдық орташа', 'diary.avgOf': 'Орташа балл',
+    'diary.gradesN': 'Баға', 'diary.subjectsN': 'Пән',
+    'diary.noGrades': 'баға жоқ', 'diary.noGradesShort': 'баға жоқ',
+    'diary.removed': 'Баға жойылды', 'diary.saved': 'Бағалар сақталды', 'diary.subjectRemoved': 'Пән жойылды',
+    'diary.qYear': 'Жыл', 'diary.qWord': 'тоқсан',
+    'greet.recMistakes': 'Талданбаған қателер: {n} — біреуін талдаудан баста.',
+    'greet.recReview': 'Бүгін «{topic}» тақырыбын қайталаған жөн.',
+    'greet.recDiary': 'Күнделікте «{s}» пәнінің орташа балы {avg} — {q} орташасынан ({qavg}) төмен.',
+    'greet.recStart': 'Деректер әзірге аз: бірнеше тапсырма орында — Nevio нені қайталауды айтады.',
+    'greet.recTClass': 'Сынып құр — оқушылар код арқылы қосылады, аналитика пайда болады.',
+    'greet.recTAssign': '«{c}» сыныбы құрылған, бірақ тапсырма жоқ. Алғашқысын тағайында.',
+    'greet.recTAnalytics': 'Сынып тапсырмалары бойынша {n} әрекет — қай сұрақта жиі қателесетінін қара.',
+    'greet.recGo': 'Жаттығу', 'greet.recExplain': 'Түсіндіру',
+    'greet.recDiaryBtn': 'Күнделікті ашу', 'greet.recStartBtn': 'Тапсырмаларды орындау',
+    'greet.recTClassBtn': 'Сынып құру', 'greet.recTAssignBtn': 'Тапсырма тағайындау',
+    'greet.recTAnalyticsBtn': 'Сынып аналитикасы', 'greet.recTLessonBtn': 'Сабақ жинау',
+    'diary.empty': '«Пән қосу» батыр: пәнді таңдап, баға қой — Nevio орташа балды бірден есептейді.',
+    'diary.hint': 'Бағаны бассан — жойылады, «+» — тағы қосу.',
+    'diary.yearNote': '«Жыл» барлық тоқсан бағаларын жинайды. Қосу үшін тоқсанды таңда.',
+    'diary.emptyYear': 'Жыл бойынша баға жоқ — тоқсандарда пән қос.',
     'pres.slides': 'Слайд саны', 'variants.count': 'Нұсқалар саны', 'teacher.uniqueVariants': 'Бірегей нұсқалар'
   };
   const uz = {
@@ -9065,6 +9166,30 @@ function applyVariantAssignment(a, name) {
     'greet.minutes': '{n} daqiqa o\'qish', 'greet.tasks': '{n} bajarilgan topshiriq', 'greet.answers': '{n} javob ({ok} to\'g\'ri)',
     'greet.rec': 'Nevio tavsiyasi', 'greet.examIn': 'Imtihonga — {n} kun',
     'diary.title': 'Kundaligim', 'mist.title': 'Xatolarni tahlil', 'simple.btn': 'Soddaroq tushuntir',
+    'diary.add': 'Fan qoʻshish', 'diary.addSub': 'Roʻyxatdan fan tanlang yoki oʻz faningizni yozing',
+    'diary.ownPh': 'Oʻz fani', 'diary.ownBtn': 'Qoʻshish', 'diary.emptyName': 'Fan nomini yozing',
+    'diary.gradesSub': 'Ballni bosing — baho qoʻshiladi. Bahoni bossangiz — oʻchadi.',
+    'diary.apply': 'Qoʻllash', 'diary.cancel': 'Bekor qilish', 'diary.dropSubject': 'Fanni oʻchirish',
+    'diary.avg': 'Oʻrtacha ball · {q}', 'diary.yearAvg': 'Yillik oʻrtacha', 'diary.avgOf': 'Oʻrtacha ball',
+    'diary.gradesN': 'Baho', 'diary.subjectsN': 'Fan',
+    'diary.noGrades': 'baho yoʻq', 'diary.noGradesShort': 'baho yoʻq',
+    'diary.removed': 'Baho oʻchirildi', 'diary.saved': 'Baholar saqlandi', 'diary.subjectRemoved': 'Fan oʻchirildi',
+    'diary.qYear': 'Yil', 'diary.qWord': 'chorak',
+    'greet.recMistakes': 'Tahlil qilinmagan xatolar: {n} — bittasidan boshlang.',
+    'greet.recReview': 'Bugun «{topic}» mavzusini takrorlash kerak.',
+    'greet.recDiary': 'Kundalikda «{s}» fanining oʻrtacha balli {avg} — {q} oʻrtachasidan ({qavg}) past.',
+    'greet.recStart': 'Maʼlumotlar hali kam: bir nechta topshiriq bajaring — Nevio nimani takrorlashni aytadi.',
+    'greet.recTClass': 'Sinf yarating — oʻquvchilar kod orqali qoʻshiladi, analitika paydo boʻladi.',
+    'greet.recTAssign': '«{c}» sinfi yaratilgan, lekin topshiriq yoʻq. Birinchisini bering.',
+    'greet.recTAnalytics': 'Sinf topshiriqlari boʻyicha {n} urinish — qaysi savolda koʻp xato qilishini koʻring.',
+    'greet.recGo': 'Mashq qilish', 'greet.recExplain': 'Tushuntirish',
+    'greet.recDiaryBtn': 'Kundalikni ochish', 'greet.recStartBtn': 'Topshiriqlarni bajarish',
+    'greet.recTClassBtn': 'Sinf yaratish', 'greet.recTAssignBtn': 'Topshiriq berish',
+    'greet.recTAnalyticsBtn': 'Sinf analitikasi', 'greet.recTLessonBtn': 'Dars yigʻish',
+    'diary.empty': '«Fan qoʻshish» tugmasi: fanni tanlab, baho qoʻying — Nevio oʻrtacha ballni darhol hisoblaydi.',
+    'diary.hint': 'Bahoni bossangiz — oʻchadi, «+» — yana qoʻshish.',
+    'diary.yearNote': '«Yil» barcha chorak baholarini yigʻadi. Qoʻshish uchun chorakni tanlang.',
+    'diary.emptyYear': 'Yil boʻyicha baho yoʻq — choraklarda fan qoʻshing.',
     'pres.slides': 'Slaydlar soni', 'variants.count': 'Variantlar soni', 'teacher.uniqueVariants': 'Noyob variantlar'
   };
   Object.assign(I18N.ru, ru);
@@ -9201,6 +9326,84 @@ function greetTodaySummary() {
   return out;
 }
 
+/* ---------- Рекомендация Nevio: одна конкретная подсказка из реальных данных ---------- */
+function actionTitle(id, fallback) {
+  try {
+    const it = getAllItems().find(function (m) { return m.id === id; });
+    if (it && it.title) return it.title;
+  } catch (e) {}
+  return fallback || '';
+}
+function recBtn(kind, onclick, icon, label) {
+  return '<button class="btn ' + kind + '" onclick="' + onclick + '"><i class="' + icon + '"></i> ' + escapeHtml(label) + '</button>';
+}
+function nevioRecommendation() {
+  const out = { text: '', btns: '' };
+  try {
+    if (state.role === 'teacher') {
+      const classes = (typeof teacherData === 'object' && teacherData && teacherData.classes) || [];
+      const assignments = (teacherData && teacherData.assignments) || [];
+      const attempts = (teacherData && teacherData.attempts) || [];
+      const lessonBtn = recBtn('btn-secondary', "openAction('quick_lesson')", 'fas fa-bolt', t('greet.recTLessonBtn'));
+      if (!classes.length) {
+        out.text = escapeHtml(t('greet.recTClass'));
+        out.btns = recBtn('btn-primary', "openTeacher('classes')", 'fas fa-users', t('greet.recTClassBtn')) + lessonBtn;
+      } else if (!assignments.length) {
+        out.text = escapeHtml(t('greet.recTAssign').replace('{c}', String(classes[0].name || '')));
+        out.btns = recBtn('btn-primary', "openAction('assign')", 'fas fa-paper-plane', t('greet.recTAssignBtn')) + lessonBtn;
+      } else {
+        out.text = escapeHtml(t('greet.recTAnalytics').replace('{n}', String(attempts.length)));
+        out.btns = recBtn('btn-primary', "openTeacher('analytics')", 'fas fa-chart-bar', t('greet.recTAnalyticsBtn')) + lessonBtn;
+      }
+      return out;
+    }
+
+    const cp = countryProgress();
+    const openM = (cp.mistakes || []).filter(function (m) { return m.status === 'new'; });
+    const weak = weakTopics();
+
+    // 1) неразобранные ошибки — самое ценное: разбор именно последней ошибки
+    if (openM.length) {
+      const m = openM[openM.length - 1];
+      out.text = escapeHtml(t('greet.recMistakes').replace('{n}', String(openM.length)));
+      out.btns = recBtn('btn-primary', "mistakeExplain('" + m.id + "')", 'fas fa-lightbulb', t('mist.explain')) +
+        recBtn('btn-secondary', "startMistakePractice('" + escapeAttr(m.subject) + "','" + escapeAttr(m.topic || '') + "',['" + m.id + "'])", 'fas fa-dumbbell', t('mist.practice'));
+      return out;
+    }
+    // 2) слабая тема по статистике ответов
+    if (weak.length) {
+      out.text = escapeHtml(t('greet.recReview').replace('{topic}', '«' + weak[0].topic + '»'));
+      out.btns = recBtn('btn-primary', "practiceWeakTopic('" + escapeAttr(weak[0].subject) + "','" + escapeAttr(weak[0].topic) + "')", 'fas fa-dumbbell', t('greet.recGo')) +
+        recBtn('btn-secondary', "explainWeakTopic('" + escapeAttr(weak[0].subject) + "','" + escapeAttr(weak[0].topic) + "')", 'fas fa-lightbulb', t('greet.recExplain'));
+      return out;
+    }
+    // 3) дневник: предмет, который тянет средний балл четверти вниз
+    const dq = diaryActiveQuarter();
+    const qAvg = diaryQuarterAvg(dq);
+    let worst = null;
+    diarySubjects(dq).forEach(function (s) {
+      const a = diaryAvg(diaryGrades(dq, s));
+      if (a === null) return;
+      if (!worst || a < worst.avg) worst = { subject: s, avg: a };
+    });
+    if (qAvg !== null && worst && worst.avg < qAvg - 0.05 && worst.avg < 7) {
+      out.text = escapeHtml(t('greet.recDiary')
+        .replace('{s}', subjectName(worst.subject))
+        .replace('{avg}', worst.avg.toFixed(1))
+        .replace('{q}', diaryQuarterLabel(dq))
+        .replace('{qavg}', qAvg.toFixed(1)));
+      out.btns = recBtn('btn-primary', "diaryOpenSubject('" + escapeAttr(worst.subject) + "','" + dq + "')", 'fas fa-book-open', t('greet.recDiaryBtn')) +
+        recBtn('btn-secondary', "practiceWeakTopic('" + escapeAttr(worst.subject) + "','" + escapeAttr('Общие темы') + "')", 'fas fa-dumbbell', t('greet.recGo'));
+      return out;
+    }
+    // 4) данных пока нет — честный старт, без выдуманных цифр
+    out.text = escapeHtml(t('greet.recStart'));
+    out.btns = recBtn('btn-primary', 'openCTTest()', 'fas fa-trophy', t('progress.mascotBtnTest')) +
+      recBtn('btn-secondary', "openAction('solve')", 'fas fa-calculator', actionTitle('solve', t('progress.mascotBtnSolve')));
+    return out;
+  } catch (e) { return out; }
+}
+
 function renderGreetCard() {
   const root = document.getElementById('greetRoot');
   if (!root || !state.role) return;
@@ -9229,23 +9432,10 @@ function renderGreetCard() {
   if (sum.attention) add('fas fa-triangle-exclamation', t('greet.attention').replace('{s}', escapeHtml(subjectName(sum.attention))));
   if (!lines) lines = '<div class="greet-line"><i class="fas fa-seedling"></i><span>' + escapeHtml(t('greet.noStats')) + '</span></div>';
 
-  // Рекомендация — из реального состояния: неразобранные ошибки → слабые темы → старт
-  const cp = countryProgress();
-  const openM = (cp.mistakes || []).filter(function (m) { return m.status === 'new'; });
-  const weak = weakTopics();
-  let recText = '', recBtns = '';
-  if (state.role === 'teacher') {
-    recText = escapeHtml(t('greet.recTeacher'));
-    recBtns = '<button class="btn btn-primary" onclick="openAction(\'quick_lesson\')"><i class="fas fa-bolt"></i> ' + escapeHtml(t('quickLesson') || 'Быстрый урок') + '</button>' +
-      '<button class="btn btn-secondary" onclick="openAction(\'generate_quiz\')"><i class="fas fa-question-circle"></i> ' + escapeHtml(t('quiz') || 'Тест') + '</button>';
-  } else if (openM.length) {
-    recText = escapeHtml(t('greet.recMistakes').replace('{n}', String(openM.length)));
-    recBtns = '<button class="btn btn-primary" onclick="showProgress()"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('mist.explain')) + '</button>';
-  } else if (weak.length) {
-    recText = t('greet.recReview').replace('{topic}', '«' + escapeHtml(weak[0].topic) + '»');
-    recBtns = '<button class="btn btn-primary" onclick="practiceWeakTopic(\'' + escapeAttr(weak[0].subject) + '\',\'' + escapeAttr(weak[0].topic) + '\')"><i class="fas fa-dumbbell"></i> ' + escapeHtml(t('greet.recGo')) + '</button>' +
-      '<button class="btn btn-secondary" onclick="explainWeakTopic(\'' + escapeAttr(weak[0].subject) + '\',\'' + escapeAttr(weak[0].topic) + '\')"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('greet.recExplain')) + '</button>';
-  }
+  // Рекомендация Nevio — всегда из реальных данных, с конкретным следующим шагом
+  const rec = nevioRecommendation();
+  const recText = rec.text;
+  const recBtns = rec.btns;
 
   const examEditor = days === null
     ? '<div class="greet-exam-set"><i class="fas fa-calendar-day" style="color:var(--gold)"></i><span>' + escapeHtml(t('greet.examHint')) + '</span></div>' +
@@ -9447,10 +9637,12 @@ function renderMistakesSection() {
   return html;
 }
 
-/* ---------- Дневник оценок (задача 4) — минимализм, всё локально ---------- */
+/* ---------- Дневник оценок (задача 4) — выноска в «Прогресс», всё локально ---------- */
 const DIARY_KEY = 'nevioDiary_v1';
-let diaryTab = null;
-let diarySheet = null;
+const DIARY_SCALE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let diaryTab = null;        // выбранная четверть: 'I'..'IV' | 'year'
+let diaryOpen = false;      // выноска свёрнута, пока её не раскрыли
+let diaryModal = null;      // null | { step:'subject' } | { step:'grades', subject, grades:[] }
 
 function diaryAll() { try { return JSON.parse(localStorage.getItem(DIARY_KEY) || '{}'); } catch (e) { return {}; } }
 function nevioCurrentQuarter() {
@@ -9462,22 +9654,21 @@ function nevioCurrentQuarter() {
 }
 // единая рабочая копия дневника текущей страны: читать -> менять -> diarySave()
 let diaryCache = null;
+let diaryCacheCountry = null;
 function diaryCur() {
-  if (diaryCache && diaryCache._country === (state.country || 'BY')) return diaryCache;
-  const all = diaryAll();
   const id = state.country || 'BY';
+  if (diaryCache && diaryCacheCountry === id) return diaryCache;
+  const all = diaryAll();
   if (!all[id]) all[id] = { q: nevioCurrentQuarter(), byQ: {} };
   if (!all[id].byQ) all[id].byQ = {};
-  all[id]._country = id;
+  if (all[id]._country) delete all[id]._country; // старое служебное поле больше не храним
   diaryCache = all[id];
+  diaryCacheCountry = id;
   return diaryCache;
 }
 function diarySave() {
   const all = diaryAll();
-  const d = diaryCur();
-  delete d._country;
-  all[state.country || 'BY'] = JSON.parse(JSON.stringify(d));
-  d._country = state.country || 'BY';
+  all[state.country || 'BY'] = JSON.parse(JSON.stringify(diaryCur()));
   try { localStorage.setItem(DIARY_KEY, JSON.stringify(all)); } catch (e) {}
 }
 function diarySubjects(q) {
@@ -9487,8 +9678,7 @@ function diarySubjects(q) {
     Object.keys(d.byQ).forEach(function (qq) { Object.keys(d.byQ[qq] || {}).forEach(function (s) { set[s] = 1; }); });
     return Object.keys(set);
   }
-  const bag = d.byQ[q] || {};
-  return Object.keys(bag);
+  return Object.keys(d.byQ[q] || {});
 }
 function diaryGrades(q, subject) {
   const d = diaryCur();
@@ -9508,39 +9698,144 @@ function diaryActiveQuarter() {
   const d = diaryCur();
   return d.q || nevioCurrentQuarter();
 }
-function diarySetQ(q) { diaryTab = q; diarySheet = null; renderProgressPage(); }
-function diaryToggleSheet(subject) {
-  diarySheet = (diarySheet === subject) ? null : subject;
-  renderProgressPage();
+function diaryQuarterLabel(q) {
+  return q === 'year' ? t('diary.qYear') : t('diary.q' + q) + ' ' + t('diary.qWord');
 }
-function diaryAddGrade(subject, grade) {
+// средний балл четверти — среднее из средних по предметам
+function diaryQuarterAvg(q) {
+  const avgs = diarySubjects(q)
+    .map(function (s) { return diaryAvg(diaryGrades(q, s)); })
+    .filter(function (x) { return x !== null; });
+  return diaryAvg(avgs);
+}
+
+/* --- интерфейс дневника: выноска + окно по центру экрана --- */
+function diaryToggleOpen() { diaryOpen = !diaryOpen; renderProgressPage(); }
+function diarySetQ(q) {
+  diaryTab = q;
+  diaryModal = null;
+  renderProgressPage();
+  // в пустой четверти сразу показываем «Добавить предмет» по центру экрана
+  if (q !== 'year' && !diarySubjects(q).length) diaryOpenAddSubject();
+}
+function diaryOpenAddSubject() { diaryModal = { step: 'subject' }; renderDiaryModal(); }
+function diaryOpenGrades(subject) {
+  diaryModal = { step: 'grades', subject: subject, grades: diaryGrades(diaryActiveQuarter(), subject).slice() };
+  renderDiaryModal();
+}
+// из рекомендации: раскрыть дневник и сразу открыть оценки предмета
+function diaryOpenSubject(subject, q) {
+  diaryOpen = true;
+  if (q && q !== 'year') diaryTab = q;
+  renderProgressPage();
+  diaryOpenGrades(subject);
+}
+function diaryPickSubject(v) {
+  const s = String(v || '').trim().slice(0, 60);
+  if (!s) return;
+  diaryModal = { step: 'grades', subject: s, grades: diaryGrades(diaryActiveQuarter(), s).slice() };
+  renderDiaryModal();
+}
+function diaryOwnSubject() {
+  const el = document.getElementById('diaryOwnInput');
+  const v = ((el && el.value) || '').trim();
+  if (!v) {
+    // подсказка прямо в окне: тост остался бы под затемнением
+    if (el) { el.placeholder = t('diary.emptyName'); try { el.focus(); } catch (e) {} }
+    return;
+  }
+  diaryPickSubject(v);
+}
+function diaryDraftAdd(g) {
+  if (!diaryModal) return;
+  if (!diaryModal.grades) diaryModal.grades = [];
+  diaryModal.grades.push(g | 0);
+  renderDiaryModal();
+}
+function diaryDraftRemove(i) {
+  if (!diaryModal || !diaryModal.grades) return;
+  diaryModal.grades.splice(i, 1);
+  renderDiaryModal();
+}
+function diaryApply() {
+  if (!diaryModal || !diaryModal.subject) return;
   const d = diaryCur();
   const q = diaryActiveQuarter();
   if (!d.byQ[q]) d.byQ[q] = {};
-  if (!d.byQ[q][subject]) d.byQ[q][subject] = [];
-  d.byQ[q][subject].push(grade | 0);
-  diarySheet = subject; // панель остаётся открытой: можно добавить несколько оценок подряд
+  d.byQ[q][diaryModal.subject] = (diaryModal.grades || []).map(function (g) { return g | 0; });
   diarySave();
+  diaryModal = null;
   renderProgressPage();
+  showToast(t('diary.saved'));
 }
+function diaryCloseModal() { diaryModal = null; renderDiaryModal(); }
+// клик по оценке в строке — убрать её
 function diaryRemoveGrade(subject, idx) {
   const d = diaryCur();
   const q = diaryActiveQuarter();
   const bag = (d.byQ[q] && d.byQ[q][subject]) || [];
   bag.splice(idx, 1);
-  if (d.byQ[q]) d.byQ[q][subject] = bag;
+  if (d.byQ[q]) d.byQ[q][subject] = bag; // предмет остаётся в списке, даже если оценок не осталось
   diarySave();
   renderProgressPage();
   showToast(t('diary.removed'));
 }
-function diaryAddSubject(v) {
-  if (!v) return;
+function diaryRemoveSubject(subject) {
   const d = diaryCur();
   const q = diaryActiveQuarter();
-  if (!d.byQ[q]) d.byQ[q] = {};
-  if (!d.byQ[q][v]) d.byQ[q][v] = [];
+  if (d.byQ[q]) delete d.byQ[q][subject];
   diarySave();
+  diaryModal = null;
   renderProgressPage();
+  showToast(t('diary.subjectRemoved'));
+}
+
+function renderDiaryModal() {
+  let host = document.getElementById('diaryModal');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'diaryModal';
+    host.className = 'diary-modal';
+    host.onclick = function (e) { if (e.target === host) diaryCloseModal(); };
+    document.body.appendChild(host);
+  }
+  if (!diaryModal) { host.classList.remove('open'); host.innerHTML = ''; return; }
+  const closeBtn = '<button class="dm-close" onclick="diaryCloseModal()"><i class="fas fa-xmark"></i></button>';
+  let body = '';
+  if (diaryModal.step === 'subject') {
+    const have = diarySubjects(diaryActiveQuarter());
+    const rest = ((activeCountry().studySubjects) || []).filter(function (s) { return have.indexOf(s) === -1; });
+    body = '<div class="dm-head"><i class="fas fa-book-open diary-ico"></i><div class="dm-title">' + escapeHtml(t('diary.add')) + '</div>' + closeBtn + '</div>' +
+      '<div class="dm-sub">' + escapeHtml(t('diary.addSub')) + '</div>' +
+      (rest.length ? '<div class="dm-chips">' + rest.map(function (s) {
+        return '<button class="dm-chip" onclick="diaryPickSubject(\'' + escapeAttr(s) + '\')">' + escapeHtml(subjectName(s)) + '</button>';
+      }).join('') + '</div>' : '<div class="diary-empty">' + escapeHtml(t('diary.allAdded')) + '</div>') +
+      '<div class="dm-own"><input id="diaryOwnInput" maxlength="60" placeholder="' + escapeHtml(t('diary.ownPh')) + '" onkeydown="if(event.key===\'Enter\'){diaryOwnSubject();}">' +
+        '<button class="btn btn-secondary" onclick="diaryOwnSubject()"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.ownBtn')) + '</button></div>';
+  } else {
+    const grades = diaryModal.grades || [];
+    const avg = diaryAvg(grades);
+    body = '<div class="dm-head"><i class="fas fa-book-open diary-ico"></i><div class="dm-title">' + escapeHtml(subjectName(diaryModal.subject)) + '</div>' + closeBtn + '</div>' +
+      '<div class="dm-sub">' + escapeHtml(t('diary.gradesSub')) + '</div>' +
+      '<div class="dm-keypad">' + DIARY_SCALE.map(function (n) {
+        return '<button class="dm-key" onclick="diaryDraftAdd(' + n + ')">' + n + '</button>';
+      }).join('') + '</div>' +
+      '<div class="dm-picked">' + (grades.length
+        ? grades.map(function (g, i) {
+            return '<button class="diary-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryDraftRemove(' + i + ')">' + (g | 0) + '</button>';
+          }).join('')
+        : '<span class="dm-picked-empty">' + escapeHtml(t('diary.noGrades')) + '</span>') + '</div>' +
+      '<div class="diary-total"><div class="diary-total-label">' + escapeHtml(t('diary.avgOf')) +
+        '<small>' + escapeHtml(t('diary.gradesN') + ': ' + grades.length) + '</small></div>' +
+        '<div class="diary-total-value' + (avg === null ? ' none' : '') + '">' + (avg === null ? '—' : avg.toFixed(1)) + '</div></div>' +
+      '<div class="dm-foot"><button class="btn btn-secondary" onclick="diaryCloseModal()">' + escapeHtml(t('diary.cancel')) + '</button>' +
+        '<button class="btn btn-primary" onclick="diaryApply()"><i class="fas fa-check"></i> ' + escapeHtml(t('diary.apply')) + '</button></div>' +
+      '<div class="dm-drop"><a onclick="diaryRemoveSubject(\'' + escapeAttr(diaryModal.subject) + '\')">' + escapeHtml(t('diary.dropSubject')) + '</a></div>';
+  }
+  host.innerHTML = '<div class="diary-modal-card">' + body + '</div>';
+  host.classList.add('open');
+  const inp = document.getElementById('diaryOwnInput');
+  if (inp) setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
 }
 
 function renderDiarySection() {
@@ -9548,64 +9843,69 @@ function renderDiarySection() {
     const d = diaryCur();
     if (!diaryTab) diaryTab = d.q || nevioCurrentQuarter();
     const q = diaryTab;
-    const tabs = ['I', 'II', 'III', 'IV', 'year'];
-    let html = '<div class="section-label">' + escapeHtml(t('diary.title')) + '</div>';
-    html += '<div class="diary-tabs">' + tabs.map(function (qq) {
+    const isYear = (q === 'year');
+    const subs = diarySubjects(q);
+    const qAvg = diaryQuarterAvg(q);
+    const totalGrades = subs.reduce(function (n, s) { return n + diaryGrades(q, s).length; }, 0);
+
+    // выноска: треугольник + иконка дневника + краткий итог, пока свёрнута
+    const meta = qAvg === null ? t('diary.noGradesShort') : diaryQuarterLabel(q) + ' · ' + qAvg.toFixed(1);
+    let html = '<div class="diary-note' + (diaryOpen ? ' open' : '') + '">' +
+      '<button class="diary-head" onclick="diaryToggleOpen()">' +
+        '<i class="fas fa-chevron-right diary-caret"></i>' +
+        '<i class="fas fa-book-open diary-ico"></i>' +
+        '<span class="diary-head-title">' + escapeHtml(t('diary.title')) + '</span>' +
+        (diaryOpen ? '' : '<span class="diary-head-meta">' + escapeHtml(meta) + '</span>') +
+      '</button>';
+    if (!diaryOpen) return html + '</div>';
+
+    html += '<div class="diary-body">';
+    // четверти сверху: 1 2 3 4 и год
+    html += '<div class="diary-tabs">' + ['I', 'II', 'III', 'IV', 'year'].map(function (qq) {
       const lab = qq === 'year' ? t('diary.qYear') : t('diary.q' + qq);
       return '<button class="diary-tab' + (q === qq ? ' active' : '') + '" onclick="diarySetQ(\'' + qq + '\')">' + escapeHtml(lab) + '</button>';
     }).join('') + '</div>';
-    const qForData = q;
-    const subs = diarySubjects(qForData);
+
     if (!subs.length) {
-      html += '<div class="card"><div class="diary-empty">' + escapeHtml(t('diary.empty')) + '</div>';
+      html += '<div class="diary-empty">' + escapeHtml(isYear ? t('diary.emptyYear') : t('diary.empty')) + '</div>';
     } else {
-      html += '<div>';
       subs.forEach(function (s) {
-        const gs = diaryGrades(qForData, s);
+        const gs = diaryGrades(q, s);
         const avg = diaryAvg(gs);
         html += '<div class="diary-row">' +
-          '<div class="diary-subj" title="' + escapeHtml(subjectName(s)) + '">' + escapeHtml(subjectName(s)) + '</div>' +
-          '<div class="diary-grades">' +
-            gs.map(function (g, i) {
-              return '<button class="diary-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryRemoveGrade(\'' + escapeAttr(s) + '\',' + i + ')">' + (g | 0) + '</button>';
-            }).join('') +
-            '<button class="diary-add" onclick="diaryToggleSheet(\'' + escapeAttr(s) + '\')"><i class="fas fa-plus"></i></button>' +
+          '<div class="diary-row-top">' +
+            '<div class="diary-subj" title="' + escapeHtml(subjectName(s)) + '">' + escapeHtml(subjectName(s)) + '</div>' +
+            (avg === null
+              ? '<div class="diary-avg none">' + escapeHtml(t('diary.noGrades')) + '</div>'
+              : '<div class="diary-avg">' + avg.toFixed(1) + '</div>') +
           '</div>' +
-          '<div class="diary-avg">' + (avg === null ? '—' : avg.toFixed(1)) + '</div>' +
+          '<div class="diary-grades">' +
+            (gs.length
+              ? gs.map(function (g, i) {
+                  // в «Год» оценки только читаем — правятся они внутри четверти
+                  return isYear
+                    ? '<span class="diary-g' + (g <= 2 ? ' low' : '') + '">' + (g | 0) + '</span>'
+                    : '<button class="diary-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryRemoveGrade(\'' + escapeAttr(s) + '\',' + i + ')">' + (g | 0) + '</button>';
+                }).join('')
+              : '<span class="diary-no-grades">' + escapeHtml(t('diary.noGrades')) + '</span>') +
+            (isYear ? '' : '<button class="diary-add" onclick="diaryOpenGrades(\'' + escapeAttr(s) + '\')"><i class="fas fa-plus"></i></button>') +
+          '</div>' +
         '</div>';
-        if (diarySheet === s) {
-          html += '<div class="diary-sheet show">' + [1,2,3,4,5,6,7,8,9,10].map(function (n) {
-            return '<button class="dg" onclick="diaryAddGrade(\'' + escapeAttr(s) + '\',' + n + ')">' + n + '</button>';
-          }).join('') + '</div>';
-        }
       });
-      html += '</div>';
     }
-    // добавление предмета — только из списка предметов страны
-    const c = activeCountry();
-    const rest = c.studySubjects.filter(function (s) { return subs.indexOf(s) === -1; });
-    if (rest.length) {
-      html += '<div class="diary-pick"><select id="diaryPickSel" onchange="if(this.value){diaryAddSubject(this.value);}">' +
-        '<option value="">' + escapeHtml(t('diary.add')) + '…</option>' +
-        rest.map(function (s) { return '<option value="' + escapeAttr(s) + '">' + escapeHtml(subjectName(s)) + '</option>'; }).join('') +
-        '</select></div>';
+    if (isYear) {
+      html += '<div class="diary-note-hint">' + escapeHtml(t('diary.yearNote')) + '</div>';
+    } else {
+      html += '<button class="btn btn-secondary" style="width:100%;margin-top:2px;" onclick="diaryOpenAddSubject()"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.add')) + '</button>' +
+        '<div class="diary-note-hint">' + escapeHtml(t('diary.hint')) + '</div>';
     }
-    if (!subs.length) html += '</div>';
-    // Средний балл — те же баблы, что и в статистике (одинаковые по размеру)
-    const allAvg = diaryAvg(subs.map(function (s) { return diaryAvg(diaryGrades(qForData, s)) || 0; }).filter(function (x) { return x > 0; }));
-    const yearSubjects = diarySubjects('year');
-    const yearAvg = diaryAvg(yearSubjects.map(function (s) { return diaryAvg(diaryGrades('year', s)) || 0; }).filter(function (x) { return x > 0; }));
-    const totalGrades = yearSubjects.reduce(function (n, s) { return n + diaryGrades('year', s).length; }, 0);
-    if (totalGrades > 0) {
-      const qLab = qForData === 'year' ? t('diary.yearAvg') : t('diary.avg').replace('{q}', t('diary.q' + qForData));
-      html += '<div class="prog-stats" style="margin-top:10px;">' +
-        '<div class="prog-stat"><b>' + (allAvg === null ? '—' : allAvg.toFixed(1)) + '</b><span>' + escapeHtml(qLab) + '</span></div>' +
-        '<div class="prog-stat"><b>' + (yearAvg === null ? '—' : yearAvg.toFixed(1)) + '</b><span>' + escapeHtml(t('diary.yearAvg')) + '</span></div>' +
-        '<div class="prog-stat"><b>' + totalGrades + '</b><span>' + escapeHtml(t('diary.gradesN')) + '</span></div>' +
-        '<div class="prog-stat"><b>' + subs.length + '</b><span>' + escapeHtml(t('diary.subjectsN')) + '</span></div>' +
-        '</div>';
-    }
-    return html;
+    // средний балл четверти — внизу выноски
+    html += '<div class="diary-total">' +
+      '<div class="diary-total-label">' + escapeHtml(isYear ? t('diary.yearAvg') : t('diary.avg').replace('{q}', diaryQuarterLabel(q))) +
+        '<small>' + escapeHtml(t('diary.subjectsN') + ': ' + subs.length + ' · ' + t('diary.gradesN') + ': ' + totalGrades) + '</small></div>' +
+      '<div class="diary-total-value' + (qAvg === null ? ' none' : '') + '">' + (qAvg === null ? '—' : qAvg.toFixed(1)) + '</div>' +
+    '</div>';
+    return html + '</div></div>';
   } catch (e) { return ''; }
 }
 
@@ -10260,7 +10560,7 @@ function renderPlusUI() {
       '</div></div>' +
     '</div>' +
     '<div class="card" style="margin-top:12px;"><div class="form-group" style="margin-bottom:0;"><label>' + escapeHtml(t('plus.activate')) + '</label>' +
-      '<div class="diary-pick" style="margin-top:0;"><input type="text" id="plusCodeInput" placeholder="' + escapeHtml(t('plus.codePh')) + '" style="flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:13px;">' +
+      '<div style="display:flex;gap:8px;margin-top:0;"><input type="text" id="plusCodeInput" placeholder="' + escapeHtml(t('plus.codePh')) + '" style="flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:13px;">' +
       '<button class="btn btn-primary" style="flex:0 0 auto;padding:10px 14px;margin-top:0;" onclick="checkPlusCode()">' + escapeHtml(t('plus.activate')) + '</button></div>' +
       '<p style="font-size:11px;color:var(--text-muted);line-height:1.6;margin-top:8px;">' + escapeHtml(t('plus.note')) + '</p>' +
     '</div></div>';
