@@ -233,7 +233,9 @@ check(content.length < 1000000, `File size <1MB: ${content.length}`);
 
 // 12. Финальная полировка: карточка-приветствие, дневник, ошибки, сканер, презентации, Plus, варианты
 console.log('\n--- Final polish checks ---');
-check(content.includes('id="greetRoot"'), 'Greeting card mount on main page');
+check(content.includes('id="greetRoot"'), 'Greeting card mount');
+check(/<div id="greetRoot"><\/div>\s*\n\s*<div id="progressRoot">/.test(content), 'Greeting card lives in Progress section');
+check(content.includes('Советник по учёбе — в общую сетку') || !content.includes("student.sections.push({\n    label: 'Советник'"), 'Advisor merged into main study grid (BY)');
 check(content.includes('greet-brand') && content.includes("t('app.subtitle')"), 'Card titled with Nevio subtitle');
 check(content.includes('function renderGreetCard'), 'renderGreetCard defined');
 check(content.includes("t(nevioGreetingKey())") || content.includes("'greet.morning'"), 'Time-based greetings');

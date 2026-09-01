@@ -1322,7 +1322,6 @@
     <h1>NEVIO</h1>
     <p data-i18n="app.subtitle">Твой умный помощник в учёбе</p>
   </div>
-  <div id="greetRoot"></div>
   <div id="menuContainer"></div>
 </div>
 
@@ -1422,6 +1421,7 @@
 <div class="page" id="progressPage">
   <div class="action-container">
     <div class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div id="greetRoot"></div>
     <div id="progressRoot"></div>
   </div>
 </div>
@@ -2351,7 +2351,6 @@ function loadMainMenu() {
   });
   container.innerHTML = html;
   renderCountryBadge();
-  renderGreetCard();
 }
 
 function openAction(actionId) {
@@ -3291,7 +3290,7 @@ function showPage(pageId) {
   }
   if (pageId === 'settingsPage') updateSettingsCountryLine();
   if (pageId === 'settingsPage') updatePlusUI();
-  if (pageId === 'mainPage' && window.renderGreetCard) renderGreetCard();
+  if (pageId === 'progressPage' && window.renderGreetCard) renderGreetCard();
   window.scrollTo(0, 0);
 }
 
@@ -7445,13 +7444,10 @@ function byMenu() {
     { id: 'check_solution', icon: 'fas fa-clipboard-check', title: 'Проверка решения по критериям', description: 'Оценка решения по критериям ЦТ/ЦЭ' },
     { id: 'my_assignments', icon: 'fas fa-tasks', title: 'Задания от учителя', description: 'Присоединяйтесь по коду и решайте' }
   );
-  // Добавляем чат-советник по учёбе
-  student.sections.push({
-    label: 'Советник',
-    items: [
-      { id: 'study_advisor', icon: 'fas fa-user-graduate', title: 'Советник по учёбе', description: 'Задай любой вопрос по учёбе, экзаменам, подготовке', highlight: true }
-    ]
-  });
+  // Советник по учёбе — в общую сетку функций «Учёба» (без отдельного раздела)
+  student.sections[1].items.push(
+    { id: 'study_advisor', icon: 'fas fa-user-graduate', title: 'Советник по учёбе', description: 'Задай любой вопрос по учёбе, экзаменам, подготовке', highlight: true }
+  );
   const teacher = JSON.parse(JSON.stringify(menuConfigs.teacher));
   teacher.sections.push({
     label: 'Класс и аналитика',
@@ -7508,14 +7504,13 @@ function buildMenuFor(c) {
     { id: 'assign', icon: 'fas fa-paper-plane', title: pick(c.t.assign), description: pick(c.t.assignD) },
     { id: 'class_analytics', icon: 'fas fa-chart-bar', title: pick(c.t.analytics), description: pick(c.t.analyticsD) }
   ];
-  const advisor = [
+  study.push(
     { id: 'study_advisor', icon: 'fas fa-user-graduate', title: pick(c.t.advisor) || (L === 'kk' ? 'Оқу бойынша кеңесші' : (L === 'uz' ? 'Oʻqish boʻyicha maslahatchi' : 'Советник по учёбе')), description: pick(c.t.advisorD) || (L === 'kk' ? 'Кез келген оқу сұрағын қойыңыз' : (L === 'uz' ? 'Oʻqish boʻyicha har qanday savol bering' : 'Задай любой вопрос по учёбе, экзаменам, подготовке')), highlight: true }
-  ];
+  );
   return {
     student: { sections: [
       { label: t('menu.sec.exams'), items: examItems },
-      { label: t('menu.sec.study'), items: study },
-      { label: t('menu.sec.advisor') || 'Советник', items: advisor }
+      { label: t('menu.sec.study'), items: study }
     ] },
     teacher: { sections: [
       { label: t('menu.sec.plan'), items: plan },
@@ -7874,6 +7869,8 @@ function renderMascot(acc, qTotal, weak) {
 function renderProgressPage() {
   const root = document.getElementById('progressRoot');
   if (!root) return;
+  // карточка-приветствие живёт в этом разделе — обновляем вместе со статистикой
+  if (window.renderGreetCard) renderGreetCard();
   const cp = countryProgress();
   const qTotal = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].n; }, 0);
   const qOk = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].ok; }, 0);
