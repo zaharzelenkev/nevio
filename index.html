@@ -642,6 +642,8 @@
       font-weight:600;
     }
     .copy-btn:hover { color:var(--gold); border-color:var(--gold); background:rgba(232,177,62,0.05); }
+    .ai-msg-tools { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:12px; max-width:100%; }
+    .ai-msg-tools .copy-btn { margin-top:0; flex:0 1 auto; min-width:0; max-width:100%; white-space:normal; }
     
     /* Legal content */
     .legal-content { line-height:1.9; color:var(--text); font-size:14px; }
@@ -1229,6 +1231,121 @@
       .dm-key { height:34px; font-size:13px; }
     }
 
+    /* ===== Мой дневник — полноэкранный раздел ===== */
+    .diary-go {
+      display:flex; align-items:center; gap:12px; width:100%;
+      background:var(--card); border:1.5px solid var(--border); border-radius:16px;
+      padding:12px 14px; margin:0 0 14px; cursor:pointer; text-align:left;
+      font-family:inherit; color:var(--text);
+      transition:border-color .2s ease, box-shadow .2s ease;
+      box-shadow:0 4px 16px var(--shadow-soft);
+    }
+    .diary-go:hover { border-color:var(--gold); }
+    .diary-go .dgo-ico {
+      width:40px; height:40px; border-radius:13px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(232,177,62,0.12); color:var(--gold); font-size:16px;
+    }
+    .diary-go .dgo-txt { flex:1; min-width:0; }
+    .diary-go .dgo-txt b { display:block; font-size:13.5px; font-weight:800; }
+    .diary-go .dgo-txt span { display:block; font-size:11.5px; color:var(--text-secondary); margin-top:2px; }
+    .diary-go .dgo-arrow { color:var(--text-muted); font-size:11px; flex-shrink:0; }
+
+    .dq-wrap { min-height:46vh; }
+    .dq-frame {
+      display:flex; gap:4px; padding:5px; margin:0 0 14px;
+      background:var(--surface); border:2px solid var(--border);
+      border-radius:20px;
+    }
+    .dq-tab {
+      flex:1 1 0; min-width:0; border:none; cursor:pointer; font-family:inherit;
+      background:none; color:var(--text-muted);
+      border-radius:15px; padding:7px 2px 6px;
+      display:flex; flex-direction:column; align-items:center; gap:1px;
+      transition:all .18s ease;
+    }
+    .dq-tab .dq-rom { font-size:13px; font-weight:800; line-height:1.1; letter-spacing:.4px; color:inherit; }
+    .dq-tab .dq-cap { font-size:8.5px; font-weight:700; line-height:1; text-transform:uppercase; letter-spacing:.4px; color:var(--text-muted); }
+    .dq-tab.active { background:var(--gradient-gold); color:#fff; box-shadow:0 3px 10px var(--glow-gold); }
+    .dq-tab.active .dq-rom, .dq-tab.active .dq-cap { color:#fff; }
+
+    .dq-empty {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:52px 18px;
+    }
+    .dq-empty .dq-empty-ico {
+      width:72px; height:72px; border-radius:24px; margin-bottom:16px;
+      display:flex; align-items:center; justify-content:center; font-size:28px;
+      background:rgba(232,177,62,0.12); color:var(--gold);
+    }
+    .dq-empty h3 { font-size:17px; font-weight:800; margin-bottom:6px; }
+    .dq-empty p { font-size:12.5px; color:var(--text-secondary); line-height:1.55; max-width:270px; }
+    .dq-empty .btn { margin-top:18px; }
+
+    .dq-card { background:var(--card); border:1.5px solid var(--border); border-radius:16px; padding:13px 14px; margin-bottom:10px; }
+    .dq-card-top { display:flex; align-items:baseline; gap:10px; }
+    .dq-subj { flex:1; min-width:0; font-size:13.5px; font-weight:800; }
+    .dq-subj small { display:block; font-size:10px; color:var(--text-muted); font-weight:600; margin-top:2px; }
+    .dq-subj-del {
+      flex-shrink:0; border:none; background:none; color:var(--text-muted); cursor:pointer;
+      font-size:12px; padding:4px 2px;
+    }
+    .dq-avg { font-size:18px; font-weight:800; color:var(--gold); flex-shrink:0; }
+    .dq-avg.none { color:var(--text-muted); font-size:12px; font-weight:700; }
+    .dq-grades { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:9px; }
+    .dq-g {
+      min-width:30px; height:30px; padding:0 4px; border-radius:10px; flex-shrink:0;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:12.5px; font-weight:800; font-family:inherit; cursor:pointer;
+      background:rgba(232,177,62,0.12); color:var(--gold-dark);
+      border:1px solid rgba(232,177,62,0.3); transition:opacity .15s ease, transform .15s ease;
+    }
+    body.dark-theme .dq-g { color:var(--gold-light); }
+    .dq-g.low { background:rgba(248,113,113,0.1); color:#f87171; border-color:rgba(248,113,113,0.25); }
+    .dq-g:hover { transform:scale(1.06); }
+    .dq-add-grade {
+      display:inline-flex; align-items:center; gap:6px; margin-left:2px;
+      padding:6px 12px; border-radius:10px; border:1.5px dashed var(--gold); background:none;
+      color:var(--gold); font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit;
+      transition:background .15s ease;
+    }
+    .dq-add-grade:hover { background:rgba(232,177,62,0.08); }
+
+    .dq-step-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .dq-step-head .dq-ico {
+      width:38px; height:38px; border-radius:13px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(232,177,62,0.12); color:var(--gold); font-size:15px;
+    }
+    .dq-step-head h3 { flex:1; min-width:0; font-size:15px; font-weight:800; }
+    .dq-chips { display:flex; flex-wrap:wrap; gap:7px; }
+    .dq-chip {
+      padding:9px 14px; border-radius:13px; border:1.5px solid var(--border); background:var(--surface);
+      color:var(--text-secondary); font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit;
+      transition:border-color .15s ease, color .15s ease, background .15s ease;
+    }
+    .dq-chip:hover { border-color:var(--gold); color:var(--gold); background:rgba(232,177,62,0.06); }
+    .dq-picked { display:flex; flex-wrap:wrap; gap:6px; align-items:center; min-height:30px; }
+    .dq-done { display:flex; gap:8px; margin-top:16px; }
+    .dq-done .btn { flex:1; margin-top:0; padding:11px 12px; font-size:13px; }
+    .dq-cancel-line { text-align:center; margin-top:12px; }
+    .dq-cancel-line a { font-size:12px; color:var(--text-muted); cursor:pointer; text-decoration:underline; }
+
+    .dq-foot {
+      position:sticky; bottom:76px; z-index:5; margin-top:16px;
+      background:linear-gradient(135deg,rgba(232,177,62,0.16),rgba(232,177,62,0.06));
+      border:1.5px solid rgba(232,177,62,0.4);
+      border-radius:18px; padding:11px 15px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      box-shadow:0 8px 24px var(--shadow-strong);
+    }
+    body.dark-theme .dq-foot { background:linear-gradient(135deg,rgba(232,177,62,0.18),rgba(232,177,62,0.07)); }
+    .dq-foot .dq-f-label { font-size:12px; font-weight:700; color:var(--text-secondary); line-height:1.35; }
+    .dq-foot .dq-f-label small { display:block; font-size:10.5px; font-weight:600; color:var(--text-muted); margin-top:2px; }
+    .dq-foot .dq-f-val { font-size:24px; font-weight:800; color:var(--gold); flex-shrink:0; }
+    .dq-foot .dq-f-val.none { font-size:13px; color:var(--text-muted); font-weight:700; }
+    .dq-row-gap { height:12px; }
+
     /* Разбор ошибок (ошибка → объяснение → тренировка) */
     .mistake-row {
       display:flex; align-items:flex-start; gap:10px; background:var(--card); border:1.5px solid var(--border);
@@ -1301,13 +1418,18 @@
     .plan-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 6px; }
     .plan-card {
       background:var(--card); border:1.5px solid var(--border); border-radius:18px;
-      padding:16px 13px; text-align:center; display:flex; flex-direction:column;
+      padding:16px 13px; text-align:center; display:flex; flex-direction:column; min-width:0;
     }
     .plan-card.plus { border-color:rgba(232,177,62,0.5); background:linear-gradient(160deg,rgba(232,177,62,0.09),var(--card) 55%); }
     .plan-name { font-size:10px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--text-secondary); }
     .plan-card.plus .plan-name { color:var(--gold); }
     .plan-price { font-size:22px; font-weight:800; color:var(--gold); margin:8px 0 2px; }
-    .plan-per { font-size:10.5px; color:var(--text-muted); }
+    .plan-per { font-size:10.5px; color:var(--text-muted); line-height:1.45; overflow-wrap:break-word; word-break:break-word; }
+    .plan-card .btn { width:auto; max-width:100%; min-width:0; padding:11px 12px; font-size:12.5px; }
+    @media (max-width:400px) {
+      .plan-grid { grid-template-columns:1fr; }
+      .plan-card { padding:16px 14px; }
+    }
     .plan-list { text-align:left; margin-top:12px; }
     .plan-list li { list-style:none; font-size:11.5px; color:var(--text-secondary); line-height:1.5; margin:7px 0; padding-left:18px; position:relative; }
     .plan-list li i { position:absolute; left:0; top:2px; font-size:10px; color:var(--gold); }
@@ -1329,6 +1451,9 @@
     .weekly-bar { width:100%; border-radius:6px 6px 3px 3px; background:var(--gradient-gold); min-height:3px; opacity:.9; }
     .weekly-lab { font-size:9px; color:var(--text-muted); font-weight:700; }
     .weekly-val { font-size:9px; color:var(--gold); font-weight:800; }
+    .plus-code-row { display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; width:100%; }
+    .plus-code-row input { flex:1 1 150px; min-width:0; padding:10px 12px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-family:inherit; font-size:13px; }
+    .plus-code-row .btn { flex:0 1 auto; padding:10px 14px; margin-top:0; white-space:normal; }
   </style>
 </head>
 <body>
@@ -1480,6 +1605,15 @@
   </div>
 </div>
 
+<!-- МОЙ ДНЕВНИК (полноэкранный раздел ученика) -->
+<div class="page" id="diaryPage">
+  <div class="action-container">
+    <div class="back-btn" onclick="closeDiary()"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
+    <div class="country-hero"><h1>📖 <span data-i18n="diary.title">Мой дневник</span></h1><p data-i18n="diary.desc">Оценки по предметам — средний балл считается сразу</p></div>
+    <div id="diaryRoot"></div>
+  </div>
+</div>
+
 <!-- РЕЖИМ УЧИТЕЛЯ: классы и аналитика (новый раздел) -->
 <div class="page" id="teacherPage">
   <div class="action-container">
@@ -1496,7 +1630,7 @@
   </div>
 </div>
 
-<!-- NEVIO PLUS: тарифы Free / Plus (без платных сервисов: оплата подключается отдельно) -->
+<!-- NEVIO PLUS: тарифы Free / Plus -->
 <div class="page" id="plusPage">
   <div class="action-container">
     <div class="back-btn" onclick="showPage('settingsPage')"><i class="fas fa-arrow-left"></i><span data-i18n="common.back">Назад</span></div>
@@ -1801,7 +1935,7 @@ const menuConfigs = {
       {
         label: 'Планирование уроков',
         items: [
-          { id: 'quick_lesson', icon: 'fas fa-bolt', title: 'Быстрый урок', description: 'План урока + объяснение, практика, тест и ДЗ' },
+          { id: 'quick_lesson', icon: 'fas fa-book-open', title: 'План урока', description: 'Этапы, объяснение, практика, тест и ДЗ' },
           { id: 'tasks', icon: 'fas fa-tasks', title: 'Генератор заданий', description: 'Уникальные задачи по теме' },
           { id: 'variants', icon: 'fas fa-copy', title: 'Варианты контрольной', description: 'Уникальные варианты с ответами' },
           { id: 'differentiation', icon: 'fas fa-layer-group', title: 'Дифференциация', description: 'Задания для разных уровней' },
@@ -2368,6 +2502,7 @@ function init() {
   renderCountryBadge();
   updatePlusUI();
   startNevioActivityTracking(); // учёт активных минут для карточки-приветствия (локально, без сетей)
+  tryOpenSharedAssignment();   // задание, открытое по ссылке от учителя
 }
 
 function selectRole(role) {
@@ -2377,6 +2512,7 @@ function selectRole(role) {
   showPage('mainPage');
   const toastKeys = { student: 'toast.roleStudent', teacher: 'toast.roleTeacher' };
   showToast(t(toastKeys[role] || 'toast.roleStudent'));
+  tryOpenSharedAssignment(); // ссылка #ass=/#res=, открытая до выбора роли
 }
 
 function getAllItems() {
@@ -2658,7 +2794,7 @@ function generateForm(actionId) {
         + sel('subjectSelect', t('form.subject'), subjectsAll.map(s => `<option value="${s}">${subjectName(s)}</option>`).join(''))
         + sel('gradeSelect', 'Класс', gradeOpts)
         + sel('duration', 'Длительность', `<option selected>45 минут</option><option>90 минут</option>`)
-        + btn('fas fa-bolt', t('ql.run'));
+        + btn('fas fa-book-open', t('ql.run'));
       break;
     case 'generate_quiz':
       html = ta('inputText', 6)
@@ -2844,13 +2980,17 @@ async function callGroqWithStream(messages, loadingId) {
       setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> ' + t('common.copy'); }, 2000);
     });
   };
-  messageDiv.appendChild(copyBtn);
+  // «Скопировать» и «Объясни проще» — в один ряд под ответом
+  const msgTools = document.createElement('div');
+  msgTools.className = 'ai-msg-tools';
+  copyBtn.style.marginTop = '0';
+  messageDiv.appendChild(msgTools);
+  msgTools.appendChild(copyBtn);
 
   // «Объясни проще» — дополнительный шаг, а не режим по умолчанию:
   // тот же материал, но simpler words, аналогии и короткие предложения.
   const simplerBtn = document.createElement('button');
   simplerBtn.className = 'copy-btn';
-  simplerBtn.style.marginLeft = '8px';
   simplerBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> ' + t('simple.btn');
   simplerBtn.onclick = () => {
     if (state.isLoading) return;
@@ -2872,7 +3012,7 @@ async function callGroqWithStream(messages, loadingId) {
       }
     })();
   };
-  messageDiv.appendChild(simplerBtn);
+  msgTools.appendChild(simplerBtn);
   document.getElementById('chatMessages').scrollTop = 99999;
   
   return fullText;
@@ -3158,7 +3298,7 @@ function buildUserMessage(actionId, inputText, data) {
     chat: inputText.substring(0, 100),
     study_advisor: `Советник: ${inputText.substring(0, 100)}...`,
     lesson: `Урок: ${inputText.substring(0, 50)}...`,
-    quick_lesson: `⚡ Быстрый урок: ${inputText.substring(0, 50)}...`,
+    quick_lesson: `📖 План урока: ${inputText.substring(0, 50)}...`,
     tasks: `Задания: ${inputText.substring(0, 50)}...`,
     variants: `Контрольная (${data.variantCount || 'варианты'}): ${inputText.substring(0, 50)}...`,
     generate_quiz: `Вопросы по тексту`,
@@ -3344,8 +3484,6 @@ function showPage(pageId) {
   if (pageId === 'settingsPage') updateSettingsCountryLine();
   if (pageId === 'settingsPage') updatePlusUI();
   if (pageId === 'progressPage' && window.renderGreetCard) renderGreetCard();
-  // окно дневника относится к «Прогрессу» — при уходе со страницы закрываем его
-  if (pageId !== 'progressPage' && typeof diaryModal !== 'undefined' && diaryModal) diaryCloseModal();
   window.scrollTo(0, 0);
 }
 
@@ -3373,7 +3511,7 @@ function getActionName(id) {
     lit_analysis: 'Литература',
     chat: 'Чат',
     lesson: 'План урока',
-    quick_lesson: 'Быстрый урок',
+    quick_lesson: 'План урока',
     tasks: 'Задания',
     variants: 'Контрольная',
     generate_quiz: 'Тест',
@@ -5830,6 +5968,7 @@ const I18N = {
     'progress.recent': 'Последние действия',
     'progress.mascotName': 'Нэви',
     'progress.mascotHelloEmpty': 'Привет! Я Нэви, твой помощник в учёбе. Здесь появится твой прогресс. Начнём с пары заданий?',
+    'progress.mascotHelloTeacher': 'Привет! Я Нэви. Собери урок или создай тест для класса — результаты учеников появятся в аналитике.',
     'progress.mascotHello': 'Привет! Я Нэви. Давай позанимаемся — выбери, с чего начнём!',
     'progress.mascotGreat': 'Отличная работа! Точность {acc}. Продолжим?',
     'progress.mascotBtnTest': 'Порешаем задания',
@@ -5837,7 +5976,7 @@ const I18N = {
     'progress.mascotBtnSolve': 'Решим задачу',
     'progress.mascotBtnWeak': 'Потренируем слабое место',
     'progress.mascotBtnQuiz': 'Создадим тест',
-    'progress.mascotBtnLesson': 'Соберём урок',
+    'progress.mascotBtnLesson': 'Составим план урока',
     'teacher.title': 'Класс и аналитика',
     'teacher.subtitle': 'Назначайте задания классу и смотрите, кто справился и где ошибки',
     'teacher.classes': 'Мои классы',
@@ -5872,6 +6011,8 @@ const I18N = {
     'teacher.shareCode': 'Код задания для учеников',
     'teacher.shareCodeDesc': 'Работает без интернета и без настроек. Скопируйте и отправьте ученикам — они вставят его в «Задания от учителя».',
     'teacher.copyShare': 'Скопировать код задания',
+    'teacher.assignCode': 'Код задания',
+    'teacher.shareLink': 'Или просто откройте ссылку:',
     'teacher.importResult': 'Внести результат ученика',
     'teacher.importResultPh': 'Вставьте код результата, который прислал ученик',
     'teacher.importResultBtn': 'Добавить результат',
@@ -6042,6 +6183,7 @@ const I18N = {
     'progress.recent': 'Соңғы әрекеттер',
     'progress.mascotName': 'Нэви',
     'progress.mascotHelloEmpty': 'Сәлем! Мен Нэви — оқудағы көмекшің. Мұнда сенің прогрессің көрсетіледі. Бір-екі тапсырмадан бастайық?',
+    'progress.mascotHelloTeacher': 'Сәлем! Мен Нэви. Сыныпқа сабақ құрыңыз немесе тест жасаңыз — оқушылардың нәтижелері аналитикада көрінеді.',
     'progress.mascotHello': 'Сәлем! Мен Нэви. Бірге оқиық — неден бастайтыныңды таңда!',
     'progress.mascotGreat': 'Керемет жұмыс! Дәлдігің {acc}%. Жалғастырамыз ба?',
     'progress.mascotBtnTest': 'Тапсырмаларды шешейік',
@@ -6049,7 +6191,7 @@ const I18N = {
     'progress.mascotBtnSolve': 'Есеп шығарайық',
     'progress.mascotBtnWeak': 'Әлсіз тұсты жаттықтырайық',
     'progress.mascotBtnQuiz': 'Тест құрайық',
-    'progress.mascotBtnLesson': 'Сабақ жинайық',
+    'progress.mascotBtnLesson': 'Сабақ жоспарын құрайық',
     'teacher.title': 'Сынып және аналитика',
     'teacher.subtitle': 'Сыныпқа тапсырмалар тағайындап, кім орындағанын және қателерді көріңіз',
     'teacher.classes': 'Менің сыныптарым',
@@ -6084,6 +6226,8 @@ const I18N = {
     'teacher.shareCode': 'Оқушыларға арналған тапсырма коды',
     'teacher.shareCodeDesc': 'Интернетсіз және баптаусыз жұмыс істейді. Көшіріп, оқушыларға жіберіңіз — олар оны «Мұғалімнің тапсырмалары» бөліміне қояды.',
     'teacher.copyShare': 'Тапсырма кодын көшіру',
+    'teacher.assignCode': 'Тапсырма коды',
+    'teacher.shareLink': 'Немесе жай ғана сілтемені ашыңыз:',
     'teacher.importResult': 'Оқушының нәтижесін енгізу',
     'teacher.importResultPh': 'Оқушы жіберген нәтиже кодын қойыңыз',
     'teacher.importResultBtn': 'Нәтижені қосу',
@@ -6254,6 +6398,7 @@ const I18N = {
     'progress.recent': 'Soʻnggi amallar',
     'progress.mascotName': 'Nevi',
     'progress.mascotHelloEmpty': "Salom! Men Nevi — o'qishdagi yordamching. Bu yerda sizning progressingiz ko'rinadi. Bir-ikkita topshiriqdan boshlaymizmi?",
+    'progress.mascotHelloTeacher': "Salom! Men Nevi. Sinf uchun dars tuzing yoki test yarating — o'quvchilar natijalari analitikada ko'rinadi.",
     'progress.mascotHello': "Salom! Men Nevi. Keling, birga shug'ullanamiz — nimadan boshlashni tanlang!",
     'progress.mascotGreat': 'Ajoyib ish! Aniqlik {acc}%. Davom etamizmi?',
     'progress.mascotBtnTest': 'Topshiriqlarni yechamiz',
@@ -6261,7 +6406,7 @@ const I18N = {
     'progress.mascotBtnSolve': 'Masala yechamiz',
     'progress.mascotBtnWeak': 'Zaif joyni mashq qilamiz',
     'progress.mascotBtnQuiz': 'Test tuzamiz',
-    'progress.mascotBtnLesson': 'Dars yigʻamiz',
+    'progress.mascotBtnLesson': 'Dars rejasini tuzamiz',
     'teacher.title': 'Sinf va tahlil',
     'teacher.subtitle': 'Sinfga topshiriqlar tayinlang va kim bajardi, qayerda xatolar — koʻring',
     'teacher.classes': 'Mening sinflarim',
@@ -6296,6 +6441,8 @@ const I18N = {
     'teacher.shareCode': "O'quvchilar uchun topshiriq kodi",
     'teacher.shareCodeDesc': "Internetsiz va sozlamalarsiz ishlaydi. Nusxalab, o'quvchilarga yuboring — ular uni «O'qituvchi topshiriqlari» bo'limiga qo'yadi.",
     'teacher.copyShare': 'Topshiriq kodini nusxalash',
+    'teacher.assignCode': 'Topshiriq kodi',
+    'teacher.shareLink': 'Yoki shunchaki havolani oching:',
     'teacher.importResult': "O'quvchi natijasini kiritish",
     'teacher.importResultPh': "O'quvchi yuborgan natija kodini qo'ying",
     'teacher.importResultBtn': 'Natijani qoʻshish',
@@ -6990,7 +7137,7 @@ const MENU_T_RU = {
   scanT: { ru: 'Сканер тетрадей' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок' },
   pres: { ru: 'Презентация' }, presD: { ru: 'Слайды по теме — для урока или доклада' },
   presT: { ru: 'Презентация для урока' }, presTD: { ru: 'Готовые слайды за минуту' },
-  quickLesson: { ru: 'Быстрый урок' }, quickLessonD: { ru: 'План урока + объяснение, практика, тест и ДЗ' },
+  quickLesson: { ru: 'План урока' }, quickLessonD: { ru: 'Этапы, объяснение, практика, тест и ДЗ' },
   tExplain: { ru: 'Методика объяснения' }, tExplainD: { ru: 'Как объяснить тему классу' },
   tSchema: { ru: 'Схема для класса' }, tSchemaD: { ru: 'Визуальный материал' },
   tSummary: { ru: 'Конспект урока' }, tSummaryD: { ru: 'Структура материала' },
@@ -7025,7 +7172,7 @@ const MENU_T_KZ = {
   scanT: { ru: 'Сканер тетрадей', kk: 'Дәптер сканері' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок', kk: 'Оқушы жұмысының фотосы — тексеру және қателерді табу' },
   pres: { ru: 'Презентация', kk: 'Презентация' }, presD: { ru: 'Слайды по теме — для урока или доклада', kk: 'Тақырып бойынша слайдтар — сабаққа немесе баяндамаға' },
   presT: { ru: 'Презентация для урока', kk: 'Сабаққа презентация' }, presTD: { ru: 'Готовые слайды за минуту', kk: 'Дайын слайдтар бір минутта' },
-  quickLesson: { ru: 'Быстрый урок', kk: 'Жылдам сабақ' }, quickLessonD: { ru: 'План урока + объяснение, практика, тест и ДЗ', kk: 'Сабақ жоспары + түсіндірме, практика, тест және үй тапсырмасы' },
+  quickLesson: { ru: 'План урока', kk: 'Сабақ жоспары' }, quickLessonD: { ru: 'Этапы, объяснение, практика, тест и ДЗ', kk: 'Кезеңдер, түсіндірме, практика, тест және үй тапсырмасы' },
   tExplain: { ru: 'Методика объяснения', kk: 'Түсіндіру әдістемесі' }, tExplainD: { ru: 'Как объяснить тему классу', kk: 'Тақырыпты сыныпқа қалай түсіндіру' },
   tSchema: { ru: 'Схема для класса', kk: 'Сыныпқа схема' }, tSchemaD: { ru: 'Визуальный материал', kk: 'Көрнекі материал' },
   tSummary: { ru: 'Конспект урока', kk: 'Сабақ конспектісі' }, tSummaryD: { ru: 'Структура материала', kk: 'Материал құрылымы' },
@@ -7060,7 +7207,7 @@ const MENU_T_UZ = {
   scanT: { ru: 'Сканер тетрадей', uz: 'Daftar skaneri' }, scanTD: { ru: 'Фото работы ученика — проверка и поиск ошибок', uz: 'Oʻquvchi ishi fotosi — tekshirish va xatolarni topish' },
   pres: { ru: 'Презентация', uz: 'Taqdimot' }, presD: { ru: 'Слайды по теме — для урока или доклада', uz: 'Mavzu boʻyicha slaydlar — dars yoki maʼruza uchun' },
   presT: { ru: 'Презентация для урока', uz: 'Dars uchun taqdimot' }, presTD: { ru: 'Готовые слайды за минуту', uz: 'Tayyor slaydlar bir daqiqada' },
-  quickLesson: { ru: 'Быстрый урок', uz: 'Tezkor dars' }, quickLessonD: { ru: 'План урока + объяснение, практика, тест и ДЗ', uz: 'Dars rejasi + tushuntirish, amaliyot, test va uy vazifasi' },
+  quickLesson: { ru: 'План урока', uz: 'Dars rejasi' }, quickLessonD: { ru: 'Этапы, объяснение, практика, тест и ДЗ', uz: 'Bosqichlar, tushuntirish, amaliyot, test va uy vazifasi' },
   tExplain: { ru: 'Методика объяснения', uz: 'Tushuntirish metodikasi' }, tExplainD: { ru: 'Как объяснить тему классу', uz: 'Mavzuni sinfga qanday tushuntirish' },
   tSchema: { ru: 'Схема для класса', uz: 'Sinf uchun sxema' }, tSchemaD: { ru: 'Визуальный материал', uz: 'Koʻrgazmali material' },
   tSummary: { ru: 'Конспект урока', uz: 'Dars konspekti' }, tSummaryD: { ru: 'Структура материала', uz: 'Material tuzilmasi' },
@@ -7538,7 +7685,7 @@ function buildMenuFor(c) {
     { id: 'exam_info', icon: 'fas fa-file-signature', title: pick(c.t.examInfo), description: pick(c.t.examInfoD) }
   ];
   const plan = [
-    { id: 'quick_lesson', icon: 'fas fa-bolt', title: pick(c.t.quickLesson), description: pick(c.t.quickLessonD) },
+    { id: 'quick_lesson', icon: 'fas fa-book-open', title: pick(c.t.quickLesson), description: pick(c.t.quickLessonD) },
     { id: 'tasks', icon: 'fas fa-tasks', title: pick(c.t.tasks), description: pick(c.t.tasksD) },
     { id: 'variants', icon: 'fas fa-copy', title: pick(c.t.variants), description: pick(c.t.variantsD) },
     { id: 'differentiation', icon: 'fas fa-layer-group', title: pick(c.t.diff), description: pick(c.t.diffD) }
@@ -7896,19 +8043,20 @@ function weakTopics() {
 function renderMascot(acc, qTotal, weak) {
   const c = activeCountry();
   let text;
-  if (!qTotal) text = t('progress.mascotHelloEmpty');
+  if (state.role === 'teacher') text = t('progress.mascotHelloTeacher');
+  else if (!qTotal) text = t('progress.mascotHelloEmpty');
   else if (acc === null) text = t('progress.mascotHello');
   else text = t('progress.mascotGreat').replace('{acc}', acc + '%');
   const actions = [];
   if (state.role === 'teacher') {
     actions.push('<button class="btn btn-primary" onclick="openAction(\'generate_quiz\')"><i class="fas fa-question-circle"></i> ' + t('progress.mascotBtnQuiz') + '</button>');
-    actions.push('<button class="btn btn-secondary" onclick="openAction(\'quick_lesson\')"><i class="fas fa-bolt"></i> ' + t('progress.mascotBtnLesson') + '</button>');
+    actions.push('<button class="btn btn-secondary" onclick="openAction(\'quick_lesson\')"><i class="fas fa-book-open"></i> ' + t('progress.mascotBtnLesson') + '</button>');
   } else {
     actions.push('<button class="btn btn-primary" onclick="openCTTest()"><i class="fas fa-trophy"></i> ' + t('progress.mascotBtnTest') + ' · ' + escapeHtml(examShort(c)) + '</button>');
     actions.push('<button class="btn btn-secondary" onclick="openAction(\'summary\')"><i class="fas fa-book"></i> ' + t('progress.mascotBtnSummary') + '</button>');
     actions.push('<button class="btn btn-secondary" onclick="openAction(\'solve\')"><i class="fas fa-calculator"></i> ' + t('progress.mascotBtnSolve') + '</button>');
   }
-  if (weak.length) {
+  if (state.role !== 'teacher' && weak.length) {
     actions.push('<button class="btn btn-secondary" onclick="practiceWeakTopic(\'' + escapeAttr(weak[0].subject) + '\',\'' + escapeAttr(weak[0].topic) + '\')"><i class="fas fa-dumbbell"></i> ' + t('progress.mascotBtnWeak') + '</button>');
   }
   return '<div class="prog-mascot">' +
@@ -7920,13 +8068,49 @@ function renderMascot(acc, qTotal, weak) {
     '</div></div>';
 }
 
+function renderTeacherProgressDash() {
+  // Дашборд учителя в «Прогрессе»: только то, что нужно учителю (классы, задания, результаты)
+  const cl = teacherData.classes.length;
+  const as = teacherData.assignments.length;
+  const at = teacherData.attempts.length;
+  let avgPct = '—';
+  if (at) {
+    let s = 0;
+    teacherData.attempts.forEach(function (x) { s += x.total ? (x.score / x.total) : 0; });
+    avgPct = Math.round((s / at) * 100) + '%';
+  }
+  let html = '<div class="prog-stats">' +
+    '<div class="prog-stat"><b>' + cl + '</b><span>' + t('teacher.classes').toLowerCase() + '</span></div>' +
+    '<div class="prog-stat"><b>' + as + '</b><span>' + t('teacher.assignments').toLowerCase() + '</span></div>' +
+    '<div class="prog-stat"><b>' + at + '</b><span>' + t('teacher.attempts').toLowerCase() + '</span></div>' +
+    '<div class="prog-stat"><b>' + avgPct + '</b><span>' + t('progress.accuracy').toLowerCase() + '</span></div>' +
+    '</div>';
+  if (cl) {
+    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">' +
+      '<button class="btn btn-primary" style="flex:1;min-width:128px;" onclick="openTeacher(\'classes\')"><i class="fas fa-users"></i> ' + t('teacher.classes') + '</button>' +
+      '<button class="btn btn-secondary" style="flex:1;min-width:128px;" onclick="openAction(\'assign\')"><i class="fas fa-paper-plane"></i> ' + t('teacher.newAssignment') + '</button>' +
+      '<button class="btn btn-secondary" style="flex:1;min-width:128px;" onclick="openTeacher(\'analytics\')"><i class="fas fa-chart-bar"></i> ' + t('teacher.analytics') + '</button>' +
+      '</div>';
+  } else {
+    html += '<button class="btn btn-primary" style="width:100%;" onclick="openTeacher(\'classes\')"><i class="fas fa-users"></i> ' + t('teacher.newClass') + '</button>';
+  }
+  return html;
+}
+
 function renderProgressPage() {
   const root = document.getElementById('progressRoot');
   if (!root) return;
   // карточка-приветствие живёт в этом разделе — обновляем вместе со статистикой
   if (window.renderGreetCard) renderGreetCard();
-  // окно дневника живёт вне страницы (по центру экрана) — держим его в актуальном состоянии
-  if (window.renderDiaryModal) renderDiaryModal();
+  // Учителю в «Прогрессе» показываем его дашборд, а не ученическую статистику (ЦТ, слабые места, дневник оценок)
+  if (state.role === 'teacher') {
+    const qTotal = 0, weak = [];
+    let thtml = '<div class="country-hero"><div class="country-kicker">' + escapeHtml(t('nav.progress')) + '</div><h1>' + escapeHtml(t('progress.title')) + '</h1><p>' + escapeHtml(t('role.teacher')) + ' · ' + escapeHtml(activeCountry().nameLocal()) + '</p></div>';
+    thtml += renderMascot(null, qTotal, weak);
+    thtml += renderTeacherProgressDash();
+    root.innerHTML = thtml;
+    return;
+  }
   const cp = countryProgress();
   const qTotal = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].n; }, 0);
   const qOk = Object.keys(cp.skills).reduce(function (sum, k) { return sum + cp.skills[k].ok; }, 0);
@@ -8612,14 +8796,14 @@ function renderTeacherAssignment() {
   const attempts = teacherData.attempts.filter(function (x) { return x.code === a.code; });
   let body = '<div class="card" style="text-align:center;"><h3 style="font-size:17px;">' + escapeHtml(a.title) + '</h3>' +
     '<p style="font-size:12.5px;color:var(--text-secondary);margin:6px 0 12px;">' + escapeHtml(a.subject + ' · ' + (a.grade ? a.grade + ' · ' : '') + a.questions.length + ' ' + t('progress.questions')) + '</p>' +
-    '<div class="code-pill">' + escapeHtml(a.code) + '</div>' +
-    '<div style="margin-top:10px;"><button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="copyTextToClipboard(\'' + a.code + '\',this)"><i class="fas fa-copy"></i> ' + t('teacher.copyCode') + '</button></div></div>' +
+    '<p style="font-size:11px;color:var(--text-muted);">' + escapeHtml(t('teacher.assignCode')) + ': <b style="color:var(--text);">' + escapeHtml(a.code) + '</b></p>' +
+    '</div>' +
     '<div class="card"><div class="form-group"><label>' + t('teacher.shareCode') + '</label>' +
       '<textarea class="share-code-box" id="shareCodeBox" rows="3" readonly onclick="this.select()">' + escapeHtml(encodeAssignmentPayload(a)) + '</textarea>' +
       '<p style="font-size:11px;color:var(--text-secondary);margin-top:6px;line-height:1.5;">' + t('teacher.shareCodeDesc') + '</p>' +
-      '<div style="display:flex;gap:8px;margin-top:8px;">' +
-        '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="copyTextToClipboard(document.getElementById(\'shareCodeBox\').value,this)"><i class="fas fa-copy"></i> ' + t('teacher.copyShare') + '</button>' +
-        '<button class="btn btn-secondary" style="flex:1;margin-top:0;" onclick="shareAssignmentCode(this)"><i class="fas fa-share-nodes"></i> ' + t('common.share') + '</button>' +
+      '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">' +
+        '<button class="btn btn-secondary" style="flex:1;min-width:150px;margin-top:0;" onclick="copyTextToClipboard(document.getElementById(\'shareCodeBox\').value,this)"><i class="fas fa-copy"></i> ' + t('teacher.copyShare') + '</button>' +
+        '<button class="btn btn-secondary" style="flex:1;min-width:130px;margin-top:0;" onclick="shareAssignmentCode(this)"><i class="fas fa-share-nodes"></i> ' + t('common.share') + '</button>' +
       '</div></div>';
   // Раздача уникальных вариантов: можно отправить весь код (вариант выдаётся по имени)
   // или скопировать код конкретного варианта конкретному ученику
@@ -8653,6 +8837,14 @@ function plainText(s) {
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
     .trim();
 }
+// Прямая ссылка на задание: ученик открывает её — и задание само появляется
+function assignmentShareUrl(a, vi) {
+  try {
+    const base = String(window.location.href || '').split('#')[0];
+    if (!/^https?:\/\//i.test(base)) return '';
+    return base + '#ass=' + encodeURIComponent(encodeAssignmentPayload(a, vi));
+  } catch (e) { return ''; }
+}
 function composeAssignmentShareText(a) {
   const line = (plainText(a.subject) || '') + (a.grade ? ' · ' + plainText(a.grade) : '');
   let msg = t('teacher.shareMsg')
@@ -8660,6 +8852,8 @@ function composeAssignmentShareText(a) {
     .replace('{line}', line)
     .replace('{code}', encodeAssignmentPayload(a));
   if (a.vars && a.vars.length > 1) msg += '\n' + t('teacher.autoVariantNote').replace('{n}', String(a.vars.length));
+  const link = assignmentShareUrl(a);
+  if (link) msg += '\n\n' + t('teacher.shareLink') + '\n' + link;
   return msg;
 }
 // Отправка конкретного варианта конкретному ученику
@@ -8667,10 +8861,13 @@ function composeVariantShareText(vi) {
   const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
   if (!a || !a.vars || !a.vars[vi]) return '';
   const line = (plainText(a.subject) || '') + (a.grade ? ' · ' + plainText(a.grade) : '');
-  return t('teacher.shareMsg')
+  let msg = t('teacher.shareMsg')
     .replace('{title}', plainText(a.title) + ' · ' + t('teacher.variantN').replace('{n}', vi + 1))
     .replace('{line}', line)
     .replace('{code}', encodeAssignmentPayload(a, vi));
+  const link = assignmentShareUrl(a, vi);
+  if (link) msg += '\n\n' + t('teacher.shareLink') + '\n' + link;
+  return msg;
 }
 function shareAssignmentCode(btn) {
   const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
@@ -8759,34 +8956,42 @@ function renderAnalyticsForAssignment(a) {
   return html;
 }
 
+// Добавляет результат ученика (декодированный NEVR1....) в аналитику нужного задания.
+// Возвращает 'ok' | 'dup' | null (null — код не подходит ни к одному заданию)
+function importAttemptData(d) {
+  try {
+    if (!d || typeof d.acode !== 'string' || !Array.isArray(d.answers)) return null;
+    const a = teacherData.assignments.find(function (x) { return x.code === d.acode; });
+    if (!a) return null;
+    const attempt = {
+      id: d.id || ('at_' + Date.now() + Math.floor(Math.random() * 9999)),
+      code: a.code,
+      name: d.name || t('profile.defaultName'),
+      score: d.score | 0,
+      total: d.total | 0,
+      at: d.at || Date.now(),
+      varIdx: d.vr | 0,
+      answers: (d.answers || []).map(function (x) {
+        const qs = (a.vars && a.vars[d.vr | 0]) ? a.vars[d.vr | 0] : a.questions;
+        const q = qs[x.q];
+        return { q: x.q, selected: x.s, correct: q ? q.correctIndex : -1 };
+      })
+    };
+    if (teacherData.attempts.some(function (x) { return x.id === attempt.id; })) return 'dup';
+    teacherData.attempts.push(attempt);
+    if (teacherData.attempts.length > 500) teacherData.attempts.shift();
+    saveTeacherData();
+    return 'ok';
+  } catch (e) { return null; }
+}
+
 // Вносит результат ученика из кода NEVR1.... (без сервера: ученик присылает код)
 function importStudentResult() {
   const box = document.getElementById('importResultCode');
-  const a = teacherData.assignments.find(function (x) { return x.code === teacherViewId; });
-  if (!box || !a) return;
+  if (!box) return;
   const d = decodeResultPayload(box.value);
-  if (!d || d.acode !== a.code) { showToast(t('teacher.importBad')); return; }
-  const attempt = {
-    id: d.id || ('at_' + Date.now()),
-    code: a.code,
-    name: d.name || t('profile.defaultName'),
-    score: d.score | 0,
-    total: d.total | 0,
-    at: d.at || Date.now(),
-    varIdx: d.vr | 0,
-    answers: (d.answers || []).map(function (x) {
-      const qs = (a.vars && a.vars[d.vr | 0]) ? a.vars[d.vr | 0] : a.questions;
-      const q = qs[x.q];
-      return { q: x.q, selected: x.s, correct: q ? q.correctIndex : -1 };
-    })
-  };
-  if (teacherData.attempts.some(function (x) { return x.id === attempt.id; })) {
-    showToast(t('teacher.importOk'));
-    return;
-  }
-  teacherData.attempts.push(attempt);
-  if (teacherData.attempts.length > 500) teacherData.attempts.shift();
-  saveTeacherData();
+  const res = d ? importAttemptData(d) : null;
+  if (res === null) { showToast(t('teacher.importBad')); return; }
   renderTeacher('analytics');
   showToast(t('teacher.importOk'));
 }
@@ -8871,6 +9076,13 @@ function finishSolve() {
       .replace('{total}', String(total))
       .replace('{pct}', String(pct))
       .replace('{code}', resultCode);
+    // ссылка на результат: учитель откроет её — результат попадёт в аналитику сам
+    try {
+      const base = String(window.location.href || '').split('#')[0];
+      if (/^https?:\/\//i.test(base)) {
+        lastResultShareText += '\n\n' + t('myTasks.resultLink') + '\n' + base + '#res=' + encodeURIComponent(resultCode);
+      }
+    } catch (e) {}
     tail = '<div class="info-banner" style="text-align:left;"><strong>📊 ' + escapeHtml(solveState.name) + '</strong><br><span id="resultSyncStatus">' +
       (auto ? t('myTasks.resultSending') : t('myTasks.resultCodeDesc')) + '</span></div>' +
       '<div class="form-group" style="text-align:left;"><label>' + t('myTasks.resultCode') + '</label>' +
@@ -8928,11 +9140,47 @@ function openMyAssignments() {
   renderMyAssignments();
 }
 
+// Прямые ссылки от учителя/ученика:
+// #ass=NEV1…. — ученик открывает задание;
+// #res=NEVR1…. — учитель открывает и результат сразу попадает в аналитику.
+function tryOpenSharedAssignment() {
+  try {
+    const h = window.location.hash || '';
+    if (h.indexOf('#ass=') === 0) {
+      const shared = decodeAssignmentPayload(decodeURIComponent(h.slice(5)));
+      if (!shared || state.role !== 'student') return;
+      joinedCache[shared.code] = shared;
+      openMyAssignments();
+      renderJoinableAssignment(shared);
+      clearSharedHash();
+      return;
+    }
+    if (h.indexOf('#res=') === 0) {
+      if (state.role !== 'teacher') return;
+      const d = decodeResultPayload(decodeURIComponent(h.slice(5)));
+      const res = d ? importAttemptData(d) : null;
+      if (res === null) { showToast(t('teacher.importBad')); return; }
+      showToast(t('teacher.importOk'));
+      teacherViewId = d.acode;
+      showPage('teacherPage');
+      renderTeacher('analytics');
+      clearSharedHash();
+    }
+  } catch (e) {}
+}
+// убираем служебный хэш из адреса, чтобы задание не «открывалось» само при каждом запуске
+function clearSharedHash() {
+  try {
+    const clean = String(window.location.href || '').split('#')[0];
+    if (history.replaceState) history.replaceState(null, '', clean);
+  } catch (e) {}
+}
+
 function renderMyAssignments() {
   const root = document.getElementById('myTasksRoot');
   if (!root) return;
   const my = loadMyAttempts();
-  let html = '<div class="country-hero"><div class="country-kicker">📚</div><h1>' + t('myTasks.title') + '</h1><p>' + t('myTasks.subtitle') + '</p></div>' +
+  let html = '<div class="country-hero"><h1>' + t('myTasks.title') + '</h1><p>' + t('myTasks.subtitle') + '</p></div>' +
     '<div class="card"><div class="form-group"><label>' + t('myTasks.codePh') + '</label><input type="text" id="joinCode" placeholder="' + escapeHtml(t('myTasks.joinPh')) + '"></div>' +
     '<button class="btn btn-primary" onclick="joinAssignment()"><i class="fas fa-sign-in-alt"></i> ' + t('myTasks.join') + '</button></div>';
   if (my.length) {
@@ -8949,26 +9197,39 @@ function renderMyAssignments() {
 
 const joinedCache = {};
 
+// Вытаскивает полный код задания (NEV1…) даже если ученик вставил целое
+// сообщение учителя или текст со ссылкой — так ничего не потеряется.
+function extractAssignmentCode(raw) {
+  const s = String(raw || '').trim();
+  const m = s.match(/NEV1\.[A-Za-z0-9_\-]+/);
+  if (m) return m[0];
+  return s.replace(/\s+/g, '');
+}
 async function joinAssignment() {
   const raw = (document.getElementById('joinCode')?.value || '').trim();
   if (!raw) { showToast(t('toast.fillField')); return; }
+  const code = extractAssignmentCode(raw);
+  if (!code) { showToast(t('myTasks.notFound')); return; }
   // длинный код задания/результата не переводим в верхний регистр (в нём строчные буквы)
-  const isPayload = raw.indexOf(ASSIGN_MAGIC + '.') === 0 || raw.indexOf(RESULT_MAGIC + '.') === 0;
-  const code = (isPayload ? raw : raw.toUpperCase()).replace(/\s+/g, '');
-  let a = teacherData.assignments.find(function (x) { return x.code === code; }) || null;
+  const isPayload = code.indexOf(ASSIGN_MAGIC + '.') === 0 || code.indexOf(RESULT_MAGIC + '.') === 0;
+  const norm = (isPayload ? code : code.toUpperCase()).replace(/\s+/g, '');
+  let a = teacherData.assignments.find(function (x) { return x.code === norm; }) || null;
   if (!a) {
     // задание может быть «зашито» в сам код — тогда сервер не нужен вообще
-    const shared = decodeAssignmentPayload(code);
+    const shared = decodeAssignmentPayload(norm);
     if (shared) { joinedCache[shared.code] = shared; a = shared; }
   }
   if (!a && teacherSyncEnabled()) {
-    a = await syncGetAssignment(code);
+    a = await syncGetAssignment(norm);
   }
   if (!a || !a.questions || !a.questions.length) {
-    showToast(t('myTasks.notFound'));
+    // короткий код (класса/карточки) живёт только на устройстве учителя —
+    // подсказываем, где взять настоящий код задания
+    if (norm.length <= 8 && norm === norm.toUpperCase()) showToast(t('myTasks.shortCodeHelp'));
+    else showToast(t('myTasks.notFound'));
     return;
   }
-  joinedCache[code] = a;
+  joinedCache[norm] = a;
   renderJoinableAssignment(a);
 }
 
@@ -9058,13 +9319,13 @@ function applyVariantAssignment(a, name) {
     'greet.recGo': 'Потренироваться', 'greet.recExplain': 'Объяснить',
     'greet.recDiaryBtn': 'Открыть дневник', 'greet.recStartBtn': 'Пройти задания',
     'greet.recTClassBtn': 'Создать класс', 'greet.recTAssignBtn': 'Назначить задание',
-    'greet.recTAnalyticsBtn': 'Аналитика класса', 'greet.recTLessonBtn': 'Собрать урок',
+    'greet.recTAnalyticsBtn': 'Аналитика класса', 'greet.recTLessonBtn': 'Составить план урока',
     'greet.examIn': 'До экзамена — {n} дн.',
     'greet.examSet': 'Указать дату экзамена', 'greet.examClear': 'Убрать',
     'greet.examHint': 'Дату экзамена можно задать свою — Nevio посчитает дни только по ней.',
     'diary.title': 'Мой дневник',
     'diary.desc': 'Оценки по предметам — средний балл считается сразу',
-    'diary.empty': 'Нажми «Добавить предмет», выбери предмет и поставь оценки — Nevio сразу посчитает средний балл.',
+    'diary.empty': 'Выбери предмет, добавь оценки — Nevio сам посчитает средний балл.',
     'diary.emptyYear': 'За год оценок пока нет — добавь предметы в четвертях.',
     'diary.add': 'Добавить предмет',
     'diary.addSub': 'Выбери предмет из списка или впиши свой',
@@ -9082,7 +9343,8 @@ function applyVariantAssignment(a, name) {
     'diary.removed': 'Оценка убрана',
     'diary.saved': 'Оценки сохранены',
     'diary.subjectRemoved': 'Предмет убран',
-    'diary.qI': '1', 'diary.qII': '2', 'diary.qIII': '3', 'diary.qIV': '4', 'diary.qYear': 'Год',
+    'diary.qI': 'I', 'diary.qII': 'II', 'diary.qIII': 'III', 'diary.qIV': 'IV', 'diary.qYear': 'Год',
+    'diary.done': 'Готово', 'diary.addGrade': 'Добавить оценку', 'diary.emptyTitle': 'Добавь предмет и оценки', 'diary.emptyYearTitle': 'Год пока без оценок',
     'diary.qWord': 'четверть',
     'mist.title': 'Разбор ошибок',
     'mist.desc': 'Найди ошибку → пойми её → закрепь похожими заданиями',
@@ -9096,10 +9358,12 @@ function applyVariantAssignment(a, name) {
     'simple.userMsg': 'Объясни проще',
     'scan.photo': 'Сфотографировать', 'scan.upload': 'Загрузить фото',
     'scan.recognize': 'Распознать', 'scan.status.ready': 'Фото готово — нажми «Распознать»',
-    'scan.status.vision': 'Узнаю содержимое…', 'scan.status.ocr': 'Читаю текст (резервный режим)…',
+    'scan.status.vision': 'Узнаю содержимое…', 'scan.status.ocr': 'Читаю текст (резервный режим)…', 'scan.status.fix': 'Исправляю ошибки распознавания…',
+    'myTasks.shortCodeHelp': 'Это короткий код из карточки — он действует только на устройстве учителя. Попросите учителя нажать «Скопировать код задания» и прислать длинный код.',
+    'myTasks.resultLink': 'Или откройте ссылку — результат попадёт в аналитику сам:',
     'scan.status.done': 'Распознано! Проверь текст ниже — его можно исправить, затем выбери действие.',
     'scan.status.fail': 'Не удалось распознать автоматически. Впиши текст задания вручную — действия ниже работают и с ним.',
-    'scan.actExplain': 'Объяснить', 'scan.actSolve': 'Решить', 'scan.actCheck': 'Проверить мою работу',
+    'scan.actExplain': 'Объяснить', 'scan.actSolve': 'Решить', 'scan.actCheck': 'Проверить мою работу', 'scan.actCheckT': 'Проверить работу',
     'scan.actTest': 'Сделать тест', 'scan.actSummary': 'Сделать конспект', 'scan.actErrors': 'Найти ошибки',
     'scan.checkTitle': 'Проверка работы', 'scan.errorsTitle': 'Поиск ошибок',
     'scan.saveTopics': 'Записать темы в «Разбор ошибок»', 'scan.saved': 'Темы добавлены в разбор ошибок',
@@ -9107,7 +9371,7 @@ function applyVariantAssignment(a, name) {
     'pres.withQuestions': 'Добавить вопросы и задания для класса',
     'pres.building': 'Собираю презентацию…', 'pres.show': 'Показать слайды',
     'pres.download': 'Скачать .html', 'pres.deckTitle': 'Презентация готова',
-    'ql.run': 'Собрать урок', 'ql.chipPres': '🎞 Презентация к уроку', 'ql.chipTest': '🧪 Тест для класса',
+    'ql.run': 'Составить план урока', 'ql.chipPres': '🎞 Презентация к уроку', 'ql.chipTest': '🧪 Тест для класса',
     'variants.topicPh': 'Например: квадратные уравнения', 'variants.count': 'Вариантов', 'variants.unit': 'варианта(ов)',
     'variants.perVariant': 'Заданий в варианте', 'variants.run': 'Создать варианты',
     'variants.bannerTitle': '🎯 Разные задания — одна сложность',
@@ -9117,7 +9381,7 @@ function applyVariantAssignment(a, name) {
     'plus.perMonth': '/ мес', 'plus.current': 'Текущий тариф',
     'plus.activate': 'Активировать', 'plus.codePh': 'Код активации', 'plus.deactivate': 'Отключить Plus',
     'plus.weekly': 'Активность за 7 дней', 'plus.weeklyTeaser': 'График активности по дням — в NEVIO Plus',
-    'plus.note': 'Оплата подключается отдельно и без расходов для владельца: Telegram Stars или локальные платёжные системы (см. docs/MONETIZATION.md). До запуска онлайн-оплаты активация — по коду от поддержки (support@nevio.app).',
+
     'settings.plusDesc': 'Тарифы: Free и Plus',
     'teacher.uniqueVariants': 'Уникальные варианты', 'teacher.singleVariant': 'один на всех',
     'teacher.uniqueVariantsDesc': 'Nevio сгенерирует варианты одинаковой сложности с разными числами и выдаст каждому ученику свой — по коду задания.',
@@ -9142,6 +9406,7 @@ function applyVariantAssignment(a, name) {
     'diary.noGrades': 'баға жоқ', 'diary.noGradesShort': 'баға жоқ',
     'diary.removed': 'Баға жойылды', 'diary.saved': 'Бағалар сақталды', 'diary.subjectRemoved': 'Пән жойылды',
     'diary.qYear': 'Жыл', 'diary.qWord': 'тоқсан',
+    'diary.done': 'Дайын', 'diary.addGrade': 'Баға қосу', 'diary.emptyTitle': 'Пән мен баға қос', 'diary.emptyYearTitle': 'Жыл бойынша әзірге баға жоқ',
     'greet.recMistakes': 'Талданбаған қателер: {n} — біреуін талдаудан баста.',
     'greet.recReview': 'Бүгін «{topic}» тақырыбын қайталаған жөн.',
     'greet.recDiary': 'Күнделікте «{s}» пәнінің орташа балы {avg} — {q} орташасынан ({qavg}) төмен.',
@@ -9152,12 +9417,23 @@ function applyVariantAssignment(a, name) {
     'greet.recGo': 'Жаттығу', 'greet.recExplain': 'Түсіндіру',
     'greet.recDiaryBtn': 'Күнделікті ашу', 'greet.recStartBtn': 'Тапсырмаларды орындау',
     'greet.recTClassBtn': 'Сынып құру', 'greet.recTAssignBtn': 'Тапсырма тағайындау',
-    'greet.recTAnalyticsBtn': 'Сынып аналитикасы', 'greet.recTLessonBtn': 'Сабақ жинау',
-    'diary.empty': '«Пән қосу» батыр: пәнді таңдап, баға қой — Nevio орташа балды бірден есептейді.',
+    'greet.recTAnalyticsBtn': 'Сынып аналитикасы', 'greet.recTLessonBtn': 'Сабақ жоспарын құру',
+    'diary.empty': 'Пәнді таңда, баға қос — Nevio орташа балды өзі есептейді.',
     'diary.hint': 'Бағаны бассан — жойылады, «+» — тағы қосу.',
     'diary.yearNote': '«Жыл» барлық тоқсан бағаларын жинайды. Қосу үшін тоқсанды таңда.',
     'diary.emptyYear': 'Жыл бойынша баға жоқ — тоқсандарда пән қос.',
-    'pres.slides': 'Слайд саны', 'variants.count': 'Нұсқалар саны', 'teacher.uniqueVariants': 'Бірегей нұсқалар'
+    'scan.photo': 'Суретке түсіру', 'scan.upload': 'Фото жүктеу', 'scan.recognize': 'Танып білу',
+    'scan.status.ready': 'Фото дайын — «Танып білуді» басыңыз', 'scan.status.vision': 'Мазмұнын анықтаймын…',
+    'scan.status.ocr': 'Мәтінді оқып жатырмын (резервтік режим)…', 'scan.status.fix': 'Тану қателерін түзетіп жатырмын…',
+    'scan.status.done': 'Танылды! Төмендегі мәтінді тексеріп, түзете аласыз, содан кейін әрекетті таңдаңыз.',
+    'scan.status.fail': 'Автоматты тану сәтсіз. Тапсырма мәтінін қолмен енгізіңіз — төмендегі әрекеттер онымен де жұмыс істейді.',
+    'scan.actExplain': 'Түсіндіру', 'scan.actSolve': 'Шығару', 'scan.actCheck': 'Менің жұмысымды тексеру', 'scan.actCheckT': 'Жұмысты тексеру',
+    'scan.actTest': 'Тест жасау', 'scan.actSummary': 'Конспект жасау', 'scan.actErrors': 'Қателерді табу',
+    'scan.checkTitle': 'Жұмысты тексеру', 'scan.errorsTitle': 'Қателерді іздеу',
+    'scan.saveTopics': 'Тақырыптарды «Қателерді талдауға» жазу', 'scan.saved': 'Тақырыптар қателерді талдауға қосылды',
+    'pres.slides': 'Слайд саны', 'variants.count': 'Нұсқалар саны', 'teacher.uniqueVariants': 'Бірегей нұсқалар',
+    'myTasks.shortCodeHelp': 'Бұл карточкадағы қысқа код — ол тек мұғалімнің құрылғысында жұмыс істейді. Мұғалімнен «Тапсырма кодын көшіру» батырмасымен ұзын кодты сұраңыз.',
+    'myTasks.resultLink': 'Немесе сілтемені ашыңыз — нәтиже аналитикаға өзі түседі:'
   };
   const uz = {
     'greet.morning': 'Xayrli tong 👋', 'greet.day': 'Xayrli kun 👋', 'greet.evening': 'Xayrli kech 👋', 'greet.night': 'Xayrli tun 🌙',
@@ -9175,6 +9451,7 @@ function applyVariantAssignment(a, name) {
     'diary.noGrades': 'baho yoʻq', 'diary.noGradesShort': 'baho yoʻq',
     'diary.removed': 'Baho oʻchirildi', 'diary.saved': 'Baholar saqlandi', 'diary.subjectRemoved': 'Fan oʻchirildi',
     'diary.qYear': 'Yil', 'diary.qWord': 'chorak',
+    'diary.done': 'Tayyor', 'diary.addGrade': 'Baho qoʻshish', 'diary.emptyTitle': 'Fan va baho qoʻshing', 'diary.emptyYearTitle': 'Yil uchun hali baho yoʻq',
     'greet.recMistakes': 'Tahlil qilinmagan xatolar: {n} — bittasidan boshlang.',
     'greet.recReview': 'Bugun «{topic}» mavzusini takrorlash kerak.',
     'greet.recDiary': 'Kundalikda «{s}» fanining oʻrtacha balli {avg} — {q} oʻrtachasidan ({qavg}) past.',
@@ -9185,12 +9462,23 @@ function applyVariantAssignment(a, name) {
     'greet.recGo': 'Mashq qilish', 'greet.recExplain': 'Tushuntirish',
     'greet.recDiaryBtn': 'Kundalikni ochish', 'greet.recStartBtn': 'Topshiriqlarni bajarish',
     'greet.recTClassBtn': 'Sinf yaratish', 'greet.recTAssignBtn': 'Topshiriq berish',
-    'greet.recTAnalyticsBtn': 'Sinf analitikasi', 'greet.recTLessonBtn': 'Dars yigʻish',
-    'diary.empty': '«Fan qoʻshish» tugmasi: fanni tanlab, baho qoʻying — Nevio oʻrtacha ballni darhol hisoblaydi.',
+    'greet.recTAnalyticsBtn': 'Sinf analitikasi', 'greet.recTLessonBtn': 'Dars rejasini tuzish',
+    'diary.empty': 'Fan tanlang, baho qoʻshing — Nevio oʻrtacha ballni oʻzi hisoblaydi.',
     'diary.hint': 'Bahoni bossangiz — oʻchadi, «+» — yana qoʻshish.',
     'diary.yearNote': '«Yil» barcha chorak baholarini yigʻadi. Qoʻshish uchun chorakni tanlang.',
     'diary.emptyYear': 'Yil boʻyicha baho yoʻq — choraklarda fan qoʻshing.',
-    'pres.slides': 'Slaydlar soni', 'variants.count': 'Variantlar soni', 'teacher.uniqueVariants': 'Noyob variantlar'
+    'scan.photo': 'Suratga olish', 'scan.upload': 'Rasm yuklash', 'scan.recognize': 'Matnni tanib olish',
+    'scan.status.ready': 'Rasm tayyor — «Tanib olish» tugmasini bosing', 'scan.status.vision': 'Mazmunini aniqlayapman…',
+    'scan.status.ocr': 'Matnni oʻqiyapman (zaxira rejim)…', 'scan.status.fix': 'Tanish xatolarini tuzatyapman…',
+    'scan.status.done': 'Tanib olindi! Quyidagi matnni tekshiring — uni tuzatish mumkin, keyin amalni tanlang.',
+    'scan.status.fail': 'Avtomatik tanib boʻlmadi. Topshiriq matnini qoʻlda kiriting — quyidagi amallar u bilan ham ishlaydi.',
+    'scan.actExplain': 'Tushuntirish', 'scan.actSolve': 'Yechish', 'scan.actCheck': 'Mening ishimni tekshirish', 'scan.actCheckT': 'Ishni tekshirish',
+    'scan.actTest': 'Test yaratish', 'scan.actSummary': 'Konspekt tuzish', 'scan.actErrors': 'Xatolarni topish',
+    'scan.checkTitle': 'Ishni tekshirish', 'scan.errorsTitle': 'Xatolarni qidirish',
+    'scan.saveTopics': 'Mavzularni «Xatolar tahlili»ga yozish', 'scan.saved': 'Mavzular xatolar tahliliga qoʻshildi',
+    'pres.slides': 'Slaydlar soni', 'variants.count': 'Variantlar soni', 'teacher.uniqueVariants': 'Noyob variantlar',
+    'myTasks.shortCodeHelp': 'Bu kartadagi qisqa kod faqat oʻqituvchi qurilmasida ishlaydi. Oʻqituvchidan «Topshiriq kodini nusxalash» tugmasi bilan uzun kodni soʻrang.',
+    'myTasks.resultLink': 'Yoki havolani oching — natija analitikaga oʻzi tushadi:'
   };
   Object.assign(I18N.ru, ru);
   Object.assign(I18N.kk, kk || {});
@@ -9344,7 +9632,7 @@ function nevioRecommendation() {
       const classes = (typeof teacherData === 'object' && teacherData && teacherData.classes) || [];
       const assignments = (teacherData && teacherData.assignments) || [];
       const attempts = (teacherData && teacherData.attempts) || [];
-      const lessonBtn = recBtn('btn-secondary', "openAction('quick_lesson')", 'fas fa-bolt', t('greet.recTLessonBtn'));
+      const lessonBtn = recBtn('btn-secondary', "openAction('quick_lesson')", 'fas fa-book-open', t('greet.recTLessonBtn'));
       if (!classes.length) {
         out.text = escapeHtml(t('greet.recTClass'));
         out.btns = recBtn('btn-primary', "openTeacher('classes')", 'fas fa-users', t('greet.recTClassBtn')) + lessonBtn;
@@ -9408,14 +9696,20 @@ function renderGreetCard() {
   const root = document.getElementById('greetRoot');
   if (!root || !state.role) return;
   const c = activeCountry();
+  const isT = state.role === 'teacher';
   const sum = greetTodaySummary();
   const hi = t(nevioGreetingKey());
-  const days = nevioExamDaysLeft();
+  const days = isT ? null : nevioExamDaysLeft();
 
   // Краткая строка в закрытом состоянии — только реальные данные
   let brief;
   if (days !== null && days >= 0) brief = t('greet.examIn').replace('{n}', String(days));
-  else if (sum.hasAny) {
+  else if (isT) {
+    const clT = teacherData.classes.length, asT = teacherData.assignments.length;
+    brief = clT
+      ? clT + ' ' + t('teacher.classes').toLowerCase() + ' · ' + asT + ' ' + t('teacher.assignments').toLowerCase()
+      : t('greet.recTClass');
+  } else if (sum.hasAny) {
     const parts = [];
     if (sum.minutes > 0) parts.push(t('greet.minutes').replace('{n}', String(sum.minutes)));
     if (sum.tasks > 0) parts.push(t('greet.tasks').replace('{n}', String(sum.tasks)));
@@ -9425,22 +9719,32 @@ function renderGreetCard() {
   // Раскрытое состояние — детали (ничего не выдумываем: строки есть только если есть данные)
   let lines = '';
   const add = function (icon, html) { lines += '<div class="greet-line"><i class="' + icon + '"></i><span>' + html + '</span></div>'; };
-  if (days !== null && days >= 0) add('fas fa-hourglass-half', t('greet.examIn').replace('{n}', '<b>' + days + '</b>') + ' · ' + escapeHtml(examShort(c)));
-  if (sum.minutes > 0) add('fas fa-stopwatch', t('greet.minutes').replace('{n}', '<b>' + sum.minutes + '</b>'));
-  if (sum.tasks > 0) add('fas fa-list-check', t('greet.tasks').replace('{n}', '<b>' + sum.tasks + '</b>'));
-  if (sum.answers > 0) add('fas fa-circle-check', t('greet.answers').replace('{n}', '<b>' + sum.answers + '</b>').replace('{ok}', String(sum.correct)));
-  if (sum.attention) add('fas fa-triangle-exclamation', t('greet.attention').replace('{s}', escapeHtml(subjectName(sum.attention))));
-  if (!lines) lines = '<div class="greet-line"><i class="fas fa-seedling"></i><span>' + escapeHtml(t('greet.noStats')) + '</span></div>';
+  if (isT) {
+    const clT = teacherData.classes.length, asT = teacherData.assignments.length, atT = teacherData.attempts.length;
+    if (clT) add('fas fa-users', t('teacher.classes') + ': <b>' + clT + '</b>');
+    if (asT) add('fas fa-tasks', t('teacher.assignments') + ': <b>' + asT + '</b>');
+    if (atT) add('fas fa-clipboard-check', t('teacher.attempts') + ': <b>' + atT + '</b>');
+    if (!lines) lines = '<div class="greet-line"><i class="fas fa-seedling"></i><span>' + escapeHtml(t('greet.recTClass')) + '</span></div>';
+  } else {
+    if (days !== null && days >= 0) add('fas fa-hourglass-half', t('greet.examIn').replace('{n}', '<b>' + days + '</b>') + ' · ' + escapeHtml(examShort(c)));
+    if (sum.minutes > 0) add('fas fa-stopwatch', t('greet.minutes').replace('{n}', '<b>' + sum.minutes + '</b>'));
+    if (sum.tasks > 0) add('fas fa-list-check', t('greet.tasks').replace('{n}', '<b>' + sum.tasks + '</b>'));
+    if (sum.answers > 0) add('fas fa-circle-check', t('greet.answers').replace('{n}', '<b>' + sum.answers + '</b>').replace('{ok}', String(sum.correct)));
+    if (sum.attention) add('fas fa-triangle-exclamation', t('greet.attention').replace('{s}', escapeHtml(subjectName(sum.attention))));
+    if (!lines) lines = '<div class="greet-line"><i class="fas fa-seedling"></i><span>' + escapeHtml(t('greet.noStats')) + '</span></div>';
+  }
 
   // Рекомендация Nevio — всегда из реальных данных, с конкретным следующим шагом
   const rec = nevioRecommendation();
   const recText = rec.text;
   const recBtns = rec.btns;
 
-  const examEditor = days === null
-    ? '<div class="greet-exam-set"><i class="fas fa-calendar-day" style="color:var(--gold)"></i><span>' + escapeHtml(t('greet.examHint')) + '</span></div>' +
-      '<div class="greet-exam-set"><input type="date" id="greetExamDate" min="2024-01-01" max="2035-12-31" onchange="setGreetExamDate(this.value)"></div>'
-    : '<div class="greet-exam-set"><input type="date" value="' + escapeHtml(nevioExamDate()) + '" max="2035-12-31" onchange="setGreetExamDate(this.value)"> <a onclick="setGreetExamDate(\'\')">' + escapeHtml(t('greet.examClear')) + '</a></div>';
+  const examEditor = isT
+    ? ''
+    : (days === null
+      ? '<div class="greet-exam-set"><i class="fas fa-calendar-day" style="color:var(--gold)"></i><span>' + escapeHtml(t('greet.examHint')) + '</span></div>' +
+        '<div class="greet-exam-set"><input type="date" id="greetExamDate" min="2024-01-01" max="2035-12-31" onchange="setGreetExamDate(this.value)"></div>'
+      : '<div class="greet-exam-set"><input type="date" value="' + escapeHtml(nevioExamDate()) + '" max="2035-12-31" onchange="setGreetExamDate(this.value)"> <a onclick="setGreetExamDate(\'\')">' + escapeHtml(t('greet.examClear')) + '</a></div>');
 
   root.innerHTML =
     '<div class="greet-card' + (greetOpen ? ' open' : '') + '">' +
@@ -9450,7 +9754,7 @@ function renderGreetCard() {
         '<div class="greet-sub">' + escapeHtml(brief) + '</div>' +
       '</div></div>' +
       '<div class="greet-more">' +
-        '<div class="section-label" style="margin:12px 0 6px;">' + escapeHtml(t('greet.today')) + '</div>' +
+        '<div class="section-label" style="margin:12px 0 6px;">' + escapeHtml(isT ? t('teacher.title') : t('greet.today')) + '</div>' +
         '<div class="greet-lines">' + lines + '</div>' +
         (recText ? '<div class="greet-rec"><div class="greet-rec-name">' + escapeHtml(t('greet.rec')) + '</div>' + recText + (recBtns ? '<div class="greet-btns">' + recBtns + '</div>' : '') + '</div>' : '') +
         examEditor +
@@ -9641,8 +9945,6 @@ function renderMistakesSection() {
 const DIARY_KEY = 'nevioDiary_v1';
 const DIARY_SCALE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 let diaryTab = null;        // выбранная четверть: 'I'..'IV' | 'year'
-let diaryOpen = false;      // выноска свёрнута, пока её не раскрыли
-let diaryModal = null;      // null | { step:'subject' } | { step:'grades', subject, grades:[] }
 
 function diaryAll() { try { return JSON.parse(localStorage.getItem(DIARY_KEY) || '{}'); } catch (e) { return {}; } }
 function nevioCurrentQuarter() {
@@ -9701,83 +10003,99 @@ function diaryActiveQuarter() {
 function diaryQuarterLabel(q) {
   return q === 'year' ? t('diary.qYear') : t('diary.q' + q) + ' ' + t('diary.qWord');
 }
-// средний балл четверти — среднее из средних по предметам
+// средний балл четверти/года — по всем оценкам
 function diaryQuarterAvg(q) {
-  const avgs = diarySubjects(q)
-    .map(function (s) { return diaryAvg(diaryGrades(q, s)); })
-    .filter(function (x) { return x !== null; });
-  return diaryAvg(avgs);
+  let sum = 0, n = 0;
+  diarySubjects(q).forEach(function (s) {
+    diaryGrades(q, s).forEach(function (g) { sum += g; n++; });
+  });
+  return n ? sum / n : null;
 }
 
-/* --- интерфейс дневника: выноска + окно по центру экрана --- */
-function diaryToggleOpen() { diaryOpen = !diaryOpen; renderProgressPage(); }
-function diarySetQ(q) {
+// Экран дневника: step 'main' | 'pickSubject' | 'pickGrades'
+let diaryUi = { step: 'main', subj: null, grades: [] };
+
+function diaryPageActive() {
+  const p = document.getElementById('diaryPage');
+  return !!(p && p.classList.contains('active'));
+}
+
+/* --- Мой дневник: полноэкранный раздел (открывается как отдельный экран) --- */
+function closeDiary() {
+  if (typeof renderProgressPage === 'function') renderProgressPage();
+  showPage('progressPage');
+}
+function openDiary() {
+  const d = diaryCur();
+  if (!diaryTab) diaryTab = d.q || nevioCurrentQuarter();
+  diaryUi = { step: 'main', subj: null, grades: [] };
+  showPage('diaryPage');
+  renderDiaryFull();
+}
+function diarySetFull(q) {
   diaryTab = q;
-  diaryModal = null;
-  renderProgressPage();
-  // в пустой четверти сразу показываем «Добавить предмет» по центру экрана
-  if (q !== 'year' && !diarySubjects(q).length) diaryOpenAddSubject();
+  diaryUi = { step: 'main', subj: null, grades: [] };
+  renderDiaryFull();
 }
-function diaryOpenAddSubject() { diaryModal = { step: 'subject' }; renderDiaryModal(); }
-function diaryOpenGrades(subject) {
-  diaryModal = { step: 'grades', subject: subject, grades: diaryGrades(diaryActiveQuarter(), subject).slice() };
-  renderDiaryModal();
+function diaryBeginAddSubject() {
+  if (diaryTab === 'year') { diaryTab = diaryCur().q || nevioCurrentQuarter(); }
+  diaryUi = { step: 'pickSubject', subj: null, grades: [] };
+  renderDiaryFull();
 }
-// из рекомендации: раскрыть дневник и сразу открыть оценки предмета
-function diaryOpenSubject(subject, q) {
-  diaryOpen = true;
-  if (q && q !== 'year') diaryTab = q;
-  renderProgressPage();
-  diaryOpenGrades(subject);
-}
-function diaryPickSubject(v) {
-  const s = String(v || '').trim().slice(0, 60);
+function diaryPickSubjectFull(subject) {
+  const s = String(subject || '').trim().slice(0, 60);
   if (!s) return;
-  diaryModal = { step: 'grades', subject: s, grades: diaryGrades(diaryActiveQuarter(), s).slice() };
-  renderDiaryModal();
+  diaryUi = { step: 'pickGrades', subj: s, grades: diaryGrades(diaryActiveQuarter(), s).slice() };
+  renderDiaryFull();
 }
-function diaryOwnSubject() {
+function diaryOwnSubjectFull() {
   const el = document.getElementById('diaryOwnInput');
   const v = ((el && el.value) || '').trim();
   if (!v) {
-    // подсказка прямо в окне: тост остался бы под затемнением
     if (el) { el.placeholder = t('diary.emptyName'); try { el.focus(); } catch (e) {} }
     return;
   }
-  diaryPickSubject(v);
+  diaryPickSubjectFull(v);
 }
-function diaryDraftAdd(g) {
-  if (!diaryModal) return;
-  if (!diaryModal.grades) diaryModal.grades = [];
-  diaryModal.grades.push(g | 0);
-  renderDiaryModal();
+function diaryKeyAdd(n) {
+  if (!diaryUi || diaryUi.step !== 'pickGrades') return;
+  diaryUi.grades.push(n | 0);
+  renderDiaryFull();
 }
-function diaryDraftRemove(i) {
-  if (!diaryModal || !diaryModal.grades) return;
-  diaryModal.grades.splice(i, 1);
-  renderDiaryModal();
+function diaryPickGradeRemove(i) {
+  if (!diaryUi || !diaryUi.grades) return;
+  diaryUi.grades.splice(i, 1);
+  renderDiaryFull();
 }
-function diaryApply() {
-  if (!diaryModal || !diaryModal.subject) return;
+function diaryDone() { // «Готово» — предмет и оценки сохраняются
+  if (!diaryUi || diaryUi.step !== 'pickGrades' || !diaryUi.subj) return;
   const d = diaryCur();
   const q = diaryActiveQuarter();
   if (!d.byQ[q]) d.byQ[q] = {};
-  d.byQ[q][diaryModal.subject] = (diaryModal.grades || []).map(function (g) { return g | 0; });
+  d.byQ[q][diaryUi.subj] = (diaryUi.grades || []).map(function (g) { return g | 0; });
   diarySave();
-  diaryModal = null;
-  renderProgressPage();
+  diaryUi = { step: 'main', subj: null, grades: [] };
+  renderDiaryFull();
   showToast(t('diary.saved'));
 }
-function diaryCloseModal() { diaryModal = null; renderDiaryModal(); }
-// клик по оценке в строке — убрать её
+function diaryCancelStep() {
+  diaryUi = { step: 'main', subj: null, grades: [] };
+  renderDiaryFull();
+}
+// «Добавить оценку» для уже существующего предмета
+function diaryEditGrades(subject) {
+  diaryUi = { step: 'pickGrades', subj: subject, grades: diaryGrades(diaryActiveQuarter(), subject).slice() };
+  renderDiaryFull();
+}
+// клик по оценке в карточке предмета — убрать её
 function diaryRemoveGrade(subject, idx) {
   const d = diaryCur();
   const q = diaryActiveQuarter();
   const bag = (d.byQ[q] && d.byQ[q][subject]) || [];
   bag.splice(idx, 1);
-  if (d.byQ[q]) d.byQ[q][subject] = bag; // предмет остаётся в списке, даже если оценок не осталось
+  if (d.byQ[q]) d.byQ[q][subject] = bag;
   diarySave();
-  renderProgressPage();
+  if (diaryPageActive()) renderDiaryFull(); else renderProgressPage();
   showToast(t('diary.removed'));
 }
 function diaryRemoveSubject(subject) {
@@ -9785,129 +10103,171 @@ function diaryRemoveSubject(subject) {
   const q = diaryActiveQuarter();
   if (d.byQ[q]) delete d.byQ[q][subject];
   diarySave();
-  diaryModal = null;
-  renderProgressPage();
+  diaryUi = { step: 'main', subj: null, grades: [] };
+  if (diaryPageActive()) renderDiaryFull(); else renderProgressPage();
   showToast(t('diary.subjectRemoved'));
 }
-
-function renderDiaryModal() {
-  let host = document.getElementById('diaryModal');
-  if (!host) {
-    host = document.createElement('div');
-    host.id = 'diaryModal';
-    host.className = 'diary-modal';
-    host.onclick = function (e) { if (e.target === host) diaryCloseModal(); };
-    document.body.appendChild(host);
-  }
-  if (!diaryModal) { host.classList.remove('open'); host.innerHTML = ''; return; }
-  const closeBtn = '<button class="dm-close" onclick="diaryCloseModal()"><i class="fas fa-xmark"></i></button>';
-  let body = '';
-  if (diaryModal.step === 'subject') {
-    const have = diarySubjects(diaryActiveQuarter());
-    const rest = ((activeCountry().studySubjects) || []).filter(function (s) { return have.indexOf(s) === -1; });
-    body = '<div class="dm-head"><i class="fas fa-book-open diary-ico"></i><div class="dm-title">' + escapeHtml(t('diary.add')) + '</div>' + closeBtn + '</div>' +
-      '<div class="dm-sub">' + escapeHtml(t('diary.addSub')) + '</div>' +
-      (rest.length ? '<div class="dm-chips">' + rest.map(function (s) {
-        return '<button class="dm-chip" onclick="diaryPickSubject(\'' + escapeAttr(s) + '\')">' + escapeHtml(subjectName(s)) + '</button>';
-      }).join('') + '</div>' : '<div class="diary-empty">' + escapeHtml(t('diary.allAdded')) + '</div>') +
-      '<div class="dm-own"><input id="diaryOwnInput" maxlength="60" placeholder="' + escapeHtml(t('diary.ownPh')) + '" onkeydown="if(event.key===\'Enter\'){diaryOwnSubject();}">' +
-        '<button class="btn btn-secondary" onclick="diaryOwnSubject()"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.ownBtn')) + '</button></div>';
-  } else {
-    const grades = diaryModal.grades || [];
-    const avg = diaryAvg(grades);
-    body = '<div class="dm-head"><i class="fas fa-book-open diary-ico"></i><div class="dm-title">' + escapeHtml(subjectName(diaryModal.subject)) + '</div>' + closeBtn + '</div>' +
-      '<div class="dm-sub">' + escapeHtml(t('diary.gradesSub')) + '</div>' +
-      '<div class="dm-keypad">' + DIARY_SCALE.map(function (n) {
-        return '<button class="dm-key" onclick="diaryDraftAdd(' + n + ')">' + n + '</button>';
-      }).join('') + '</div>' +
-      '<div class="dm-picked">' + (grades.length
-        ? grades.map(function (g, i) {
-            return '<button class="diary-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryDraftRemove(' + i + ')">' + (g | 0) + '</button>';
-          }).join('')
-        : '<span class="dm-picked-empty">' + escapeHtml(t('diary.noGrades')) + '</span>') + '</div>' +
-      '<div class="diary-total"><div class="diary-total-label">' + escapeHtml(t('diary.avgOf')) +
-        '<small>' + escapeHtml(t('diary.gradesN') + ': ' + grades.length) + '</small></div>' +
-        '<div class="diary-total-value' + (avg === null ? ' none' : '') + '">' + (avg === null ? '—' : avg.toFixed(1)) + '</div></div>' +
-      '<div class="dm-foot"><button class="btn btn-secondary" onclick="diaryCloseModal()">' + escapeHtml(t('diary.cancel')) + '</button>' +
-        '<button class="btn btn-primary" onclick="diaryApply()"><i class="fas fa-check"></i> ' + escapeHtml(t('diary.apply')) + '</button></div>' +
-      '<div class="dm-drop"><a onclick="diaryRemoveSubject(\'' + escapeAttr(diaryModal.subject) + '\')">' + escapeHtml(t('diary.dropSubject')) + '</a></div>';
-  }
-  host.innerHTML = '<div class="diary-modal-card">' + body + '</div>';
-  host.classList.add('open');
-  const inp = document.getElementById('diaryOwnInput');
-  if (inp) setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
+// из рекомендации на «Прогрессе»: открыть дневник сразу на предмете
+function diaryOpenSubject(subject, q) {
+  if (q && q !== 'year') diaryTab = q;
+  diaryUi = { step: 'pickGrades', subj: subject, grades: diaryGrades(diaryActiveQuarter(), subject).slice() };
+  showPage('diaryPage');
+  renderDiaryFull();
+}
+function diaryOpenAddSubject() {
+  openDiary();
+  diaryBeginAddSubject();
 }
 
+function diaryQFrame() {
+  const q = diaryActiveQuarter();
+  const quarters = ['I', 'II', 'III', 'IV'];
+  let html = '<div class="dq-frame">';
+  quarters.forEach(function (r) {
+    html += '<button type="button" class="dq-tab' + (q === r ? ' active' : '') + '" onclick="diarySetFull(\'' + r + '\')">' +
+      '<span class="dq-rom">' + r + '</span><span class="dq-cap">' + escapeHtml(t('diary.qWord')) + '</span></button>';
+  });
+  html += '<button type="button" class="dq-tab' + (q === 'year' ? ' active' : '') + '" onclick="diarySetFull(\'year\')">' +
+    '<span class="dq-rom">' + escapeHtml(t('diary.qYear')) + '</span><span class="dq-cap">&nbsp;</span></button>';
+  return html + '</div>';
+}
+
+function diaryFootBar() {
+  const q = diaryActiveQuarter();
+  const subs = diarySubjects(q);
+  let n = 0;
+  subs.forEach(function (s) { n += diaryGrades(q, s).length; });
+  const avg = diaryQuarterAvg(q);
+  return '<div class="dq-foot"><div class="dq-f-label">' +
+    escapeHtml(q === 'year' ? t('diary.yearAvg') : t('diary.avg').replace('{q}', diaryQuarterLabel(q))) +
+    '<small>' + escapeHtml(t('diary.subjectsN') + ': ' + subs.length + ' · ' + t('diary.gradesN') + ': ' + n) + '</small></div>' +
+    '<div class="dq-f-val' + (avg === null ? ' none' : '') + '">' + (avg === null ? '—' : avg.toFixed(1)) + '</div></div>';
+}
+
+function renderDiaryPickSubject() {
+  const q = diaryActiveQuarter();
+  const have = diarySubjects(q);
+  const rest = ((activeCountry().studySubjects) || []).filter(function (s) { return have.indexOf(s) === -1; });
+  let html = '<div class="dq-card">' +
+    '<div class="dq-step-head"><div class="dq-ico"><i class="fas fa-book-open"></i></div>' +
+    '<h3>' + escapeHtml(t('diary.add')) + '</h3></div>';
+  if (rest.length) {
+    html += '<div class="dq-chips">' + rest.map(function (s) {
+      return '<button type="button" class="dq-chip" onclick="diaryPickSubjectFull(\'' + escapeAttr(s) + '\')">' + escapeHtml(subjectName(s)) + '</button>';
+    }).join('') + '</div>';
+  }
+  html += '<div class="dm-own" style="margin-top:12px;">' +
+    '<input id="diaryOwnInput" maxlength="60" placeholder="' + escapeHtml(t('diary.ownPh')) + '" onkeydown="if(event.key===\'Enter\'){diaryOwnSubjectFull();}">' +
+    '<button class="btn btn-secondary" onclick="diaryOwnSubjectFull()"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.ownBtn')) + '</button></div>' +
+    '<div class="dq-cancel-line"><a onclick="diaryCancelStep()">' + escapeHtml(t('common.back')) + '</a></div></div>';
+  return html;
+}
+
+function renderDiaryPickGrades() {
+  const subj = diaryUi.subj || '';
+  const grades = diaryUi.grades || [];
+  const d = diaryCur();
+  const q = diaryActiveQuarter();
+  const existed = !!(d.byQ[q] && Object.prototype.hasOwnProperty.call(d.byQ[q], subj));
+  const avg = diaryAvg(grades);
+  let html = '<div class="dq-card">' +
+    '<div class="dq-step-head"><div class="dq-ico"><i class="fas fa-clipboard-list"></i></div>' +
+    '<h3>' + escapeHtml(subjectName(subj)) + '</h3></div>' +
+    '<div class="dq-sub" style="font-size:11.5px;color:var(--text-secondary);margin:-4px 0 10px;">' + escapeHtml(diaryQuarterLabel(q)) + '</div>' +
+    '<div class="dm-keypad" style="grid-template-columns:repeat(5,1fr);">' + DIARY_SCALE.map(function (n) {
+      return '<button type="button" class="dm-key" onclick="diaryKeyAdd(' + n + ')">' + n + '</button>';
+    }).join('') + '</div>' +
+    '<div class="dq-picked">' + (grades.length
+      ? grades.map(function (g, i) {
+          return '<button type="button" class="dq-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryPickGradeRemove(' + i + ')">' + (g | 0) + '</button>';
+        }).join('')
+      : '<span class="dm-picked-empty">' + escapeHtml(t('diary.noGrades')) + '</span>') + '</div>' +
+    '<div class="diary-total" style="margin-top:10px;"><div class="diary-total-label">' + escapeHtml(t('diary.avgOf')) +
+      '<small>' + escapeHtml(t('diary.gradesN') + ': ' + grades.length) + '</small></div>' +
+      '<div class="diary-total-value' + (avg === null ? ' none' : '') + '">' + (avg === null ? '—' : avg.toFixed(1)) + '</div></div>' +
+    '<div class="dq-done">' +
+      '<button class="btn btn-secondary" onclick="diaryCancelStep()">' + escapeHtml(t('diary.cancel')) + '</button>' +
+      '<button class="btn btn-primary" onclick="diaryDone()"><i class="fas fa-check"></i> ' + escapeHtml(t('diary.done')) + '</button>' +
+    '</div>' +
+    (existed ? '<div class="dq-cancel-line"><a onclick="diaryRemoveSubject(\'' + escapeAttr(subj) + '\')">' + escapeHtml(t('diary.dropSubject')) + '</a></div>' : '') +
+    '</div>';
+  return html;
+}
+
+function renderDiaryMain() {
+  const q = diaryActiveQuarter();
+  const isYear = (q === 'year');
+  const subs = diarySubjects(q);
+  if (!subs.length) {
+    const emptyText = isYear ? t('diary.emptyYear') : t('diary.empty');
+    return '<div class="dq-empty">' +
+      '<div class="dq-empty-ico"><i class="fas fa-book-open"></i></div>' +
+      '<h3>' + escapeHtml(isYear ? t('diary.emptyYearTitle') : t('diary.emptyTitle')) + '</h3>' +
+      '<p>' + escapeHtml(emptyText) + '</p>' +
+      '<button class="btn btn-primary" onclick="diaryBeginAddSubject()"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.add')) + '</button>' +
+      '</div>';
+  }
+  let html = '';
+  subs.forEach(function (s) {
+    const gs = diaryGrades(q, s);
+    const avg = diaryAvg(gs);
+    html += '<div class="dq-card"><div class="dq-card-top">' +
+      '<div class="dq-subj">' + escapeHtml(subjectName(s)) +
+        (isYear ? '' : '<small>' + escapeHtml(t('diary.gradesN')) + ': ' + gs.length + '</small>') + '</div>' +
+      (isYear ? '' : '<button type="button" class="dq-subj-del" onclick="diaryRemoveSubject(\'' + escapeAttr(s) + '\')" title="' + escapeHtml(t('diary.dropSubject')) + '"><i class="fas fa-trash-can"></i></button>') +
+      (avg === null
+        ? '<div class="dq-avg none">' + escapeHtml(t('diary.noGrades')) + '</div>'
+        : '<div class="dq-avg">' + avg.toFixed(1) + '</div>') +
+      '</div>' +
+      '<div class="dq-grades">' +
+        (gs.length
+          ? gs.map(function (g, i) {
+              return isYear
+                ? '<span class="dq-g' + (g <= 2 ? ' low' : '') + '">' + (g | 0) + '</span>'
+                : '<button type="button" class="dq-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryRemoveGrade(\'' + escapeAttr(s) + '\',' + i + ')">' + (g | 0) + '</button>';
+            }).join('')
+          : '<span class="dq-no-grades" style="font-size:11.5px;color:var(--text-muted);">' + escapeHtml(t('diary.noGrades')) + '</span>') +
+        (isYear ? '' : '<button type="button" class="dq-add-grade" onclick="diaryEditGrades(\'' + escapeAttr(s) + '\')"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.addGrade')) + '</button>') +
+      '</div></div>';
+  });
+  return html;
+}
+
+function renderDiaryFull() {
+  const root = document.getElementById('diaryRoot');
+  if (!root) return;
+  const d = diaryCur();
+  if (!diaryTab) diaryTab = d.q || nevioCurrentQuarter();
+  const q = diaryTab;
+  let html = diaryQFrame();
+  html += '<div class="dq-wrap">';
+  if (diaryUi.step === 'pickSubject') html += renderDiaryPickSubject();
+  else if (diaryUi.step === 'pickGrades') html += renderDiaryPickGrades();
+  else html += renderDiaryMain();
+  html += '</div>';
+  html += diaryFootBar();
+  root.innerHTML = html;
+}
+
+// Карточка-выноска на «Прогрессе» — ведёт на отдельный экран дневника
 function renderDiarySection() {
   try {
     const d = diaryCur();
-    if (!diaryTab) diaryTab = d.q || nevioCurrentQuarter();
-    const q = diaryTab;
-    const isYear = (q === 'year');
+    const q = diaryActiveQuarter();
     const subs = diarySubjects(q);
+    let n = 0;
+    subs.forEach(function (s) { n += diaryGrades(q, s).length; });
     const qAvg = diaryQuarterAvg(q);
-    const totalGrades = subs.reduce(function (n, s) { return n + diaryGrades(q, s).length; }, 0);
-
-    // выноска: треугольник + иконка дневника + краткий итог, пока свёрнута
-    const meta = qAvg === null ? t('diary.noGradesShort') : diaryQuarterLabel(q) + ' · ' + qAvg.toFixed(1);
-    let html = '<div class="diary-note' + (diaryOpen ? ' open' : '') + '">' +
-      '<button class="diary-head" onclick="diaryToggleOpen()">' +
-        '<i class="fas fa-chevron-right diary-caret"></i>' +
-        '<i class="fas fa-book-open diary-ico"></i>' +
-        '<span class="diary-head-title">' + escapeHtml(t('diary.title')) + '</span>' +
-        (diaryOpen ? '' : '<span class="diary-head-meta">' + escapeHtml(meta) + '</span>') +
-      '</button>';
-    if (!diaryOpen) return html + '</div>';
-
-    html += '<div class="diary-body">';
-    // четверти сверху: 1 2 3 4 и год
-    html += '<div class="diary-tabs">' + ['I', 'II', 'III', 'IV', 'year'].map(function (qq) {
-      const lab = qq === 'year' ? t('diary.qYear') : t('diary.q' + qq);
-      return '<button class="diary-tab' + (q === qq ? ' active' : '') + '" onclick="diarySetQ(\'' + qq + '\')">' + escapeHtml(lab) + '</button>';
-    }).join('') + '</div>';
-
-    if (!subs.length) {
-      html += '<div class="diary-empty">' + escapeHtml(isYear ? t('diary.emptyYear') : t('diary.empty')) + '</div>';
-    } else {
-      subs.forEach(function (s) {
-        const gs = diaryGrades(q, s);
-        const avg = diaryAvg(gs);
-        html += '<div class="diary-row">' +
-          '<div class="diary-row-top">' +
-            '<div class="diary-subj" title="' + escapeHtml(subjectName(s)) + '">' + escapeHtml(subjectName(s)) + '</div>' +
-            (avg === null
-              ? '<div class="diary-avg none">' + escapeHtml(t('diary.noGrades')) + '</div>'
-              : '<div class="diary-avg">' + avg.toFixed(1) + '</div>') +
-          '</div>' +
-          '<div class="diary-grades">' +
-            (gs.length
-              ? gs.map(function (g, i) {
-                  // в «Год» оценки только читаем — правятся они внутри четверти
-                  return isYear
-                    ? '<span class="diary-g' + (g <= 2 ? ' low' : '') + '">' + (g | 0) + '</span>'
-                    : '<button class="diary-g' + (g <= 2 ? ' low' : '') + '" onclick="diaryRemoveGrade(\'' + escapeAttr(s) + '\',' + i + ')">' + (g | 0) + '</button>';
-                }).join('')
-              : '<span class="diary-no-grades">' + escapeHtml(t('diary.noGrades')) + '</span>') +
-            (isYear ? '' : '<button class="diary-add" onclick="diaryOpenGrades(\'' + escapeAttr(s) + '\')"><i class="fas fa-plus"></i></button>') +
-          '</div>' +
-        '</div>';
-      });
-    }
-    if (isYear) {
-      html += '<div class="diary-note-hint">' + escapeHtml(t('diary.yearNote')) + '</div>';
-    } else {
-      html += '<button class="btn btn-secondary" style="width:100%;margin-top:2px;" onclick="diaryOpenAddSubject()"><i class="fas fa-plus"></i> ' + escapeHtml(t('diary.add')) + '</button>' +
-        '<div class="diary-note-hint">' + escapeHtml(t('diary.hint')) + '</div>';
-    }
-    // средний балл четверти — внизу выноски
-    html += '<div class="diary-total">' +
-      '<div class="diary-total-label">' + escapeHtml(isYear ? t('diary.yearAvg') : t('diary.avg').replace('{q}', diaryQuarterLabel(q))) +
-        '<small>' + escapeHtml(t('diary.subjectsN') + ': ' + subs.length + ' · ' + t('diary.gradesN') + ': ' + totalGrades) + '</small></div>' +
-      '<div class="diary-total-value' + (qAvg === null ? ' none' : '') + '">' + (qAvg === null ? '—' : qAvg.toFixed(1)) + '</div>' +
-    '</div>';
-    return html + '</div></div>';
+    const meta = qAvg === null
+      ? t('diary.noGradesShort')
+      : (q === 'year' ? t('diary.qYear') : t('diary.q' + q) + ' ' + t('diary.qWord')) + ' · ' + qAvg.toFixed(1);
+    return '<button class="diary-go" onclick="openDiary()">' +
+      '<div class="dgo-ico"><i class="fas fa-book-open"></i></div>' +
+      '<div class="dgo-txt"><b>' + escapeHtml(t('diary.title')) + '</b><span>' + escapeHtml(meta) + '</span></div>' +
+      '<i class="fas fa-chevron-right dgo-arrow"></i></button>';
   } catch (e) { return ''; }
 }
+
 
 /* ---------- Универсальный чат-флоу (разбор ошибок, проверка скана) ---------- */
 function runChatFlow(opts) {
@@ -10041,10 +10401,15 @@ function scanFormHtml() {
       '<div class="scan-actions-grid">' +
         '<button type="button" class="btn btn-secondary" onclick="scanRun(\'explain\')"><i class="fas fa-lightbulb"></i> ' + escapeHtml(t('scan.actExplain')) + '</button>' +
         '<button type="button" class="btn btn-secondary" onclick="scanRun(\'solve\')"><i class="fas fa-calculator"></i> ' + escapeHtml(t('scan.actSolve')) + '</button>' +
-        '<button type="button" class="btn btn-primary" onclick="scanRun(\'check\')"><i class="fas fa-clipboard-check"></i> ' + escapeHtml(t('scan.actCheck')) + '</button>' +
-        '<button type="button" class="btn btn-secondary" onclick="scanRun(\'test\')"><i class="fas fa-question-circle"></i> ' + escapeHtml(t('scan.actTest')) + '</button>' +
-        '<button type="button" class="btn btn-secondary" onclick="scanRun(\'summary\')"><i class="fas fa-book"></i> ' + escapeHtml(t('scan.actSummary')) + '</button>' +
-        '<button type="button" class="btn btn-primary" onclick="scanRun(\'errors\')"><i class="fas fa-magnifying-glass"></i> ' + escapeHtml(t('scan.actErrors')) + '</button>' +
+        (state.role === 'teacher'
+          ? '<button type="button" class="btn btn-secondary" onclick="scanRun(\'summary\')"><i class="fas fa-book"></i> ' + escapeHtml(t('scan.actSummary')) + '</button>' +
+            '<button type="button" class="btn btn-secondary" onclick="scanRun(\'test\')"><i class="fas fa-question-circle"></i> ' + escapeHtml(t('scan.actTest')) + '</button>' +
+            '<button type="button" class="btn btn-primary" onclick="scanRun(\'check\')"><i class="fas fa-clipboard-check"></i> ' + escapeHtml(t('scan.actCheckT')) + '</button>' +
+            '<button type="button" class="btn btn-primary" onclick="scanRun(\'errors\')"><i class="fas fa-magnifying-glass"></i> ' + escapeHtml(t('scan.actErrors')) + '</button>'
+          : '<button type="button" class="btn btn-primary" onclick="scanRun(\'check\')"><i class="fas fa-clipboard-check"></i> ' + escapeHtml(t('scan.actCheck')) + '</button>' +
+            '<button type="button" class="btn btn-secondary" onclick="scanRun(\'test\')"><i class="fas fa-question-circle"></i> ' + escapeHtml(t('scan.actTest')) + '</button>' +
+            '<button type="button" class="btn btn-secondary" onclick="scanRun(\'summary\')"><i class="fas fa-book"></i> ' + escapeHtml(t('scan.actSummary')) + '</button>' +
+            '<button type="button" class="btn btn-primary" onclick="scanRun(\'errors\')"><i class="fas fa-magnifying-glass"></i> ' + escapeHtml(t('scan.actErrors')) + '</button>') +
       '</div>' +
     '</div>';
 }
@@ -10076,12 +10441,44 @@ function nevioCompressImage(file, maxDim) {
     const img = new Image();
     img.onload = function () {
       try {
-        const k = Math.min(1, maxDim / Math.max(img.width, img.height));
+        // Подаём модели изображение крупнее и чётче — распознавание точнее
+        const k = Math.min(1, (maxDim || 2000) / Math.max(img.width, img.height));
         const cv = document.createElement('canvas');
         cv.width = Math.max(1, Math.round(img.width * k));
         cv.height = Math.max(1, Math.round(img.height * k));
-        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-        const out = cv.toDataURL('image/jpeg', 0.86);
+        const ctx = cv.getContext('2d');
+        if (ctx) {
+          // лёгкое повышение контраста и резкости для рукописного/печатного текста
+          try { ctx.filter = 'contrast(1.06) saturate(1.03)'; } catch (e) {}
+          ctx.drawImage(img, 0, 0, cv.width, cv.height);
+          try { ctx.filter = 'none'; } catch (e) {}
+          // лёгкая резкость (разностная маска) — заметно помогает OCR (на больших фото пропускаем, чтобы не тормозить)
+          try {
+            const w = cv.width, h = cv.height;
+            if (w * h <= 2500000) {
+              const id = ctx.getImageData(0, 0, w, h);
+              const d = id.data, blur = new Float32Array(d.length);
+              for (let p = 0; p < d.length; p += 4) { blur[p] = d[p]; blur[p + 1] = d[p + 1]; blur[p + 2] = d[p + 2]; }
+              const amt = 0.35;
+              for (let y = 1; y < h - 1; y++) {
+                for (let x = 1; x < w - 1; x++) {
+                  const i = (y * w + x) * 4;
+                  for (let c = 0; c < 3; c++) {
+                    let acc = 0;
+                    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) acc += blur[((y + dy) * w + (x + dx)) * 4 + c];
+                    const avg = acc / 9;
+                    const orig = d[i + c];
+                    d[i + c] = Math.max(0, Math.min(255, Math.round(orig + (orig - avg) * amt)));
+                  }
+                }
+              }
+              ctx.putImageData(id, 0, 0);
+            }
+          } catch (e) {}
+        } else {
+          cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        }
+        const out = cv.toDataURL('image/jpeg', 0.92);
         URL.revokeObjectURL(url);
         resolve(out);
       } catch (e) { URL.revokeObjectURL(url); reject(e); }
@@ -10148,11 +10545,28 @@ async function nevioOcr(dataUrl) {
     }
   });
   try {
+    try { await worker.setParameters({ preserve_interword_spaces: '1' }); } catch (e) {}
     const res = await worker.recognize(dataUrl);
     const text = ((res && res.data && res.data.text) || '').trim();
     if (!text || text.length < 8) throw new Error('empty ocr');
     return text;
   } finally { try { await worker.terminate(); } catch (e) {} }
+}
+// Авто-исправление ошибок распознавания: модель проходит по тексту ещё раз
+// и правит только явные опечатки (похожие цифры/буквы), не меняя содержание.
+async function nevioFixOcrText(text) {
+  const t0 = String(text || '').trim();
+  if (t0.length < 12) return t0;
+  try {
+    const fixed = await nevioVisionComplete(
+      'Ниже текст, распознанный с фотографии рукописной или печатной школьной работы. В нём возможны ошибки распознавания: перепутаны похожие символы (O/0, o/0, 1/l/I, 7/T, 8/В, 5/S, 6/G, 4/А), слипшиеся или разорванные слова, лишние символы. Исправь ТОЛЬКО такие явные ошибки распознавания. Сохрани нумерацию задач, структуру строк и формулы в LaTeX $...$. Не решай задачи, ничего не добавляй и не удаляй. Верни только исправленный текст.\n\nТЕКСТ:\n' + t0.slice(0, 6000),
+      null,
+      'Ты — NEVIO, корректор распознанного текста. Отвечаешь только исправленным текстом.'
+    );
+    const f = String(fixed || '').trim();
+    if (f.length >= Math.floor(t0.length * 0.6) && f.length <= t0.length * 2.2) return f;
+    return t0;
+  } catch (e) { return t0; }
 }
 async function scanRecognize() {
   if (!state.scanImg || state.isLoading) return;
@@ -10162,15 +10576,22 @@ async function scanRecognize() {
   try {
     scanStatus(t('scan.status.vision'), 'fas fa-brain');
     let text = '';
+    let fromOcr = false;
     try {
       text = await nevioVisionComplete(
-        'Распознай изображение: учебное задание, страницу учебника, конспект или рукописную работу ученика. Верни ТОЛЬКО распознанный текст с сохранением структуры (задачи, номера; формулы запиши в LaTeX $...$). Без комментариев и решений.',
+        'Это фото учебного задания: страница учебника/рабочей тетради, конспект или рукописная работа ученика. Распознай его ОЧЕНЬ внимательно, особенно цифры и похожие буквы (0/O, 1/l/7, 8/В, 5/S, 6/G). Верни ТОЛЬКО распознанный текст, ничего не решая и не комментируя. Сохрани структуру: каждый номер задачи с новой строки, формулы запиши в LaTeX $...$, дроби — \\frac{}{}. Не выдумывай то, чего нет на фото.',
         state.scanImg,
-        'Ты — NEVIO. Точно переносишь текст с фото/скана в текст. Не решай и не объясняй — только распознавай.'
+        'Ты — NEVIO, точный OCR. Переносишь с фото/скана только то, что видишь. Если букву или цифру не видно — не додумывай.'
       );
     } catch (e1) {
       scanStatus(t('scan.status.ocr'), 'fas fa-font');
+      fromOcr = true;
       text = await nevioOcr(state.scanImg);
+    }
+    if (String(text || '').trim().length > 0) {
+      // финальная полировка текста: исправляем типичные ошибки распознавания
+      scanStatus(t('scan.status.fix'), 'fas fa-wand-magic-sparkles');
+      text = await nevioFixOcrText(text);
     }
     const res = document.getElementById('scanResult');
     const ta = document.getElementById('scanText');
@@ -10227,22 +10648,27 @@ function scanMakeTest(text, subject) {
 function runScanCheck(mode, text, subject, grade) {
   const c = activeCountry();
   const isCheck = mode === 'check';
+  const isTeacher = state.role === 'teacher';
   const prompt =
     'Ты — NEVIO, репетитор (' + c.flag + ' ' + c.nameLocal() + ' · ' + examTitle(c) + '). Ниже — текст задания или работы ученика, распознанный со скана/фото' +
     (subject ? ' по предмету «' + subject + '»' : '') + (grade ? ', ' + grade : '') + '.\n\nРАСПОЗНАННЫЙ ТЕКСТ:\n' + text.slice(0, 3500) + '\n\n' +
     (isCheck
-      ? 'РЕЖИМ «ПРОВЕРЬ МОЮ РАБОТУ»: не просто дай правильный ответ, а разбери работу ученика шаг за шагом:\n1) что решено верно;\n2) где именно ошибка (цифра, знак, пропущенный шаг, неверная формулировка);\n3) почему возникла эта ошибка (какое правило не выучено или какое представление неверное);\n4) как исправить — правильное решение по шагам.\n'
+      ? (isTeacher
+          ? 'РЕЖИМ «ПРОВЕРКА РАБОТЫ УЧЕНИКА»: не просто дай правильный ответ, а разбери работу ученика шаг за шагом:\n1) что решено верно;\n2) где именно ошибка (цифра, знак, пропущенный шаг, неверная формулировка);\n3) почему возникла эта ошибка (какое правило не выучено или какое представление неверное);\n4) как исправить — правильное решение по шагам, как объяснить это ученику.\n'
+          : 'РЕЖИМ «ПРОВЕРЬ МОЮ РАБОТУ»: не просто дай правильный ответ, а разбери работу ученика шаг за шагом:\n1) что решено верно;\n2) где именно ошибка (цифра, знак, пропущенный шаг, неверная формулировка);\n3) почему возникла эта ошибка (какое правило не выучено или какое представление неверное);\n4) как исправить — правильное решение по шагам.\n')
       : 'РЕЖИМ «НАЙДИ ОШИБКИ»: перечисли все найденные ошибки списком: где, в чём, чем вызвана. Если это условие задачи без решения — предложи план решения и укажи темы, которые понадобятся.\n') +
+    'Учти: текст мог быть распознан с фото не идеально (перепутаны похожие цифры и буквы, например 0/О, 1/l, 8/В, 5/S, 6/G). Если что-то явно искажено при распознавании — опирайся на смысл задания.\n' +
     'В конце добавь блок «🎯 Что повторить», где каждой строкой напиши: Тема: <название темы>.\nИспользуй LaTeX для формул.' +
     (subject ? trustBlockFor(c, subject) : '');
   window.__scanCheckText = text;
   window.__scanCheckSubject = subject;
+  const checkLabel = isTeacher ? t('scan.actCheckT') : t('scan.actCheck');
   runChatFlow({
     actionId: 'scan_check',
     icon: isCheck ? 'fas fa-clipboard-check' : 'fas fa-magnifying-glass',
     title: isCheck ? t('scan.checkTitle') : t('scan.errorsTitle'),
     desc: t('mist.desc'),
-    userLabel: (isCheck ? '📷 ' + t('scan.actCheck') : '📷 ' + t('scan.actErrors')) + ' · ' + String(text).slice(0, 40) + '…',
+    userLabel: (isCheck ? '📷 ' + checkLabel : '📷 ' + t('scan.actErrors')) + ' · ' + String(text).slice(0, 40) + '…',
     prompt: prompt,
     subject: subject,
     after: function (r) { attachScanResultChips(r); }
@@ -10503,13 +10929,12 @@ function deckDownload(id) {
   } catch (e) { showToast('⚠️'); }
 }
 
-/* ---------- NEVIO Free / NEVIO Plus (задачи 9–10) ----------
-   Никаких платных API и сервисов: тариф — локальный флаг + список возможностей.
-   Онлайн-оплата подключается владельцем отдельно (docs/MONETIZATION.md); до её
-   запуска активация — кодом поддержки. За Plus спрятаны только «расширения»:
+/* ---------- NEVIO Free / NEVIO Plus ----------
+   Тариф — локальный флаг + список возможностей; платных API и сервисов нет.
+   Код активации задаётся владельцем. За Plus спрятаны только «расширения»:
    все базовые функции (AI-помощник, тесты, прогресс, задания, персонализация,
    сканирование, материалы, дневник ошибок, презентации до 12 слайдов) — бесплатны. */
-const NEVIO_PLUS_CODES = ['NEVIO-PLUS']; // коды активации от поддержки (заменяет владелец)
+const NEVIO_PLUS_CODES = ['NEVIO-PLUS']; // код активации (настраивает владелец)
 function isPlus() { return state.plan === 'plus'; }
 function updatePlusUI() {
   const el = document.getElementById('settingsPlanValue');
@@ -10560,9 +10985,8 @@ function renderPlusUI() {
       '</div></div>' +
     '</div>' +
     '<div class="card" style="margin-top:12px;"><div class="form-group" style="margin-bottom:0;"><label>' + escapeHtml(t('plus.activate')) + '</label>' +
-      '<div style="display:flex;gap:8px;margin-top:0;"><input type="text" id="plusCodeInput" placeholder="' + escapeHtml(t('plus.codePh')) + '" style="flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:13px;">' +
-      '<button class="btn btn-primary" style="flex:0 0 auto;padding:10px 14px;margin-top:0;" onclick="checkPlusCode()">' + escapeHtml(t('plus.activate')) + '</button></div>' +
-      '<p style="font-size:11px;color:var(--text-muted);line-height:1.6;margin-top:8px;">' + escapeHtml(t('plus.note')) + '</p>' +
+      '<div class="plus-code-row"><input type="text" id="plusCodeInput" placeholder="' + escapeHtml(t('plus.codePh')) + '">' +
+      '<button class="btn btn-primary" onclick="checkPlusCode()">' + escapeHtml(t('plus.activate')) + '</button></div>' +
     '</div></div>';
 }
 function checkPlusCode() {
